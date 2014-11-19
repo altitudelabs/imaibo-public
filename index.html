@@ -7,34 +7,219 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <base href="/">
-  <title></title>
+  <title>心情指数</title>
   <meta name="description" content="">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-  <!-- Start iMaibo JS -->
-  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/js/jquery-1.7.1.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/jquery/plugins/jquery.plugins-contact.min.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/jquery/plugins/jquery.plugins-contact.min.js"></script>
+  <!-- Start iMaibo JS to include -->
+  <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+  <!-- End iMaibo JS to include -->
+
+  <!-- Start iMaibo JS to remove -->
+  <!-- <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/jquery/plugins/jquery.plugins-contact.min.js"></script>
   <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/sea-module/seajs/2.1.1/sea.js"></script>
   <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/highcharts/3.0.9/highcharts.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/highstock/2.0.3/highstock.js"></script>
-  <!-- End iMaibo JS -->
+  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/highstock/2.0.3/highstock.js"></script> -->
+  <!-- Start iMaibo JS to remove -->
 
   <!-- Start iMaibo CSS -->
-  <link rel="stylesheet" type="text/css" href="http://www.imaibo.net/public/themes/Maibo/common_v1/css/common_base.css">
-  <link rel="stylesheet" type="text/css" href="http://www.imaibo.net/public/themes/Maibo/common_v1/css/common_v1.css">
+  <link rel="stylesheet" type="text/css" href="css/common_base.css">
+  <link rel="stylesheet" type="text/css" href="css/common_v1.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
   <!-- End iMaibo CSS -->
 
+  <!-- Start new JS -->
+  <script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
+  <script type="text/javascript" src="bower_components/handlebars/handlebars.min.js"></script>
+  <script type="text/javascript" src="bower_components/lodash/dist/lodash.min.js"></script>
+  <!-- End new JS -->
+
+  <!--[if lte IE 8]><script src="bower_components/aight/aight.min.js" charset="utf-8"></script><![endif]-->
+  <!--[if lte IE 8]><script src="bower_components/raphael/raphael-min.js" charset="utf-8"></script><![endif]-->
   <!--[if lte IE 8]><script src="bower_components/r2d3/r2d3.min.js" charset="utf-8"></script><![endif]-->
+
   <!--[if gte IE 9]><!-->
   <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
   <!--<![endif]-->
 
+
 </head>
 <body>
-  <div id="chart"></div>
+  <div class="outer">
+    <!-- Right panel start -->
+    <div id="right-panel">
+      <ul class="nav nav-tabs nav-tabs-full-width">
+        <li><a class="link-stockpicker-view" href="#">自选股</a></li>
+        <li><a class="link-experts-view" href="#">专家解读</a></li>
+        <li><a class="link-news-view" href="#">新闻</a></li>
+        <li class="close-button pull-right"><a class="link-right-panel-collapsed" href="#"></a></li>
+        <li class="pin-button pull-right"><a href="#"></a></li>
+      </ul>
+
+      <!-- Stockpicker view start -->
+      <div id="stockpicker-view" class="component">自选股</div>
+      <!-- Stockpicker view end -->
+
+      <!-- Experts view start -->
+      <div id="experts-view" class="component">专家解读</div>
+      <!-- Experts view end -->
+
+      <!-- News view start -->
+      <div id="news-view" class="component">新闻</div>
+      <!-- News view end -->
+
+      <div class="collapse-button"></div>
+    </div>
+    <!-- Right panel end -->
+
+    <!-- Right panel collapsed start -->
+    <div id="right-panel-collapsed" class="collapsed">
+      <ul class="nav nav-tabs-collapsed">
+        <li><a class="link-stockpicker-view" href="#">自选股</a></li>
+        <li><a class="link-experts-view" href="#">专家解读</a></li>
+        <li><a class="link-news-view" href="#">新闻</a></li>
+      </ul>
+    </div>
+    <!-- Right panel collapsed end -->
+
+    <!-- Content panel start -->
+    <div id="content">
+      <ul class="nav nav-tabs">
+        <li><a class="link-chart-view active" href="#">心情指数</a></li>
+        <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
+      </ul>
+
+      <!-- Chart view start -->
+      <div id="chart-view">
+        <div id="snapshot" class="component">
+          <!-- Snapshot template start -->
+          <div class="component-item component-item-price">
+            <div class="title">上证指数</div>
+            <div class="value-label">2,240.81</div>
+            <div class="value-sublabel">15.07(+5.20%)</div>
+          </div>
+          <div class="component-item component-item-price">
+            <div class="title">心情指数</div>
+            <div class="value-label">70%</div>
+            <div class="value-sublabel">强烈买入</div>
+          </div>
+          <div class="component-item component-item-price">
+            <div class="title">短期预测</div>
+            <div class="value-label">70%</div>
+            <div class="value-sublabel">强烈买入</div>
+          </div>
+          <div class="component-item btn btn-buy pull-right">买入</div>
+          <div class="component-item btn btn-sell pull-right">卖出</div>
+          <div class="clearfix"></div>
+          <!-- Snapshot template end -->
+        </div>
+        <div id="price" class="component">
+          <div class="title">大盘走势</div>
+          <!-- Toolbar start -->
+          <div id="toolbar">
+            <ul class="toolbar">
+              <li><a>[-]</a></li>
+              <li><a>[+]</a></li>
+              <li class="link-dropdown" data-target="ma">
+                <a>[MA]</a>
+                <div class="dropdown-menu" data-target="ma">
+                  <ul>
+                    <li><a>MA5</a></li>
+                    <li><a>MA10</a></li>
+                    <li><a>MA20</a></li>
+                    <li><a>MA60</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li class="link-dropdown" data-target="chart-toggle">
+                <a>[ ]</a>
+                <div class="dropdown-menu" data-target="chart-toggle">
+                  <ul>
+                    <li><a>RSI</a></li>
+                    <li><a>MACD</a></li>
+                    <li><a>Sentiment</a></li>
+                  </ul>
+                </div>
+              </li>
+              <li class="link-dropdown" data-target="frequency">
+                <a>[ ]</a>
+                <div class="dropdown-menu" data-target="frequency">
+                  <ul>
+                    <li><a>日时</a></li>
+                    <li><a>日K</a></li>
+                    <li><a>周</a></li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- Toolbar end -->
+          <div id="chart"></div>
+
+          <!-- Tooltip start -->
+          <div id="tooltip"></div>
+          <!-- Tooltip end -->
+        </div>
+        <div id="rsi" class="component">
+          <div class="title">RSI</div>
+          <div id="rsi-chart"></div>
+        </div>
+        <div id="sentiment" class="component">
+          <div class="title">心情指数</div>
+          <div id="sentiment-chart"></div>
+        </div>
+      </div>
+      <!-- Chart view end -->
+
+      <!-- About index view start -->
+      <div id="about-index-view" class="component">
+        什么是心情指数
+      </div>
+      <!-- About index view end -->
+    </div>
+    <!-- Content panel end -->
+  </div>
+
+  <!-- Dashboard template start -->
+
+
+  <!-- Dashboard template end -->
+
+  <!-- Legend template start -->
+  <script id="legend-template" type="text/x-handlebars-template">
+    <ul>
+      <#each>
+        <li><span class="{{type}}" style="background-color: {{color}}"></span>{{label}}</li>
+      <#end>
+    <ul>
+  </script>
+  <!-- Legend template end -->
+
+  <!-- Tooltip template start -->
+  <script id="tooltip-template" type="text/x-handlebars-template">
+    <ul>
+      <li class="tt-title">{{date}}</li>
+      <li class="tt-subtitle">上证指数</li>
+      <li class="tt-row"><span class="tt-label">开盘</span><span class="tt-value">{{security.open}}</span></li>
+      <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{security.high}}</span></li>
+      <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{security.low}}</span></li>
+      <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{security.close}}</span></li>
+      <li class="tt-subtitle">心情指数</li>
+      <li class="tt-row"><span class="tt-label">当前</span><span class="tt-value">{{sentiment.price}}</span></li>
+      <li class="tt-row"><span class="tt-label">转变</span><span class="tt-value">{{sentiment.change}}</span></li>
+    </ul>
+  </script>
+  <!-- Tooltip template end -->
+
+  <!-- Start charting JS files -->
+  <script type="text/javascript" src="js/lib/helpers.js"></script>
+  <script type="text/javascript" src="js/toolbar/toolbar.js"></script>
+  <script type="text/javascript" src="js/tooltip/tooltip.js"></script>
+  <script type="text/javascript" src="js/chart/chart-model.js"></script>
+  <script type="text/javascript" src="js/chart/chart-view.js"></script>
+  <script type="text/javascript" src="js/right-panel/right-panel-view.js"></script>
+  <script type="text/javascript" src="js/content/content-view.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
+  <!-- End charting JS files -->
 </body>
 </html>

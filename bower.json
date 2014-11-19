@@ -1,6 +1,6 @@
 {
   "name": "imaibo",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "homepage": "https://github.com/altitudelabs/imaibo",
   "authors": [
     "jyek <justinyek@gmail.com>"
@@ -9,7 +9,12 @@
   "dependencies": {
     "r2d3": "~0.2.0",
     "d3": "3.0.8",
-    "jquery": "~2.1.1",
-    "bootstrap": "~3.3.1"
+    "jquery": "1.7.1",
+    "bootstrap": "~3.3.1",
+    "modernizr": "~2.8.3",
+    "lodash": "~2.4.1",
+    "handlebars": "~2.0.0",
+    "aight": "~1.2.5",
+    "raphael": "~2.1.2"
   }
 }

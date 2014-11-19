@@ -1,0 +1,47 @@
+@charset "utf-8";
+/* CSS Document */
+/*====================*/
+/*=== Reset Styles ===*/
+body {margin:0; padding:45px 0 0; font: 12px/1.25 tahoma,arial,\5b8b\4f53,sans-serif;background:#ffffff;}
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video,font,button,select,input {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+h1, h2, h3, h4, h5, h6,th,dt{
+    font-weight:normal;
+}
+img{ border:0px; margin:0px; padding:0px;}
+i,em,cite{ font-style:normal}
+a {text-decoration: none;}
+a{ color:#333333}
+a:hover{ text-decoration:underline;}
+img, input, select, button{vertical-align:middle;}
+textarea{border: none;resize: none;}
+textarea:focus{ outline:none}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {display: block;}
+ol, ul ,li{list-style: none;}
+blockquote, q {quotes: none;}
+blockquote:before, blockquote:after,
+q:before, q:after {content: '';content: none;}
+table {border-collapse: collapse;border-spacing: 0;}
+
+/*提示信息*/
+.html_clew_box { border:5px solid #6b6d6b; color:#1b9103; position:absolute;z-index: 9999999999;background:#fff url('../images/html_clew_box.gif') repeat-x 0 0; padding:0 25px 0 68px; margin-top:1px; float:left}
+.clew_error{ background-position:0 bottom; color:#f00}
