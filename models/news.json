@@ -6,21 +6,21 @@
       "date": "yyyy-mm-dd",
       "timestamp": 1398988800,
       "annotation": 1,
-      "headline": "",
+      "headline": "Important News",
       "link": "",
       "impact": "1",
       "magnitude": "90%",
-      "source": ""
+      "source": "Source#1"
     },
     {
       "date": "yyyy-mm-dd",
       "timestamp": 1398988800,
       "annotation": 1,
-      "headline": "",
+      "headline": "Not Important News",
       "link": "",
       "impact": "1",
       "magnitude": "90%",
-      "source": ""
+      "source": "Source#2"
     }
   ]
 }

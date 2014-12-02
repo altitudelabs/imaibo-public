@@ -265,6 +265,7 @@ body {
 }
 #right-panel .component {
   height: 500px;
+  overflow: scroll;
 }
 .nav-tabs-full-width {
   border: 1px solid #4d4d4d;
@@ -341,6 +342,134 @@ body {
 text {
   fill: rgb(107, 107, 107);
 }
+
+/* =Stockpicker
+---------------------------------------------------------------*/
+#stockpicker-view{
+  padding: 0;
+}
+
+div.wrapper {
+  width: 100%;
+  height: 40px;
+}
+
+
+div#settings {
+  background-color: black;
+  width: 15%;
+  height: 40px;
+  border-right: #332 solid thin;
+  border-bottom: #332 solid thin;
+  float: left;
+  background: url('../assets/chart/settings.png') no-repeat center;
+}
+
+div#settings:hover {
+  background-image: url('../assets/chart/settings-hover.png');
+  cursor: pointer;
+}
+
+input#stock-search {
+  width: 100%;
+  height: 40px;
+  background-color: #1f1f1f;
+  border-bottom: #332 solid thin;
+  padding: 5px;
+  font-size: 15px;
+
+  color: #808080;
+}
+
+input#stock-search:focus {
+  outline: none;
+}
+
+div#searchBar{
+  width: 70%;
+  height: 40px;
+  float: right;
+}
+
+div#search{
+  float: right;
+  width: 15%;
+  height: 40px;
+  border-bottom: #332 solid thin;
+}
+
+div#suggestion {
+  height: 40px;
+  width: 100%;
+  padding: 10px;
+  border-bottom: #332 thin solid;
+  color: #808080;
+}
+
+div#login-wrapper {
+  width: 100%;
+  height: 200px;
+  border-bottom: #332 thin solid;
+  margin: 0 auto;
+  text-align: center;
+}
+
+div#login-wrapper > div {
+  margin: 10px;
+}
+
+div.wrapper .center {
+  width: 100%;
+  height: 100%;
+}
+
+button#login {
+  width: 50%;
+  height: 30px;
+  border-radius: 3px;
+  color: #fff;
+  background-color: #454545;
+}
+
+button#login:hover {
+  cursor: pointer;
+  background-color: #565656;
+}
+
+button#search-button {
+  background: url('../assets/chart/search.png') no-repeat center;
+  background-color: #1f1f1f;
+  width: 100%;
+  height: 40px;
+  border-bottom: #332 solid thin;
+  cursor: pointer;
+}
+
+button#search-button:focus {
+  outline: none;
+}
+
+table#stock-table {
+  width: 100%;
+  height: 100%;
+}
+
+table#stock-table th {
+  border-bottom: #332 solid thin;
+  padding: 10px;
+  color: rgb(107, 107, 107);
+}
+
+table#stock-table td {
+  border-bottom: #332 solid thin;
+  padding: 10px;
+  margin: 5px;
+}
+
+
+
+
+
 
 /* =Tooltip
 -------------------------------------------------------------- */
