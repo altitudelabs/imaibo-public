@@ -248,41 +248,54 @@
         </div>
         <div id="price" class="component">
           <div class="title">大盘走势</div>
+          <ul class="legend">
+            <li id="ma5-legend"><div id="ma5-legend-line" class="legend-line"></div><span>MA5</span></li>
+            <li id="ma10-legend"><div id="ma10-legend-line" class="legend-line"></div><span>MA10</span></li>
+            <li id="ma20-legend"><div id="ma20-legend-line" class="legend-line"></div><span>MA20</span></li>
+            <li id="ma60-legend"><div id="ma60-legend-line" class="legend-line"></div><span>MA60</span></li>
+            <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
+          </ul>
           <!-- Toolbar start -->
           <div id="toolbar">
             <ul class="toolbar">
-              <li><a>[-]</a></li>
-              <li><a>[+]</a></li>
-              <li class="link-dropdown" data-target="ma">
-                <a>[MA]</a>
-                <div class="dropdown-menu" data-target="ma">
-                  <ul>
-                    <li><a>MA5</a></li>
-                    <li><a>MA10</a></li>
-                    <li><a>MA20</a></li>
-                    <li><a>MA60</a></li>
-                  </ul>
-                </div>
-              </li>
-              <li class="link-dropdown" data-target="chart-toggle">
-                <a>[ ]</a>
-                <div class="dropdown-menu" data-target="chart-toggle">
-                  <ul>
-                    <li><a>RSI</a></li>
-                    <li><a>MACD</a></li>
-                    <li><a>Sentiment</a></li>
-                  </ul>
-                </div>
-              </li>
-              <li class="link-dropdown" data-target="frequency">
-                <a>[ ]</a>
+              <li><a id="zoomout"></a></li>
+              <li><a id="zoomin"></a></li>
+
+             <li class="link-dropdown" id="frequency" data-target="frequency">
+                <a id="frequency-icon"></a>
                 <div class="dropdown-menu" data-target="frequency">
+                  <form>
                   <ul>
-                    <li><a>日时</a></li>
-                    <li><a>日K</a></li>
-                    <li><a>周</a></li>
+                    <li><label><input type="radio" name="freq"> 分时</label></li>
+                    <li><label><input type="radio" name="freq"> 1日</label></li>
+                    <li><label><input type="radio" name="freq"> 1周</label></li>
                   </ul>
+                </form>
                 </div>
+              </li>
+              <li class="link-dropdown" id="ma" data-target="ma">
+                <a id="ma-icon"></a>
+                <div class="dropdown-menu"  data-target="ma">
+                  <form>
+                  <ul>
+                    <li><input type="checkbox" id="ma5-checkbox" checked><label id="ma5-label"> MA5={{ma5-value}}</label></li>
+                    <li><input type="checkbox" id="ma10-checkbox" checked><label id="ma10-label"> MA10={{ma10-value}}</label></li>
+                    <li><input type="checkbox" id="ma20-checkbox" checked><label id="ma20-label"> MA20={{ma20-value}}</label></li>
+                    <li><input type="checkbox" id="ma60-checkbox" checked><label id="ma60-label"> MA60={{ma60-value}}</label></li>
+                  </ul>
+                </form>
+                </div>
+              </li>
+              <li class="link-dropdown" id="rsi-button" data-target="chart-toggle">
+                <a id="rsi-icon"></a>
+                <div class="dropdown-menu" data-target="chart-toggle">
+                  <form>
+                  <ul>
+                    <li><label><input type="checkbox" id="macd-checkbox"> MACD</label></li>
+                    <li><label><input type="checkbox" id="rsi-checkbox" > RSI</label></li>
+                  </ul>
+                </form>
+               </div>
               </li>
             </ul>
           </div>

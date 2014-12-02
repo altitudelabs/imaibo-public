@@ -27,7 +27,7 @@ h1, h2, h3, h4, h5, h6,th,dt{
 img{ border:0px; margin:0px; padding:0px;}
 i,em,cite{ font-style:normal}
 a {text-decoration: none;}
-a{ color:#333333}
+/* a{ color:#333333} */
 a:hover{ text-decoration:underline;}
 img, input, select, button{vertical-align:middle;}
 textarea{border: none;resize: none;}

@@ -52,6 +52,52 @@ body {
 .component-item-price .title {
   color: rgb(107, 107, 107);
 }
+
+.title,.legend {
+  display: inline;
+}
+
+.legend > li{
+  display: inline;
+  padding-right: 10px;
+}
+
+.legend{
+  float: right;
+}
+
+.legend-line {
+  border-top: 1px solid blue;
+  border-bottom: 1px solid blue;
+  width: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+#ma5-legend-line  { border-color: #ffffff; }
+#ma10-legend-line { border-color: #d7db74; }
+#ma20-legend-line { border-color: #94599d; }
+#ma60-legend-line { border-color: #36973a; }
+#sentiment-legend-line { border-color: #25bcf1; }
+
+#ma5-legend { color: #ffffff;  }
+#ma10-legend { color: #d7db74; }
+#ma20-legend { color: #94599d; }
+#ma60-legend { color: #36973a; }
+#sentiment-legend { color: #25bcf1; }
+
+.legend-line, .legend > li > span {
+  display: inline-block;
+}
+
+#y2labelLineActive {
+  z-index: -1;
+}
+
+.y2labels > text{
+  z-index: 1;
+}
+
 .btn {
   display: inline-block;
   padding: 12px 12px;
@@ -217,9 +263,43 @@ body {
   display: none;
   position: absolute;
   top: 120%;
-  background-color: rgb(107, 107, 107);
-  color: rgb(238, 238, 238);
+  background-color: #353535;
+  width: 120px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 5px #131313;
+  color: #fff;
 }
+
+/* replaces js/toolbar/toolbar.js initDropdown function  */
+.link-dropdown:hover > .dropdown-menu{
+  display: block;
+}
+
+.dropdown-menu > ul > li{
+  padding: 6px 12px;
+  color: #fff;
+}
+.dropdown-menu > form > ul > li{
+  padding: 6px 12px;
+  color: #fff;
+}
+
+.dropdown-menu > ul > li:hover {
+  padding: 6px 12px;
+  background-color: #434343;
+}
+.dropdown-menu > ul > li > a:hover {
+  color: #29a3d3;
+  text-decoration: none;
+}
+
+label.checkbox-label input[type=checkbox]{
+  vertical-align: middle;
+  position: relative;
+  bottom: 1px;
+}
+
+
 .dropdown-menu > ul > li > a {
   padding: 6px 12px;
 }
@@ -518,10 +598,80 @@ ul.toolbar > li {
 }
 ul.toolbar > li > a {
   color: rgb(120, 120, 120);
-  padding: 3px 8px;
+  padding: 3px 10px;
+  margin: 3px;
 }
-ul.toolbar > li > a:hover, ul.toolbar > li.active > a, ul.toolbar > li.active > a:hover {
+ul.toolbar > li > a:hover,
+ul.toolbar > li.active > a,
+ul.toolbar > li.active > a:hover {
   text-decoration: none;
   color: #fff;
-  padding: 3px 8px;
+  padding: 3px 10px;
 }
+
+#zoomin {
+  background-image: url("../assets/chart/zoomin.png");
+  height: 50px;
+  width: 50px;
+  margin-right: 10px;
+}
+
+#zoomin:hover {
+  background-image: url("../assets/chart/zoomin-hover.png");
+}
+
+#zoomout {
+  background-image: url("../assets/chart/zoomout.png");
+  height: 50px;
+  width: 50px;
+}
+
+#zoomout:hover {
+  background-image: url("../assets/chart/zoomout-hover.png");
+}
+
+#ma-icon {
+  background-image: url("../assets/chart/ma-button.png");
+}
+
+#ma-icon:hover {
+  background-image: url("../assets/chart/ma-button-hover.png");
+}
+
+#frequency-icon{
+  background-image: url("../assets/chart/period-button.png");
+  height: 50px;
+  width: 50px;
+}
+
+#frequency-icon:hover {
+  background-image: url("../assets/chart/period-button-hover.png");
+}
+
+#rsi-icon{
+  background-image: url("../assets/chart/annotations-button.png");
+  height: 50px;
+  width: 50px;
+}
+
+#rsi-icon:hover {
+  background-image: url("../assets/chart/annotations-button-hover.png");
+  height: 50px;
+  width: 50px;
+}
+
+
+#ma60-label{
+  color: #36973a;
+}
+#ma20-label{
+  color: #94599d;
+}
+
+#ma10-label{
+  color: #d8db74;
+}
+#ma5-label{
+  color: #fff;
+}
+

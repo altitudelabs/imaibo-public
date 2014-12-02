@@ -58,7 +58,6 @@ var ChartView = {
       .attr('y1', height - margin.bottom)
       .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646');
-
     // chart.append('g')
     //   .attr('class','xlines')
     // .selectAll('line.x')
@@ -71,6 +70,7 @@ var ChartView = {
     //   .attr('y2', height - margin.bottom)
     //   .attr('stroke', '#464646');
 
+    //Horizontal guide lines
     chart.append('g')
       .attr('class','ylines')
     .selectAll('line.y1')
@@ -82,7 +82,8 @@ var ChartView = {
       .attr('y1', y1)
       .attr('y2', y1)
       .attr('stroke', '#464646');
-
+      
+      //x-axis labels
     chart.append('g')
       .attr('class','xlabels')
     .selectAll('text.xrule')
@@ -94,6 +95,7 @@ var ChartView = {
       .attr('text-anchor', 'middle')
       .text(function(d,i){ return i%interval===0 ? d.date : ''; });
 
+      // left y-axis labels
     chart.append('g')
       .attr('class','y1labels')
     .selectAll('text.yrule')
@@ -105,6 +107,7 @@ var ChartView = {
       .attr('text-anchor', 'middle')
       .text(String);
 
+      // right y-axis labels
     chart.append('g')
       .attr('class','y2labels')
     .selectAll('text.yrule')
@@ -116,6 +119,57 @@ var ChartView = {
       .attr('text-anchor', 'middle')
       .text(String);
 
+      $('.xlabels > text').click(function(){
+        var x = this.getAttribute('x');
+        $('#xlabelLine').remove();
+        $('#xlabelLineActive').remove();
+         chart.append('svg:line')
+        .attr('class', 'xlabelLine')
+        .attr('id', 'xlabelLine')
+        .attr('x1', x)
+        .attr('x2', x)
+        .attr('y1', height-margin.bottom) //make it line up with the label
+        .attr('y2', margin.top)
+        .attr('stroke', '#44b6ea');
+
+        chart.append('g')
+        .attr('id','xlabelLineActive')
+        .append('svg:rect')
+        .attr('x', parseFloat(x) - 50)
+        .attr('y', height-margin.top)
+        .attr('height', 30)
+        .attr('width',  100)
+        .attr('fill', '#44b6ea')
+
+
+
+      });
+
+      $('.y2labels > text').click(function(){
+        $('#y2labelLine').remove();
+        $('#y2labelLineActive').remove();
+        var y = parseFloat(this.getAttribute('y')) - 5;
+
+        chart.append('g')
+        .attr('id','y2labelLineActive')
+        .append('svg:rect')
+        .attr('x', width-margin.right-5)
+        .attr('y', y-5)
+        .attr('height', 15)
+        .attr('width',  50)
+        .attr('fill', '#f65c4e')
+
+        chart.append('svg:line')
+        .attr('class', 'y2labelLine')
+        .attr('id', 'y2labelLine')
+        .attr('x1', margin.left-100)
+        .attr('x2', width - margin.right)
+        .attr('y1', y) //make it line up with the label
+        .attr('y2', y)
+        .attr('stroke', '#df5748');
+      });
+
+     //sentimetal rect bars 
     chart.append('g')
       .attr('class','volume')
     .selectAll('rect')
@@ -127,6 +181,7 @@ var ChartView = {
       .attr('width', function(d) { return 0.5 * (width - margin.left - margin.right)/data.security.length; })
       .attr('fill', '#4d4d4d');
 
+    //rectangles of the candlesticks graph
     chart.append('g')
       .attr('class','candlesticks')
     .selectAll('rect')
@@ -138,6 +193,7 @@ var ChartView = {
       .attr('width', function(d) { return 0.7 * (width - margin.right)/data.security.length; })
       .attr('fill', function(d) { return d.open > d.close ? '#f65c4e' : '#3bbb57'; });
 
+    //verticle lines of the candlesticks graph
     chart.append('g')
       .attr('class','linestems')
     .selectAll('line.stem')
@@ -150,6 +206,7 @@ var ChartView = {
       .attr('y2', function(d) { return y1(d.low); })
       .attr('stroke', function(d){ return d.open > d.close ? '#f65c4e' : '#3bbb57'; })
 
+      //tooltips
     chart.append('rect')
       .attr('class', 'mouseover-overlay')
       .attr('fill', 'transparent')
@@ -178,17 +235,59 @@ var ChartView = {
       })
       .on('mouseout', function(){ return Tooltip.hide(); });
 
-    var sentimentLine = d3.svg.line()
-      .x(function(d,i) { return x(i); })
-      .y(function(d) { return y2(d.price); })
-      .interpolate('linear');
+    //sentimentLine
+    plotLine('#25bcf1', 'linear', 'sentimentLine')
 
-    chart.append('path')
-      .datum(data.sentiment)
-      .attr('class','line')
-      .attr('d', sentimentLine)
-      .attr('stroke', '#25bcf1')
-      .attr('fill', 'none');
+    //add all MA lines
+    plotLine('#fff', ChartModel.movingAvg(5), 'ma5-line');
+    plotLine('#d8db74', ChartModel.movingAvg(10), 'ma10-line');
+    plotLine('#94599d', ChartModel.movingAvg(20), 'ma20-line');
+    plotLine('#36973a', ChartModel.movingAvg(60), 'ma60-line');
+
+    //bind checkbox listeners to each MA line
+    toggleMA('#ma5-checkbox', '#ma5-line');
+    toggleMA('#ma10-checkbox', '#ma10-line');
+    toggleMA('#ma20-checkbox', '#ma20-line');
+    toggleMA('#ma60-checkbox', '#ma60-line');
+
+    //bind checkbox listeners to each MA line
+    function toggleMA(checkboxID, maLineID){
+      $(checkboxID).change(function(){
+        /*
+         * see http://jsperf.com/boolean-int-conversion/3 for ternary operators speed
+         * Chrome benefits greatly using explicit rather than implicit.
+         * but on average implicit ternary operator is pretty fast
+         */
+          d3.select(maLineID).style('opacity', this.checked? 1:0);
+      });
+    }
+
+    $('#ma60-label').text(' MA60=' + ChartModel.calcMovingAvg(60, 2));
+    $('#ma20-label').text(' MA20=' + ChartModel.calcMovingAvg(20, 2));
+    $('#ma10-label').text(' MA10=' + ChartModel.calcMovingAvg(10, 2));
+    $('#ma5-label').text(' MA5=' + ChartModel.calcMovingAvg(5, 2));
+
+    /*
+     * args:
+     *  - color: string, in hex.
+     *          e.g. '#fff', '#9f34a1'
+     *  - interpolate: 'linear', ChartModel.movingAvg(x), etc
+     *  - id: what you want to id your line as. Don't put '#'
+     */
+    function plotLine(color, interpolate, id){
+      var line = d3.svg.line()
+      .x(function(d, i){ return x(i); })
+      .y(function(d){ return y2(d.price); })
+      .interpolate(interpolate);
+
+      chart.append('path')
+        .datum(data.sentiment)
+        .attr('class','line')
+        .attr('d', line)
+        .attr('stroke', color)
+        .attr('fill', 'none')
+        .attr('id', id);
+    }
   },
   buildSentimentChart: function(data){
     var width = this.defaults.width,

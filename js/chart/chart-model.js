@@ -16,6 +16,14 @@ var ChartModel = {
   processMA: function(){
     // TODO
   },
+  calcMovingAvg: function(n, precision){
+    var sentiment = this.model.daily.sentiment;
+    var price = 0;
+    for (var i = sentiment.length-n; i < sentiment.length; i++){
+      price += parseFloat(sentiment[i].price);
+    }
+    return (price/n).toFixed(precision);
+  },
 
   // TODO: For reference only
   // MACD: http://stackoverflow.com/questions/11963352/plot-rolling-moving-average-in-d3-js
