@@ -7,5 +7,4 @@ $(function(){
 
   // Sets up routing logic for right content panel
   RightPanel.init();
-
 });

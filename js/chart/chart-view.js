@@ -58,10 +58,6 @@ var ChartView = {
       .attr('y1', height - margin.bottom)
       .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646');
-
-    
-
-
     // chart.append('g')
     //   .attr('class','xlines')
     // .selectAll('line.x')
@@ -86,7 +82,7 @@ var ChartView = {
       .attr('y1', y1)
       .attr('y2', y1)
       .attr('stroke', '#464646');
-    
+      
       //x-axis labels
     chart.append('g')
       .attr('class','xlabels')

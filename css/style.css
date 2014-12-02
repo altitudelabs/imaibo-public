@@ -299,6 +299,15 @@ label.checkbox-label input[type=checkbox]{
   bottom: 1px;
 }
 
+
+.dropdown-menu > ul > li > a {
+  padding: 6px 12px;
+}
+.dropdown-menu > ul > li > a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
 /* =Snapshot
 -------------------------------------------------------------- */
 .value-label {
