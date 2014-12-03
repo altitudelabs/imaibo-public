@@ -1,0 +1,5 @@
+var DashboardView = {
+  init: function(){
+  }
+
+};
