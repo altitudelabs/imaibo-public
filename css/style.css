@@ -423,6 +423,163 @@ text {
   fill: rgb(107, 107, 107);
 }
 
+/* =Expert
+---------------------------------------------------------------*/
+#experts-view {
+  padding: 20px;
+}
+
+.expert-block {
+  width: 100%;
+  background-color: rgb(38, 38, 38);
+  border-bottom: rgb(107, 107, 107) dotted thin;
+  margin-top: 15px;
+}
+
+.profile-pic, .others {
+  display: inline-block;
+}
+
+.profile-pic {
+  width: 20%;
+  height: 40px;
+  background-color: white;
+  float: left;
+}
+
+.others{
+  width: 80%;
+  height: 40px;
+  float: right;
+  padding-left: 2px;
+}
+
+.name-and-date {
+  width: 100%;
+  height: 50%;
+}
+
+.name, .date {
+  display: inline-block;
+  color: rgb(107, 107, 107);
+}
+
+.name {
+  float: left;
+}
+
+.date {
+  float: right;
+}
+
+.rating, .content {
+  display: inline-block;
+}
+
+.like-and-discussion {
+  height: 40px;
+  width: 100%;
+  margin-top: 10px;
+  vertical-align: middle; /* override common_base.css:6 */
+}
+
+.like {
+  width: 40%;
+  height: 100%;
+  color: black;
+  line-height: 1em;
+}
+
+.like > .text,
+.discussion > .text {
+  height: 100%;
+  width: 48%;
+  vertical-align: top;
+  color: rgb(107, 107, 107);
+}
+
+.like > .text,
+.like > .icon,
+.discussion > .text,
+.discussion > .icon {
+  display: inline-block;
+}
+
+.like > .icon {
+  background: url('../assets/chart/like.png') no-repeat center;
+}
+
+.discussion > .icon {
+  background: url('../assets/chart/comments.png') no-repeat center;
+}
+
+.like > .icon,
+.discussion > .icon {
+  width: 48%;
+  height: 100%;
+}
+
+.discussion {
+  width: 40%;
+  height: 100%;
+}
+
+.discussion > .text,
+.like > .text {
+  -webkit-transform: translate(-20%, 30%);
+  -ms-transform: translate(-20%, 30%);
+  transform: translate(-20%, 30%);
+}
+
+.like, .discussion {
+  display: inline-block;
+  float: right;
+}
+
+.profile-and-content {
+  width: 100%;
+  height: 40px;
+}
+
+.rating-and-content {
+  height: 75%;
+  width: 100%;
+  font-size: 15px;
+}
+
+.rating-and-content > .rating {
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+.rating-and-content > .rise {
+  background-color: #352d2d;
+  color: red;
+}
+
+.rating-and-content > .fall {
+  background-color: #2d382e;
+  color: green;
+}
+
+.rating-and-content > .rise span,
+.rating-and-content > .fall span{
+  display: none;
+}
+
+.rating-and-content > .rise:after {
+  content: "▲ 看升";
+}
+
+.rating-and-content > .fall:after {
+  content: "▼ 看升";
+}
+
+
+
+
+
+
 /* =Stockpicker
 ---------------------------------------------------------------*/
 #stockpicker-view{
@@ -450,7 +607,7 @@ text {
   cursor: pointer;
 }
 
-input#stock-search {
+#stock-search {
   width: 100%;
   height: 40px;
   background-color: #1f1f1f;
@@ -461,7 +618,7 @@ input#stock-search {
   color: #808080;
 }
 
-input#stock-search:focus {
+#stock-search:focus {
   outline: none;
 }
 
