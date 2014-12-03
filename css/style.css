@@ -124,7 +124,7 @@ body {
 .btn.focus,
 .btn:active.focus,
 .btn.active.focus {
-  outline: thin dotted;
+  outline: 1px dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -429,23 +429,23 @@ text {
   padding: 0;
 }
 
-div.wrapper {
+.wrapper {
   width: 100%;
   height: 40px;
 }
 
 
-div#settings {
+#settings {
   background-color: black;
   width: 15%;
   height: 40px;
-  border-right: #332 solid thin;
-  border-bottom: #332 solid thin;
+  border-right: #332 solid 1px;
+  border-bottom: #332 solid 1px;
   float: left;
   background: url('../assets/chart/settings.png') no-repeat center;
 }
 
-div#settings:hover {
+#settings:hover {
   background-image: url('../assets/chart/settings-hover.png');
   cursor: pointer;
 }
@@ -454,7 +454,7 @@ input#stock-search {
   width: 100%;
   height: 40px;
   background-color: #1f1f1f;
-  border-bottom: #332 solid thin;
+  border-bottom: #332 solid 1px;
   padding: 5px;
   font-size: 15px;
 
@@ -465,45 +465,45 @@ input#stock-search:focus {
   outline: none;
 }
 
-div#searchBar{
+#searchBar{
   width: 70%;
   height: 40px;
   float: right;
 }
 
-div#search{
+#search{
   float: right;
   width: 15%;
   height: 40px;
-  border-bottom: #332 solid thin;
+  border-bottom: #332 solid 1px;
 }
 
-div#suggestion {
+#suggestion {
   height: 40px;
   width: 100%;
   padding: 10px;
-  border-bottom: #332 thin solid;
+  border-bottom: #332 1px solid;
   color: #808080;
 }
 
-div#login-wrapper {
+#login-wrapper {
   width: 100%;
   height: 200px;
-  border-bottom: #332 thin solid;
+  border-bottom: #332 1px solid;
   margin: 0 auto;
   text-align: center;
 }
 
-div#login-wrapper > div {
+#login-wrapper > div {
   margin: 10px;
 }
 
-div.wrapper .center {
+.wrapper .center {
   width: 100%;
   height: 100%;
 }
 
-button#login {
+#login {
   width: 50%;
   height: 30px;
   border-radius: 3px;
@@ -511,42 +511,157 @@ button#login {
   background-color: #454545;
 }
 
-button#login:hover {
+#login:hover {
   cursor: pointer;
   background-color: #565656;
 }
 
-button#search-button {
+#search-button {
   background: url('../assets/chart/search.png') no-repeat center;
   background-color: #1f1f1f;
   width: 100%;
   height: 40px;
-  border-bottom: #332 solid thin;
+  border-bottom: #332 solid 1px;
   cursor: pointer;
 }
 
-button#search-button:focus {
+#search-button:focus {
   outline: none;
 }
 
-table#stock-table {
+#stock-table {
   width: 100%;
   height: 100%;
 }
 
-table#stock-table th {
-  border-bottom: #332 solid thin;
+#stock-table th {
+  border-bottom: #332 solid 1px;
   padding: 10px;
   color: rgb(107, 107, 107);
 }
 
-table#stock-table td {
-  border-bottom: #332 solid thin;
+#stock-table td {
+  border-bottom: #332 solid 1px;
   padding: 10px;
   margin: 5px;
 }
 
+/* =News
+---------------------------------------------------------------*/
+.news-block {
+  width: 100%;
+  padding: 5px;
+  height: 150px;
+  border-bottom: rgb(107, 107, 107) solid 1px;
+}
 
+.calendar-and-date {
+  width: 100%;
+  height: 20px;
+}
+
+.calendar,
+.date {
+  display: inline-block;
+}
+
+.calendar {
+  width: 10%;
+  height: 100%;
+  background: url('../assets/chart/calendar.png') no-repeat center;
+}
+
+.date {
+  height: 100%;
+  color: #fff;
+  vertical-align: top;
+}
+
+.news-block .content {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.sentiment-news {
+  width: 100%;
+  height: 20px;
+  margin-top: 10px;
+  border: rgb(107, 107, 107) solid 1px;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.news-block > .up {
+  color: #f65c4e;
+}
+
+
+.news-block > .down {
+  color: green;
+}
+
+.sentiment-news .label,
+.sentiment-news .rating {
+  display: inline-block;
+}
+
+
+.sentiment-news .rating {
+  float: right;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+
+.sentiment-news .label {
+  vertical-align: bottom;
+  font-size: 15px;
+
+}
+
+.sentiment-news .rating .arrow {
+  width: 10px;
+  height: 20px;
+}
+
+
+.sentiment-news .rating .up {
+  background: url('../assets/chart/up-arrow.png') no-repeat center;
+}
+
+
+.sentiment-news .rating .down {
+  background: url('../assets/chart/down-arrow.png') no-repeat center;
+}
+
+.rating .arrow,
+.rating .percentage {
+  display: inline-block;
+  vertical-align: bottom;
+  font-size: 15px;
+}
+
+.time-and-source {
+  width: 100%;
+  height: 20px;
+  margin-top: 10px;
+}
+
+.time-and-source .time,
+.time-and-source .source {
+  display: inline-block;
+}
+
+.time-and-source .time {
+  color: #25bcf1;
+}
+
+.time-and-source .source {
+  margin-left: 10px;
+  color: rgb(107, 107, 107);
+}
 
 
 
