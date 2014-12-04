@@ -47,6 +47,13 @@ var RightPanel = {
     this.collapsed.link.on('click', function(){
       self.collapseView();
     });
+
+    $('#right-panel-option-container').hover(function() {
+      $('#stock').css('display', 'inline');
+    }, function() {
+      $('#stock').css('display', 'none');
+    });
+
   },
   goTo: function(toState){
     _.each(this.states, function(state, stateName){

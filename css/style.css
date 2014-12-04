@@ -32,6 +32,10 @@ body {
 
 /* =Layout
 -------------------------------------------------------------- */
+.rise { color: #f65c4e; }
+.fall { color: #3bbb57; }
+.neutral { color: rgb(107, 107, 107); }
+
 .outer {
   overflow-x: hidden;
   position: relative;
@@ -53,7 +57,7 @@ body {
   color: rgb(107, 107, 107);
 }
 
-div.prediction, div.indicator {
+.prediction, .indicator {
   display: inline-block;
 }
 
@@ -85,20 +89,6 @@ div.strong-up div.indicator{
   background: url('../assets/chart/trend-indicator-strong-up.png') no-repeat center;
 }
 
-div.down div.value-label,
-div.down div.value-sublabel,
-div.strong-down div.value-label,
-div.strong-down div.value-sublabel {
-  color: green;
-}
-
-div.up div.value-label,
-div.up div.value-sublabel,
-div.strong-up div.value-label,
-div.strong-up div.value-sublabel{
-  color: #f65c4e;
-}
-
 div.thermometer {
   display: inline-block;
   background: url('../assets/chart/thermometer.png') no-repeat center;
@@ -120,11 +110,6 @@ div.changes {
   -webkit-transform: tranlsateX(-350%);
   transform: translateX(-350%);
 }
-
-div.thermo div.positive {
-  color: #f65c4e;
-}
-
 
 div.thermo div.negative {
   color: #f65c4e;
@@ -431,11 +416,9 @@ label.checkbox-label input[type=checkbox]{
 /* =Snapshot
 -------------------------------------------------------------- */
 .value-label {
-  color: #f65c4e;
   font-size: 20px;
 }
 .value-sublabel {
-  color: #f65c4e;
   font-size: 12px;
 }
 
@@ -465,7 +448,6 @@ label.checkbox-label input[type=checkbox]{
 }
 #right-panel .component {
   height: 500px;
-  overflow: scroll;
 }
 .nav-tabs-full-width {
   border: 1px solid #4d4d4d;
@@ -537,6 +519,52 @@ label.checkbox-label input[type=checkbox]{
   color: rgb(107, 107, 107);
 }
 
+
+#right-panel-option-container {
+  width: 15%;
+  float: left;
+}
+
+#right-panel-option-container ul {
+  display: none;
+  position: absolute;
+  left: -200px;
+  z-index: 1;
+  top: 0;
+
+}
+
+#right-panel-option-container li:hover > ul{
+  display: block;
+}
+
+#stock-search-form {
+  width: 85%;
+  float: right;
+}
+
+#stock {
+  right: 45px;
+  width: 200px;
+  background-color: #373737;
+  font-size: 15px;
+  box-shadow: 0px 0px 10px #222;
+}
+
+#stock li {
+  padding: 30px;
+  border-bottom: #4d4d4d solid 1px;
+}
+
+#stock li:last-child {
+  border-bottom: none;
+}
+
+#stock li:hover {
+  background-color: #262626;
+}
+
+
 /* =SVG
 -------------------------------------------------------------- */
 text {
@@ -547,6 +575,7 @@ text {
 ---------------------------------------------------------------*/
 #experts-view {
   padding: 20px;
+  overflow: scroll;
 }
 
 .expert-block {
@@ -674,12 +703,10 @@ text {
 
 .rating-and-content > .rise {
   background-color: #352d2d;
-  color: red;
 }
 
 .rating-and-content > .fall {
   background-color: #2d382e;
-  color: green;
 }
 
 .rating-and-content > .rise span,
@@ -704,17 +731,20 @@ text {
 ---------------------------------------------------------------*/
 #stockpicker-view{
   padding: 0;
+  overflow: visible;
+  display: block;
 }
 
 .wrapper {
   width: 100%;
   height: 40px;
+  overflow: visible;
 }
 
 
 #settings {
   background-color: black;
-  width: 15%;
+  width: 100%;
   height: 40px;
   border-right: #332 solid 1px;
   border-bottom: #332 solid 1px;
@@ -743,7 +773,7 @@ text {
 }
 
 #searchBar{
-  width: 70%;
+  width: 85%;
   height: 40px;
   float: right;
 }
@@ -809,7 +839,84 @@ text {
 #stock-table {
   width: 100%;
   height: 100%;
+  display: block;
 }
+
+#stock-table thead {
+  overflow: visible;
+  display: block;
+  width: 100%;
+  right: 0;
+  margin-right: auto;
+}
+
+#stock-table tbody {
+  overflow: scroll;
+  display: block;
+  width: 100%;
+  height: 170px;
+}
+
+#stock-table th {
+  border-bottom: #332 solid 1px;
+  padding: 10px;
+  color: rgb(107, 107, 107);
+}
+
+#stock-table td {
+  border-bottom: #332 solid 1px;
+  padding: 10px;
+  margin: 5px;
+}
+
+#stock-table > tbody > tr > td {
+  vertical-align: middle;
+}
+#stock-table > tbody > tr.rise > td > div.indicator,
+#stock-table > tbody > tr.fall > td > div.indicator,
+#stock-table > tbody > tr.neutral > td > div.indicator {
+  width: 20px;
+  height: 20px;
+}
+
+#stock-table > tbody > tr.rise > td > div.indicator {
+  background: url('../assets/chart/up-arrow.png') no-repeat center;
+}
+
+#stock-table > tbody > tr.neutral > td > div.indicator {
+  background: url('../assets/chart/no-change.png') no-repeat center;
+}
+
+#stock-table > tbody > tr.fall > td > div.indicator{
+  background: url('../assets/chart/down-arrow.png') no-repeat center;
+}
+
+.sub-stock {
+  background-color: #262626;
+  width: 150px;
+  height: 100%;
+  left: -150px !important;
+  border: #4d4d4d solid 1px;
+  font-size: 12px;
+}
+
+.sub-stock > li {
+  padding: 8px !important;
+  border: none !important;
+}
+
+.sub-stock > li > div {
+  border-radius: 3px;
+  padding: 15px;
+}
+
+.sub-stock > li:hover > div {
+  background-color: #373737 !important;
+  color: #40a3dc;
+}
+
+
+
 
 #stock-table th {
   border-bottom: #332 solid 1px;
@@ -836,6 +943,70 @@ text {
   width: 100%;
   height: 20px;
 }
+.sub-stock ul {
+  left: -400px !important;
+  border: #4d4d4d solid 1px;
+  border-top: none;
+}
+
+.sub-stock ul li {
+  padding: 0 !important;
+}
+
+.sub-stock > li > ul > li:first-child {
+  border-bottom: none !important;
+}
+
+.sub-stock > li > ul > li:last-child {
+  background-color: #262626;
+  padding: 9px !important;
+  border-top: none;
+}
+
+.sub-stock-table {
+  width: 400px;
+  height: 100%;
+  background-color: #262626;
+  color: #fff;
+}
+
+.sub-stock-table td,
+.sub-stock-table th{
+  padding: 20px;
+  border-bottom: #373737 solid 1px;
+}
+
+/* =News
+---------------------------------------------------------------*/
+#news-view {
+  padding: 20px;
+  overflow: scroll;
+}
+.news-block {
+  width: 100%;
+  padding: 5px;
+  height: 150px;
+  border-bottom: rgb(107, 107, 107) solid 1px;
+}
+
+.sub-stock-table tbody tr td:last-child {
+  text-align: center;
+}
+
+.sub-stack-table tbody tr td a {
+  color: rgb(107, 107, 107);
+}
+
+.sub-stock-table > tbody > tr > td.fall {
+  color: #3bbb57;
+}
+
+.sub-stock-table tr:last-child {
+  border: none;
+}
+
+
+
 
 .calendar,
 .date {
@@ -870,14 +1041,6 @@ text {
   padding-right: 10px;
 }
 
-.news-block > .up {
-  color: #f65c4e;
-}
-
-
-.news-block > .down {
-  color: green;
-}
 
 .sentiment-news .label,
 .sentiment-news .rating {
@@ -904,12 +1067,12 @@ text {
 }
 
 
-.sentiment-news .rating .up {
+.sentiment-news .rating .arrow.rise {
   background: url('../assets/chart/up-arrow.png') no-repeat center;
 }
 
 
-.sentiment-news .rating .down {
+.sentiment-news .rating .arrow.fall {
   background: url('../assets/chart/down-arrow.png') no-repeat center;
 }
 
@@ -940,6 +1103,18 @@ text {
   color: rgb(107, 107, 107);
 }
 
+.sub-stock > li > ul > li:last-child {
+  text-align: center;
+}
+
+
+.sub-stock-table tbody tr td:last-child {
+  text-align: center;
+}
+
+.sub-stack-table tbody tr td a {
+  color: rgb(107, 107, 107);
+}
 
 
 
