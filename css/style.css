@@ -265,6 +265,18 @@ div.btn-sell:hover {
   background-color: #4ac665;
 }
 
+/* =Chart
+-------------------------------------------------------------- */
+.container {
+  position: relative;
+}
+
+#chart {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+}
+
 /* =Nav
 -------------------------------------------------------------- */
 .nav {
