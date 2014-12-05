@@ -311,7 +311,7 @@ var ChartView = {
     },
     redraw: function(widthFactor){
       var data  = ChartView.data;
-      var width = this.properties.width *= widthFactor ;
+      var width = this.properties.width *= widthFactor;
       var height = this.properties.height;
       var margin = this.properties.margin;
       var volumeHeight = this.properties.volumeHeight;
@@ -333,9 +333,16 @@ var ChartView = {
       .range([0, volumeHeight]);
 
 
+      d3.select('.container')
+      .attr('width', width - 200);
 
       var chart = d3.select('#chart')
       .attr('width', width)
+      .select('svg')
+      .attr('width', width);
+
+      d3.select('#chart-label')
+      .attr('width', width);
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -434,9 +441,9 @@ var ChartView = {
       }
 
       //!!Code review
-      var wholeWidth = $('#content').width();
-      d3.select('#chart').selectAll('svg')
-      .attr('width', wholeWidth*0.95);
+      // var wholeWidth = $('#content').width();
+      // d3.select('#chart').selectAll('svg')
+      // .attr('width', wholeWidth*0.95);
 
     }
 

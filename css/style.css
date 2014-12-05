@@ -268,11 +268,13 @@ div.btn-sell:hover {
 /* =Chart
 -------------------------------------------------------------- */
 .container {
-  position: relative;
+  position: absolute;
+  overflow: scroll;
+  left: 60px;
+  width: calc(100% - 120px);
 }
 
 #chart {
-  position: absolute;
   z-index: 1;
   top: 0;
 }
