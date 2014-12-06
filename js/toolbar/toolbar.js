@@ -20,11 +20,12 @@ var Toolbar = {
     var zoomIn = $('#zoomin');
     var zoomOut = $('#zoomout');
     zoomIn.click(function(){
-                
+      ChartView.indexChart.redraw(1.2);
+
     });
 
     zoomOut.click(function(){
-                 
+      ChartView.indexChart.redraw(1/1.2);
     });
   },
   initPeriod: function(){
