@@ -36,6 +36,13 @@ body {
   overflow-x: hidden;
   position: relative;
 }
+
+.component-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
 .component {
   position: relative;
   background-color: rgb(38, 38, 38);
@@ -43,32 +50,57 @@ body {
   margin-bottom: 10px;
   padding: 10px;
 }
+
+.btn-buy-sell-wrapper {
+  display: inline-block;
+  width: 400px;
+  height: 48px;
+  vertical-align: middle;
+}
+
+@media (min-width: 1200px) {
+  .btn-buy-sell-wrapper {
+    float: right;
+  }
+}
+
+@media (max-width: 1152px) {
+  .btn-buy-sell-wrapper {
+     margin-top: 30px;
+  }
+}
+
 .component-item {
   float: left;
-}
-.component-item-price {
-  width: 190px;
 }
 .component-item-price .title {
   color: rgb(107, 107, 107);
 }
 
-div.prediction, div.indicator {
+.component-item-price {
+  width: 100px;
+  height: 48px;
+  vertical-align: middle;
   display: inline-block;
 }
 
-div.indicator {
-  width: 50%;
-  height: 40px;
-  -webkit-transform: translateX(-20%);
-  -ms-transform: translateX(-20%);
-  transform: translateX(-20%);
-
-  /* IE8+ */
-   -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=1, M12=0, M21=0, M22=1, SizingMethod='auto expand')";
+.component-item-price.ind {
+  width: 100px;
 }
 
-div.down div.indicator {
+.component-item-price.thermo {
+  width: 200px;
+}
+
+.prediction, .indicator {
+  display: inline-block;
+}
+.indicator {
+  width: 48px;
+  height: 40px;
+}
+
+.down .indicator {
   background: url('../assets/chart/trend-indicator-down.png') no-repeat center;
 }
 
@@ -141,10 +173,6 @@ div.thermo div.neutral {
   -webkit-filter: grayscale(100%);
 }
 
-div.thermo {
-  width: 200px;
-}
-
 .title,.legend {
   display: inline;
 }
@@ -191,7 +219,6 @@ div.thermo {
 }
 
 .btn {
-  display: inline-block;
   padding: 12px 12px;
   margin-bottom: 0;
   font-size: 20px;
@@ -247,13 +274,14 @@ div.thermo {
   margin-left: 10px;
 }
 
-div.btn-buy,
-div.btn-sell {
+.btn-buy,
+.btn-sell {
+  display: inline-block;
   width: 180px;
   border-radius: 3px;
 }
 
-div.btn-buy:hover {
+.btn-buy:hover {
   background-color: #f77266;
 }
 
@@ -261,7 +289,7 @@ div.btn-buy:hover {
   background-color: #3bbb57;
 }
 
-div.btn-sell:hover {
+.btn-sell:hover {
   background-color: #4ac665;
 }
 

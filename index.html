@@ -393,32 +393,36 @@
       <!-- Chart view start -->
       <div id="chart-view">
         <div id="snapshot" class="component">
-          <!-- Snapshot template start -->
-          <div class="component-item component-item-price">
-            <div class="title">上证指数</div>
-            <div class="value-label">2,240.81</div>
-            <div class="value-sublabel">15.07(+5.20%)</div>
-          </div>
-          <div class="component-item component-item-price thermo">
-            <div class="prediction">
-              <div class="title">心情指数</div>
-              <div class="value-label negative">89.47</div>
-              <div class="value-sublabel negative">0.98(+0.19%)</div>
+          <div class="component-wrapper">
+            <!-- Snapshot template start -->
+            <div class="component-item-price">
+              <div class="title">上证指数</div>
+              <div class="value-label">2,240.81</div>
+              <div class="value-sublabel">15.07(+5.20%)</div>
             </div>
-            <div class="thermometer negative"></div>
-            <div class="changes negative">-20</div>
-          </div>
-          <div class="component-item component-item-price strong-up"> <!-- strong-down, down, up, strong-up -->
-            <div class="prediction">
-              <div class="title">短期预测</div>
-              <div class="value-label">70%</div>
-              <div class="value-sublabel">强烈买入</div>
+            <div class=" component-item-price thermo">
+              <div class="prediction">
+                <div class="title">心情指数</div>
+                <div class="value-label negative">89.47</div>
+                <div class="value-sublabel negative">0.98(+0.19%)</div>
+              </div>
+              <div class="thermometer negative"></div>
+              <div class="changes negative">-20</div>
             </div>
-            <div class="indicator"></div>
+            <div class="component-item-price ind strong-up"> <!-- strong-down, down, up, strong-up -->
+              <div class="prediction">
+                <div class="title">短期预测</div>
+                <div class="value-label">70%</div>
+                <div class="value-sublabel">强烈买入</div>
+              </div>
+              <div class="indicator"></div>
+            </div> 
           </div>
-          <div class="component-item btn btn-buy pull-right">买</div>
-          <div class="component-item btn btn-sell pull-right">卖</div>
-          <div class="clearfix"></div>
+          <!-- component wrapper end -->
+          <div class="btn-buy-sell-wrapper">
+            <div class="btn btn-buy">买</div>
+            <div class="btn btn-sell">卖</div>
+          </div>
           <!-- Snapshot template end -->
         </div>
         <div id="price" class="component">
