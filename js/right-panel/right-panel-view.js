@@ -3,6 +3,10 @@ var RightPanel = {
   collapsed: {
     el: $('#right-panel-collapsed'),
     link: $('.link-right-panel-collapsed'),
+    icon: $('.vertical-collapse'),
+  },
+  uncollapsed: {
+    icon: $('.vertical-uncollapse'),
   },
   contentView: '',
   states: {
@@ -46,7 +50,17 @@ var RightPanel = {
 
     this.collapsed.link.on('click', function(){
       self.collapseView();
+      $('.vertical-uncollapse').css('display', 'inline-flex');
     });
+    this.collapsed.icon.on('click', function(){
+      self.collapseView();                     
+      $('.vertical-uncollapse').css('display', 'inline-flex');
+    });
+    this.uncollapsed.icon.on('click', function(){
+      self.expandView();                     
+      $('.vertical-uncollapse').css('display', 'none');
+    });
+
   },
   goTo: function(toState){
     _.each(this.states, function(state, stateName){
