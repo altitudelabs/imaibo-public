@@ -133,6 +133,52 @@ var ChartView = {
       .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646');
 
+      //border
+      chart_label.append('svg:line')
+      .attr('class', 'xaxis')
+      .attr('x1', 0)
+      .attr('x2', width)
+      .attr('y1', height - margin.bottom)
+      .attr('y2', height - margin.bottom)
+      .attr('stroke', '#464646')
+      .attr('stroke-width', '0.5px');
+
+      chart_label.append('svg:line')
+      .attr('class', 'border-left')
+      .attr('x1', margin.left + 50)
+      .attr('x2', margin.left + 50)
+      .attr('y1', height - margin.bottom)
+      .attr('y2', margin.top - 15)
+      .attr('stroke', '#464646');
+
+      chart_label.append('svg:line')
+      .attr('class', 'border-right')
+      .attr('x1', width - margin.right + 50)
+      .attr('x2', width - margin.right + 50)
+      .attr('y1', height - margin.bottom)
+      .attr('y2', margin.top - 15)
+      .attr('stroke', '#464646');
+
+      //top border
+      chart_label.append('svg:line')
+      .attr('class', 'border-top')
+      .attr('x1', margin.left + 50)
+      .attr('x2', width - margin.right + 50)
+      .attr('y1', margin.top - 15)
+      .attr('y2', margin.top - 15)
+      .attr('stroke', '#464646');
+
+
+      chart_label.append('svg:line')
+      .attr('class', 'border-top')
+      .attr('x1', 0)
+      .attr('x2', width + 100)
+      .attr('y1', margin.top - 15)
+      .attr('y2', margin.top - 15)
+      .attr('stroke', '#464646')
+      .attr('stroke-width', '0.5px');
+
+
       //Horizontal guide lines
       chart_label.append('g')
       .attr('class','ylines')
@@ -165,7 +211,7 @@ var ChartView = {
       .data(y1.ticks(5))
       .enter().append('svg:text')
       .attr('class', 'yrule')
-      .attr('x', 10)
+      .attr('x', 20)
       .attr('y', y1)
       .attr('text-anchor', 'middle')
       .text(String);
@@ -606,6 +652,32 @@ var ChartView = {
     .attr('y2', height - margin.bottom)
     .attr('stroke', '#464646');
 
+    chart.append('svg:line')
+    .attr('class', 'xborder-bottom')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', height - margin.bottom)
+    .attr('y2', height - margin.bottom)
+    .attr('stroke', '#464646')
+    .attr('stroke-width', '0.5px');
+
+    chart.append('svg:line')
+    .attr('class', 'xborder-top')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', margin.bottom - 20)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646')
+    .attr('stroke-width', '0.5px');
+
+    chart.append('svg:line')
+    .attr('class', 'xborder-top-thick')
+    .attr('x1', margin.left)
+    .attr('x2', width - margin.right)
+    .attr('y1', margin.bottom - 20)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646')
+
     chart.append('g')
     .attr('class','xlabels')
     .selectAll('text.xrule')
@@ -628,16 +700,45 @@ var ChartView = {
     .attr('text-anchor', 'middle')
     .text(String);
 
+    chart.append('svg:line')
+    .attr('class', 'yborder-left')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left)
+    .attr('y1',  height - margin.top)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646');
+
+    chart.append('svg:line')
+    .attr('class', 'yborder-right')
+    .attr('x1',  width - margin.right)
+    .attr('x2', width - margin.right)
+    .attr('y1',  height - margin.top)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646');
+
     chart.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
     .data(y2.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', width-margin.right + 10)
+    .attr('x', width-margin.right + 15)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
+
+    chart.append('g')
+    .attr('class','ylines')
+    .selectAll('line.y1')
+    .data(y1.ticks(5))
+    .enter().append('svg:line')
+    .attr('class', 'y1')
+    .attr('x1', margin.left)
+    .attr('x2', width - margin.right)
+    .attr('y1', y1)
+    .attr('y2', y1)
+    .attr('stroke', '#464646')
+    .attr('stroke-width', '0.3px');
 
     var sentimentLine = d3.svg.line()
     .x(function(d,i) { return x(i); })
@@ -685,6 +786,48 @@ var ChartView = {
     var x = d3.scale.ordinal()
     .domain(data.security.map(function(x) { return x.date; }))
     .rangeBands([margin.left, width-margin.right]);
+
+    chart.append('svg:line')
+    .attr('class', 'xborder-bottom')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', height - margin.bottom)
+    .attr('y2', height - margin.bottom)
+    .attr('stroke', '#464646')
+    .attr('stroke-width', '0.5px');
+
+    chart.append('svg:line')
+    .attr('class', 'xborder-top')
+    .attr('x1', 0)
+    .attr('x2', width)
+    .attr('y1', margin.bottom - 20)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646')
+    .attr('stroke-width', '0.5px');
+
+    chart.append('svg:line')
+    .attr('class', 'xborder-top-thick')
+    .attr('x1', margin.left)
+    .attr('x2', width - margin.right)
+    .attr('y1', margin.bottom - 20)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646');
+
+  chart.append('svg:line')
+    .attr('class', 'yborder-left')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left)
+    .attr('y1',  height - margin.top)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646');
+
+    chart.append('svg:line')
+    .attr('class', 'yborder-right')
+    .attr('x1',  width - margin.right)
+    .attr('x2', width - margin.right)
+    .attr('y1',  height - margin.top)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646');
 
     chart.append('svg:line')
     .attr('class', 'xaxis')
