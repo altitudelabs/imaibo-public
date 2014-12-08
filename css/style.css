@@ -1002,7 +1002,7 @@ ul.toolbar > li.active > a:hover {
 }
 
 #zoomin {
-  background-image: url("../assets/chart/zoomin.png");
+  background: url("../assets/chart/zoomin.png") no-repeat center;
   height: 50px;
   width: 50px;
   margin-right: 10px;
@@ -1013,7 +1013,7 @@ ul.toolbar > li.active > a:hover {
 }
 
 #zoomout {
-  background-image: url("../assets/chart/zoomout.png");
+  background: url("../assets/chart/zoomout.png") no-repeat center;
   height: 50px;
   width: 50px;
 }
@@ -1023,7 +1023,7 @@ ul.toolbar > li.active > a:hover {
 }
 
 #ma-icon {
-  background-image: url("../assets/chart/ma-button.png");
+  background: url("../assets/chart/ma-button.png") no-repeat center;
 }
 
 #ma-icon:hover {
@@ -1031,7 +1031,7 @@ ul.toolbar > li.active > a:hover {
 }
 
 #frequency-icon{
-  background-image: url("../assets/chart/period-button.png");
+  background: url("../assets/chart/period-button.png") no-repeat center;
   height: 50px;
   width: 50px;
 }
@@ -1041,7 +1041,7 @@ ul.toolbar > li.active > a:hover {
 }
 
 #rsi-icon{
-  background-image: url("../assets/chart/annotations-button.png");
+  background: url("../assets/chart/annotations-button.png") no-repeat center;
   height: 50px;
   width: 50px;
 }
