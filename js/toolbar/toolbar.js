@@ -33,6 +33,7 @@ var Toolbar = {
   },
   initMa: function(){
     //TODO
+    
   },
   initRsi: function(){
     //TODO
