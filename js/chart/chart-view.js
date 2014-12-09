@@ -1,42 +1,93 @@
 var self;
 var ChartView = {
   defaults: {
-    width: 900,
+    width: 0,
   },
   init: function(){
     // set default width
     this.defaults.width = $('#content').width();
-
     // set up toolbar
     Toolbar.init();
 
     var self = this;
     ChartModel.get(function(model){
       self.data = model.daily;
-      self.indexChart.build();
+      self.indexChart.init();
       self.buildSentimentChart();
       self.buildRSIChart();
     });
 
-    this.horizontalScroll();
+    $(window).on('resize', function () {
+      self.rebuild();
+    });
+    console.log($('#chart-view')[0]);
+    $('#chart-view').on('resize', function(){
+      console.log('resize');
+      // console.log( 'Height changed to' + $(this).height() );
+    });
 
+  },
+  rebuild: function () {
+    this.defaults.width = $('#content').width();
+    this.indexChart.init();
+    this.buildSentimentChart();
+    this.buildRSIChart();
   },
   data: {},
   indexChart: {
     properties: {
-      width: 0,
-      height: 0,
-      margin: { top: 0, right: 0, bottom: 0, left: 0 },
-      volumeHeight: 0,
-      interval: 0
     },
-    build: function(){
+    init: function () {
+      this.horizontalScroll();
+      
+      this.setProperties();
+
+      this.build();
+    },
+    horizontalScroll: function () {
+      'use strict';
+
+      //should optimize should not
+      $('.container').on('mousewheel', function (event){
+        event.preventDefault();
+        var original = $('.container').scrollLeft();
+        $('.container').scrollLeft ( original - event.originalEvent.deltaY)
+      });
+    },
+    setProperties: function (options) {
+      //review
+      var properties = {
+        width: ChartView.defaults.width - 122,
+        height: 400,
+        margin: { top: 30, right: 0, bottom: 30, left: 0 },
+        volumeHeight: 50,
+        interval: 40,
+        zoomFactor: ChartView.indexChart.properties.zoomFactor || 1
+      };
+
+      if (options) {
+        for (var key in options) {
+          properties[key] = options[key];
+        }
+      }
+
+      this.properties = $.extend(true, {}, properties);;
+    },
+    build: function () {
+      'use strict';
+
+      $('#chart').empty();
+      $('#chart-label').empty();
+      // $('#chart-container').empty();
+
+      var zoomFactor = this.properties.zoomFactor;
+      console.log('zoomFactor');
       var data = ChartView.data || this.data;
-      var width = this.properties.width = ChartView.defaults.width - 122;
-      var height = this.properties.height = 400;
-      var margin = this.properties.margin = { top: 30, right: 0, bottom: 30, left: 0 };
-      var volumeHeight = this.properties.volumeHeight = 50;
-      var interval = this.properties.interval = 40;
+      var width = this.properties.width * zoomFactor;
+      var height = this.properties.height;
+      var margin = this.properties.margin;
+      var volumeHeight = this.properties.volumeHeight;
+      var interval = this.properties.interval;
 
       var chart = d3.select('#chart')
       .append('svg:svg')
@@ -81,17 +132,6 @@ var ChartView = {
       .attr('y1', height - margin.bottom)
       .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646');
-      // chart.append('g')
-      //   .attr('class','xlines')
-      // .selectAll('line.x')
-      //   .data(x.ticks(5))
-      //   .enter().append('svg:line')
-      //   .attr('class', 'x')
-      //   .attr('x1', x)
-      //   .attr('x2', x)
-      //   .attr('y1', margin.top)
-      //   .attr('y2', height - margin.bottom)
-      //   .attr('stroke', '#464646');
 
       //Horizontal guide lines
       chart_label.append('g')
@@ -343,9 +383,13 @@ var ChartView = {
         .attr('id', id);
       }
     },
-    redraw: function(widthFactor){
+    redraw: function (zoomFactor) {
+      // console.log('redraw');
+      this.setProperties({
+        zoomFactor: this.properties.zoomFactor * zoomFactor
+      });
       var data  = ChartView.data;
-      var width = this.properties.width *= widthFactor;
+      var width = this.properties.width * this.properties.zoomFactor;
       var height = this.properties.height;
       var margin = this.properties.margin;
       var volumeHeight = this.properties.volumeHeight;
@@ -514,12 +558,19 @@ var ChartView = {
       // var wholeWidth = $('#content').width();
       // d3.select('#chart').selectAll('svg')
       // .attr('width', wholeWidth*0.95);
-
+    },
+    stretch: function () {
+      var chart = d3.select('#chart')
+      .selectAll('svg.g');
+      console.log('stretching!');
+      chart.setAttribute('transform', 'scale(1.2)');
     }
 
   },
 
   buildSentimentChart: function(){
+    $('#sentiment-chart').empty();
+
     var data = ChartView.data;
     var width = this.defaults.width,
     height = 200,
@@ -608,6 +659,9 @@ var ChartView = {
     .attr('fill', 'none');
   },
   buildRSIChart: function(){
+// rsi-chart
+    $('#rsi-chart').empty();
+
     var data = ChartView.data;
     var width = this.defaults.width,
     height = 200,
@@ -671,16 +725,6 @@ var ChartView = {
   },
   buildMAChart: function(){
     // TODO
-  },
-  horizontalScroll: function () {
-    'use strict';
-
-    //should optimize should not
-    $('.container').on('mousewheel', function (event){
-      event.preventDefault();
-      var original = $('.container').scrollLeft();
-      $('.container').scrollLeft ( original - event.originalEvent.deltaY)
-    });
   }
 
 };

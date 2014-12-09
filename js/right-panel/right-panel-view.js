@@ -22,10 +22,16 @@ var RightPanel = {
   collapseView: function(){
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
+    // setTimeout(function(){
+    //   ChartView.rebuild();
+    // }, 500);
   },
   expandView: function(){
     this.el.removeClass('collapsed');
     this.collapsed.el.addClass('collapsed');
+    // setTimeout(function(){
+    //   ChartView.rebuild();
+    // }, 500);
   },
   init: function(){
     this.initLinks();
