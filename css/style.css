@@ -492,6 +492,37 @@ label.checkbox-label input[type=checkbox]{
   -o-transition: all 500ms ease-out;
   transition: all 500ms ease-out;
 }
+
+.vertical-collapse,
+.vertical-uncollapse{
+  height: 60px;
+  position: absolute;
+  width: 15px;
+  top: 200px;
+}
+
+.vertical-collapse:hover,
+.vertical-uncollapse:hover {
+  cursor: pointer;
+}
+
+.vertical-collapse {
+  background: url('../assets/chart/collapse-rightwards.png') no-repeat center;
+  right: 280px;
+}
+
+
+.vertical-uncollapse{
+  background: url('../assets/chart/collapse-leftwards.png') no-repeat center;
+  right: 30px;
+  display: none;
+}
+
+
+.vertical-collapse.collapse {
+  background: url('../assets/chart/collapse-leftwards.png') no-repeat center;
+}
+
 #right-panel .component {
   height: 500px;
   overflow: scroll;
@@ -654,12 +685,40 @@ text {
   display: inline-block;
 }
 
+.like-and-discussion .active .text {
+  color: #a9a9a9;
+}
+
+.like-and-discussion .like.active .icon {
+  background-image: url('../assets/chart/like-hover.png');
+}
+
+.like-and-discussion .discussion.active .icon {
+  background-image: url('../assets/chart/comments-hover.png');
+}
+
 .like > .icon {
   background: url('../assets/chart/like.png') no-repeat center;
 }
 
+.like > .icon.liked {
+  background-image: url('../assets/chart/like-finish.png');
+}
+
+.like.active > .icon.liked {
+  background-image: url('../assets/chart/like-finish-hover.png');
+}
+
+.like > .icon:hover {
+  background-image: url('../assets/chart/like-hover.png');
+}
+
 .discussion > .icon {
   background: url('../assets/chart/comments.png') no-repeat center;
+}
+
+.discussion > .icon:hover {
+  background-image: url('../assets/chart/comments-hover.png');
 }
 
 .like > .icon,
@@ -716,11 +775,11 @@ text {
   display: none;
 }
 
-.rating-and-content > .rise:after {
+.rating-and-content .rating.rise:after {
   content: "▲ 看升";
 }
 
-.rating-and-content > .fall:after {
+.rating-and-content .rating.fall:after {
   content: "▼ 看升";
 }
 
