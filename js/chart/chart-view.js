@@ -270,20 +270,49 @@ var ChartView = {
       plotLine('#36973a', ChartModel.movingAvg(60), 'ma60-line');
 
       //bind checkbox listeners to each MA line
-      toggleMA('#ma5-checkbox', '#ma5-line');
-      toggleMA('#ma10-checkbox', '#ma10-line');
-      toggleMA('#ma20-checkbox', '#ma20-line');
-      toggleMA('#ma60-checkbox', '#ma60-line');
+      toggleMA('5');
+      toggleMA('10');
+      toggleMA('20');
+      toggleMA('60');
 
       //bind checkbox listeners to each MA line
-      function toggleMA(checkboxID, maLineID){
-        $(checkboxID).change(function(){
+      function toggleMA(val){
+        var ma = 'ma' + val;
+        $('#' + ma + '-checkbox').change(function(){
           /*
            * see http://jsperf.com/boolean-int-conversion/3 for ternary operators speed
            * Chrome benefits greatly using explicit rather than implicit.
            * but on average implicit ternary operator is pretty fast
            */
-          d3.select(maLineID).style('opacity', this.checked? 1:0);
+          var legends = $('.legend').attr('ma');
+          $('.legend > li').remove();
+          legends = legends.split(',');
+
+          //remove item if already exist
+          var item = $.inArray(val, legends);
+          if(item != -1){
+            legends.splice(item, 1);
+          }else{
+            legends.push(val);
+          }
+
+          legends = legends.map(function(item){
+              return parseInt(item, 10);
+          });
+
+          legends.sort(function(a, b){ return b - a; });
+          $('.legend').attr('ma', legends.join(','));
+
+          $('.legend').prepend('<li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>');
+          legends.forEach(function(ma) {
+            if(!isNaN(ma)){
+             $('.legend').prepend('<li id="ma' + ma + '-legend"><div id="ma' + ma + '-legend-line" class="legend-line"></div><span>MA' + ma + '</span></li>');
+            }
+          });
+
+
+          d3.select('#' + ma + '-line').style('opacity', this.checked? 1:0);
+          $('#' + ma + '-legend').css('opacity', this.checked? 1:0);
         });
       }
 
