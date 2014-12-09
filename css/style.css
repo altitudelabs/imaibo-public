@@ -68,6 +68,7 @@ body {
   }
 }
 
+
 @media (max-width: 1152px) {
   .btn-buy-sell-wrapper {
      margin-top: 30px;
@@ -84,7 +85,6 @@ body {
 .component-item-price {
   width: 100px;
   height: 48px;
-  vertical-align: middle;
   display: inline-block;
 }
 
@@ -97,42 +97,62 @@ body {
 }
 
 .component-item-price.thermo {
-  width: 200px;
+  width: 210px;
 }
 
 .prediction, .indicator {
   display: inline-block;
 }
+
 .indicator {
   width: 48px;
   height: 40px;
 }
 
-.down .indicator {
+.fall .indicator {
   background: url('../assets/chart/trend-indicator-down.png') no-repeat center;
 }
 
-
-div.strong-down div.indicator {
+.fall .indicator.strong  {
   background: url('../assets/chart/trend-indicator-strong-down.png') no-repeat center;
 }
 
-div.up div.indicator{
+.neutral .indicator  {
+  background: url('../assets/chart/trend-indicator-flat.png') no-repeat center;
+}
+
+.rise .indicator {
   background: url('../assets/chart/trend-indicator-up.png') no-repeat center;
 }
 
-div.strong-up div.indicator{
+.rise .indicator.strong{
   background: url('../assets/chart/trend-indicator-strong-up.png') no-repeat center;
 }
 
-div.thermometer {
+.thermo-wrapper {
   display: inline-block;
-  background: url('../assets/chart/thermometer.png') no-repeat center;
+  position: relative;
   width: 50%;
   height: 55px;
-  -webkit-transform: translateX(-30%);
-  -ms-transform: translateX(-30%);
-  transform: translateX(-30%);
+}
+
+.thermometer {
+  position: absolute;
+  background: url('../assets/chart/thermometer.png') no-repeat center;
+  width: 100%;
+  height: 55px;
+  -webkit-transform: translateX(-20%);
+  -ms-transform: translateX(-20%);
+  transform: translateX(-20%);
+}
+
+.thermo-wrapper .background {
+  position: absolute;
+  width: 50%;
+  height: 10px;
+  bottom: 0;
+  background-color: green;
+  z-index: -1;
 }
 
 div.changes {
@@ -141,10 +161,10 @@ div.changes {
   height: 100%;
   vertical-align: top;
   font-size: 15px;
-  -moz-transform: translateX(-350%);
-  -ms-transform: translateX(-350%);
-  -webkit-transform: tranlsateX(-350%);
-  transform: translateX(-350%);
+  -moz-transform: translateX(-300%);
+  -ms-transform: translateX(-300%);
+  -webkit-transform: tranlsateX(-300%);
+  transform: translateX(-300%);
 }
 
 div.thermo div.negative {
@@ -153,7 +173,6 @@ div.thermo div.negative {
   -moz-filter: hue-rotate(90deg);
   -webkit-filter: hue-rotate(90deg);
 }
-
 
 div.thermo div.neutral {
   color: rgb(107, 107, 107);
@@ -296,6 +315,68 @@ div.thermo div.neutral {
   z-index: 1;
   top: 0;
 }
+
+
+/* =SentimentChart
+------------------------------------------------------------ */
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 60px;
+  pointer-events: none;
+}
+
+.tooltip .wrapper {
+  background-color: #454545;
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  border: #666 solid 1px;
+}
+
+.tooltip > .wrapper > div {
+  padding: 5px;
+}
+
+.wrapper .arrow {
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: top;
+}
+
+.wrapper .arrow.rise {
+  background-image: url('../assets/chart/up-arrow.png');
+}
+
+.wrapper .arrow.fall {
+  background-image: url('../assets/chart/down-arrow.png');
+}
+
+.wrapper .arrow,
+.wrapper .content,
+.wrapper .extra {
+    display: inline-block;
+}
+
+.wrapper .extra.hide {
+  display: none;
+}
+
+.tooltip-date {
+  background-color: #666;
+  padding: 5px;
+}
+
+.news-bubble {
+  position: absolute;
+  background-image: 
+  width: 200px;
+  height: 60px;
+  pointer-events: none;
+}
+
 
 /* =Nav
 -------------------------------------------------------------- */
@@ -448,12 +529,16 @@ label.checkbox-label input[type=checkbox]{
 
 /* =Snapshot
 -------------------------------------------------------------- */
+#snapshot {
+  z-index: -2;
+}
 .value-label {
   font-size: 20px;
 }
 .value-sublabel {
   font-size: 12px;
 }
+
 
 /* =Right Panel
 -------------------------------------------------------------- */

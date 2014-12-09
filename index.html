@@ -390,33 +390,76 @@
         <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
       </ul>
 
+      <script id="dashboard-template" type="text/x-handlebars-template">
+          {{#ifEq stockIndexInfo.sign '+'}}
+            <div class="component-item-price rise">
+          {{else}}
+            <div class="component-item-price fall">
+          {{/ifEq}}
+              <div class="title">上证指数</div>
+              <div class="value-label">{{stockIndexInfo.lastpx}}</div>
+              <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+            </div>
+
+            <div class="component-item-price thermo fall">
+              <div class="prediction">
+                <div class="title">心情指数</div>
+                <div class="value-label">{{moodindexInfo.latest}}</div>
+                <div class="value-sublabel ">{{moodindexInfo.change}}({{moodindexInfo.changeRatio}})</div>
+              </div>
+              <div class="thermo-wrapper">
+                <div class="thermometer negative"></div>
+                <div class="background"></div>
+              </div>
+              <div class="changes negative">-20</div>
+            </div>
+            {{#ifEq tradingSign.signal 1}}
+                <div class="component-item-price ind rise">
+            {{else}}
+              {{#ifEq tradingSign.signal 0}}
+                <div class="component-item-price ind neutral">
+                {{else}}
+                <div class="component-item-price ind fall">
+              {{/ifEq}}
+            {{/ifEq}}
+
+              <div class="prediction">
+                <div class="title">短期预测</div>
+                <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
+                <div class="value-sublabel">
+
+              {{#ifEq tradingSign.signal 1}}
+                {{#isGreater trading.prob 0.8}}
+                     强烈买入
+                {{else}}
+                      买入
+                {{/isGreater}}
+              {{else}}
+                {{#ifEq tradingSign.signal 0}}
+                    持仓
+                {{else}}
+                  {{#isGreater trading.prob 0.8}}
+                     强烈卖出
+                  {{else}}
+                      卖出
+                  {{/isGreater}}
+                {{/ifEq}}
+              {{/ifEq}}
+                </div>
+              </div>
+              {{#isGreater trading.prob 0.8}}
+                <div class="indicator strong"></div>
+              {{else}}
+                <div class="indicator"></div>
+              {{/isGreater}}
+            </div> 
+      </script>
+
       <!-- Chart view start -->
       <div id="chart-view">
         <div id="snapshot" class="component">
-          <div class="component-wrapper">
-            <!-- Snapshot template start -->
-            <div class="component-item-price">
-              <div class="title">上证指数</div>
-              <div class="value-label">2,240.81</div>
-              <div class="value-sublabel">15.07(+5.20%)</div>
-            </div>
-            <div class=" component-item-price thermo">
-              <div class="prediction">
-                <div class="title">心情指数</div>
-                <div class="value-label negative">89.47</div>
-                <div class="value-sublabel negative">0.98(+0.19%)</div>
-              </div>
-              <div class="thermometer negative"></div>
-              <div class="changes negative">-20</div>
-            </div>
-            <div class="component-item-price ind strong-up"> <!-- strong-down, down, up, strong-up -->
-              <div class="prediction">
-                <div class="title">短期预测</div>
-                <div class="value-label">70%</div>
-                <div class="value-sublabel">强烈买入</div>
-              </div>
-              <div class="indicator"></div>
-            </div> 
+          <div class="component-wrapper" id="dashboard">
+           
           </div>
           <!-- component wrapper end -->
           <div class="btn-buy-sell-wrapper">
@@ -427,7 +470,7 @@
         </div>
         <div id="price" class="component">
           <div class="title">大盘走势</div>
-          <ul class="legend" ma="">
+          <ul class="legend" id="legend" ma="">
             <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
           </ul>
           <!-- Toolbar start -->
@@ -489,8 +532,15 @@
           <div class="title">RSI</div>
           <div id="rsi-chart"></div>
         </div>
+        <div id="macd" class="component">
+          <div class="title">MACD</div>
+          <div id="macd-chart"></div>
+        </div>
         <div id="sentiment" class="component">
-          <div class="title">心情指数</div>
+          <div class="title">心情指数 : 分时</div>
+           <ul class="legend">
+            <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
+          </ul>
           <div id="sentiment-chart"></div>
         </div>
       </div>
@@ -525,10 +575,10 @@
     <ul>
       <li class="tt-title">{{date}}</li>
       <li class="tt-subtitle">上证指数</li>
-      <li class="tt-row"><span class="tt-label">开盘</span><span class="tt-value">{{security.open}}</span></li>
-      <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{security.high}}</span></li>
-      <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{security.low}}</span></li>
-      <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{security.close}}</span></li>
+      <li class="tt-row"><span class="tt-label">开盘</span><span class="tt-value">{{security.openpx}}</span></li>
+      <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{security.highpx}}</span></li>
+      <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{security.lowpx}}</span></li>
+      <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{security.closepx}}</span></li>
       <li class="tt-subtitle">心情指数</li>
       <li class="tt-row"><span class="tt-label">当前</span><span class="tt-value">{{sentiment.price}}</span></li>
       <li class="tt-row"><span class="tt-label">转变</span><span class="tt-value">{{sentiment.change}}</span></li>
