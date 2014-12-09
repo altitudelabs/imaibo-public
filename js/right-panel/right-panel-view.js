@@ -1,4 +1,6 @@
 var RightPanel = {
+  data: {
+ },
   el: $('#right-panel'),
   collapsed: {
     el: $('#right-panel-collapsed'),
@@ -12,11 +14,16 @@ var RightPanel = {
   states: {
     chooseStockView: {
       el: $('#stockpicker-view'),
-      link: $('.link-stockpicker-view')
+      link: $('.link-stockpicker-view'),
+      template: $('#stockpicker-template'),
+      table: $('#stockpicker-table-body'),
+      loginWrapper: $('#stock-login'),
+      loginTemplate: $('#stock-login-template')
     },
     expertsView: {
       el: $('#experts-view'),
-      link: $('.link-experts-view')
+      link: $('.link-experts-view'),
+      template: $('#experts-template')
     },
     newsView: {
       el: $('#news-view'),
@@ -26,20 +33,38 @@ var RightPanel = {
   collapseView: function(){
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
-    // setTimeout(function(){
-    //   ChartView.rebuild();
-    // }, 500);
+    $('#content').css('width', 'calc(100% - 60px)');
+    setTimeout(function(){
+      ChartView.rebuild();
+    }, 400);
   },
+  populateView: /*
+                 * Populate HandlebarJS template.
+                 * ==============================
+                 * arguments:
+                 *  - target_selector: DOM object of your target div. i.e. $('#expertsView')
+                 *  - template_selector: DOM object of your template. i.e. $('#experts-template')
+                 *  - resource: the data you are passing in. e.g. {name: 'Ray'}
+                 */
+  function (target_selector, template_selector, resource){
+    var template = Handlebars.compile(template_selector.html());
+    target_selector.html(template(resource));
+  },
+
   expandView: function(){
     this.el.removeClass('collapsed');
     this.collapsed.el.addClass('collapsed');
-    // setTimeout(function(){
-    //   ChartView.rebuild();
-    // }, 500);
+    $('#content').css('width', 'calc(100% - 370px)');
+
+    setTimeout(function(){
+      ChartView.rebuild();
+    }, 400);
   },
   init: function(){
     this.initLinks();
     this.render();
+    RightPanelModel.getExpertData();
+    RightPanelModel.getStockData();
   },
   render: function(){
     this.goTo('chooseStockView');

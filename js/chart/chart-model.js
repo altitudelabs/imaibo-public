@@ -2,9 +2,23 @@ var ChartModel = {
   model: {},
   get: function(callback){
     var self = this;
-    $.getJSON('models/chart-model.json', function(res) {
-      self.model = res;
-      callback(self.model);
+    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=main&info=1&trading=1&daily=1&callback=?', function(dailyData) {
+	    $.getJSON('models/chart-sentiment-model.json', function(sentimentData) {
+	      var model = {};
+        model.info = dailyData.data.info;
+	      model.daily = dailyData.data.daily;
+        model.minute = dailyData.data.minute;
+	      model.sentiment = sentimentData.data;
+
+        model.daily.stockLine.reverse();
+
+
+	      self.model = model;
+        $('.loader').fadeOut(500);
+        $('#loading').remove();
+        $('.btn-buy-sell-wrapper > .btn').removeClass('disabled');
+	      callback(self.model);
+	    });
     });
   },
   addIndices: function(){
@@ -17,7 +31,7 @@ var ChartModel = {
     // TODO
   },
   calcMovingAvg: function(n, precision){
-    var sentiment = this.model.daily.sentiment;
+    var sentiment = this.model.sentiment.indexList;
     var price = 0;
     for (var i = sentiment.length-n; i < sentiment.length; i++){
       price += parseFloat(sentiment[i].price);

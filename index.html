@@ -132,211 +132,90 @@
             </div>
           </form>
         </div>
-        <div class="wrapper center">
-          <div id="login-wrapper">
+        <div class="wrapper center" id="stock-login">
+            <div id="login-wrapper">
               <div>登陆显示自选股</div>
               <button id="login">登陆</button>
-          </div>
-          <div id="suggestion" >你可能感兴趣的热门股票</div>
+            </div>
+            <div id="suggestion" >你可能感兴趣的热门股票</div>
+       </div>
           <table id="stock-table">
             <thead>
               <tr>
-                <th colspan="2">股票名称</th>
+                <th></th>
+                <th>股票名称</th>
                 <th>现价</th>
                 <th>涨跌额</th>
                 <th>涨跌幅</th>
               </tr>
             </thead>
-            <tbody>
-              <tr class="rise">
-                <td><div class="indicator"></div></td>
-                <td>name</td>
-                <td>price</td>
-                <td>dropped</td>
-                <td>0.0%</td>
-              </tr>
-              <tr class="fall">
-                <td><div class="indicator"></div></td>
-                <td>name</td>
-                <td>price</td>
-                <td>dropped</td>
-                <td>0.0%</td>
-              </tr>
-              <tr class="neutral">
-                <td><div class="indicator"></div></td>
-                <td>name</td>
-                <td>price</td>
-                <td>dropped</td>
-                <td>0.0%</td>
-              </tr>
-              <tr class="neutral">
-                <td><div class="indicator"></div></td>
-                <td>name</td>
-                <td>price</td>
-                <td>dropped</td>
-                <td>0.0%</td>
-              </tr>
-              <tr class="neutral">
-                <td><div class="indicator"></div></td>
-                <td>name</td>
-                <td>price</td>
-                <td>dropped</td>
-                <td>0.0%</td>
-              </tr>
-            </tbody>
+            <tbody id="stockpicker-table-body"></tbody>
           </table>
         </div>
 
-      </div>
+        <!-- Stockpicker view end -->
+
+        <script id="stockpicker-template" type="text/x-handlebars-template">
+        {{#each this}}
+          {{#ifEq sign '+'}}
+            <tr class="rise">
+          {{else}}
+            {{#ifEq sign '-'}}
+            <tr class="fall">
+              {{else}}
+            <tr class="neutral">
+              {{/ifEq}}
+          {{/ifEq}}
+            <td><div class="indicator"></div></td>
+            <td class="white"><a href="{{stockUrl}}">{{stockName}}</a></td>
+            <td>{{lastpx}}</td>
+            <td>{{pxchg}}</td>
+            <td>{{pxchgratio}}</td>
+          </tr>
+        {{/each}}
+      </script>
 
 
-      <!-- Stockpicker view end -->
+      <script id="experts-template" type="text/x-handlebars-template">
+        {{#each this}}
+        <div class="expert-block">
+          <div class="profile-and-content">
+            <div class="profile-pic" style="background: url('{{uFace}}') center no-repeat"></div>
+            <div class="others">
+              <div class="name-and-date">
+                <div class="name">{{uName}}</div>
+                <div class="date">{{time}}</div>
+              </div>
+              <div class="rating-and-content">
+                {{#ifEq weiboMood 1}}
+                <div class="rating rise"><span></span></div>
+                {{/ifEq}}
+
+                {{#ifEq weiboMood -1}}
+                <div class="rating fall"><span></span></div>
+                {{/ifEq}}
+                {{content}}
+              </div>
+            </div>
+          </div>
+
+          <div class="like-and-discussion">
+            <div class="like">
+              <div class="icon"></div>
+              <div class="text">赞({{dig}})</div>
+
+            </div>
+            <div class="discussion">
+              <div class="icon"></div>
+              <div class="text">评论({{cmt}})</div>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </script>
 
       <!-- Experts view start -->
-      <div id="experts-view" class="component">
-        <div class="expert-block">
-          <div class="profile-and-content">
-            <div class="profile-pic"></div>
-            <div class="others">
-              <div class="name-and-date">
-                <div class="name">用户名称</div>
-                <div class="date">dd-mm hh-MM</div>
-              </div>
-              <div class="rating-and-content">
-                <div class="rating rise"><span>{{}}</span></div>
-                some content here. very long content
-              </div>
-            </div>
-          </div>
-          <!-- wrapper status end -->
-          <div class="like-and-discussion">
-            <div class="like">
-              <div class="icon"></div>
-              <div class="text">赞(x)</div>
-
-            </div>
-            <div class="discussion">
-              <div class="icon"></div>
-              <div class="text">评论(x)</div>
-            </div>
-          </div>
-          </div>
-          <!--Expert block end -->
-
-        <div class="expert-block">
-          <div class="profile-and-content">
-            <div class="profile-pic"></div>
-            <div class="others">
-              <div class="name-and-date">
-                <div class="name">用户名称</div>
-                <div class="date">dd-mm hh-MM</div>
-              </div>
-              <div class="rating-and-content">
-                <div class="rating rise"><span>{{}}</span></div>
-                some content here. very long content
-              </div>
-            </div>
-          </div>
-          <!-- wrapper status end -->
-          <div class="like-and-discussion">
-            <div class="like">
-              <div class="icon liked"></div>
-              <div class="text">赞(x)</div>
-
-            </div>
-            <div class="discussion">
-              <div class="icon"></div>
-              <div class="text">评论(x)</div>
-            </div>
-          </div>
-          </div>
-          <!--Expert block end -->
-        <div class="expert-block">
-          <div class="profile-and-content">
-            <div class="profile-pic"></div>
-            <div class="others">
-              <div class="name-and-date">
-                <div class="name">用户名称</div>
-                <div class="date">dd-mm hh-MM</div>
-              </div>
-              <div class="rating-and-content">
-                <div class="rating rise"><span>{{}}</span></div>
-                some content here. very long content
-              </div>
-            </div>
-          </div>
-          <!-- wrapper status end -->
-          <div class="like-and-discussion">
-            <div class="like">
-              <div class="icon"></div>
-              <div class="text">赞(x)</div>
-
-            </div>
-            <div class="discussion">
-              <div class="icon"></div>
-              <div class="text">评论(x)</div>
-            </div>
-          </div>
-          </div>
-          <!--Expert block end -->
-        <div class="expert-block">
-          <div class="profile-and-content">
-            <div class="profile-pic"></div>
-            <div class="others">
-              <div class="name-and-date">
-                <div class="name">用户名称</div>
-                <div class="date">dd-mm hh-MM</div>
-              </div>
-              <div class="rating-and-content">
-                <div class="rating fall"><span>{{}}</span></div>
-                some content here. very long content
-              </div>
-            </div>
-          </div>
-          <!-- wrapper status end -->
-          <div class="like-and-discussion">
-            <div class="like">
-              <div class="icon"></div>
-              <div class="text">赞(x)</div>
-
-            </div>
-            <div class="discussion">
-              <div class="icon"></div>
-              <div class="text">评论(x)</div>
-            </div>
-          </div>
-          </div>
-          <!--Expert block end -->
-        <div class="expert-block">
-          <div class="profile-and-content">
-            <div class="profile-pic"></div>
-            <div class="others">
-              <div class="name-and-date">
-                <div class="name">用户名称</div>
-                <div class="date">dd-mm hh-MM</div>
-              </div>
-              <div class="rating-and-content">
-                <div class="rating rise"><span>{{}}</span></div>
-                some content here. very long content
-              </div>
-            </div>
-          </div>
-          <!-- wrapper status end -->
-          <div class="like-and-discussion">
-            <div class="like">
-              <div class="icon"></div>
-              <div class="text">赞(x)</div>
-
-            </div>
-            <div class="discussion">
-              <div class="icon"></div>
-              <div class="text">评论(x)</div>
-            </div>
-          </div>
-          </div>
-          <!--Expert block end -->
-
-      </div>
+      <div id="experts-view" class="component"></div>
       <!-- Experts view end -->
 
       <!-- News view start -->
@@ -390,44 +269,103 @@
         <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
       </ul>
 
+      <script id="dashboard-template" type="text/x-handlebars-template">
+          {{#ifEq stockIndexInfo.sign '+'}}
+            <div class="component-item-price rise">
+          {{else}}
+            <div class="component-item-price fall">
+          {{/ifEq}}
+              <div class="title">上证指数</div>
+              <div class="value-label">{{stockIndexInfo.lastpx}}</div>
+              <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+            </div>
+
+            {{#isGreater moodindexInfo.latest 0}}
+               <div class="component-item-price thermo rise">
+            {{else}}
+              {{#ifEq moodindexInfo.latest 0}}
+              <div class="component-item-price thermo neutral">
+              {{else}}
+              <div class="component-item-price thermo fall">
+              {{/ifEq}}
+            {{/isGreater}}
+              <div class="prediction">
+                <div class="title">心情指数</div>
+                <div class="value-label">{{moodindexInfo.latest}}</div>
+                <div class="vertical-line"></div>
+                <div class="value-sublabel ">{{moodindexInfo.before}}({{moodindexInfo.changeRatio}})</div>
+              </div>
+
+              <div class="thermo-wrapper">
+                <div class="diagonal-line"></div>
+                <div class="vertical-line"></div>
+                <div class="vertical-line dotted"></div>
+                <div class="thermometer"></div>
+                <div class="background"></div>
+              </div>
+              <div class="changes ">+{{moodindexInfo.change}}</div>
+            </div>
+            {{#ifEq tradingSign.signal 1}}
+                <div class="component-item-price ind rise">
+            {{else}}
+              {{#ifEq tradingSign.signal 0}}
+                <div class="component-item-price ind neutral">
+                {{else}}
+                <div class="component-item-price ind fall">
+              {{/ifEq}}
+            {{/ifEq}}
+
+              <div class="prediction">
+                <div class="title">短期预测</div>
+                <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
+                <div class="value-sublabel">
+
+              {{#ifEq tradingSign.signal 1}}
+                {{#isGreater trading.prob 0.8}}
+                     强烈买入
+                {{else}}
+                      买入
+                {{/isGreater}}
+              {{else}}
+                {{#ifEq tradingSign.signal 0}}
+                    持仓
+                {{else}}
+                  {{#isGreater trading.prob 0.8}}
+                     强烈卖出
+                  {{else}}
+                      卖出
+                  {{/isGreater}}
+                {{/ifEq}}
+              {{/ifEq}}
+                </div>
+              </div>
+              {{#isGreater trading.prob 0.8}}
+                <div class="indicator strong"></div>
+              {{else}}
+                <div class="indicator"></div>
+              {{/isGreater}}
+            </div> 
+      </script>
+
       <!-- Chart view start -->
       <div id="chart-view">
         <div id="snapshot" class="component">
-          <div class="component-wrapper">
-            <!-- Snapshot template start -->
-            <div class="component-item-price">
-              <div class="title">上证指数</div>
-              <div class="value-label">2,240.81</div>
-              <div class="value-sublabel">15.07(+5.20%)</div>
+          <div class="wrapper" id="loader-wrapper">
+            <div class="component-wrapper" id="dashboard">
             </div>
-            <div class=" component-item-price thermo">
-              <div class="prediction">
-                <div class="title">心情指数</div>
-                <div class="value-label negative">89.47</div>
-                <div class="value-sublabel negative">0.98(+0.19%)</div>
-              </div>
-              <div class="thermometer negative"></div>
-              <div class="changes negative">-20</div>
-            </div>
-            <div class="component-item-price ind strong-up"> <!-- strong-down, down, up, strong-up -->
-              <div class="prediction">
-                <div class="title">短期预测</div>
-                <div class="value-label">70%</div>
-                <div class="value-sublabel">强烈买入</div>
-              </div>
-              <div class="indicator"></div>
-            </div> 
+            <div class=".loader" id="loading"></div>
           </div>
           <!-- component wrapper end -->
           <div class="btn-buy-sell-wrapper">
-            <div class="btn btn-buy">买</div>
-            <div class="btn btn-sell">卖</div>
+            <div class="btn btn-buy disabled">买</div>
+            <div class="btn btn-sell disabled">卖</div>
           </div>
           <!-- Snapshot template end -->
         </div>
+        <div class="loader"></div>
         <div id="price" class="component">
           <div class="title">大盘走势</div>
-          <ul class="legend" ma="">
+          <ul class="legend" id="legend" ma="">
             <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
           </ul>
           <!-- Toolbar start -->
@@ -450,16 +388,8 @@
               </li>
               <li class="link-dropdown" id="ma" data-target="ma">
                 <a id="ma-icon"></a>
-                <div class="dropdown-menu"  data-target="ma">
-                  <form>
-                  <ul>
-                    <li><input type="checkbox" id="ma5-checkbox" ><label id="ma5-label"> MA5={{ma5-value}}</label></li>
-                    <li><input type="checkbox" id="ma10-checkbox" ><label id="ma10-label"> MA10={{ma10-value}}</label></li>
-                    <li><input type="checkbox" id="ma20-checkbox" ><label id="ma20-label"> MA20={{ma20-value}}</label></li>
-                    <li><input type="checkbox" id="ma60-checkbox" ><label id="ma60-label"> MA60={{ma60-value}}</label></li>
-                  </ul>
-                </form>
-                </div>
+                <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu">
+                                  </div>
               </li>
               <li class="link-dropdown" id="rsi-button" data-target="chart-toggle">
                 <a id="rsi-icon"></a>
@@ -486,11 +416,29 @@
           <!-- Tooltip end -->
         </div>
         <div id="rsi" class="component">
-          <div class="title">RSI</div>
+          <div class="wrapper">
+            <div class="title">RSI</div>
+            <div class="buttons">
+              <div class="close"></div>
+            </div>
+          </div>
           <div id="rsi-chart"></div>
         </div>
+        <div id="macd" class="component">
+          <div class="wrapper">
+            <div class="title">MACD</div>
+            <div class="buttons">
+              <div class="close"></div>
+            </div>
+          </div>
+
+          <div id="macd-chart"></div>
+        </div>
         <div id="sentiment" class="component">
-          <div class="title">心情指数</div>
+          <div class="title">心情指数 : 分时</div>
+           <ul class="legend">
+            <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
+          </ul>
           <div id="sentiment-chart"></div>
         </div>
       </div>
@@ -520,15 +468,25 @@
   </script>
   <!-- Legend template end -->
 
+  <script id="ma-template" type="text/x-handlebars-template">
+    <ul>
+      {{#each data}}
+        <li><input type="checkbox" id="{{ma_id}}" ><label id="{{ma_label_id}}"> {{ma_label}} </label></li>
+      {{/each}}
+    </ul>
+  </script>
+
   <!-- Tooltip template start -->
   <script id="tooltip-template" type="text/x-handlebars-template">
     <ul>
       <li class="tt-title">{{date}}</li>
       <li class="tt-subtitle">上证指数</li>
-      <li class="tt-row"><span class="tt-label">开盘</span><span class="tt-value">{{security.open}}</span></li>
-      <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{security.high}}</span></li>
-      <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{security.low}}</span></li>
-      <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{security.close}}</span></li>
+      <li class="tt-row"><span class="tt-label">价格</span><span class="tt-value">{{security.volumn}}</span></li>
+      <li class="tt-row"><span class="tt-label">开盘</span><span class="tt-value">{{security.openpx}}</span></li>
+      <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{security.highpx}}</span></li>
+      <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{security.lowpx}}</span></li>
+      <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{security.closepx}}</span></li>
+      <li class="tt-row"><span class="tt-label">成交额</span><span class="tt-value">{{security.value}}亿</span></li>
       <li class="tt-subtitle">心情指数</li>
       <li class="tt-row"><span class="tt-label">当前</span><span class="tt-value">{{sentiment.price}}</span></li>
       <li class="tt-row"><span class="tt-label">转变</span><span class="tt-value">{{sentiment.change}}</span></li>
@@ -542,6 +500,7 @@
   <script type="text/javascript" src="js/tooltip/tooltip.js"></script>
   <script type="text/javascript" src="js/chart/chart-model.js"></script>
   <script type="text/javascript" src="js/chart/chart-view.js"></script>
+  <script type="text/javascript" src="js/right-panel/right-panel-model.js"></script>
   <script type="text/javascript" src="js/right-panel/right-panel-view.js"></script>
   <script type="text/javascript" src="js/content/content-view.js"></script>
   <script type="text/javascript" src="js/dashboard/dashboard-view.js"></script>
