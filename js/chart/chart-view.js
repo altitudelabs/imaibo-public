@@ -275,6 +275,7 @@ var ChartView = {
       toggleMA('20');
       toggleMA('60');
 
+
       //bind checkbox listeners to each MA line
       function toggleMA(val){
         var ma = 'ma' + val;
@@ -341,6 +342,10 @@ var ChartView = {
         .attr('stroke', color)
         .attr('fill', 'none')
         .attr('id', id);
+        
+        if(id != 'sentimentLine'){
+          d3.select('#'+ id).style('opacity', 0);
+        }
       }
     },
     redraw: function(widthFactor){
