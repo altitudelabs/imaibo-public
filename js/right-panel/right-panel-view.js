@@ -26,6 +26,7 @@ var RightPanel = {
   collapseView: function(){
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
+    $('#content').addClass('full');
     // setTimeout(function(){
     //   ChartView.rebuild();
     // }, 500);
@@ -33,6 +34,8 @@ var RightPanel = {
   expandView: function(){
     this.el.removeClass('collapsed');
     this.collapsed.el.addClass('collapsed');
+    $('#content').removeClass('full');
+
     // setTimeout(function(){
     //   ChartView.rebuild();
     // }, 500);

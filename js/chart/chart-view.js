@@ -20,10 +20,10 @@ var ChartView = {
     $(window).on('resize', function () {
       self.rebuild();
     });
-    console.log($('#chart-view')[0]);
-    $('#chart-view').on('resize', function(){
+
+    $('#content').on('resize', function(){
       console.log('resize');
-      // console.log( 'Height changed to' + $(this).height() );
+      self.rebuild();
     });
 
   },
@@ -78,12 +78,11 @@ var ChartView = {
 
       $('#chart').empty();
       $('#chart-label').empty();
-      // $('#chart-container').empty();
 
-      var zoomFactor = this.properties.zoomFactor;
-      console.log('zoomFactor');
+      console.log('zoomFactor',this.properties.zoomFactor );
       var data = ChartView.data || this.data;
-      var width = this.properties.width * zoomFactor;
+      var containerWidth = this.properties.width;
+      var graphWidth = this.properties.width * this.properties.zoomFactor;
       var height = this.properties.height;
       var margin = this.properties.margin;
       var volumeHeight = this.properties.volumeHeight;
@@ -92,13 +91,13 @@ var ChartView = {
       var chart = d3.select('#chart')
       .append('svg:svg')
       .attr('class', 'chart')
-      .attr('width', width)
+      .attr('width', containerWidth)
       .attr('height', height);
 
       var chart_label = d3.select('#chart-label')
       .append('svg:svg')
       .attr('class', 'chart')
-      .attr('width', width + 100)
+      .attr('width', containerWidth + 100)
       .attr('height', height);
 
       var y1 = d3.scale.linear()
@@ -109,7 +108,7 @@ var ChartView = {
       .range([height-margin.bottom, margin.top]);
       var x = d3.scale.ordinal()
       .domain(data.security.map(function(x) { return x.date; }))
-      .rangeBands([margin.left, width-margin.right]);
+      .rangeBands([margin.left, graphWidth-margin.right]);
       var v = d3.scale.linear()
       .domain([0, d3.max(data.security.map(function(d){ return +d.volume;}))])
       .range([0, volumeHeight]);
@@ -128,7 +127,7 @@ var ChartView = {
       chart_label.append('svg:line')
       .attr('class', 'xaxis')
       .attr('x1', margin.left)
-      .attr('x2', width - margin.right + 122)
+      .attr('x2', containerWidth - margin.right + 122)
       .attr('y1', height - margin.bottom)
       .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646');
@@ -137,7 +136,7 @@ var ChartView = {
       chart_label.append('svg:line')
       .attr('class', 'xaxis')
       .attr('x1', 0)
-      .attr('x2', width)
+      .attr('x2', containerWidth)
       .attr('y1', height - margin.bottom)
       .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646')
@@ -153,8 +152,8 @@ var ChartView = {
 
       chart_label.append('svg:line')
       .attr('class', 'border-right')
-      .attr('x1', width - margin.right + 50)
-      .attr('x2', width - margin.right + 50)
+      .attr('x1', containerWidth - margin.right + 50)
+      .attr('x2', containerWidth - margin.right + 50)
       .attr('y1', height - margin.bottom)
       .attr('y2', margin.top - 15)
       .attr('stroke', '#464646');
@@ -163,7 +162,7 @@ var ChartView = {
       chart_label.append('svg:line')
       .attr('class', 'border-top')
       .attr('x1', margin.left + 50)
-      .attr('x2', width - margin.right + 50)
+      .attr('x2', containerWidth - margin.right + 50)
       .attr('y1', margin.top - 15)
       .attr('y2', margin.top - 15)
       .attr('stroke', '#464646');
@@ -172,7 +171,7 @@ var ChartView = {
       chart_label.append('svg:line')
       .attr('class', 'border-top')
       .attr('x1', 0)
-      .attr('x2', width + 100)
+      .attr('x2', containerWidth + 100)
       .attr('y1', margin.top - 15)
       .attr('y2', margin.top - 15)
       .attr('stroke', '#464646')
@@ -180,17 +179,17 @@ var ChartView = {
 
 
       //Horizontal guide lines
-      chart_label.append('g')
-      .attr('class','ylines')
-      .selectAll('line.y1')
-      .data(y1.ticks(5))
-      .enter().append('svg:line')
-      .attr('class', 'y1')
-      .attr('x1', margin.left)
-      .attr('x2', width + 100)
-      .attr('y1', y1)
-      .attr('y2', y1)
-      .attr('stroke', '#464646');
+      // chart_label.append('g')
+      // .attr('class','ylines')
+      // .selectAll('line.y1')
+      // .data(y1.ticks(5))
+      // .enter().append('svg:line')
+      // .attr('class', 'y1')
+      // .attr('x1', margin.left)
+      // .attr('x2', containerWidth + 100)
+      // .attr('y1', y1)
+      // .attr('y2', y1)
+      // .attr('stroke', '#464646');
 
       //x-axis labels
       chart.append('g')
@@ -223,7 +222,7 @@ var ChartView = {
       .data(y2.ticks(5))
       .enter().append('svg:text')
       .attr('class', 'yrule')
-      .attr('x', width-margin.right + 80)
+      .attr('x', containerWidth-margin.right + 80)
       .attr('y', y2)
       .attr('text-anchor', 'middle')
       .text(String);
@@ -287,7 +286,7 @@ var ChartView = {
       .attr('x', function(d,i) { return x(i); })
       .attr('y', function(d) { return height - margin.bottom - v(d.volume); })
       .attr('height', function(d) { return v(d.volume); })
-      .attr('width', function(d) { return 0.8 * (width - margin.left - margin.right)/data.security.length; })
+      .attr('width', function(d) { return 0.8 * (graphWidth - margin.left - margin.right)/data.security.length; })
       .attr('fill', '#4d4d4d');
 
       //rectangles of the candlesticks graph
@@ -299,7 +298,7 @@ var ChartView = {
       .attr('x', function(d, i) { return x(i); })
       .attr('y', function(d) { return y1(max(d.open, d.close)); })
       .attr('height', function(d) { return y1(min(d.open, d.close))-y1(max(d.open, d.close)); })
-      .attr('width', function(d) { return 0.8 * (width - margin.right)/data.security.length; })
+      .attr('width', function(d) { return 0.8 * (graphWidth - margin.right)/data.security.length; })
       .attr('fill', function(d) { return d.open > d.close ? '#f65c4e' : '#3bbb57'; });
 
       //verticle lines of the candlesticks graph
@@ -309,8 +308,8 @@ var ChartView = {
       .data(data.security)
       .enter().append('svg:line')
       .attr('class', 'stem')
-      .attr('x1', function(d, i) { return x(i) + 0.4 * (width - margin.left - margin.right)/data.security.length; })
-      .attr('x2', function(d, i) { return x(i) + 0.4 * (width - margin.left - margin.right)/data.security.length; })
+      .attr('x1', function(d, i) { return x(i) + 0.4 * (graphWidth - margin.left - margin.right)/data.security.length; })
+      .attr('x2', function(d, i) { return x(i) + 0.4 * (graphWidth - margin.left - margin.right)/data.security.length; })
       .attr('y1', function(d) { return y1(d.high); })
       .attr('y2', function(d) { return y1(d.low); })
       .attr('stroke', function(d){ return d.open > d.close ? '#f65c4e' : '#3bbb57'; })
@@ -321,7 +320,7 @@ var ChartView = {
       .attr('fill', 'transparent')
       .attr('x', margin.left)
       .attr('y', margin.top)
-      .attr('width', width-margin.left-margin.right)
+      .attr('width', containerWidth-margin.left-margin.right)
       .attr('height', height-margin.top-margin.bottom)
       .on('mouseover', function(e){
         return Tooltip.show(); })
@@ -335,7 +334,7 @@ var ChartView = {
 
         var model = {
           top: d3.event.layerY-5,
-          left: width-d3.event.layerX>150 ? d3.event.layerX+100 : d3.event.layerX-155,
+          left: containerWidth-d3.event.layerX>150 ? d3.event.layerX+100 : d3.event.layerX-155,
           date: d.date,
           security: d,
           sentiment: {
@@ -440,7 +439,8 @@ var ChartView = {
         zoomFactor: this.properties.zoomFactor * zoomFactor
       });
       var data  = ChartView.data;
-      var width = this.properties.width * this.properties.zoomFactor;
+      var containerWidth = this.properties.width;
+      var graphWidth = this.properties.width * this.properties.zoomFactor;
       var height = this.properties.height;
       var margin = this.properties.margin;
       var volumeHeight = this.properties.volumeHeight;
@@ -456,7 +456,7 @@ var ChartView = {
       .range([height-margin.bottom, margin.top]);
       var x = d3.scale.ordinal()
       .domain(data.security.map(function(x) { return x.date; }))
-      .rangeBands([margin.left, width-margin.right]);
+      .rangeBands([margin.left, graphWidth-margin.right]);
       var v = d3.scale.linear()
       .domain([0, d3.max(data.security.map(function(d){ return +d.volume;}))])
       .range([0, volumeHeight]);
@@ -471,15 +471,15 @@ var ChartView = {
       };
 
       d3.select('.container')
-      .attr('width', width - 200);
+      .attr('width', containerWidth - 200);
 
       var chart = d3.select('#chart')
-      .attr('width', width)
+      .attr('width', graphWidth)
       .select('svg')
-      .attr('width', width);
+      .attr('width', graphWidth);
 
       d3.select('#chart-label')
-      .attr('width', width);
+      .attr('width', containerWidth);
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -507,7 +507,7 @@ var ChartView = {
       .attr('x', function(d,i) { return x(i); })
       .attr('y', function(d) { return height - margin.bottom - v(d.volume); })
       .attr('height', function(d) { return v(d.volume); })
-      .attr('width', function(d) { return 0.8 * (width - margin.left - margin.right)/data.security.length; })
+      .attr('width', function(d) { return 0.8 * (graphWidth - margin.left - margin.right)/data.security.length; })
       .attr('fill', '#4d4d4d');
 
       chart.selectAll('g.candlesticks > rect')
@@ -522,7 +522,7 @@ var ChartView = {
       .attr('x', function(d, i) { return x(i); })
       .attr('y', function(d) { return y1(max(d.open, d.close)); })
       .attr('height', function(d) { return y1(min(d.open, d.close))-y1(max(d.open, d.close)); })
-      .attr('width', function(d) { return 0.8 * (width - margin.right)/data.security.length; })
+      .attr('width', function(d) { return 0.8 * (graphWidth - margin.right)/data.security.length; })
       .attr('fill', function(d) { return d.open > d.close ? '#f65c4e' : '#3bbb57'; });
 
       chart.selectAll('g.linestems > line')
@@ -535,8 +535,8 @@ var ChartView = {
       .data(data.security)
       .enter().append('svg:line')
       .attr('class', 'stem')
-      .attr('x1', function(d, i) { return x(i) + 0.4 * (width - margin.left - margin.right)/data.security.length; })
-      .attr('x2', function(d, i) { return x(i) + 0.4 * (width - margin.left - margin.right)/data.security.length; })
+      .attr('x1', function(d, i) { return x(i) + 0.4 * (graphWidth - margin.left - margin.right)/data.security.length; })
+      .attr('x2', function(d, i) { return x(i) + 0.4 * (graphWidth - margin.left - margin.right)/data.security.length; })
       .attr('y1', function(d) { return y1(d.high); })
       .attr('y2', function(d) { return y1(d.low); })
       .attr('stroke', function(d){ return d.open > d.close ? '#f65c4e' : '#3bbb57'; });
@@ -548,7 +548,7 @@ var ChartView = {
       chart.selectAll('rect.mouseover-overlay')
       .attr('x', margin.left)
       .attr('y', margin.top)
-      .attr('width', width-margin.left-margin.right)
+      .attr('width', graphWidth-margin.left-margin.right)
       .attr('height', height-margin.top-margin.bottom)
       .on('mouseover', function(e){
         return Tooltip.show(); })
@@ -562,7 +562,7 @@ var ChartView = {
 
         var model = {
           top: d3.event.layerY-5,
-          left: width-d3.event.layerX>150 ? d3.event.layerX+100 : d3.event.layerX-155,
+          left: containerWidth-d3.event.layerX>150 ? d3.event.layerX+100 : d3.event.layerX-155,
           date: d.date,
           security: d,
           sentiment: {
@@ -727,18 +727,18 @@ var ChartView = {
     .attr('text-anchor', 'middle')
     .text(String);
 
-    chart.append('g')
-    .attr('class','ylines')
-    .selectAll('line.y1')
-    .data(y1.ticks(5))
-    .enter().append('svg:line')
-    .attr('class', 'y1')
-    .attr('x1', margin.left)
-    .attr('x2', width - margin.right)
-    .attr('y1', y1)
-    .attr('y2', y1)
-    .attr('stroke', '#464646')
-    .attr('stroke-width', '0.3px');
+    // chart.append('g')
+    // .attr('class','ylines')
+    // .selectAll('line.y1')
+    // .data(y1.ticks(5))
+    // .enter().append('svg:line')
+    // .attr('class', 'y1')
+    // .attr('x1', margin.left)
+    // .attr('x2', width - margin.right)
+    // .attr('y1', y1)
+    // .attr('y2', y1)
+    // .attr('stroke', '#464646')
+    // .attr('stroke-width', '0.3px');
 
     var sentimentLine = d3.svg.line()
     .x(function(d,i) { return x(i); })

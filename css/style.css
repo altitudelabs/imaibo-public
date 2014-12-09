@@ -459,13 +459,17 @@ label.checkbox-label input[type=checkbox]{
 -------------------------------------------------------------- */
 #content {
   overflow: hidden;
-  margin-right: 45px;
+  /*margin-right: 45px;*/
   margin-left: 15px;
+  width: calc(100% - 310px);
+  -webkit-transition: all 400ms ease-out;
+  -moz-transition: all 400ms ease-out;
+  -o-transition: all 400ms ease-out;
+  transition: all 400ms ease-out;
+}
 
-  -webkit-transition: all 500ms ease-out;
-  -moz-transition: all 500ms ease-out;
-  -o-transition: all 500ms ease-out;
-  transition: all 500ms ease-out;
+#content.full {
+  width: calc(100% - 60px);
 }
 
 #right-panel.collapsed { margin-right: -280px; }
@@ -474,10 +478,10 @@ label.checkbox-label input[type=checkbox]{
   width: 280px;
   margin-left: 15px;
 
-  -webkit-transition: all 500ms ease-out;
-  -moz-transition: all 500ms ease-out;
-  -o-transition: all 500ms ease-out;
-  transition: all 500ms ease-out;
+  -webkit-transition: all 400ms ease-out;
+  -moz-transition: all 400ms ease-out;
+  -o-transition: all 400ms ease-out;
+  transition: all 400ms ease-out;
 }
 
 .vertical-collapse,
@@ -554,10 +558,10 @@ label.checkbox-label input[type=checkbox]{
   right: 0;
   width: 30px;
 
-  -webkit-transition: all 500ms ease-out 300ms;
-  -moz-transition: all 500ms ease-out 300ms;
-  -o-transition: all 500ms ease-out 300ms;
-  transition: all 500ms ease-out 300ms;
+  -webkit-transition: all 400ms ease-out 400ms;
+  -moz-transition: all 400ms ease-out 400ms;
+  -o-transition: all 400ms ease-out 400ms;
+  transition: all 400ms ease-out 400ms;
 }
 #right-panel-collapsed.collapsed {
   margin-right: -30px;
