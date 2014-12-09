@@ -69,6 +69,12 @@ var RightPanel = {
     });
 
 
+    $('#right-panel-option-container').hover(function() {
+      $('#stock').css('display', 'inline');
+    }, function() {
+      $('#stock').css('display', 'none');
+    });
+
   },
   goTo: function(toState){
     _.each(this.states, function(state, stateName){
