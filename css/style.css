@@ -269,6 +269,7 @@ div.btn-sell:hover {
 -------------------------------------------------------------- */
 .container {
   position: absolute;
+  top: 0;
   overflow: scroll;
   left: 60px;
   width: calc(100% - 120px);
