@@ -467,11 +467,11 @@ label.checkbox-label input[type=checkbox]{
   -o-transition: all 400ms ease-out;
   transition: all 400ms ease-out;
 }
-
+/*
 #content.full {
   width: calc(100% - 60px);
 }
-
+*/
 #right-panel.collapsed { margin-right: -280px; }
 #right-panel {
   float: right;

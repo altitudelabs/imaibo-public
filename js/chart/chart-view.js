@@ -21,7 +21,7 @@ var ChartView = {
       self.rebuild();
     });
 
-    $('#content').on('resize', function(){
+    $('#chart-view').on('resize', function(){
       console.log('resize');
       self.rebuild();
     });
@@ -91,7 +91,7 @@ var ChartView = {
       var chart = d3.select('#chart')
       .append('svg:svg')
       .attr('class', 'chart')
-      .attr('width', containerWidth)
+      .attr('width', graphWidth)
       .attr('height', height);
 
       var chart_label = d3.select('#chart-label')

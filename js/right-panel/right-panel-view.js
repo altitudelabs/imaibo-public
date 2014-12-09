@@ -26,19 +26,19 @@ var RightPanel = {
   collapseView: function(){
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
-    $('#content').addClass('full');
-    // setTimeout(function(){
-    //   ChartView.rebuild();
-    // }, 500);
+    $('#content').css('width', 'calc(100% - 60px)');
+    setTimeout(function(){
+      ChartView.rebuild();
+    }, 400);
   },
   expandView: function(){
     this.el.removeClass('collapsed');
     this.collapsed.el.addClass('collapsed');
-    $('#content').removeClass('full');
+    $('#content').css('width', 'calc(100% - 310px)');
 
-    // setTimeout(function(){
-    //   ChartView.rebuild();
-    // }, 500);
+    setTimeout(function(){
+      ChartView.rebuild();
+    }, 400);
   },
   init: function(){
     this.initLinks();
