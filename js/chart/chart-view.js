@@ -603,23 +603,19 @@ var ChartView = {
     .attr('width', width)
     .attr('height', height);
 
+    var sentimentData = data.sentiment.moodindexList.slice(0, 8);
+
     var y1 = d3.scale.linear()
-    .domain([d3.min(data.sentiment.moodindexList.map(function(x) { return +x.mood; })), d3.max(data.sentiment.moodindexList.map(function(x){return +x.mood; }))])
+    .domain([d3.min(sentimentData.map(function(x) { return +x.mood; })), d3.max(sentimentData.map(function(x){return +x.mood; }))])
     .range([height-margin.bottom, margin.top]);
 
     var y2 = d3.scale.linear()
-    .domain([d3.min(data.daily.stockLine.map(function(x) { return +x.lowpx; })), d3.max(data.daily.stockLine.map(function(x){return +x.highpx; }))])
+    .domain([d3.min(data.sentiment.indexList.map(function(x) { return +x.price; })), d3.max(data.sentiment.indexList.map(function(x){return +x.price; }))])
     .range([height-margin.bottom, margin.top]);
 
-    var x = d3.scale.ordinal()
-    .domain(data.sentiment.moodindexList.map(function(x) { return x.timestamp; }))
-      .rangeBands([margin.left,width-margin.right]); //inversed the x axis because api came in descending order
-
-      console.log(x);
-
-      var v = d3.scale.linear()
-      .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
-      .range([0, height]);
+    var x = d3.scale.linear()
+    .domain([1416879000, 1416879000+54000])
+    .range([margin.left, width-margin.right]); //inversed the x axis because api came in descending order
 
     chart.append('svg:line')
     .attr('class', 'xaxis')
@@ -658,15 +654,15 @@ var ChartView = {
     chart.append('g')
     .attr('class','xlabels')
     .selectAll('text.xrule')
-    .data(data.sentiment.moodindexList)
+    .data(sentimentData)
     .enter().append('svg:text')
     .attr('class', 'xrule')
-    .attr('x', function(d,i){ 
-      return x(i); })
+    .attr('x', function(d,i){ return x(d.timestamp); })
     .attr('y', height-margin.bottom+20)
     .attr('text-anchor', 'middle')
-    .text(function(d,i){ 
-      return d.clock; });
+    .text(function(d,i){
+      return d.clock;
+    });
 
     chart.append('g')
     .attr('class','y1labels')
@@ -720,12 +716,14 @@ var ChartView = {
     // .attr('stroke-width', '0.3px');
 
     var sentimentLine = d3.svg.line()
-    .x(function(d,i) { return x(i); })
+    .x(function(d,i) {
+      console.log(d.timestamp);
+      return x(d.timestamp); })
     .y(function(d) { return y1(d.mood); })
     .interpolate('linear');
 
     chart.append('path')
-    .datum(data.sentiment.moodindexList)
+    .datum(sentimentData)
     .attr('class','sentiment')
     .attr('d', sentimentLine)
     .attr('stroke', '#25bcf1')
@@ -738,7 +736,7 @@ var ChartView = {
     .attr('class', 'news-bubble').style('opacity', 0);
 
   var tes = chart.selectAll("scatter-dots")
-      .data(data.sentiment.moodindexList)  // using the values in the ydata array
+      .data(sentimentData)  // using the values in the ydata array
       .enter().append("svg:circle")  // create a new circle for each value
       .attr("cy", function (d) { return y1(d.mood); } ) // translate y value to a pixel
       .attr("cx", function (d,i) { return x(d.timestamp); } ) // translate x value
@@ -778,21 +776,19 @@ var ChartView = {
       });
 
 
-   
-
     //draw on another graph, overlay the divs
 
-    // var securityLine = d3.svg.line()
-    // .x(function(d,i) { return x(i); })
-    // .y(function(d) { return y2(d.closepx); })
-    // .interpolate('basis');
+     var securityLine = d3.svg.line()
+     .x(function(d,i) { return x(d.timestamp); })
+     .y(function(d) { return y2(d.price); })
+     .interpolate('basis');
 
-    // chart.append('path')
-    // .datum(data.daily.stockLine)
-    // .attr('class','security')
-    // .attr('d', securityLine)
-    // .attr('stroke', '#fff')
-    // .attr('fill', 'none');
+    chart.append('path')
+     .datum(data.sentiment.indexList)
+     .attr('class','security')
+     .attr('d', securityLine)
+     .attr('stroke', '#fff')
+     .attr('fill', 'none');
   },
   buildRSIChart: function(){
 // rsi-chart
