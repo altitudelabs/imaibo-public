@@ -155,7 +155,7 @@ body {
   z-index: -1;
 }
 
-div.changes {
+.changes {
   display: inline-block;
   width: 10%;
   height: 100%;
@@ -163,7 +163,7 @@ div.changes {
   font-size: 15px;
   -moz-transform: translateX(-300%);
   -ms-transform: translateX(-300%);
-  -webkit-transform: tranlsateX(-300%);
+  -webkit-transform: translateX(-300%);
   transform: translateX(-300%);
 }
 
@@ -371,7 +371,6 @@ div.thermo div.neutral {
 
 .news-bubble {
   position: absolute;
-  background-image: 
   width: 200px;
   height: 60px;
   pointer-events: none;

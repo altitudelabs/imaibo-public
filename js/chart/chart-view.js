@@ -917,20 +917,31 @@ var ChartView = {
     .attr('text-anchor', 'middle')
     .text(String);
 
-    var line = d3.svg.line()
-    .x(function(d,i) { return x(i); })
-    .y(function(d)   { return y2(d.rsi6); })
-    .interpolate('linear');
+    function plotRSI(rsi, color){
+      var line = d3.svg.line()
+      .x(function(d,i) { return x(i); })
+      .y(function(d)   { 
+        if(rsi == 6) return y2(d.rsi6);
+        if(rsi ==12) return y2(d.rsi12);
+        if(rsi ==24) return y2(d.rsi24);
+      })
+      .interpolate('linear');
 
-    chart.append('path')
-    .datum(data.daily.stockLine)
-    .attr('class','sentiment')
-    .attr('d', line)
-    .attr('stroke', '#b4433b')
-    .attr('fill', 'none');
+      chart.append('path')
+      .datum(data.daily.stockLine)
+      .attr('class','sentiment')
+      .attr('d', line)
+      .attr('stroke', color)
+      .attr('fill', 'none');
+    }
+
+    plotRSI(6,'#fff');
+    plotRSI(12,'#d8db74');
+    plotRSI(24,'#784e7a');
+
   },
   buildMacdChart: function(){
-     $('#macd-chart').empty();
+    $('#macd-chart').empty();
 
     var data = ChartView.data;
     var width = this.defaults.width,
@@ -946,11 +957,11 @@ var ChartView = {
 
     var y2 = d3.scale.linear()
     .domain([d3.min(data.daily.stockLine.map(function(x) {return +x.macd; })), d3.max(data.daily.stockLine.map(function(x){return +x.macd; }))])
-    .range([height-margin.top, margin.bottom]);
+    .range([ margin.bottom, height-margin.top,]);
 
     var x = d3.scale.ordinal()
     .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
-    .rangeBands([width-margin.right, margin.left]); //inversed the x axis because api came in descending order
+    .rangeBands([ margin.left, width-margin.right]); //inversed the x axis because api came in descending order
 
     chart.append('svg:line')
     .attr('class', 'xborder-bottom')
@@ -1024,17 +1035,41 @@ var ChartView = {
     .attr('text-anchor', 'middle')
     .text(String);
 
+    //dea line
+    plotMACD('dea', '#d7db74');
+    plotMACD('dif', '#236a82');
+
+    function plotMACD(type, color){
     var line = d3.svg.line()
     .x(function(d,i) { return x(i); })
-    .y(function(d)   { return y2(d.macd); })
+    .y(function(d)   {
+      return type === 'dea'? y2(d.dea): y2(d.diff); })
     .interpolate('linear');
 
     chart.append('path')
     .datum(data.daily.stockLine)
     .attr('class','sentiment')
     .attr('d', line)
-    .attr('stroke', '#b4433b')
+    .attr('stroke', color)
     .attr('fill', 'none');
+    }
+
+    var gcandlesticks = chart.append('g').attr('class','candlesticks');
+
+      //rectangles of the candlesticks graph
+      gcandlesticks
+      .attr('class','candlesticks')
+      .selectAll('rect')
+      .data(data.daily.stockLine)
+      .enter().append('svg:rect')
+      .attr('x', function(d, i) { return x(i); })
+      .attr('y', function(d) { return y2(d.macd); })
+      .attr('height', function(d) {
+        return Math.abs(d.dea-d.diff); })
+      .attr('width', function(d) { return 0.8 * (width - margin.right)/data.daily.stockLine.length; })
+      .attr('fill', function(d) { return d.dea > d.diff ? '#f65c4e' : '#3bbb57'; });
+
+
   }
 
 };
