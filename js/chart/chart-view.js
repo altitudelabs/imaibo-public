@@ -269,7 +269,7 @@ var ChartView = {
         //if mouse is in the first column, return 0
         //if mouse is in the last column, 
 
-        for (j = 199; xPos > (leftEdges[j] + width); j--) {} 
+        for (j = 0; xPos > (leftEdges[j] + width); j++) {} 
         return j;
       };
 
@@ -395,7 +395,7 @@ var ChartView = {
 
       var x = d3.scale.ordinal()
       .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
-      .rangeBands([graphWidth-margin.right, margin.left]); //inversed the x axis because api came in descending order
+      .rangeBands([margin.left, graphWidth-margin.right]); //inversed the x axis because api came in descending order
 
       var v = d3.scale.linear()
       .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
@@ -582,7 +582,7 @@ var ChartView = {
 
       var x = d3.scale.ordinal()
       .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
-      .rangeBands([graphWidth-margin.right, margin.left]); //inversed the x axis because api came in descending order
+      .rangeBands([margin.left, graphWidth-margin.right]);
 
       var v = d3.scale.linear()
       .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
@@ -843,7 +843,9 @@ var ChartView = {
 
     var x = d3.scale.ordinal()
     .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
-    .rangeBands([width-margin.right, margin.left]); //inversed the x axis because api came in descending order
+    .rangeBands([margin.left, width-margin.right]); //inversed the x axis because api came in descending order
+
+    console.log(data.daily.stockLine);
 
     chart.append('svg:line')
     .attr('class', 'xborder-bottom')
@@ -912,7 +914,7 @@ var ChartView = {
     .data(y2.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', 10)
+    .attr('x', width-margin.right + 20)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
@@ -955,9 +957,9 @@ var ChartView = {
     .attr('width', width)
     .attr('height', height);
 
-    var y2 = d3.scale.linear()
-    .domain([d3.min(data.daily.stockLine.map(function(x) {return +x.macd; })), d3.max(data.daily.stockLine.map(function(x){return +x.macd; }))])
-    .range([ margin.bottom, height-margin.top,]);
+    var y2 = d3.scale.linear()                                   // times 2 to make sure the histogram will not cover the graph
+    .domain([d3.min(data.daily.stockLine.map(function(x) {return (+x.macd)*2; })), d3.max(data.daily.stockLine.map(function(x){return (+x.macd)*2; }))])
+    .range([ height-margin.top,  margin.bottom]);
 
     var x = d3.scale.ordinal()
     .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
@@ -1068,6 +1070,12 @@ var ChartView = {
         return Math.abs(d.dea-d.diff); })
       .attr('width', function(d) { return 0.8 * (width - margin.right)/data.daily.stockLine.length; })
       .attr('fill', function(d) { return d.dea > d.diff ? '#f65c4e' : '#3bbb57'; });
+
+
+    $('#macd-checkbox').change(function(){
+       $('#macd').css('display', $(this).is(':checked')? 'block':'none');
+    });;
+
 
 
   }

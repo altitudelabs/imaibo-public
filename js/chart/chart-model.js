@@ -9,6 +9,10 @@ var ChartModel = {
 	      model.daily = dailyData.data.daily;
         model.minute = dailyData.data.minute;
 	      model.sentiment = sentimentData.data;
+
+        model.daily.stockLine.reverse();
+
+
 	      self.model = model;
 	      callback(self.model);
 	    });

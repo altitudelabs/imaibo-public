@@ -1407,6 +1407,11 @@ ul.toolbar > li.active > a:hover {
   width: 50px;
 }
 
+#macd {
+  display: none;
+}
+
+
 
 #ma60-label{
   color: #36973a;
