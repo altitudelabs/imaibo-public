@@ -530,7 +530,7 @@ label.checkbox-label input[type=checkbox]{
 /* =Snapshot
 -------------------------------------------------------------- */
 #snapshot {
-  z-index: -2;
+  z-index: 1;
 }
 .value-label {
   font-size: 20px;

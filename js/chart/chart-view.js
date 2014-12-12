@@ -8,7 +8,6 @@ var ChartView = {
   },
   renderToolbar: function(model){
     var temp = model.stockLine.slice(-1).pop();
-    console.log(temp);
     var ma = ['5', '10', '20', '60'];
     var t = [];
     ma.forEach(function(res){
@@ -220,7 +219,7 @@ var ChartView = {
       .attr('x', function(d,i){ return x(i); })
       .attr('y', height-margin.bottom+20)
       .attr('text-anchor', 'middle')
-      .text(function(d,i){ return i%interval===0 ? d.rdate : ''; });
+      .text(function(d,i){ return i%interval===0 ? toDate(d.rdate) : ''; });
 
       //sentimetal rect bars 
       gvolume
@@ -265,7 +264,7 @@ var ChartView = {
             j;
 
         //while mouse's x position is greater than the right most edge of the column
-        //increment j 
+        //increment j
 
         //if mouse is in the first column, return 0
         //if mouse is in the last column, 
@@ -312,6 +311,18 @@ var ChartView = {
       plotLine('#d8db74', 'ma10');
       plotLine('#94599d', 'ma20');
       plotLine('#36973a', 'ma60');
+
+      var line = d3.svg.line()
+                .x(function(d, i){ return x(i); })
+                .y(function(d){ return y2(0); });
+
+        chart.append('path')
+        .datum(data.daily.stockLine)
+        .attr('class','line')
+        .attr('d', line)
+        .attr('stroke', '#fff')
+        .attr('fill', 'true')
+        .attr('id', 'dotted');
 
 
 
@@ -627,15 +638,18 @@ var ChartView = {
 
     var y1 = d3.scale.linear()
     .domain([d3.min(sentimentData.map(function(x) { return +x.mood; })), d3.max(sentimentData.map(function(x){return +x.mood; }))])
-    .range([height-margin.bottom, margin.top]);
+    .range([height-margin.bottom-20, margin.top]);
 
     var y2 = d3.scale.linear()
     .domain([d3.min(data.sentiment.indexList.map(function(x) { return +x.price; })), d3.max(data.sentiment.indexList.map(function(x){return +x.price; }))])
     .range([height-margin.bottom, margin.top]);
 
+    var seven_am = sentimentData[0].timestamp; //seven_am in epoch time
+    var min_before_midnight = seven_am + 61140; //the same day as seven_am
+
     var x = d3.scale.linear()
-    .domain([1416879000, 1416879000+54000])
-    .range([margin.left, width-margin.right]); //inversed the x axis because api came in descending order
+    .domain([seven_am, min_before_midnight])
+    .range([margin.left, width-margin.right]);
 
     chart.append('svg:line')
     .attr('class', 'xaxis')
@@ -680,9 +694,7 @@ var ChartView = {
     .attr('x', function(d,i){ return x(d.timestamp); })
     .attr('y', height-margin.bottom+20)
     .attr('text-anchor', 'middle')
-    .text(function(d,i){
-      return d.clock;
-    });
+    .text(function(d,i){ return d.clock;});
 
     chart.append('g')
     .attr('class','y1labels')
@@ -737,7 +749,6 @@ var ChartView = {
 
     var sentimentLine = d3.svg.line()
     .x(function(d,i) {
-      console.log(d.timestamp);
       return x(d.timestamp); })
     .y(function(d) { return y1(d.mood); })
     .interpolate('linear');
@@ -761,7 +772,7 @@ var ChartView = {
       .attr("cy", function (d) { return y1(d.mood); } ) // translate y value to a pixel
       .attr("cx", function (d,i) { return x(d.timestamp); } ) // translate x value
       .attr("r", 4)
-      .attr('stroke', '#25bcf1') 
+      .attr('stroke', '#25bcf1')
       .attr('stroke-width', '1.5')
       .style("opacity", 1)
       .on("mouseover", function(d) {
@@ -776,7 +787,7 @@ var ChartView = {
                .duration(200)
                .style("opacity", .9);
 
-          tooltip.html('<div class="tooltip-date"> 日期： ' + toDate(d.rdate) + '   ' + d.clock.slice(0, 5) + '</div>' + 
+          tooltip.html('<div class="tooltip-date"> 日期： ' + toDate(d.rdate) + '   ' + d.clock.slice(0, -3) + '</div>' + 
                        '<div class="wrapper">' +
                           '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
                           '<div class="arrow ' + arrow + '">                     </div>' +
