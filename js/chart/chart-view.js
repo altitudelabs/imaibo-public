@@ -279,7 +279,7 @@ var ChartView = {
       .attr('fill', 'transparent')
       .attr('x', margin.left)
       .attr('y', margin.top)
-      .attr('width', containerWidth-margin.left-margin.right)
+      .attr('width', graphWidth-margin.left-margin.right)
       .attr('height', height-margin.top-margin.bottom)
       .on('mouseover', function(e){
         return Tooltip.show(); })
