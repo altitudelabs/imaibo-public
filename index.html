@@ -493,16 +493,8 @@
               </li>
               <li class="link-dropdown" id="ma" data-target="ma">
                 <a id="ma-icon"></a>
-                <div class="dropdown-menu"  data-target="ma">
-                  <form>
-                  <ul>
-                    <li><input type="checkbox" id="ma5-checkbox" ><label id="ma5-label"> MA5={{ma5-value}}</label></li>
-                    <li><input type="checkbox" id="ma10-checkbox" ><label id="ma10-label"> MA10={{ma10-value}}</label></li>
-                    <li><input type="checkbox" id="ma20-checkbox" ><label id="ma20-label"> MA20={{ma20-value}}</label></li>
-                    <li><input type="checkbox" id="ma60-checkbox" ><label id="ma60-label"> MA60={{ma60-value}}</label></li>
-                  </ul>
-                </form>
-                </div>
+                <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu">
+                                  </div>
               </li>
               <li class="link-dropdown" id="rsi-button" data-target="chart-toggle">
                 <a id="rsi-icon"></a>
@@ -569,6 +561,14 @@
     <ul>
   </script>
   <!-- Legend template end -->
+
+  <script id="ma-template" type="text/x-handlebars-template">
+    <ul>
+      {{#each data}}
+        <li><input type="checkbox" id="{{ma_id}}" ><label id="{{ma_label_id}}"> {{ma_label}} </label></li>
+      {{/each}}
+    </ul>
+  </script>
 
   <!-- Tooltip template start -->
   <script id="tooltip-template" type="text/x-handlebars-template">
