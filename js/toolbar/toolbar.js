@@ -21,7 +21,6 @@ var Toolbar = {
     var zoomOut = $('#zoomout');
     zoomIn.click(function(){
       ChartView.indexChart.redraw(1.2);
-
     });
 
     zoomOut.click(function(){
@@ -33,7 +32,6 @@ var Toolbar = {
   },
   initMa: function(){
     //TODO
-    
   },
   initRsi: function(){
     //TODO
