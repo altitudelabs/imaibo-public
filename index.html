@@ -373,10 +373,10 @@
           <!-- Toolbar start -->
           <div id="toolbar">
             <ul class="toolbar">
-              <li><a id="zoomout"></a></li>
-              <li><a id="zoomin"></a></li>
+              <li><a class="noselect" id="zoomout"></a></li>
+              <li><a class="noselect" id="zoomin"></a></li>
 
-             <li class="link-dropdown" id="frequency" data-target="frequency">
+              <li class="link-dropdown noselect" id="frequency" data-target="frequency">
                 <a id="frequency-icon"></a>
                 <div class="dropdown-menu" data-target="frequency">
                   <form>
@@ -388,12 +388,11 @@
                 </form>
                 </div>
               </li>
-              <li class="link-dropdown" id="ma" data-target="ma">
+              <li class="link-dropdown noselect" id="ma" data-target="ma">
                 <a id="ma-icon"></a>
-                <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu">
-                                  </div>
+                <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu"></div>
               </li>
-              <li class="link-dropdown" id="rsi-button" data-target="chart-toggle">
+              <li class="link-dropdown noselect" id="rsi-button" data-target="chart-toggle">
                 <a id="rsi-icon"></a>
                 <div class="dropdown-menu" data-target="chart-toggle">
                   <form>

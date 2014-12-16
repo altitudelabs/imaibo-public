@@ -14,11 +14,15 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+html {
+  height: 100%;
+}
 body {
   background-color: rgb(15, 15, 15);
   color: #fff;
   margin-top: 10px;
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
 }
 .nav:before, .nav:after {
   display: table;
@@ -39,7 +43,7 @@ body {
 
 .outer {
   overflow-x: hidden;
-  position: relative;
+  /*position: relative;*/
 }
 
 .component-wrapper {
@@ -420,6 +424,15 @@ body {
   pointer-events: none;
 }
 
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 
 /* =Nav
 -------------------------------------------------------------- */
@@ -524,7 +537,7 @@ body {
 .dropdown-menu {
   display: none;
   position: absolute;
-  top: 120%;
+  top: 100%;
   background-color: #353535;
   width: 120px;
   border-radius: 3px;
@@ -1444,7 +1457,9 @@ text {
   z-index: 10;
 }
 ul.toolbar > li {
-  float: left;
+  display: inline-block;
+  height: 18px;
+  margin-top: 2px;
 }
 ul.toolbar > li > a {
   color: rgb(120, 120, 120);
