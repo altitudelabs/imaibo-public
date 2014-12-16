@@ -61,7 +61,7 @@
 
       <!-- Stockpicker view start -->
       <div id="stockpicker-view" class="component">
-        <div class="wrapper">
+        <div class="wrapper" id="stockpicker-wrapper">
           <ul id="right-panel-option-container">
             <li><div id="settings"></div></li>
             <li> <ul id="stock">
@@ -137,15 +137,15 @@
         <div class="wrapper center" id="stock-login">
             <div id="login-wrapper">
               <div>登陆显示自选股</div>
-              <button id="login">登陆</button>
+              <button id="login">登 录</button>
             </div>
-            <div id="suggestion" >你可能感兴趣的热门股票</div>
+
        </div>
+            <div id="suggestion" >你可能感兴趣的热门股票</div>
           <table id="stock-table">
             <thead>
               <tr>
-                <th></th>
-                <th>股票名称</th>
+                <th colspan="2">股票名称</th>
                 <th>现价</th>
                 <th>涨跌额</th>
                 <th>涨跌幅</th>
@@ -203,7 +203,7 @@
 
           <div class="like-and-discussion">
             <div class="like">
-              <div class="icon"></div>
+              <div class="sprite icon"></div>
               <div class="text">赞({{dig}})</div>
 
             </div>
@@ -377,9 +377,9 @@
                 <div class="dropdown-menu" data-target="frequency">
                   <form>
                   <ul>
-                    <li><label><input type="radio" name="freq"> 分时</label></li>
-                    <li><label><input type="radio" name="freq"> 1日</label></li>
-                    <li><label><input type="radio" name="freq"> 1周</label></li>
+                    <li><label><input type="radio" name="freq" id="minute-radio"> 分时</label></li>
+                    <li><label><input type="radio" name="freq" id="day-radio"> 1日</label></li>
+                    <li><label><input type="radio" name="freq" id="week-radio"> 1周</label></li>
                   </ul>
                 </form>
                 </div>
@@ -391,12 +391,10 @@
               <li class="link-dropdown noselect" id="rsi-button" data-target="chart-toggle">
                 <a id="rsi-icon"></a>
                 <div class="dropdown-menu" data-target="chart-toggle">
-                  <form>
                   <ul>
-                    <li><label><input type="checkbox" id="macd-checkbox"> MACD</label></li>
-                    <li><label><input type="checkbox" id="rsi-checkbox" > RSI</label></li>
+                    <li><input type="checkbox" id="macd-checkbox"><label> MACD</label></li>
+                    <li><input type="checkbox" id="rsi-checkbox"><label> RSI</label></li>
                   </ul>
-                </form>
                </div>
               </li>
             </ul>
@@ -407,6 +405,7 @@
           <div class='container' id="chart-container" >
             <div id="chart"></div>
           </div>
+          <div id="chart-x-label"></div>
 
           <!-- Tooltip start -->
           <div id="tooltip"></div>
@@ -416,6 +415,11 @@
           <div class="wrapper">
             <div class="title">RSI</div>
             <div class="buttons">
+              <ul>
+                <li id="rsi6-legend"><div id="rsi6-legend-line" class="legend-line"></div><span>RSI6</span></li>
+                <li id="rsi12-legend"><div id="rsi12-legend-line" class="legend-line"></div><span>RSI12</span></li>
+                <li id="rsi24-legend"><div id="rsi24-legend-line" class="legend-line"></div><span>RSI24</span></li>
+              </ul>
               <div class="close"></div>
             </div>
           </div>
@@ -425,6 +429,10 @@
           <div class="wrapper">
             <div class="title">MACD</div>
             <div class="buttons">
+              <ul>
+                <li id="macd-dea-legend"><div id="macd-dea-legend-line" class="legend-line"></div><span>DEA</span></li>
+                <li id="macd-legend"><div id="macd-legend-line" class="legend-line"></div><span>MACD</span></li>
+              </ul>
               <div class="close"></div>
             </div>
           </div>
@@ -490,6 +498,23 @@
     </ul>
   </script>
   <!-- Tooltip template end -->
+  <script id="macd-tooltip-template" type="text/x-handlebars-template">
+    <ul>
+      <li class="tt-title">{{date}}</li>
+      <li class="tt-row"><span class="tt-label">Diff</span><span class="tt-value">{{diff}}</span></li>
+      <li class="tt-row"><span class="tt-label">MACD</span><span class="tt-value">{{macd}}</span></li>
+      <li class="tt-row"><span class="tt-label">DEA</span><span class="tt-value">{{dea}}</span></li>
+    </ul>
+  </script>
+  <!-- Tooltip template end -->
+  <script id="rsi-tooltip-template" type="text/x-handlebars-template">
+    <ul>
+      <li class="tt-title">{{date}}</li>
+      <li class="tt-row"><span class="tt-label">RSI6</span><span class="tt-value">{{rsi6}}</span></li>
+      <li class="tt-row"><span class="tt-label">RSI12</span><span class="tt-value">{{rsi12}}</span></li>
+      <li class="tt-row"><span class="tt-label">RSI24</span><span class="tt-value">{{rsi24}}</span></li>
+    </ul>
+  </script>
 
   <!-- Start charting JS files -->
   <script type="text/javascript" src="js/lib/helpers.js"></script>
