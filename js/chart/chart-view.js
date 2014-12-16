@@ -803,9 +803,17 @@ var ChartView = {
     var tooltip = d3.select('body').append('div')
     .attr('class', 'tooltip').style('opacity', 0);
 
-    var news = d3.select('body').append('div')
-    .attr('class', 'news-bubble').style('opacity', 0);
 
+    var news_count = chart.selectAll("scatter-dots")
+    .data(sentimentData)  // using the values in the ydata array
+    .enter().append("text")  // create a new circle for each value
+    .attr("y", function (d) { return y1(d.mood) - 10; } ) // translate y value to a pixel
+    .attr("x", function (d,i) { return x(d.timestamp); } ) // translate x value
+    .text(function(d, i){
+      return d.newsCount;
+    });
+
+ 
     var tes = chart.selectAll("scatter-dots")
     .data(sentimentData)  // using the values in the ydata array
     .enter().append("svg:circle")  // create a new circle for each value
@@ -850,7 +858,7 @@ var ChartView = {
     //draw on another graph, overlay the divs
 
     var securityLine = d3.svg.line()
-    .x(function(d,i) { return x(d.timestamp); })
+    .x(function(d,i) { return x(d.time); })
     .y(function(d) { return y2(+d.price); })
     .interpolate('basis');
 

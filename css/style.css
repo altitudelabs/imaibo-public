@@ -361,6 +361,15 @@ body {
   pointer-events: none;
 }
 
+.news-bubble{
+  width: 20px
+  height: 20px;
+  background: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .tooltip .wrapper {
   background-color: #454545;
   padding: 2px;
