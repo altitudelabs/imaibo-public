@@ -995,7 +995,7 @@ buildSentimentChart: function(){
     //draw on another graph, overlay the divs
 
     var securityLine = d3.svg.line()
-    .x(function(d,i) { return x(d.timestamp); })
+    .x(function(d,i) { return x(d.time); })
     .y(function(d) { return y2(+d.price); })
     .interpolate('basis');
 

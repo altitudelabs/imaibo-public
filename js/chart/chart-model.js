@@ -3,7 +3,7 @@ var ChartModel = {
   get: function(callback){
     var self = this;
     $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=main&info=1&trading=1&daily=1&callback=?', function(dailyData) {
-	    $.getJSON('models/chart-sentiment-model.json', function(sentimentData) {
+	    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&callback=?', function(sentimentData) {
 	      var model = {};
         model.info = dailyData.data.info;
 	      model.daily = dailyData.data.daily;
