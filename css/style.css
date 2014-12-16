@@ -35,6 +35,7 @@ body {
 .rise { color: #f65c4e; }
 .fall { color: #3bbb57; }
 .neutral { color: rgb(107, 107, 107); }
+.white, .white a { color: #fff;}
 
 .outer {
   overflow-x: hidden;
@@ -68,6 +69,7 @@ body {
   }
 }
 
+
 @media (max-width: 1152px) {
   .btn-buy-sell-wrapper {
      margin-top: 30px;
@@ -84,7 +86,6 @@ body {
 .component-item-price {
   width: 100px;
   height: 48px;
-  vertical-align: middle;
   display: inline-block;
 }
 
@@ -97,70 +98,123 @@ body {
 }
 
 .component-item-price.thermo {
-  width: 200px;
+  width: 230px;
 }
 
 .prediction, .indicator {
   display: inline-block;
 }
+
 .indicator {
   width: 48px;
   height: 40px;
 }
 
-.down .indicator {
+.fall .indicator {
   background: url('../assets/chart/trend-indicator-down.png') no-repeat center;
 }
 
-
-div.strong-down div.indicator {
+.fall .indicator.strong  {
   background: url('../assets/chart/trend-indicator-strong-down.png') no-repeat center;
 }
 
-div.up div.indicator{
+.neutral .indicator  {
+  background: url('../assets/chart/trend-indicator-flat.png') no-repeat center;
+}
+
+.rise .indicator {
   background: url('../assets/chart/trend-indicator-up.png') no-repeat center;
 }
 
-div.strong-up div.indicator{
+.rise .indicator.strong{
   background: url('../assets/chart/trend-indicator-strong-up.png') no-repeat center;
 }
 
-div.thermometer {
+.thermo-wrapper {
   display: inline-block;
-  background: url('../assets/chart/thermometer.png') no-repeat center;
+  position: relative;
   width: 50%;
   height: 55px;
-  -webkit-transform: translateX(-30%);
-  -ms-transform: translateX(-30%);
-  transform: translateX(-30%);
 }
 
-div.changes {
+.vertical-line {
+  border: rgb(107, 107, 107) solid 1px;
+  border-top: none;
+  width: 100%;
+  height: 0;
+}
+
+.diagonal-line {
+  border: rgb(107, 107, 107) solid 1px;
+  border-top: none;
+  width: 30px;
+  height: 0;
+  -ms-transform: rotate(315deg) translate(-30px, 17px);
+  -webkit-transform: rotate(315deg) translate(-30px, 17px);
+  transform: rotate(315deg) translate(-30px, 17px);
+  position: absolute;
+  z-index: 1;
+}
+
+.thermo-wrapper .vertical-line {
+  width: 10px;
+  -ms-transform: translate(15px ,23px);
+  -webkit-transform: translate(15px ,23px);
+  transform: translate(15px ,23px);
+  position: absolute;
+  z-index: 2;
+}
+
+.vertical-line.dotted {
+  border-style: dotted;
+  border-color: rgb(107, 107, 107);
+  border-width: 1px;
+  width: 25px;
+  -ms-transform: translate(16px, 30px);
+  -webkit-transform: translate(16px, 30px);
+  transform: translate(16px, 30px);
+}
+
+.thermometer {
+  position: absolute;
+  background: url('../assets/chart/thermometer.png') no-repeat center;
+  width: 100%;
+  height: 55px;
+  -webkit-transform: translateX(-20%);
+  -ms-transform: translateX(-20%);
+  transform: translateX(-25%);
+}
+
+.thermo-wrapper .background {
+  position: absolute;
+  width: 50%;
+  height: 0%;
+  bottom: 0;
+  z-index: -1;
+}
+.fall .thermo-wrapper .background {
+  background-color: green;
+}
+
+.neutral .thermo-wrapper .background {
+  background-color: rgb(107, 107, 107);
+}
+
+.rise .thermo-wrapper .background {
+  background-color: #f65c4e;
+}
+.changes {
   display: inline-block;
   width: 10%;
   height: 100%;
   vertical-align: top;
   font-size: 15px;
-  -moz-transform: translateX(-350%);
-  -ms-transform: translateX(-350%);
-  -webkit-transform: tranlsateX(-350%);
-  transform: translateX(-350%);
+  -moz-transform: translateX(-300%);
+  -ms-transform: translateX(-300%);
+  -webkit-transform: translateX(-300%);
+  transform: translateX(-300%);
 }
 
-div.thermo div.negative {
-  color: #f65c4e;
-  filter: hue-rotate(90deg);
-  -moz-filter: hue-rotate(90deg);
-  -webkit-filter: hue-rotate(90deg);
-}
-
-
-div.thermo div.neutral {
-  color: rgb(107, 107, 107);
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -webkit-filter: grayscale(100%);
-}
 
 .title,.legend {
   display: inline;
@@ -297,6 +351,67 @@ div.thermo div.neutral {
   top: 0;
 }
 
+
+/* =SentimentChart
+------------------------------------------------------------ */
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 60px;
+  pointer-events: none;
+}
+
+.tooltip .wrapper {
+  background-color: #454545;
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  border: #666 solid 1px;
+}
+
+.tooltip > .wrapper > div {
+  padding: 5px;
+}
+
+.wrapper .arrow {
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: top;
+}
+
+.wrapper .arrow.rise {
+  background-image: url('../assets/chart/up-arrow.png');
+}
+
+.wrapper .arrow.fall {
+  background-image: url('../assets/chart/down-arrow.png');
+}
+
+.wrapper .arrow,
+.wrapper .content,
+.wrapper .extra {
+    display: inline-block;
+}
+
+.wrapper .extra.hide {
+  display: none;
+}
+
+.tooltip-date {
+  background-color: #666;
+  padding: 5px;
+}
+
+.news-bubble {
+  position: absolute;
+  width: 200px;
+  height: 60px;
+  pointer-events: none;
+}
+
+
 /* =Nav
 -------------------------------------------------------------- */
 .nav {
@@ -408,6 +523,10 @@ div.thermo div.neutral {
   color: #fff;
 }
 
+#ma-dropdown-menu {
+  width: 125px;
+}
+
 /* replaces js/toolbar/toolbar.js initDropdown function  */
 .link-dropdown:hover > .dropdown-menu{
   display: block;
@@ -448,6 +567,9 @@ label.checkbox-label input[type=checkbox]{
 
 /* =Snapshot
 -------------------------------------------------------------- */
+#snapshot {
+  z-index: 1;
+}
 .value-label {
   font-size: 20px;
 }
@@ -455,13 +577,14 @@ label.checkbox-label input[type=checkbox]{
   font-size: 12px;
 }
 
+
 /* =Right Panel
 -------------------------------------------------------------- */
 #content {
   overflow: hidden;
   /*margin-right: 45px;*/
   margin-left: 15px;
-  width: calc(100% - 310px);
+  width: calc(100% - 370px);
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
   -o-transition: all 400ms ease-out;
@@ -472,10 +595,10 @@ label.checkbox-label input[type=checkbox]{
   width: calc(100% - 60px);
 }
 */
-#right-panel.collapsed { margin-right: -280px; }
+#right-panel.collapsed { margin-right: -340px; }
 #right-panel {
   float: right;
-  width: 280px;
+  width: 340px;
   margin-left: 15px;
 
   -webkit-transition: all 400ms ease-out;
@@ -499,7 +622,7 @@ label.checkbox-label input[type=checkbox]{
 
 .vertical-collapse {
   background: url('../assets/chart/collapse-rightwards.png') no-repeat center;
-  right: 280px;
+  right: 340px;
 }
 
 
@@ -597,7 +720,7 @@ label.checkbox-label input[type=checkbox]{
   display: none;
   position: absolute;
   left: -200px;
-  z-index: 1;
+  z-index: 10;
   top: 0;
 
 }
@@ -658,7 +781,7 @@ text {
 }
 
 .profile-pic {
-  width: 20%;
+  width: 19%;
   height: 40px;
   background-color: white;
   float: left;
@@ -789,7 +912,7 @@ text {
 .rating-and-content {
   height: 75%;
   width: 100%;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .rating-and-content > .rating {
@@ -831,9 +954,9 @@ text {
   display: block;
 }
 
-.wrapper {
+#stockpicker-view > .wrapper:first-child {
   width: 100%;
-  height: 40px;
+  height: 8%;
   overflow: visible;
 }
 
@@ -888,6 +1011,30 @@ text {
   border-bottom: #332 1px solid;
   color: #808080;
 }
+
+.loader {
+  width: 500px;
+  height: 500px;
+  background: url('../assets/chart/ajax-loader.gif') no-repeat center;
+  background-color: #262626;
+  position: absolute;
+  z-index: 20;
+}
+
+#loader-wrapper {
+  display: inline-block;
+}
+
+#loading {
+  width: 280px;
+  height: 40px;
+  background: url('../assets/chart/ajax-loader-small.gif') no-repeat center;
+  background-color: #262626;
+
+}
+
+
+
 
 #login-wrapper {
   width: 100%;
@@ -964,6 +1111,13 @@ text {
   padding: 10px;
   margin: 5px;
 }
+
+
+#stock-table th,
+#stock-table td {
+  width: 20%;
+}
+
 
 #stock-table > tbody > tr > td {
   vertical-align: middle;
@@ -1322,6 +1476,43 @@ ul.toolbar > li.active > a:hover {
   height: 50px;
   width: 50px;
 }
+
+#rsi > .wrapper > .title,
+#rsi > .wrapper > .buttons,
+#macd > .wrapper > .title,
+#macd > .wrapper > .title{
+  display: inline-block;
+}
+
+#rsi > .wrapper > .buttons,
+#macd > .wrapper > .buttons{
+  width: 100px;
+  height: 20px;
+}
+
+#rsi > .wrapper > .buttons,
+#macd > .wrapper > .buttons {
+  float: right;
+}
+
+.wrapper > .buttons > .close {
+  background: url('../assets/chart/close.png') no-repeat center;
+  width: 20px;
+  height: 20px;
+  float: right;
+  cursor: pointer;
+}
+
+#rsi > .wrapper,
+#macd > .wrapper{
+  height: 20px;
+}
+
+
+#macd {
+  display: none;
+}
+
 
 
 #ma60-label{
