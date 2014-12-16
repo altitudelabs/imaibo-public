@@ -616,9 +616,8 @@ var ChartView = {
 
       this.drawGraph(true, y1, y2, x, v, chart);
 
-    }
-  },
-  redraw: function (zoomFactor, functionx) {
+    },
+  redraw: function (zoomFactor) {
     this.setProperties({
       zoomFactor: this.properties.zoomFactor * zoomFactor
     });
@@ -648,161 +647,17 @@ var ChartView = {
     .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
     .range([0, volumeHeight]);
 
-    var xInverse = function(xPos){
-      var leftEdges = x.range(), // starting position of each column bar
-      width = x.rangeBand(), //rangeBand = width of each column bar
-      j;
-
-      //while mouse's x position is greater than the right most edge of the column
-      //increment j 
-
-      //if mouse is in the first column, return 0
-      //if mouse is in the last column, 
-
-      for (j = 199; xPos > (leftEdges[j] + width); j--) {} 
-      return j;
-    };
-
-    d3.select('.container')
-    .attr('width', containerWidth - 200);
-
     var chart = d3.select('#chart')
     .attr('width', graphWidth)
     .select('svg')
     .attr('width', graphWidth);
-
-    d3.select('#chart-label')
-    .attr('width', containerWidth);
-
-    chart.selectAll('g.xlabels')
-    .selectAll('text.xrule')
-    .remove();
-
-    chart.selectAll('g.xlabels')
-    .selectAll('text.xrule')
-    .data(data.security)
-    .enter().append('svg:text')
-    .attr('class', 'xrule')
-    .attr('x', function(d,i){ return x(i); })
-    .attr('y', height-margin.bottom+20)
-    .attr('text-anchor', 'middle')
-    .text(function(d,i){ return i%interval===0 ? d.date : ''; });
-
-    chart.selectAll('g.volume > rect')
-    .remove();
-
-    //sentimetal rect bars 
-    chart.selectAll('g.volume')
-    .attr('class','volume')
-    .selectAll('rect')
-    .data(data.security)
-    .enter().append('svg:rect')
-    .attr('x', function(d,i) { return x(i); })
-    .attr('y', function(d) { return height - margin.bottom - v(d.volume); })
-    .attr('height', function(d) { return v(d.volume); })
-    .attr('width', function(d) { return 0.8 * (graphWidth - margin.left - margin.right)/data.security.length; })
-    .attr('fill', '#4d4d4d');
-
-    chart.selectAll('g.candlesticks > rect')
-    .remove();
-
-    //rectangles of the candlesticks graph
-    chart.selectAll('g.candlesticks')
-    .attr('class','candlesticks')
-    .selectAll('rect')
-    .data(data.security)
-    .enter().append('svg:rect')
-    .attr('x', function(d, i) { return x(i); })
-    .attr('y', function(d) { return y1(max(d.open, d.close)); })
-    .attr('height', function(d) { return y1(min(d.open, d.close))-y1(max(d.open, d.close)); })
-    .attr('width', function(d) { return 0.8 * (graphWidth - margin.right)/data.security.length; })
-    .attr('fill', function(d) { return d.open > d.close ? '#f65c4e' : '#3bbb57'; });
-
-    chart.selectAll('g.linestems > line')
-    .remove();
-
-    //verticle lines of the candlesticks graph
-    chart.selectAll('g.linestems')
-    .attr('class','linestems')
-    .selectAll('line.stem')
-    .data(data.security)
-    .enter().append('svg:line')
-    .attr('class', 'stem')
-    .attr('x1', function(d, i) { return x(i) + 0.4 * (graphWidth - margin.left - margin.right)/data.security.length; })
-    .attr('x2', function(d, i) { return x(i) + 0.4 * (graphWidth - margin.left - margin.right)/data.security.length; })
-    .attr('y1', function(d) { return y1(d.high); })
-    .attr('y2', function(d) { return y1(d.low); })
-    .attr('stroke', function(d){ return d.open > d.close ? '#f65c4e' : '#3bbb57'; });
-
-    // chart
-    // .select('#sentimentLine').remove();
-
-    //tooltips
-    chart.selectAll('rect.mouseover-overlay')
-    .attr('x', margin.left)
-    .attr('y', margin.top)
-    .attr('width', graphWidth-margin.left-margin.right)
-    .attr('height', height-margin.top-margin.bottom)
-    .on('mouseover', function(e){
-      return Tooltip.show(); })
-      .on('mouseout', function(){ 
-        return Tooltip.hide(); })
-        .on('mousemove', function(){
-          var xPos = d3.mouse(this)[0],
-          j = xInverse(xPos),
-          d = data.security[j],
-          d2 = data.sentiment[j];
-
-          var model = {
-            top: d3.event.layerY-5,
-            left: containerWidth-d3.event.layerX>150 ? d3.event.layerX+100 : d3.event.layerX-155,
-            date: d.date,
-            security: d,
-            sentiment: {
-              price: d2.price,
-              change: d2.change
-            }
-          };
-          return Tooltip.render(model);
-        });
-
-
-
-        //sentimentLine
-        plotLine('#25bcf1', 'linear', 'sentimentLine');
-
-        //add all MA lines
-        plotLine('#fff', ChartModel.movingAvg(5), 'ma5-line');
-        plotLine('#d8db74', ChartModel.movingAvg(10), 'ma10-line');
-        plotLine('#94599d', ChartModel.movingAvg(20), 'ma20-line');
-        plotLine('#36973a', ChartModel.movingAvg(60), 'ma60-line');
-
-        /*
-         * args:
-         *  - color: string, in hex.
-         *          e.g. '#fff', '#9f34a1'
-         *  - interpolate: 'linear', ChartModel.movingAvg(x), etc
-         *  - id: what you want to id your line as. Don't put '#'
-         */
-        function plotLine(color, interpolate, id){
-          var line = d3.svg.line()
-          .x(function(d, i){ return x(i); })
-          .y(function(d){ return y2(d.price); })
-          .interpolate(interpolate);
-
-          chart.select('#' + id)
-          .datum(data.sentiment)
-          .attr('class','line')
-          .attr('d', line)
-          .attr('stroke', color)
-          .attr('fill', 'none');
-        }
-        this.drawGraph(false, y1, y2, x, v, chart);
+       this.drawGraph(false, y1, y2, x, v, chart);
   },
-buildSentimentChart: function(){
-  $('#sentiment-chart').empty();
+  },
+  buildSentimentChart: function(){
+    $('#sentiment-chart').empty();
 
-  var data = ChartView.data,
+    var data = ChartView.data,
   width = this.defaults.width,
   height = 200,
   margin = { top: 30, right: 50, bottom: 30, left: 50 },
