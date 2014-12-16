@@ -2,6 +2,8 @@ var Tooltip = {
   el: '#tooltip',
   template: Handlebars.compile($('#tooltip-template').html()),
   render: function(model){
+
+    model.security.value = model.security.value.slice(0, 4);
     $(this.el).css('top', model.top);
     $(this.el).css('left', model.left);
     $(this.el).html(this.template(model));
