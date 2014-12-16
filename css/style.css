@@ -569,6 +569,7 @@ label.checkbox-label input[type=checkbox]{
 -------------------------------------------------------------- */
 #snapshot {
   z-index: 1;
+  height: 81px;
 }
 .value-label {
   font-size: 20px;
@@ -938,11 +939,22 @@ text {
 }
 
 .rating-and-content .rating.fall:after {
-  content: "▼ 看升";
+  content: "▼ 看跌";
 }
 
 
+/*= Dashboard
+--------------------------------------------------------------*/
+@media (max-width: 1239px){
+  #snapshot{
+    height: 150px;
+  }
 
+  .btn-buy-sell-wrapper {
+    float: none;
+    margin-top: 10px;
+  }
+}
 
 
 
@@ -952,12 +964,24 @@ text {
   padding: 0;
   overflow: visible;
   display: block;
+  opacity: 0;
+}
+
+.panel-loader {
+  height: 500px;
+  width: 340px;
+  background-color: #262626;
+  background-image: url('../assets/chart/ajax-loader.gif') center no-repeat;
 }
 
 #stockpicker-view > .wrapper:first-child {
   width: 100%;
   height: 8%;
   overflow: visible;
+}
+
+.neutral > .white a{
+  color: rgb(107, 107, 107);
 }
 
 

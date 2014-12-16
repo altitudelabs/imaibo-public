@@ -124,10 +124,6 @@ var ChartView = {
       $('#rsi-checkbox').attr('checked', false);
     });
 
-    $('#chart-view').on('resize', function(){
-      console.log('resize');
-      self.rebuild();
-    });
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
       $('#macd').slideUp(500);
       $('#macd-checkbox').attr('checked', false);
@@ -138,6 +134,14 @@ var ChartView = {
   },
   rebuild: function () {
     this.defaults.width = $('#content').width();
+    var snapshot = $('#snapshot');
+    if(snapshot.width() >= 900){
+      snapshot.css('height','81px');
+        $('.btn-buy-sell-wrapper').css('float','right');
+    } else if(snapshot.width() >=600) {
+      snapshot.css('height','150px');
+        $('.btn-buy-sell-wrapper').css('float','none');
+    }
     this.indexChart.init();
     this.buildSentimentChart();
     this.buildRSIChart();
