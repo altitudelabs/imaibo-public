@@ -37,11 +37,41 @@ Handlebars.registerHelper('ifEq', function(a, b, opts){
 });
 
 Handlebars.registerHelper('isGreater', function(a,b, opts){
-  return (a > b? opts.fn(this): opts.inverse(this)); 
+  return (a > b? opts.fn(this): opts.inverse(this));
 });
 
 Handlebars.registerHelper('toPercentage', function(a){
   return (a*100).toFixed().toString() + '%';
+});
+
+Handlebars.registerHelper('dateStr', function(text) {
+  text = text.toString();
+  if (text.length === 8){
+    var formattedDateStr = text.substr(0,4) + '-' + text.substr(4,2) + '-' + text.substr(6,2);
+    return new Handlebars.SafeString(formattedDateStr);
+  } else {
+    return new Handlebars.SafeString(text);
+  }
+});
+
+Handlebars.registerHelper('formatLargeNumber', function(num){
+  return new Handlebars.SafeString(Math.round(num/1000000)/100 + '亿');
+});
+
+Handlebars.registerHelper('formatNumber', function(num, dp){
+  if (typeof num === 'string') num = parseFloat(num);
+
+  var numberWithCommas = function(x) {
+      return x.toFixed(dp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  if (dp === 0){
+    return new Handlebars.SafeString(Math.round(num));
+  } else {
+    var base = Math.pow(10, dp),
+        roundedNum = Math.round(num*base)/base;
+    return new Handlebars.SafeString(numberWithCommas(num));
+  }
 });
 
 /*
