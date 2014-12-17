@@ -31,7 +31,9 @@ var RightPanelModel = {
         RightPanel.populateView(stock.table, stock.template, self.model.stock.list);
         if(self.model.stock.isLogin){
           $('#stock-login').remove();
-          $('#stockpicker-table-body').css('height','85%');
+          $('#suggestion').remove();
+          $('#stockpicker-view > .wrapper:first-child').css('height', '0');
+          $('#stockpicker-table-body').css('height','706px');
         }
         $('.panel-loader').remove();
         $('#stockpicker-view').css('opacity', '1');

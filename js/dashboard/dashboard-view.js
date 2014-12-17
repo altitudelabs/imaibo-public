@@ -2,6 +2,7 @@ var DashboardView = {
   init: function() {
     this.initExpert();
     this.initStock();
+    $('#week-radio')[0].checked = true;
   },
   initExpert: function() {
     $('.like').hover(function(){

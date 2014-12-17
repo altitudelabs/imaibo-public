@@ -5,6 +5,20 @@ var ChartView = {
   renderDashboard: function(model){
     // Render dashboard
     this.render(model, '#dashboard-template', '#dashboard');
+   var selector = $('.thermo > .thermo-wrapper > .background');
+    var change_percent = parseFloat(model.moodindexInfo.changeRatio).toFixed();
+
+    if(change_percent >= 25)
+      selector.animate({height: '25%'});
+    if(change_percent >= 50)
+      selector.animate({height: '50%'});
+    if(change_percent >= 75)
+      selector.animate({height: '75%'});
+    if(change_percent >= 100)
+      selector.animate({height: '100%'});
+
+  },
+  renderIndicatorLines: function(model){
 
     // Set thermometer liquid height
     var $thermoLiquid = $('.thermo > .thermo-wrapper > .background'),
@@ -245,11 +259,11 @@ var ChartView = {
       .selectAll('rect')
       .data(data.daily.stockLine)
       .enter().append('svg:rect')
-      .attr('x', function(d,i) { return x(i); })
+      .attr('x', function(d,i) { return x(i) - 2.8*zoomFactor; })
       .attr('y', function(d) { return height - margin.bottom - v(d.volumn); })
       .attr('height', function(d) { return v(d.volumn); })
       .attr('width', function(d) { return 0.8 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
-      .attr('fill', '#4d4d4d');
+      .attr('fill', '#595959');
 
       //rectangles of the candlesticks graph
       gcandlesticks
@@ -257,7 +271,7 @@ var ChartView = {
       .selectAll('rect')
       .data(data.daily.stockLine)
       .enter().append('svg:rect')
-      .attr('x', function(d, i) { return x(i); })
+      .attr('x', function(d, i) { return x(i) - 2.8*zoomFactor; })
       .attr('y', function(d) { return y2(max(d.openpx, d.closepx)); })
       .attr('height', function(d) { return y2(min(d.openpx, d.closepx))-y2(max(d.openpx, d.closepx)); })
       .attr('width', function(d) { return 0.8 * (graphWidth - margin.right)/data.daily.stockLine.length; })
@@ -270,8 +284,8 @@ var ChartView = {
       .data(data.daily.stockLine)
       .enter().append('svg:line')
       .attr('class', 'stem')
-      .attr('x1', function(d, i) { return x(i) + 0.4 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
-      .attr('x2', function(d, i) { return x(i) + 0.4 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
+      .attr('x1', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
+      .attr('x2', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
       .attr('y1', function(d) { return y2(d.highpx); })
       .attr('y2', function(d) { return y2(d.lowpx); })
       .attr('stroke', function(d){ return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; })
@@ -319,9 +333,9 @@ var ChartView = {
               sentiment: {
                 price: d2.moodindex,
                 change: d2.moodindexchg
-              }
+             }
             };
-            return Tooltip.render(model);
+            return Tooltip.render.index(model);
           });
 
           //sentimentLine
@@ -378,7 +392,6 @@ var ChartView = {
             }
           }
     },
-    //builds and draw the graph's initial state
     build: function () {
 
       $('#chart').empty();
@@ -395,6 +408,9 @@ var ChartView = {
       var volumeHeight = this.properties.volumeHeight;
       var interval = this.properties.interval;
 
+      margin.right -= 50;
+      margin.top += 20;
+
 
       var chart = d3.select('#chart')
       .append('svg:svg')
@@ -405,7 +421,7 @@ var ChartView = {
       var chart_label = d3.select('#chart-label')
       .append('svg:svg')
       .attr('class', 'chart')
-      .attr('width', containerWidth + 100)
+      .attr('width', containerWidth + 120)
       .attr('height', height);
 
       var y1 = d3.scale.linear()
@@ -433,59 +449,49 @@ var ChartView = {
       //   for (j = 0; xPos > (leftEdges[j] + width); j++) {}
       //   return j;
       // };
+      //
+      var border = {
+          margin: {},
+      };
+      border.margin.top = margin.top - 35;
+      border.margin.left = margin.left + 50;
 
       chart_label.append('svg:line')
       .attr('class', 'xaxis')
-      .attr('x1', margin.left)
-      .attr('x2', containerWidth - margin.right + 122)
-      .attr('y1', height - margin.bottom - 25)
-      .attr('y2', height - margin.bottom - 25)
-      .attr('stroke', '#464646');
-
-      //border
-      chart_label.append('svg:line')
-      .attr('class', 'xaxis')
-      .attr('x1', 0)
-      .attr('x2', containerWidth)
-      .attr('y1', height - margin.bottom - 25)
-      .attr('y2', height - margin.bottom - 25)
+      .attr('x1', border.margin.left)
+      .attr('x2', containerWidth - margin.right)
+      .attr('y1', height - margin.bottom)
+      .attr('y2', height - margin.bottom)
       .attr('stroke', '#464646')
-      .attr('stroke-width', '0.5px');
+      .attr('stroke-width', '2px');
 
       chart_label.append('svg:line')
       .attr('class', 'border-left')
-      .attr('x1', margin.left + 50)
-      .attr('x2', margin.left + 50)
+      .attr('x1', border.margin.left)
+      .attr('x2', border.margin.left)
       .attr('y1', height - margin.bottom)
-      .attr('y2', 0)
-      .attr('stroke', '#464646');
+      .attr('y2', border.margin.top)
+      .attr('stroke', '#464646')
+      .attr('stroke-width', '2px');
 
       chart_label.append('svg:line')
       .attr('class', 'border-right')
-      .attr('x1', containerWidth - margin.right + 50)
-      .attr('x2', containerWidth - margin.right + 50)
+      .attr('x1', containerWidth - margin.right )
+      .attr('x2', containerWidth - margin.right )
       .attr('y1', height - margin.bottom)
-      .attr('y2', 0)
-      .attr('stroke', '#464646');
+      .attr('y2', border.margin.top)
+      .attr('stroke', '#464646')
+      .attr('stroke-width', '2px');
 
       //top border
       chart_label.append('svg:line')
       .attr('class', 'border-top')
-      .attr('x1', margin.left + 50)
-      .attr('x2', containerWidth - margin.right + 50)
-      .attr('y1', margin.top - 15)
-      .attr('y2', margin.top - 15)
-      .attr('stroke', '#464646');
-
-      chart_label.append('svg:line')
-      .attr('class', 'border-top')
-      .attr('x1', 0)
-      .attr('x2', containerWidth + 100)
-      .attr('y1', margin.top - 15)
-      .attr('y2', margin.top - 15)
+      .attr('x1', border.margin.left)
+      .attr('x2', containerWidth - margin.right )
+      .attr('y1', border.margin.top)
+      .attr('y2', border.margin.top)
       .attr('stroke', '#464646')
-      .attr('stroke-width', '0.5px');
-
+      .attr('stroke-width', '2px');
 
       //Horizontal guide lines
       // chart_label.append('g')
@@ -521,7 +527,7 @@ var ChartView = {
       .data(y1.ticks(5))
       .enter().append('svg:text')
       .attr('class', 'yrule')
-      .attr('x', 20)
+      .attr('x', border.margin.left - 15)
       .attr('y', y1)
       .attr('text-anchor', 'middle')
       .text(String);
@@ -533,7 +539,7 @@ var ChartView = {
       .data(y2.ticks(5))
       .enter().append('svg:text')
       .attr('class', 'yrule')
-      .attr('x', containerWidth-margin.right + 80)
+      .attr('x', containerWidth-margin.right + 22)
       .attr('y', y2)
       .attr('text-anchor', 'middle')
       .text(String);
@@ -650,7 +656,7 @@ var ChartView = {
     var data = ChartView.data,
   width = this.defaults.width,
   height = 200,
-  margin = { top: 30, right: 50, bottom: 30, left: 50 },
+  margin = { top: 30, right: 70, bottom: 30, left: 50 },
   interval = 40;
 
   var chart = d3.select('#sentiment-chart')
@@ -674,7 +680,7 @@ var ChartView = {
 
   var x = d3.scale.linear()
   .domain([seven_am, min_before_midnight])
-  .range([margin.left, width-margin.right]);
+  .range([margin.left, width-margin.right ]);
 
   chart.append('svg:line')
   .attr('class', 'xaxis')
@@ -685,29 +691,11 @@ var ChartView = {
   .attr('stroke', '#464646');
 
   chart.append('svg:line')
-  .attr('class', 'xborder-bottom')
-  .attr('x1', 0)
-  .attr('x2', width)
-  .attr('y1', height - margin.bottom)
-  .attr('y2', height - margin.bottom)
-  .attr('stroke', '#464646')
-  .attr('stroke-width', '0.5px');
-
-  chart.append('svg:line')
-  .attr('class', 'xborder-top')
-  .attr('x1', 0)
-  .attr('x2', width)
-  .attr('y1', margin.bottom - 20)
-  .attr('y2', margin.bottom - 20)
-  .attr('stroke', '#464646')
-  .attr('stroke-width', '0.5px');
-
-  chart.append('svg:line')
   .attr('class', 'xborder-top-thick')
   .attr('x1', margin.left)
   .attr('x2', width - margin.right)
-  .attr('y1', margin.bottom - 20)
-  .attr('y2', margin.bottom - 20)
+  .attr('y1', margin.top - 20)
+  .attr('y2', margin.top - 20)
   .attr('stroke', '#464646');
 
   chart.append('g')
@@ -732,7 +720,7 @@ var ChartView = {
   .data(y1.ticks(5))
   .enter().append('svg:text')
   .attr('class', 'yrule')
-  .attr('x', 10)
+  .attr('x', margin.left - 15)
   .attr('y', y1)
   .attr('text-anchor', 'middle')
   .text(String);
@@ -747,8 +735,8 @@ var ChartView = {
 
   chart.append('svg:line')
   .attr('class', 'yborder-right')
-  .attr('x1',  width - margin.right)
-  .attr('x2', width - margin.right)
+  .attr('x1',  width - margin.right - 1)
+  .attr('x2', width - margin.right - 1)
   .attr('y1',  height - margin.top)
   .attr('y2', margin.bottom - 20)
   .attr('stroke', '#464646');
@@ -759,7 +747,7 @@ var ChartView = {
   .data(y2.ticks(5))
   .enter().append('svg:text')
   .attr('class', 'yrule')
-  .attr('x', width-margin.right + 15)
+  .attr('x', width-margin.right + 22)
   .attr('y', y2)
   .attr('text-anchor', 'middle')
   .text(String);
@@ -844,7 +832,6 @@ var ChartView = {
       .style("opacity", 0);
     });
 
-
     //draw on another graph, overlay the divs
 
     var securityLine = d3.svg.line()
@@ -866,7 +853,7 @@ buildRSIChart: function(){
   var data = ChartView.data;
   var width = this.defaults.width,
   height = 200,
-  margin = { top: 30, right: 50, bottom: 30, left: 50 },
+  margin = { top: 30, right: 70, bottom: 30, left: 50 },
   interval = 40;
 
   var chart = d3.select('#rsi-chart')
@@ -882,24 +869,6 @@ buildRSIChart: function(){
   var x = d3.scale.ordinal()
   .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
   .rangeBands([margin.left, width-margin.right]); //inversed the x axis because api came in descending order
-
-  chart.append('svg:line')
-  .attr('class', 'xborder-bottom')
-  .attr('x1', 0)
-  .attr('x2', width)
-  .attr('y1', height - margin.bottom)
-  .attr('y2', height - margin.bottom)
-  .attr('stroke', '#464646')
-  .attr('stroke-width', '0.5px');
-
-  chart.append('svg:line')
-  .attr('class', 'xborder-top')
-  .attr('x1', 0)
-  .attr('x2', width)
-  .attr('y1', margin.bottom - 20)
-  .attr('y2', margin.bottom - 20)
-  .attr('stroke', '#464646')
-  .attr('stroke-width', '0.5px');
 
   chart.append('svg:line')
   .attr('class', 'guideline-80')
@@ -968,7 +937,7 @@ buildRSIChart: function(){
   .data(y2.ticks(5))
   .enter().append('svg:text')
   .attr('class', 'yrule')
-  .attr('x', width-margin.right + 20)
+  .attr('x', width-margin.right + 15 )
   .attr('y', y2)
   .attr('text-anchor', 'middle')
   .text(String);
@@ -995,6 +964,50 @@ buildRSIChart: function(){
   plotRSI(12,'#d8db74');
   plotRSI(24,'#784e7a');
 
+  var xInverse = function(xPos){
+    var leftEdges = x.range(), // starting position of each column bar
+    width = x.rangeBand(), //rangeBand = width of each column bar
+    j;
+
+    //while mouse's x position is greater than the right most edge of the column
+    //increment j
+
+    //if mouse is in the first column, return 0
+    //if mouse is in the last column, 
+
+    for (j = 0; xPos > (leftEdges[j] + width); j++) {} 
+    return j;
+  };
+
+
+
+  var tooltip =  chart.append('rect').attr('class', 'mouseover-overlay');
+  tooltip.attr('class', 'mouseover-overlay')
+  .attr('fill', 'transparent')
+  .attr('x', margin.left)
+  .attr('y', 10)
+  .attr('width', width-margin.left-margin.right)
+  .attr('height', 160)
+  .on('mouseover', function(e){
+    return Tooltip.show(); })
+    .on('mouseout', function(){
+      return Tooltip.hide(); })
+      .on('mousemove', function(){
+        var xPos = d3.mouse(this)[0],
+        j = xInverse(xPos),
+        d = d2 = data.daily.stockLine[j];
+
+        var model = {
+          top: d3.mouse(this)[1] + height*2 + 75,
+          left: width-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
+          date: toDate(d.rdate),
+          rsi6: d.rsi6,
+          rsi12: d.rsi12,
+          rsi24: d.rsi24,
+        };
+        return Tooltip.render.rsi(model);
+      });
+
 },
 buildMacdChart: function(){
   $('#macd-chart').empty();
@@ -1002,7 +1015,7 @@ buildMacdChart: function(){
   var data = ChartView.data;
   var width = this.defaults.width,
   height = 200,
-  margin = { top: 30, right: 50, bottom: 30, left: 50 },
+  margin = { top: 30, right: 70, bottom: 30, left: 50 },
   interval = 40;
 
   var chart = d3.select('#macd-chart')
@@ -1011,6 +1024,14 @@ buildMacdChart: function(){
   .attr('width', width)
   .attr('height', height);
 
+  var diff_min = d3.min(data.daily.stockLine.map(function(x) {return (+x.diff)*2; }));
+  var diff_max = d3.max(data.daily.stockLine.map(function(x) {return (+x.diff)*2; }));
+  var diff = max(Math.abs(diff_min), diff_max);
+
+  var y1 = d3.scale.linear()
+  .domain([diff*-1, diff])
+  .range([ height-margin.top,  margin.bottom]);
+
   var y2 = d3.scale.linear()                                   // times 2 to make sure the histogram will not cover the graph
   .domain([d3.min(data.daily.stockLine.map(function(x) {return (+x.macd)*2; })), d3.max(data.daily.stockLine.map(function(x){return (+x.macd)*2; }))])
   .range([ height-margin.top,  margin.bottom]);
@@ -1018,24 +1039,6 @@ buildMacdChart: function(){
   var x = d3.scale.ordinal()
   .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
   .rangeBands([ margin.left, width-margin.right]); //inversed the x axis because api came in descending order
-
-  chart.append('svg:line')
-  .attr('class', 'xborder-bottom')
-  .attr('x1', 0)
-  .attr('x2', width)
-  .attr('y1', height - margin.bottom)
-  .attr('y2', height - margin.bottom)
-  .attr('stroke', '#464646')
-  .attr('stroke-width', '0.5px');
-
-  chart.append('svg:line')
-  .attr('class', 'xborder-top')
-  .attr('x1', 0)
-  .attr('x2', width)
-  .attr('y1', margin.bottom - 20)
-  .attr('y2', margin.bottom - 20)
-  .attr('stroke', '#464646')
-  .attr('stroke-width', '0.5px');
 
   chart.append('svg:line')
   .attr('class', 'xborder-top-thick')
@@ -1055,8 +1058,8 @@ buildMacdChart: function(){
 
   chart.append('svg:line')
   .attr('class', 'yborder-right')
-  .attr('x1',  width - margin.right)
-  .attr('x2', width - margin.right)
+  .attr('x1',  width - margin.right - 1)
+  .attr('x2', width - margin.right - 1)
   .attr('y1',  height - margin.top)
   .attr('y2', margin.bottom - 20)
   .attr('stroke', '#464646');
@@ -1081,6 +1084,17 @@ buildMacdChart: function(){
   .text(function(d,i){ return i%interval===0 ? toDate(d.rdate) : ''; });
 
   chart.append('g')
+  .attr('class','y1labels')
+  .selectAll('text.yrule')
+  .data(y1.ticks(5))
+  .enter().append('svg:text')
+  .attr('class', 'yrule')
+  .attr('x', margin.left - 15)
+  .attr('y', y1)
+  .attr('text-anchor', 'middle')
+  .text(String);
+
+  chart.append('g')
   .attr('class','y2labels')
   .selectAll('text.yrule')
   .data(y2.ticks(5))
@@ -1093,13 +1107,13 @@ buildMacdChart: function(){
 
   //dea line
   plotMACD('dea', '#d7db74');
-  plotMACD('dif', '#236a82');
+  plotMACD('macd', '#236a82');
 
   function plotMACD(type, color){
     var line = d3.svg.line()
     .x(function(d,i) { return x(i); })
     .y(function(d)   {
-      return type === 'dea'? y2(d.dea): y2(d.diff); })
+      return type === 'dea'? y2(d.dea): y2(d.macd); })
       .interpolate('linear');
 
       chart.append('path')
@@ -1110,28 +1124,65 @@ buildMacdChart: function(){
       .attr('fill', 'none');
   }
 
-  var gcandlesticks = chart.append('g').attr('class','candlesticks');
 
   //rectangles of the candlesticks graph
-  gcandlesticks
-  .attr('class','candlesticks')
-  .selectAll('rect')
+  chart.selectAll('bar')
   .data(data.daily.stockLine)
   .enter().append('svg:rect')
   .attr('x', function(d, i) { return x(i); })
-  .attr('y', function(d) { return y2(d.macd); })
+  .attr('y', function(d) { return y1(max(d.diff, 0)); })
   .attr('height', function(d) {
-    return Math.abs(d.dea-d.diff); })
-    .attr('width', function(d) { return 0.8 * (width - margin.right)/data.daily.stockLine.length; })
-    .attr('fill', function(d) { return d.dea > d.diff ? '#f65c4e' : '#3bbb57'; });
+    return Math.abs(y1(d.diff) - y1(0)); })
+    .attr('width',function(d) { return 0.8 * (width - margin.right)/data.daily.stockLine.length; })
+    .attr('fill', function(d) { return d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
 
 
     $('#macd-checkbox').change(function(){
       $('#macd').css('display', $(this).is(':checked')? 'block':'none');
-    });;
+    });
 
 
+    var xInverse = function(xPos){
+      var leftEdges = x.range(), // starting position of each column bar
+      width = x.rangeBand(), //rangeBand = width of each column bar
+      j;
 
+      //while mouse's x position is greater than the right most edge of the column
+      //increment j
+
+      //if mouse is in the first column, return 0
+      //if mouse is in the last column, 
+
+      for (j = 0; xPos > (leftEdges[j] + width); j++) {} 
+      return j;
+    };
+
+    var tooltip =  chart.append('rect').attr('class', 'mouseover-overlay');
+    tooltip.attr('class', 'mouseover-overlay')
+    .attr('fill', 'transparent')
+    .attr('x', margin.left)
+    .attr('y', 10)
+    .attr('width', width-margin.left-margin.right)
+    .attr('height', 160)
+    .on('mouseover', function(e){
+      return Tooltip.show(); })
+      .on('mouseout', function(){
+        return Tooltip.hide(); })
+        .on('mousemove', function(){
+          var xPos = d3.mouse(this)[0],
+          j = xInverse(xPos),
+          d = d2 = data.daily.stockLine[j];
+
+          var model = {
+            top: d3.mouse(this)[1] + height*2 + 100 + ($('#rsi-checkbox').is(':checked')? 250: 0),
+            left: width-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
+            date: toDate(d.rdate),
+            macd: d.macd,
+            diff: d.diff,
+            dea: d.dea
+          };
+          return Tooltip.render.macd(model);
+        });
 }
 };
 
