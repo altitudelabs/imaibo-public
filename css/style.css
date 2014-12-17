@@ -35,6 +35,10 @@ body {
 .pull-right {
   float: right !important;
 }
+.noscroll {
+  overflow: hidden;
+}
+
 
 /* =Layout
 -------------------------------------------------------------- */

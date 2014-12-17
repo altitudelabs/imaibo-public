@@ -172,6 +172,14 @@ var ChartView = {
         $('.container').scrollLeft ( original - event.originalEvent.deltaY)
       });
     },
+    disableBodyScroll: function () {
+      $('#stockpicker-table-body').on('mouseenter', function (event){
+        $('body').addClass('noscroll');
+      });
+      $('#stockpicker-table-body').on('mouseleave', function (event){
+        $('body').removeClass('noscroll');
+      });
+    },
     setProperties: function (options) {
       //review
       var properties = {
