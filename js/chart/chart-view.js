@@ -326,7 +326,7 @@ var ChartView = {
               security: d,
               sentiment: {
                 price: d2.moodindex,
-                change: d2.change
+                change: d2.moodindexchg
               }
             };
             return Tooltip.render(model);
