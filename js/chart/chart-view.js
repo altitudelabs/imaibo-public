@@ -129,14 +129,6 @@ var ChartView = {
   },
   rebuild: function () {
     this.defaults.width = $('#content').width();
-    var snapshot = $('#snapshot');
-    if(snapshot.width() >= 900){
-      snapshot.css('height','81px');
-        $('.btn-buy-sell-wrapper').css('float','right');
-    } else if(snapshot.width() >=600) {
-      snapshot.css('height','150px');
-        $('.btn-buy-sell-wrapper').css('float','none');
-    }
     this.indexChart.init();
     this.buildSentimentChart();
     this.buildRSIChart();

@@ -54,7 +54,7 @@ var RightPanel = {
   expandView: function(){
     this.el.removeClass('collapsed');
     this.collapsed.el.addClass('collapsed');
-    $('#content').css('width', 'calc(100% - 370px)');
+    $('#content').css('width', 'calc(100% - 330px)');
 
     setTimeout(function(){
       ChartView.rebuild();
