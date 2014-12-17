@@ -1435,6 +1435,7 @@ text {
 }
 #tooltip > ul > li.tt-row {
   color: rgb(140, 140, 140);
+  background-color: rgb(50, 50, 50);
 }
 .tt-label {
   display: inline-block;

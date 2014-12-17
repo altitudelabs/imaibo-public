@@ -252,7 +252,7 @@ var ChartView = {
       .attr('text-anchor', 'middle')
       .text(function(d,i){ return i%interval===0 ? toDate(d.rdate) : ''; });
 
-      //sentimetal rect bars 
+      //sentimetal rect bars
       gvolume
       .attr('class','volume')
       .selectAll('rect')
@@ -298,9 +298,9 @@ var ChartView = {
         //increment j
 
         //if mouse is in the first column, return 0
-        //if mouse is in the last column, 
+        //if mouse is in the last column,
 
-        for (j = 0; xPos > (leftEdges[j] + width); j++) {} 
+        for (j = 0; xPos > (leftEdges[j] + width); j++) {}
         return j;
       };
 
@@ -314,17 +314,20 @@ var ChartView = {
       .attr('height', height-margin.top-margin.bottom)
       .on('mouseover', function(e){
         return Tooltip.show(); })
-        .on('mouseout', function(){ 
+        .on('mouseout', function(){
           return Tooltip.hide(); })
           .on('mousemove', function(){
             var xPos = d3.mouse(this)[0],
-            j = xInverse(xPos),
-            d = d2 = data.daily.stockLine[j];
+                yPos = d3.mouse(this)[1],
+                j = xInverse(xPos),
+                cursorPriceLevel = y2.invert(yPos)
+                d = d2 = data.daily.stockLine[j];
 
             var model = {
               top: d3.event.layerY-5,
-              left: containerWidth-d3.event.layerX>150 ? d3.event.layerX+100 : d3.event.layerX-155,
+              left: containerWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-105,
               date: d.rdate,
+              price: cursorPriceLevel,
               security: d,
               sentiment: {
                 price: d2.moodindex,
@@ -368,9 +371,9 @@ var ChartView = {
             var _id = (id == 'sentimentLine'? 'sentimentLine': id+'-line'); // _id concats into, e.g, ma5-line
             var line = d3.svg.line()
             .x(function(d, i){ return x(i); })
-            .y(function(d){    
+            .y(function(d){
               var isMA = id.slice(0,2) == 'ma';
-              return isMA? y2(d[id]): y1(d.moodindex); 
+              return isMA? y2(d[id]): y1(d.moodindex);
             })
             .interpolate('linear');
 
@@ -813,7 +816,7 @@ var ChartView = {
       return d.newsCount;
     });
 
- 
+
     var tes = chart.selectAll("scatter-dots")
     .data(sentimentData)  // using the values in the ydata array
     .enter().append("svg:circle")  // create a new circle for each value
@@ -835,12 +838,12 @@ var ChartView = {
       .duration(200)
       .style("opacity", .9);
 
-      tooltip.html('<div class="tooltip-date"> 日期： ' + toDate(d.rdate) + '   ' + d.clock.slice(0, -3) + '</div>' + 
+      tooltip.html('<div class="tooltip-date"> 日期： ' + toDate(d.rdate) + '   ' + d.clock.slice(0, -3) + '</div>' +
                    '<div class="wrapper">' +
                    '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
                    '<div class="arrow ' + arrow + '">                     </div>' +
                    '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
-                   '<div class="extra ' + show_extra + '">...</div>' + 
+                   '<div class="extra ' + show_extra + '">...</div>' +
                    '</div>')
       .style("left", (d3.event.pageX + 10) + "px")
       .style("top", (d3.event.pageY ) + "px");
@@ -986,7 +989,7 @@ buildRSIChart: function(){
   function plotRSI(rsi, color){
     var line = d3.svg.line()
     .x(function(d,i) { return x(i); })
-    .y(function(d)   { 
+    .y(function(d)   {
       if(rsi == 6) return y2(d.rsi6);
       if(rsi ==12) return y2(d.rsi12);
       if(rsi ==24) return y2(d.rsi24);
