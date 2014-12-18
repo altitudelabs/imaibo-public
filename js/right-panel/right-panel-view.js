@@ -52,9 +52,14 @@ var RightPanel = {
   },
 
   expandView: function(){
-    this.el.removeClass('collapsed');
-    this.collapsed.el.addClass('collapsed');
+    var self = this;
     $('#content').css('width', 'calc(100% - 330px)');
+
+    setTimeout(function(){
+      self.collapsed.el.removeClass('uncollapsed');
+      self.el.removeClass('collapsed');
+      self.collapsed.el.addClass('collapsed');
+    }, 500);
 
     setTimeout(function(){
       ChartView.rebuild();

@@ -401,7 +401,7 @@
           <!-- Toolbar end -->
           <div id="chart-label">
           </div>
-          <div class='container' id="chart-container" >
+          <div class='container zoomable-graph' id="chart-container" >
             <div id="chart"></div>
           </div>
           <div id="chart-x-label"></div>
@@ -422,7 +422,11 @@
               <div class="close"></div>
             </div>
           </div>
-          <div id="rsi-chart"></div>
+          <div id="rsi-chart-label"></div>
+          <div class='container zoomable-chart-container' id="rsi-chart-container" >
+            <div class="zoomable-chart" id="rsi-chart"></div>
+          </div>
+
         </div>
         <div id="macd" class="component">
           <div class="wrapper">
@@ -517,14 +521,19 @@
 
   <!-- Start charting JS files -->
   <script type="text/javascript" src="js/lib/helpers.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.slimscroll.min.js"></script>
   <script type="text/javascript" src="js/toolbar/toolbar.js"></script>
   <script type="text/javascript" src="js/tooltip/tooltip.js"></script>
   <script type="text/javascript" src="js/chart/chart-model.js"></script>
   <script type="text/javascript" src="js/chart/chart-view.js"></script>
+  <script type="text/javascript" src="js/chart/index-chart.js"></script>
+  <script type="text/javascript" src="js/chart/sentiment-chart.js"></script>
+  <script type="text/javascript" src="js/chart/macd-chart.js"></script>
+  <script type="text/javascript" src="js/chart/rsi-chart.js"></script>
   <script type="text/javascript" src="js/right-panel/right-panel-model.js"></script>
   <script type="text/javascript" src="js/right-panel/right-panel-view.js"></script>
   <script type="text/javascript" src="js/content/content-view.js"></script>
-  <script type="text/javascript" src="js/dashboard/dashboard-view.js"></script>
+  <script type="text/javascript" src="js/dashboard/dashboard.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
   <!-- End charting JS files -->
 </body>

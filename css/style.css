@@ -338,14 +338,18 @@ body {
   position: absolute;
   top: 25px;
   overflow: scroll;
-  left: 50px;
   width: calc(100% - 120px);
 }
 
-#chart {
+.zoomable-chart-container{
+  overflow: hidden;
+}
+
+.zoomable-chart {
   z-index: 1;
   top: 0;
 }
+
 
 
 /* =SentimentChart
@@ -611,7 +615,12 @@ label.checkbox-label input[type=checkbox]{
   width: calc(100% - 60px);
 }
 */
-#right-panel.collapsed { margin-right: -300px; }
+#right-panel.collapsed { display: none; }
+#right-panel.uncollapsed { display: inline-flex; }
+
+#right-panel-collapsed.collapsed{
+  display: none;
+}
 #right-panel {
   height: 784px;
   float: right;
@@ -641,7 +650,6 @@ label.checkbox-label input[type=checkbox]{
   background: url('../assets/chart/collapse-rightwards.png') no-repeat center;
   right: 300px;
 }
-
 
 .vertical-uncollapse{
   background: url('../assets/chart/collapse-leftwards.png') no-repeat center;
@@ -1521,6 +1529,15 @@ ul.toolbar > li.active > a:hover {
 #rsi > .wrapper > .buttons > .close {
   display: inline-block;
 }
+
+#rsi {
+  height: 240px;
+}
+
+#rsi-chart-container {
+  width: 100%;
+}
+
 
 #rsi6-legend {
   color: #fff;

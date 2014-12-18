@@ -1,65 +1,43 @@
 var ChartModel = {
-  model: {},
-  get: function(callback){
-    var self = this;
+  model: {
+    info:         {},
+    daily:        {},
+    minute:       {},
+    sentiment:    {},
+    dataRecieved: 0
+  },
+  getIndexData: function(call){
+    var self = ask = this;
     $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=main&info=1&trading=1&daily=1&callback=?', function(dailyData) {
-	    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&callback=?', function(sentimentData) {
-	      var model = {};
-        model.info = dailyData.data.info;
-	      model.daily = dailyData.data.daily;
-        model.minute = dailyData.data.minute;
-	      model.sentiment = sentimentData.data;
+      self.model.info   = dailyData.data.info;
+      self.model.daily  = dailyData.data.daily;
+      self.model.minute = dailyData.data.minute;
 
-        model.daily.stockLine.reverse();
+      self.model.daily.stockLine.reverse(); //API in descending order, need to revese it.
 
+      ask.CanIRemoveLoaders();// ?
 
-	      self.model = model;
-        $('.loader').fadeOut(500);
-        $('#loading').remove();
-        $('.btn-buy-sell-wrapper > .btn').removeClass('disabled');
-	      callback(self.model);
-	    });
+      var me_maybe = self.model;
+      call(me_maybe); //xoxo
     });
   },
-  addIndices: function(){
-
+  getSentimentData: function(date, callback){
+    var self = ask = this;
+    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLineUpdate&reqDate='+ date +'&callback=?', function(sentimentData) {
+      self.model.sentiment = sentimentData.data;
+      ask.CanIRemoveLoaders(); // ?
+      callback(self.model);
+    });
   },
-  processRSI: function(){
-    // TODO
+  removeLoaders: function(){
+    $('.loader').fadeOut(500);
+    $('#loading').remove();
+    $('.btn-buy-sell-wrapper > .btn').removeClass('disabled');
   },
-  processMA: function(){
-    // TODO
-  },
-  calcMovingAvg: function(n, precision){
-    var sentiment = this.model.sentiment.indexList;
-    var price = 0;
-    for (var i = sentiment.length-n; i < sentiment.length; i++){
-      price += parseFloat(sentiment[i].price);
-    }
-    return (price/n).toFixed(precision);
-  },
-
-  // TODO: For reference only
-  // MACD: http://stackoverflow.com/questions/11963352/plot-rolling-moving-average-in-d3-js
-  // RSI: http://stackoverflow.com/questions/22626238/calculate-rsirelative-strength-index-using-some-programming-language-js-c
-  movingAvg: function(n) {
-    return function (points) {
-      points = points.map(function(each, index, array) {
-        var to = index + n - 1;
-        var subSeq, sum;
-        if (to < points.length) {
-            subSeq = array.slice(index, to + 1);
-            sum = subSeq.reduce(function(a,b) {
-                return [a[0] + b[0], a[1] + b[1]];
-            });
-            return sum.map(function(each) { return each / n; });
-        }
-        return undefined;
-      });
-      points = points.filter(function(each) { return typeof each !== 'undefined' })
-      // Note that one could re-interpolate the points
-      // to form a basis curve (I think...)
-      return points.join("L");
+  CanIRemoveLoaders: function(){
+    if(++this.model.dataRecieved > 1){
+      this.removeLoaders();
+      this.model.dataRecieved = 0;
     }
   }
 };

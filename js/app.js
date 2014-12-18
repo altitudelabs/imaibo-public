@@ -8,6 +8,5 @@ $(function(){
   // Sets up routing logic for right content panel
   RightPanel.init();
 
-  // Sets up logic for right dashboard
-  DashboardView.init();
+
 });
