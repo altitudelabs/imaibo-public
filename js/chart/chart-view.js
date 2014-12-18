@@ -158,6 +158,8 @@ var ChartView = {
     init: function () {
       this.horizontalScroll();
 
+      this.disableBodyScroll();
+
       this.setProperties();
 
       this.build();
@@ -174,10 +176,12 @@ var ChartView = {
     },
     disableBodyScroll: function () {
       $('#stockpicker-table-body').on('mouseenter', function (event){
-        $('body').addClass('noscroll');
+        console.log('enter');
+        $('html').addClass('noscroll');
       });
       $('#stockpicker-table-body').on('mouseleave', function (event){
-        $('body').removeClass('noscroll');
+        console.log('leave');
+        $('html').removeClass('noscroll');
       });
     },
     setProperties: function (options) {
