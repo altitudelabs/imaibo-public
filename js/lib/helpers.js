@@ -20,15 +20,6 @@ function getDateString(date){
   return '{0}-{1}-{2}'.format(year, month, day);
 }
 
-function toDate(date){
-  var d = date.toString();
-  var year = d.slice(0, 4);
-  var month = d.slice(4, 6);
-  var day = d.slice(6, 8);
-
-  return year + '-' + month + '-' + day;
-}
-
 function min(a, b){ return a < b ? a : b ; }
 function max(a, b){ return a > b ? a : b; }
 
@@ -74,15 +65,32 @@ Handlebars.registerHelper('formatNumber', function(num, dp){
   }
 });
 
-/*
- * Populate HandlebarJS template.
- * ==============================
- * arguments:
- *  - target_selector: DOM object of your target div. i.e. $('#expertsView')
- *  - template_selector: DOM object of your template. i.e. $('#experts-template')
- *  - resource: the data you are passing in. e.g. {name: 'Ray'}
- */
-function populateView(target_selector, template_selector, resource){
-  var template = Handlebars.compile(template_selector.html());
-  target_selector.html(template({data: resource}));
+var Helper = {
+  toDate: function(date){
+    var d = date.toString();
+    var year = d.slice(0, 4);
+    var month = d.slice(4, 6);
+    var day = d.slice(6, 8);
+
+    return year + '-' + month + '-' + day;
+  },
+  populateView:
+    /*
+     * Populate HandlebarJS template.
+     * ==============================
+     * arguments:
+     *  - target_id: id/class of your div. i.e. '#expertsView'
+     *  - template_id: id template. i.e. '#experts-template'
+     *  - resource: the data you are passing in. e.g. {name: 'Ray'}
+     */
+    function (target_id, template_id, resource){
+      var target_selector = $(target_id);
+      var template_selector = $(template_id);
+      var template = Handlebars.compile(template_selector.html());
+      if(resource.constructor === Array){
+        target_selector.html(template({data: resource}));
+      }else{
+        target_selector.html(template(resource));
+      }
+    }
 }
