@@ -25,6 +25,7 @@
   <!-- Start iMaibo CSS -->
   <link rel="stylesheet" type="text/css" href="css/common_base.css">
   <link rel="stylesheet" type="text/css" href="css/common_v1.css">
+  <link rel="stylesheet" type="text/css" href="css/sprites.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <!-- End iMaibo CSS -->
 
@@ -54,7 +55,6 @@
         <li><a class="link-experts-view" href="#">专家解读</a></li>
         <li><a class="link-news-view" href="#">新闻</a></li>
         <li class="close-button pull-right"><a class="link-right-panel-collapsed" href="#"></a></li>
-        <li class="pin-button pull-right"><a href="#"></a></li>
       </ul>
 
       <div class="panel-loader"></div>
@@ -298,7 +298,7 @@
               </div>
 
               <div class="thermo-wrapper">
-                <div class="thermometer"></div>
+                <div class="thermometer mb thermometer-extended"></div>
                 <div class="background"></div>
               </div>
               <div class="changes ">+{{moodindexInfo.change}}</div>
@@ -369,11 +369,10 @@
           <!-- Toolbar start -->
           <div id="toolbar">
             <ul class="toolbar">
-              <li><a class="noselect" id="zoomout"></a></li>
-              <li><a class="noselect" id="zoomin"></a></li>
-
+              <li><a class="noselect mb zoomout" id="zoomout"></a></li>
+              <li><a class="noselect mb zoomin" id="zoomin"></a></li>
               <li class="link-dropdown noselect" id="frequency" data-target="frequency">
-                <a id="frequency-icon"></a>
+                <a class="mb period-button" id="frequency-icon"></a>
                 <div class="dropdown-menu" data-target="frequency">
                   <form>
                   <ul>
@@ -385,11 +384,11 @@
                 </div>
               </li>
               <li class="link-dropdown noselect" id="ma" data-target="ma">
-                <a id="ma-icon"></a>
+                <a class="mb ma-button" id="ma-icon"></a>
                 <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu"></div>
               </li>
               <li class="link-dropdown noselect" id="rsi-button" data-target="chart-toggle">
-                <a id="rsi-icon"></a>
+                <a class="mb annotations-button" id="rsi-icon"></a>
                 <div class="dropdown-menu" data-target="chart-toggle">
                   <ul>
                     <li><input type="checkbox" id="macd-checkbox"><label> MACD</label></li>
