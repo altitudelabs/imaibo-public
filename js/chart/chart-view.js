@@ -1,9 +1,32 @@
 var ChartView = {
-  x: function(){
+  properties: {},
+  setProperties: function (options) {
+    var self = this;
+    //review
+    var properties = {
+      width: ChartView.defaults.width, //width of left panel
+      height: 400, //height of index chart
+      margin: { top: 10, right: 70, bottom: 30, left: 50 }, //margin of chart
+      chartWidth: function(){ return self.properties.width - self.properties.margin.right - self.properties.margin.left; }, //width of charts
+      graphWidth: this.chartWidth,
+      volumeHeight: 50,
+      interval: 40,
+      zoomFactor: self.properties.zoomFactor || 1,
+    };
+
+    if (options) {
+      for (var key in options) {
+        properties[key] = options[key];
+      }
+    }
+    this.properties = $.extend(true, {}, properties);
+  },
+
+  x: function(graphWidth){
     var self = this;
      return d3.scale.ordinal()
     .domain(self.data.daily.stockLine.map(function(x) { return x.rdate; }))
-    .rangeBands([ margin.left, self.defaults.width-margin.right]); //inversed the x axis because api came in descending order
+    .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
   },
   /*
    * xInverse
@@ -53,7 +76,7 @@ var ChartView = {
 
           IndexChart.init();
           RsiChart.init();
-          MacdChart.build();
+          MacdChart.init();
           Dashboard.render(self.data.info);
           Toolbar.render(self.data.daily);
         });
@@ -66,7 +89,6 @@ var ChartView = {
       today.getDate().toString();
 
     draw(today);
-
 
     $(window).on('resize', function() { self.rebuild(); });
     $('#chart-view').on('resize', function(){ self.rebuild(); });
@@ -85,7 +107,7 @@ var ChartView = {
     IndexChart.init();
     SentimentChart.build();
     RsiChart.init();
-    MacdChart.build();
+    MacdChart.init();
   },
   data: {
     daily:{},

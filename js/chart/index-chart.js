@@ -1,9 +1,8 @@
 var IndexChart = {
-  properties: {},
   init: function () {
     this.horizontalScroll();
     this.disableBodyScroll();
-    this.setProperties();
+    ChartView.setProperties();
     this.build();
   },
   horizontalScroll: function () {
@@ -24,41 +23,22 @@ var IndexChart = {
       $('html').removeClass('noscroll');
     });
   },
-  setProperties: function (options) {
-    var self = this;
-    //review
-    var properties = {
-      width: ChartView.defaults.width - 122,
-      height: 400,
-      margin: { top: 30, right: 0, bottom: 30, left: 0 },
-      volumeHeight: 50,
-      interval: 40,
-      zoomFactor: self.properties.zoomFactor || 1
-    };
-
-    if (options) {
-      for (var key in options) {
-        properties[key] = options[key];
-      }
-    }
-    this.properties = $.extend(true, {}, properties);
-  },
   drawGraph: function(isNew, y1, y2, x, v, chart) {
     //not a fan of this.
     //it builds up the memory stack
-    var prop = this.properties,
-    containerWidth = prop.width,
-    height         = prop.height,
-    graphWidth     = containerWidth * prop.zoomFactor,
-    margin         = prop.margin,
-    data           = ChartView.data || this.data,
-    interval       = prop.interval,
-    zoomFactor     = prop.zoomFactor,
-    xlabels,
-    gvolume,
-    gcandlesticks,
-    glinestems,
-    tooltip;
+    var prop = ChartView.properties,
+        chartWidth = prop.chartWidth(),
+        height     = prop.height,
+        graphWidth = chartWidth * prop.zoomFactor,
+        margin     = prop.margin,
+        data       = ChartView.data || this.data,
+        interval   = prop.interval,
+        zoomFactor = prop.zoomFactor,
+        xlabels,
+        gvolume,
+        gcandlesticks,
+        glinestems,
+        tooltip;
 
     if(isNew){
       xlabels = chart.append('g').attr('class','xlabels');
@@ -115,7 +95,7 @@ var IndexChart = {
     .attr('x', function(d,i) { return x(i) - 2.8*zoomFactor; })
     .attr('y', function(d) { return height - margin.bottom - v(d.volumn); })
     .attr('height', function(d) { return v(d.volumn); })
-    .attr('width', function(d) { return 0.8 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
+    .attr('width', function(d) { return 0.8 * graphWidth/data.daily.stockLine.length; })
     .attr('fill', '#595959');
 
     //rectangles of the candlesticks graph
@@ -137,8 +117,8 @@ var IndexChart = {
     .data(data.daily.stockLine)
     .enter().append('svg:line')
     .attr('class', 'stem')
-    .attr('x1', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
-    .attr('x2', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (containerWidth * zoomFactor - margin.left - margin.right)/data.daily.stockLine.length; })
+    .attr('x1', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (graphWidth - margin.left - margin.right)/data.daily.stockLine.length; })
+    .attr('x2', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (graphWidth - margin.left - margin.right)/data.daily.stockLine.length; })
     .attr('y1', function(d) { return y2(d.highpx); })
     .attr('y2', function(d) { return y2(d.lowpx); })
     .attr('stroke', function(d){ return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; })
@@ -147,9 +127,9 @@ var IndexChart = {
     tooltip
     .attr('class', 'mouseover-overlay')
     .attr('fill', 'transparent')
-    .attr('x', margin.left)
+    .attr('x', 0)
     .attr('y', margin.top)
-    .attr('width', graphWidth-margin.left-margin.right)
+    .attr('width', graphWidth)
     .attr('height', height-margin.top-margin.bottom)
     .on('mouseover', function(e){
       return Tooltip.show(); })
@@ -164,7 +144,7 @@ var IndexChart = {
 
           var model = {
             top: d3.event.layerY-5,
-            left: containerWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-105,
+            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-105,
             date: d.rdate,
             price: cursorPriceLevel,
             security: d,
@@ -239,16 +219,13 @@ var IndexChart = {
 
     data.sentiment.indexList.length = data.daily.stockLine.length;
 
-    var containerWidth = this.properties.width;
-    var graphWidth = this.properties.width * this.properties.zoomFactor;
-    var height = this.properties.height;
-    var margin = this.properties.margin;
-    var volumeHeight = this.properties.volumeHeight;
-    var interval = this.properties.interval;
-
-    margin.right -= 50;
-    margin.top += 20;
-
+    var containerWidth = ChartView.properties.width;
+    var chartWidth = ChartView.properties.chartWidth();
+    var graphWidth = chartWidth * ChartView.properties.zoomFactor;
+    var height = ChartView.properties.height;
+    var margin = ChartView.properties.margin;
+    var volumeHeight = ChartView.properties.volumeHeight;
+    var interval = ChartView.properties.interval;
 
     var chart = d3.select('#chart')
     .append('svg:svg')
@@ -257,11 +234,9 @@ var IndexChart = {
     .attr('width', graphWidth)
     .attr('height', height);
 
-    $('#chart-container').css('width', containerWidth.toString() + 'px');
-
     $('#chart-container').slimScroll({
       height: (height+40).toString() + 'px',
-      width: containerWidth.toString() + 'px',
+      width: chartWidth.toString() + 'px',
       color: '#ffcc00',
     });
 
@@ -284,9 +259,7 @@ var IndexChart = {
     .domain([d3.min(data.daily.stockLine.map(function(x) { return +x.lowpx; })), d3.max(data.daily.stockLine.map(function(x){return +x.highpx; }))])
     .range([height-margin.bottom, margin.top]);
 
-    var x = d3.scale.ordinal()
-    .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
-    .rangeBands([margin.left, graphWidth]); //inversed the x axis because api came in descending order
+    var x = ChartView.x(graphWidth);
 
     var v = d3.scale.linear()
     .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
@@ -296,12 +269,11 @@ var IndexChart = {
       margin: {},
     };
     border.margin.top = margin.top - 35;
-    border.margin.left = margin.left + 50;
 
     chart_label.append('svg:line')
     .attr('class', 'xaxis')
-    .attr('x1', border.margin.left)
-    .attr('x2', containerWidth - margin.right)
+    .attr('x1', margin.left)
+    .attr('x2', margin.left + chartWidth) //shift to the left
     .attr('y1', height - margin.bottom)
     .attr('y2', height - margin.bottom)
     .attr('stroke', '#464646')
@@ -309,10 +281,10 @@ var IndexChart = {
 
     chart_label.append('svg:line')
     .attr('class', 'border-left')
-    .attr('x1', border.margin.left)
-    .attr('x2', border.margin.left)
+    .attr('x1', margin.left)
+    .attr('x2', margin.left)
     .attr('y1', height - margin.bottom)
-    .attr('y2', border.margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
@@ -321,17 +293,17 @@ var IndexChart = {
     .attr('x1', containerWidth - margin.right )
     .attr('x2', containerWidth - margin.right )
     .attr('y1', height - margin.bottom)
-    .attr('y2', border.margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
     //top border
     chart_label.append('svg:line')
     .attr('class', 'border-top')
-    .attr('x1', border.margin.left)
+    .attr('x1', margin.left)
     .attr('x2', containerWidth - margin.right )
-    .attr('y1', border.margin.top)
-    .attr('y2', border.margin.top)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
@@ -355,7 +327,7 @@ var IndexChart = {
     .data(y1.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', border.margin.left - 15)
+    .attr('x', margin.left - 15)
     .attr('y', y1)
     .attr('text-anchor', 'middle')
     .text(String);
@@ -430,17 +402,16 @@ var IndexChart = {
 
   },
   redraw: function (zoomFactor) {
-    this.setProperties({
-      zoomFactor: this.properties.zoomFactor * zoomFactor
+    ChartView.setProperties({
+      zoomFactor: ChartView.properties.zoomFactor * zoomFactor
     });
     var data = ChartView.data;
-    var containerWidth = this.properties.width;
-    var graphWidth = this.properties.width * this.properties.zoomFactor;
-    var height = this.properties.height;
-    var margin = this.properties.margin;
-    var volumeHeight = this.properties.volumeHeight;
-    var interval = this.properties.interval;
-    var self = this;
+    var chartWidth = ChartView.properties.chartWidth();
+    var graphWidth = chartWidth * ChartView.properties.zoomFactor;
+    var height = ChartView.properties.height;
+    var margin = ChartView.properties.margin;
+    var volumeHeight = ChartView.properties.volumeHeight;
+    var interval = ChartView.properties.interval;
 
     $('.slimScrollDiv').css('width', (graphWidth).toString() + 'px');
 
@@ -452,9 +423,7 @@ var IndexChart = {
     .domain([d3.min(data.daily.stockLine.map(function(x) { return +x.lowpx; })), d3.max(data.daily.stockLine.map(function(x){return +x.highpx; }))])
     .range([height-margin.bottom, margin.top]);
 
-    var x = d3.scale.ordinal()
-    .domain(data.daily.stockLine.map(function(x) { return x.rdate; }))
-    .rangeBands([margin.left, graphWidth]);
+    var x = ChartView.x(graphWidth);
 
     var v = d3.scale.linear()
     .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
