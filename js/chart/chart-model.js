@@ -12,7 +12,6 @@ var ChartModel = {
       self.model.info   = dailyData.data.info;
       self.model.daily  = dailyData.data.daily;
       self.model.minute = dailyData.data.minute;
-
       self.model.daily.stockLine.reverse(); //API in descending order, need to revese it.
 
       ask.CanIRemoveLoaders();// ?
