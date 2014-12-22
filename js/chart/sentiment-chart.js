@@ -3,7 +3,7 @@ var SentimentChart = {
     $('#sentiment-chart').empty();
 
     var data = ChartView.data,
-    width = ChartView.defaults.width,
+    width = ChartView.properties.width,
     height = 200,
     margin = { top: 30, right: 70, bottom: 30, left: 50 },
     interval = 40;

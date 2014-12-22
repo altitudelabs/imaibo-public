@@ -109,7 +109,7 @@ var ChartView = {
       ChartModel.getIndexData(function(data) {
         ChartModel.getSentimentData(date, function(data){
           self.data.sentiment = data.sentiment;
-          //SentimentChart.build();
+          SentimentChart.build();
           self.data.info = data.info;
           self.data.daily = data.daily;
           self.data.minute = data.minute;
@@ -134,9 +134,7 @@ var ChartView = {
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
     MacdChart.drawGraph(false);
-    // SentimentChart.build();
-    // RsiChart.init();
-    // MacdChart.init();
+    SentimentChart.build();
   },
   horizontalScroll: function () {
     'use strict';
