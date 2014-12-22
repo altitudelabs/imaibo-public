@@ -29,7 +29,6 @@ var ChartView = {
     var self = this;
     var props = self.properties;
     var graphWidth = (props.width - props.margin.left - props.margin.right)*props.zoomFactor;
-    console.log(graphWidth);
     return d3.scale.ordinal()
     .domain(data.map(function(x) { return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
@@ -57,7 +56,6 @@ var ChartView = {
   //return .volumn
   // range -> volumeHeight
   v: function(data, returnProp) {
-    console.log('V for Vendetta');
     var self = this;
     var props = self.properties;
 
@@ -95,8 +93,19 @@ var ChartView = {
     var self = this;
     self.build();
 
-    $(window).on('resize', function() { self.rebuild(); });
-    $('#chart-view').on('resize', function(){ self.rebuild(); });
+    $(window).on('resize', function() { 
+      self.setProperties();
+      IndexChart.init();
+          RsiChart.init();
+          MacdChart.init(); 
+      self.redraw(1); });
+    $('#chart-view').on('resize', function(){ 
+      self.setProperties();
+      IndexChart.init();
+          RsiChart.init();
+          MacdChart.init();
+      self.redraw(1); 
+    });
 
   },
   build: function(){
