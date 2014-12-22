@@ -350,6 +350,10 @@ body {
   top: 0;
 }
 
+.mouseover-overlay {
+  z-index: 999999;
+}
+
 
 
 /* =SentimentChart
@@ -783,7 +787,7 @@ text {
 /* =Expert
 ---------------------------------------------------------------*/
 #experts-view {
-  padding: 20px;
+  padding: 0px 10px 20px 10px;
   overflow: scroll;
 }
 
@@ -791,7 +795,7 @@ text {
   width: 100%;
   background-color: rgb(38, 38, 38);
   border-bottom: rgb(107, 107, 107) dotted thin;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .profile-pic, .others {
@@ -799,14 +803,14 @@ text {
 }
 
 .profile-pic {
-  width: 19%;
+  width: 40px;
   height: 40px;
   background-color: white;
   float: left;
 }
 
 .others{
-  width: 80%;
+  width: 230px;
   height: 40px;
   float: right;
   padding-left: 2px;
@@ -836,13 +840,14 @@ text {
 
 .like-and-discussion {
   height: 40px;
-  width: 100%;
+  width: 180px;
+  margin-left: auto;
   margin-top: 10px;
   vertical-align: middle; /* override common_base.css:6 */
 }
 
 .like {
-  width: 40%;
+  width: 50%;
   height: 100%;
   color: black;
   line-height: 1em;
@@ -851,8 +856,8 @@ text {
 .like > .text,
 .discussion > .text {
   height: 100%;
-  width: 48%;
-  vertical-align: top;
+  width: 60px;
+  /*vertical-align: top;*/
   color: rgb(107, 107, 107);
 }
 
@@ -862,9 +867,34 @@ text {
 .discussion > .icon {
   display: inline-block;
 }
+.like-and-discussion .like {
+  float: left;
+}
+.like-and-discussion .like .icon {
+  float: left;
+}
+.like-and-discussion .like .text {
+  float: right;
+}
+
+.like-and-discussion .discussion {
+  float: right;
+}
+
+.like-and-discussion .discussion .icon {
+  float: left;
+}
+
+.like-and-discussion .discussion .text{
+  float: right;
+}
 
 .like-and-discussion .active .text {
   color: #a9a9a9;
+}
+
+.like-and-discussion .text p {
+  line-height: 40px
 }
 
 .like-and-discussion .like.active .icon {
@@ -901,20 +931,13 @@ text {
 
 .like > .icon,
 .discussion > .icon {
-  width: 48%;
+  width: 30px;
   height: 100%;
 }
 
 .discussion {
-  width: 40%;
+  width: 50%;
   height: 100%;
-}
-
-.discussion > .text,
-.like > .text {
-  -webkit-transform: translate(-20%, 30%);
-  -ms-transform: translate(-20%, 30%);
-  transform: translate(-20%, 30%);
 }
 
 .like, .discussion {
