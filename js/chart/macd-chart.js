@@ -106,7 +106,7 @@ var MacdChart = {
     .attr('fill', 'transparent')
     .attr('x', 0)
     .attr('y', margin.top)
-    .attr('width', graphWidth)
+    .attr('width', chartWidth)
     .attr('height', chartHeight)
     .on('mouseover', function(e){
       return Tooltip.show(); })
@@ -118,7 +118,7 @@ var MacdChart = {
       d = d2 = data.daily.stockLine[j];
 
       var model = {
-        top: d3.mouse(this)[1] + height*2 + 100 + ($('#rsi-checkbox').is(':checked')? 250: 0),
+        top: d3.mouse(this)[1] + height*2  + ($('#rsi-checkbox').is(':checked')? 250: 0),
         left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
         date: Helper.toDate(d.rdate),
         macd: d.macd,

@@ -219,6 +219,7 @@ var IndexChart = {
     gcandlesticks,
     glinestems,
     tooltip;
+
     var chart = d3.select('#chart')
     .attr('width', graphWidth)
     .select('svg')
@@ -231,12 +232,20 @@ var IndexChart = {
       glinestems = chart.append('g').attr('class','linestems');
       tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
       .attr('fill', 'transparent');
+      vertical = chart.append('svg:line');
+      horizontal = chart.append('svg:line');
+
+
     }else{
       xlabels = chart.selectAll('g.xlabels');
       gvolume = chart.selectAll('g.volume');
       gcandlesticks = chart.selectAll('g.candlesticks');
       glinestems =  chart.selectAll('g.linestems');
       tooltip =   chart.selectAll('rect.mouseover-overlay');
+      vertical = chart.selectAll('line.xlabelLine');
+      horizontal = chart.selectAll('line.ylabelLine');
+
+
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -305,7 +314,34 @@ var IndexChart = {
     .attr('x2', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (graphWidth - margin.left - margin.right)/data.daily.stockLine.length; })
     .attr('y1', function(d) { return y2(d.highpx); })
     .attr('y2', function(d) { return y2(d.lowpx); })
-    .attr('stroke', function(d){ return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; })
+    .attr('stroke', function(d){ return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; });
+
+    chart
+      .on('mousemove', function(){
+        var xPos = d3.mouse(this)[0];
+        var yPos = d3.mouse(this)[1];
+
+        vertical
+        .attr('class', 'xlabelLine')
+        .attr('id', 'xlabelLine')
+        .attr('x1', xPos)
+        .attr('x2', xPos)
+        .attr('y1', height-margin.bottom) //make it line up with the label
+        .attr('y2', margin.top)
+        .attr('stroke', '#44b6ea');
+
+        horizontal
+        .attr('class', 'ylabelLine')
+        .attr('id', 'ylabelLine')
+        .attr('x1', chartWidth)
+        .attr('x2', 0)
+        .attr('y1', yPos) //make it line up with the label
+        .attr('y2', yPos)
+        .attr('stroke', '#f65c4e');
+
+      });
+
+
 
     //tooltips
     tooltip
