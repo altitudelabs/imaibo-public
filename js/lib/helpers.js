@@ -66,14 +66,17 @@ Handlebars.registerHelper('formatNumber', function(num, dp){
 });
 
 var Helper = {
-  toDate: function(date){
+  toDate: function(date, format){
     var d = date.toString();
     var year = d.slice(0, 4);
     var month = d.slice(4, 6);
     var day = d.slice(6, 8);
 
-    // return year + '-' + month + '-' + day;
-    return year + '/' + month;
+    if (format === 'yyyy-mm'){
+      return year + '-' + month;
+    } else {
+      return year + '-' + month + '-' + day;
+    }
   },
   populateView:
     /*
