@@ -211,7 +211,6 @@ var IndexChart = {
         }
   },
   build: function () {
-
     $('#chart').empty();
     $('#chart-label').empty();
 
@@ -234,16 +233,17 @@ var IndexChart = {
     .attr('width', graphWidth)
     .attr('height', height);
 
+
     $('#chart-container').slimScroll({
       height: (height+40).toString() + 'px',
-      width: chartWidth.toString() + 'px',
+      width: containerWidth.toString() + 'px',
       color: '#ffcc00',
     });
 
     $('.slimScrollDiv').css('position', 'absolute')
     .css('top', '0')
     .css('left', '50px')
-    .css('width', (containerWidth).toString() + 'px');
+    .css('width', chartWidth.toString() + 'px');
 
     var chart_label = d3.select('#chart-label')
     .append('svg:svg')
@@ -269,6 +269,22 @@ var IndexChart = {
       margin: {},
     };
     border.margin.top = margin.top - 35;
+
+    chart_label.append('svg:line')
+    .attr('class', 'horizontal-line')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left + chartWidth) //shift to the left
+    .attr('y1', height - margin.bottom)
+    .attr('y2', height - margin.bottom)
+    .attr('stroke', '#25bcf1')
+    .attr('stroke-width', '2px')
+    .on('mouseover', function(e){
+      console.log(e);
+      return Tooltip.show(); })
+    .on('mousemove', function(){
+          var xPos = d3.mouse(this)[0],
+          yPos = d3.mouse(this)[1];
+    });
 
     chart_label.append('svg:line')
     .attr('class', 'xaxis')
@@ -429,7 +445,7 @@ var IndexChart = {
     .domain([0, d3.max(data.daily.stockLine.map(function(d){ return +d.volumn;}))])
     .range([0, volumeHeight]);
 
-    $('.slimScrollDiv').css('width', graphWidth);
+    $('.slimScrollDiv').css('width', graphWidth.toString() + 'px');
 
     var chart = d3.select('#chart')
     .attr('width', graphWidth)

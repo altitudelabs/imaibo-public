@@ -78,6 +78,7 @@ var ChartView = {
           RsiChart.init();
           MacdChart.init();
           Dashboard.render(self.data.info);
+          console.log(self.data.info);
           Toolbar.render(self.data.daily);
         });
       });
@@ -104,6 +105,8 @@ var ChartView = {
   },
   rebuild: function () {
     this.defaults.width = $('#content').width();
+    this.setProperties();
+    $('.zoomable-chart-container').css('width', '100%');
     IndexChart.init();
     SentimentChart.build();
     RsiChart.init();

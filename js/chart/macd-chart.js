@@ -168,6 +168,7 @@ var MacdChart = {
 
   build: function(){
     $('#macd-chart').empty();
+    $('#macd-chart-label').empty();
 
     var data = ChartView.data,
     width = ChartView.defaults.width,
@@ -177,6 +178,7 @@ var MacdChart = {
     height = this.properties.height,
     margin = this.properties.margin,
     interval = this.properties.interval;
+    console.log(this.properties);
 
     var chart = d3.select('#macd-chart')
     .append('svg:svg')
@@ -196,16 +198,16 @@ var MacdChart = {
     var x = ChartView.x(graphWidth);
 
     $('#macd-chart-container').slimScroll({
-        height: height.toString() + 'px',
-        width: chartWidth.toString() + 'px',
-        color: '#ffcc00',
-      });
-      $('#macd-chart-container').css('top', 0);
+      height: height.toString() + 'px',
+      width: chartWidth.toString() + 'px',
+      color: '#ffcc00',
+    });
+    $('#macd-chart-container').css('top', 0);
 
-      $('#macd .slimScrollDiv').css('position', 'absolute')
-      .css('top', (margin.top+20).toString() + 'px')
-      .css('left', '50px')
-      .css('width', graphWidth.toString() + 'px');
+    $('#macd .slimScrollDiv').css('position', 'absolute')
+    .css('top', (margin.top+20).toString() + 'px')
+    .css('left', '50px')
+    .css('width', graphWidth.toString() + 'px');
 
     chart_label.append('svg:line')
     .attr('class', 'xborder-top-thick')

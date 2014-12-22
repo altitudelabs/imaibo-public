@@ -143,6 +143,7 @@ var RsiChart = {
   build: function(){
     // rsi-chart
     $('#rsi-chart').empty();
+    $('#rsi-chart-label').empty();
 
     var data = ChartView.data,
     width = this.properties.width,
