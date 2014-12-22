@@ -33,7 +33,6 @@ var RightPanelModel = {
           $('#stock-login').remove();
           $('#suggestion').remove();
           $('#stockpicker-view > .wrapper:first-child').css('height', '0');
-          $('#stockpicker-table-body').css('height','706px');
         }
         $('.panel-loader').remove();
         $('#stockpicker-view').css('opacity', '1');

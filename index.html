@@ -94,30 +94,34 @@
             </div>
           </form>
         </div>
-        <div class="wrapper center" id="stock-login">
-            <div id="login-wrapper">
-              <div>登陆显示自选股</div>
-              <button id="login">登 录</button>
-            </div>
 
-       </div>
-          <div id="suggestion" >你可能感兴趣的热门股票</div>
+        <div class="wrapper center" id="stock-login">
+          <div id="login-wrapper">
+            <div>登陆显示自选股</div>
+            <button id="login">登 录</button>
+          </div>
+        </div>
+
+        <div id="suggestion">你可能感兴趣的热门股票</div>
+
+        <div class="stock-table-container">
+          <div class="stock-table-header-border"></div>
           <table id="stock-table">
             <thead>
               <tr>
                 <th class="zxg-ticker" colspan="2">股票名称</th>
                 <th class="zxg-price">现价</th>
-                <th class="zxg-change-rel">涨跌额</th>
-                <th class="zxg-change-abs">涨跌幅</th>
+                <th class="zxg-price-change-rel">涨跌额</th>
+                <th class="zxg-price-change-abs">涨跌幅</th>
               </tr>
             </thead>
             <tbody id="stockpicker-table-body"></tbody>
           </table>
         </div>
+      </div>
+      <!-- Stockpicker view end -->
 
-        <!-- Stockpicker view end -->
-
-        <script id="stockpicker-template" type="text/x-handlebars-template">
+      <script id="stockpicker-template" type="text/x-handlebars-template">
         {{#each this}}
           {{#ifEq sign '+'}}
             <tr class="rise">
@@ -129,14 +133,13 @@
               {{/ifEq}}
           {{/ifEq}}
             <td><div class="indicator"></div></td>
-            <td class="white"><a href="{{stockUrl}}">{{stockName}}</a></td>
-            <td>{{lastpx}}</td>
-            <td>{{pxchg}}</td>
-            <td>{{pxchgratio}}</td>
+            <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td>
+            <td class="zxg-price">{{lastpx}}</td>
+            <td class="zxg-price-change-abs">{{pxchg}}</td>
+            <td class="zxg-price-change-rel">{{pxchgratio}}</td>
           </tr>
         {{/each}}
       </script>
-
 
       <script id="experts-template" type="text/x-handlebars-template">
         {{#each this}}
@@ -198,11 +201,9 @@
           </div>
 
           <div class="sentiment-news rise">
-            <div class="label">心情指数</div>
-            <div class="rating">
-              <div class="arrow rise"></div>
-              <div class="percentage">80%</div>
-            </div>
+            <span class="label">心情指数</span>
+            <span class="arrow rise"></span>
+            <span class="percentage">80%</span>
           </div>
 
           <div class="time-and-source">

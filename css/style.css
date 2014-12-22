@@ -464,7 +464,7 @@ body {
 .nav > li > a {
   position: relative;
   display: block;
-  padding: 8px 15px;
+  padding: 8px 20px;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
@@ -646,7 +646,6 @@ label.checkbox-label input[type=checkbox]{
   display: none;
 }
 #right-panel {
-  height: 784px;
   float: right;
   width: 300px;
   margin-left: 15px;
@@ -747,14 +746,13 @@ label.checkbox-label input[type=checkbox]{
   padding: 30px 10px;
   color: rgb(107, 107, 107);
 }
-.nav-tabs-collapsed > li > a:hover {
+.nav-tabs-collapsed > li > a:hover, .nav-tabs-collapsed > li > a:visited, .nav-tabs-collapsed > li > a:focus {
   background-color: transparent;
 }
 .nav-tabs-collapsed > li > a.active, .nav-tabs-collapsed > li > a.active:hover {
   border-bottom: 2px solid transparent;
   color: rgb(107, 107, 107);
 }
-
 
 #right-panel-option-container {
   width: 15%;
@@ -819,6 +817,9 @@ text {
   background-color: rgb(38, 38, 38);
   border-bottom: rgb(107, 107, 107) dotted thin;
   margin-top: 17px;
+}
+.expert-block:last-child {
+  border-bottom: transparent dotted thin;
 }
 
 .profile-and-content {
@@ -1036,19 +1037,16 @@ text {
   background-image: url('../assets/chart/ajax-loader.gif') center no-repeat;
 }
 
-
-
 .neutral > .white a{
   color: rgb(107, 107, 107);
 }
-
 
 #settings {
   background-color: black;
   width: 100%;
   height: 40px;
-  border-right: #332 solid 1px;
-  border-bottom: #332 solid 1px;
+  border-right: #4d4d4d solid 1px;
+  border-bottom: #4d4d4d solid 1px;
   float: left;
   background: url('../assets/chart/settings.png') no-repeat center;
 }
@@ -1062,8 +1060,8 @@ text {
   width: 100%;
   height: 40px;
   background-color: #1f1f1f;
-  border-bottom: #332 solid 1px;
-  padding: 5px;
+  border-bottom: #4d4d4d solid 1px;
+  padding: 5px 15px;
   font-size: 13px;
   color: #808080;
 }
@@ -1082,7 +1080,7 @@ text {
   float: right;
   width: 15%;
   height: 40px;
-  border-bottom: #332 solid 1px;
+  border-bottom: #4d4d4d solid 1px;
 }
 
 #suggestion {
@@ -1090,7 +1088,7 @@ text {
   width: 100%;
   padding: 10px;
   padding-top: 12px;
-  border-bottom: #332 1px solid;
+  border-bottom: #4d4d4d 1px solid;
   color: #808080;
   background-color: #3c3c3c;
   border-top: #464646 solid 1px;
@@ -1155,7 +1153,7 @@ text {
   background-color: #1f1f1f;
   width: 100%;
   height: 40px;
-  border-bottom: #332 solid 1px;
+  border-bottom: #4d4d4d solid 1px;
   cursor: pointer;
 }
 
@@ -1163,23 +1161,20 @@ text {
   outline: none;
 }
 
+.stock-table-container {
+  position: relative;
+}
+.stock-table-header-border {
+  position: absolute;
+  width: 100%;
+  top: 35px;
+  border-bottom: #4d4d4d solid 1px;
+}
+
 #stock-table {
-  width: 100%;
-  /*height: 100%;*/
-  display: block;
-}
-
-#stock-table thead {
-  width: 100%;
-  margin-right: auto;
-  border-bottom: #332 solid 1px;
-}
-
-#stock-table tbody {
-  overflow: hidden;
-  display: block;
-  width: 100%;
-  height: 506px;
+  width: 95%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
 }
 
 #stock-table th {
@@ -1188,7 +1183,7 @@ text {
 }
 
 #stock-table td {
-  border-bottom: #332 solid 1px;
+  border-bottom: #4d4d4d solid 1px;
   padding: 12px 5px;
   margin: 5px;
 }
@@ -1198,13 +1193,12 @@ text {
 #stock-table td:first-child {
   width: 10%
 }
-#stock-table > thead {
-  text-align: left;
-}
-#stock-table th.zxg-ticker { width: 32.5%; }
-#stock-table th.zxg-price { width: 22.5%; }
-#stock-table th.zxg-change-rel { width: 22.5%; }
-#stock-table th.zxg-change-abs { width: 20%; }
+
+.zxg-ticker { text-align: left; }
+.zxg-price { text-align: right; padding-right: 10px !important; }
+.zxg-price-change-rel { text-align: right; padding-right: 10px !important ; }
+.zxg-price-change-abs { text-align: right; padding-right: 10px !important ; }
+
 #stock-table > tbody > tr > td {
   vertical-align: middle;
 }
@@ -1255,9 +1249,12 @@ text {
 ---------------------------------------------------------------*/
 .news-block {
   width: 100%;
-  padding: 5px;
+  padding: 0px;
   height: 150px;
   border-bottom: rgb(107, 107, 107) solid 1px;
+}
+.news-block:last-child {
+  border-bottom: transparent solid 1px;
 }
 
 .calendar-and-date {
@@ -1300,7 +1297,7 @@ text {
 /* =News
 ---------------------------------------------------------------*/
 #news-view {
-  padding: 20px;
+  padding: 15px 20px;
   overflow: hidden;
 }
 .news-block {
@@ -1326,9 +1323,6 @@ text {
   border: none;
 }
 
-
-
-
 .calendar,
 .date {
   display: inline-block;
@@ -1337,7 +1331,7 @@ text {
 .calendar {
   width: 10%;
   height: 100%;
-  background: url('../assets/chart/calendar.png') no-repeat center;
+  background: url('../assets/chart/calendar.png') no-repeat left;
 }
 
 .date {
@@ -1349,51 +1343,23 @@ text {
 .news-block .content {
   width: 100%;
   margin-top: 10px;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .sentiment-news {
-  width: 100%;
-  height: 20px;
+  display: inline-block;
   margin-top: 10px;
   border: rgb(107, 107, 107) solid 1px;
   border-radius: 3px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 3px 10px;
+  font-size: 12px;
 }
 
-
-.sentiment-news .label,
-.sentiment-news .rating {
-  display: inline-block;
-}
-
-
-.sentiment-news .rating {
-  float: right;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-
-.sentiment-news .label {
-  vertical-align: bottom;
-  font-size: 15px;
-
-}
-
-.sentiment-news .rating .arrow {
-  width: 10px;
-  height: 20px;
-}
-
-
-.sentiment-news .rating .arrow.rise {
+.sentiment-news .arrow.rise {
   background: url('../assets/chart/up-arrow.png') no-repeat center;
 }
 
-
-.sentiment-news .rating .arrow.fall {
+.sentiment-news .arrow.fall {
   background: url('../assets/chart/down-arrow.png') no-repeat center;
 }
 
@@ -1401,7 +1367,6 @@ text {
 .rating .percentage {
   display: inline-block;
   vertical-align: bottom;
-  font-size: 15px;
 }
 
 .time-and-source {
@@ -1416,7 +1381,7 @@ text {
 }
 
 .time-and-source .time {
-  color: #25bcf1;
+  color: rgb(107, 107, 107);
 }
 
 .time-and-source .source {
