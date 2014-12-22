@@ -1,34 +1,21 @@
 var MacdChart = {
-  y2: function(){
-    return d3.scale.linear()
-    .domain([Macd.properties.largest_abs*-1, MacdChart.properties.largest_abs])
-    .range([MacdChart.properties.chartHeight - MacdChart.properties.margin.bottom, MacdChart.properties.margin.top])
-  },
-  y1_diff: function() {
-    return d3.max(MacdChart.properties.data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
-  },
-  y2_diff: function() {
-    return d3.max(MacdChart.properties.data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
-  },
-  y1: function(){
-    return d3.scale.linear()
-    .domain([MacdChart.y1_diff()*-1, MacdChart.y1_diff()])
-    .range([MacdChart.properties.chartHeight-MacdChart.properties.margin.bottom,  MacdChart.properties.margin.top]);
-  },
-  y2: function() {
-    return d3.scale.linear()
-    .domain([MacdChart.y2_diff()*-1, MacdChart.y2_diff()])
-    .range([MacdChart.properties.chartHeight-MacdChart.properties.margin.bottom,  MacdChart.properties.margin.top]);
-  },
   properties: {},
+  setProperties: function(options) {
+    var properties = {
+      height: 240,
+      interval: 40,
+    };
+    if (options) {
+      for (var key in options) {
+        properties[key] = options[key];
+      }
+    }
+    this.properties = $.extend(true, {}, properties);
+  },  
   init: function(){
-    this.properties = $.extend({}, ChartView.properties);
-    this.properties.zoomFactor = 1;
-    this.properties.data = ChartView.data;
-    this.properties.height = 240;
-    this.properties.chartHeight = this.properties.height - this.properties.margin.top - this.properties.margin.bottom;
-    this.properties.chartWidth = this.properties.width - this.properties.margin.left - this.properties.margin.right;
-    this.build();
+    this.setProperties();
+    this.drawContainer();
+
 
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
       $('#macd').slideUp(500);
@@ -36,19 +23,24 @@ var MacdChart = {
     });
   },
   drawGraph: function(isNew, x, chart) {
-    var prop = this.properties,
-    chartWidth = prop.chartWidth,
-    chartHeight = prop.chartHeight,
-    height         = prop.height,
+    var prop = ChartView.properties,
+        margin = prop.margin,
+    chartWidth = prop.width - margin.left - margin.right,
+    height      = this.properties.height,
+    chartHeight = height - margin.top - margin.bottom,
     zoomFactor     = prop.zoomFactor,
     graphWidth     = chartWidth * zoomFactor,
-    margin         = prop.margin,
-    data           = ChartView.data || this.data,
-    interval       = prop.interval,
+    data           = ChartView.data,
+    interval       = this.properties.interval,
+    x              = ChartView.x(data.daily.stockLine, 'rdate'),
     xlabels,
     gline,
-    diff,
     tooltip;
+
+    var chart = d3.select('#macd-chart')
+    .attr('width', graphWidth)
+    .select('svg')
+    .attr('width', graphWidth);
 
     if(isNew){
       xlabels = chart.append('g')
@@ -148,42 +140,21 @@ var MacdChart = {
             .attr('fill', 'none');
         }
   },
-  redraw: function(zoomFactor) {
-    this.properties.zoomFactor *= zoomFactor;
-
-    var height = this.properties.height,
-    margin = this.properties.margin,
-    data = this.properties.data,
-    chartWidth = this.properties.chartWidth,
-    chartHeight = this.properties.chartHeight,
-    graphWidth = chartWidth * this.properties.zoomFactor;
-
-    var y2 = this.y2();
-    var x = ChartView.x(graphWidth);
-
-    $('.slimScrollDiv').css('width', (graphWidth).toString() + 'px');
-
-    var chart = d3.select('#macd-chart')
-    .select('svg')
-    .attr('width', graphWidth)
-    .attr('height', height);
-
-    this.drawGraph(false, x, chart);
-  },
-
-  build: function(){
+  drawContainer: function(){
     $('#macd-chart').empty();
     $('#macd-chart-label').empty();
 
-    var data = ChartView.data,
-    width = ChartView.defaults.width,
-    chartWidth = this.properties.chartWidth,
-    graphWidth = this.properties.chartWidth * this.properties.zoomFactor,
-    chartHeight = this.properties.chartHeight,
-    height = this.properties.height,
-    margin = this.properties.margin,
-    interval = this.properties.interval;
-    console.log(this.properties);
+     var data = ChartView.data;
+
+    var containerWidth = ChartView.properties.width;
+    var margin = ChartView.properties.margin;
+    var chartWidth = containerWidth - margin.left - margin.right;
+    var zoomFactor = ChartView.properties.zoomFactor;
+    var graphWidth = chartWidth * zoomFactor;
+
+    var height = this.properties.height;
+    var chartHeight = height - margin.top - margin.bottom;
+    var interval = this.properties.interval;
 
     var chart = d3.select('#macd-chart')
     .append('svg:svg')
@@ -194,13 +165,8 @@ var MacdChart = {
     var chart_label = d3.select('#macd-chart-label')
     .append('svg:svg')
     .attr('class', 'chart')
-    .attr('width', width)
+    .attr('width', containerWidth + 120)
     .attr('height', chartHeight);
-
-    var y1 = MacdChart.y1();
-    var y2 = MacdChart.y2();
-
-    var x = ChartView.x(graphWidth);
 
     $('#macd-chart-container').slimScroll({
       height: height.toString() + 'px',
@@ -241,10 +207,30 @@ var MacdChart = {
     chart_label.append('svg:line')
     .attr('class', 'xaxis')
     .attr('x1', margin.left)
-    .attr('x2', width - margin.right)
+    .attr('x2', containerWidth - margin.right)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', chartHeight - margin.bottom)
     .attr('stroke', '#464646');
+
+    var data = ChartView.data;
+
+    var y1Diff = d3.max(ChartView.data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
+    var y2Diff = d3.max(ChartView.data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
+
+    var y1 = d3.scale.linear()
+    .domain([y1Diff*-1, y1Diff])
+    .range([MacdChart.properties.height
+      -ChartView.properties.margin.top,  
+      ChartView.properties.margin.bottom]);
+
+    var y2 = d3.scale.linear()
+    .domain([y2Diff*-1, y2Diff])
+    .range([MacdChart.properties.height
+      -ChartView.properties.margin.top,  
+      ChartView.properties.margin.bottom]);
+
+    data  = ChartView.data.daily.stockLine;
+    var x = ChartView.x(data, 'rdate');
 
     chart_label.append('g')
     .attr('class','y1labels')
@@ -263,7 +249,7 @@ var MacdChart = {
     .data(y2.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', width-margin.right + 15)
+    .attr('x', containerWidth-margin.right + 15)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
@@ -272,7 +258,6 @@ var MacdChart = {
       $('#macd').css('display', $(this).is(':checked')? 'block':'none');
     });
 
-    this.drawGraph(true, x, chart);
   }
 };
 

@@ -116,7 +116,7 @@ var ChartView = {
 
           IndexChart.init();
           RsiChart.init();
-          //MacdChart.init();
+          MacdChart.init();
           Dashboard.render(self.data.info);
           Toolbar.render(self.data.daily);
         });
