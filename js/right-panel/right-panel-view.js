@@ -1,6 +1,5 @@
 var RightPanel = {
-  data: {
- },
+  data: {},
   el: $('#right-panel'),
   collapsed: {
     el: $('#right-panel-collapsed'),
@@ -33,7 +32,7 @@ var RightPanel = {
   collapseView: function(){
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
-    $('#content').css('width', 'calc(100% - 60px)');
+    $('#content').css('width', 'calc(100% - 55px)');
     setTimeout(function(){
       ChartView.rebuild();
     }, 400);
@@ -53,7 +52,7 @@ var RightPanel = {
 
   expandView: function(){
     var self = this;
-    $('#content').css('width', 'calc(100% - 330px)');
+    $('#content').css('width', 'calc(100% - 325px)');
 
     setTimeout(function(){
       self.collapsed.el.removeClass('uncollapsed');
@@ -70,7 +69,7 @@ var RightPanel = {
     this.render();
     RightPanelModel.getExpertData();
     RightPanelModel.getStockData();
-    this.disableBodyScroll();
+    // this.disableBodyScroll();
   },
   render: function(){
     this.goTo('chooseStockView');
