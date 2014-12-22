@@ -237,12 +237,11 @@ var IndexChart = {
       gvolume = chart.append('g').attr('class','volume');
       gcandlesticks = chart.append('g').attr('class','candlesticks');
       glinestems = chart.append('g').attr('class','linestems');
-      tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
-      .attr('fill', 'transparent');
-      vertical = chart.append('svg:line');
-      horizontal = chart.append('svg:line');
-      vertical_block = chart_label.append('svg:rect');
-      horizontal_block = chart_label.append('svg:rect');
+      // tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
+      // vertical = chart.append('svg:line');
+      // horizontal = chart.append('svg:line');
+      // vertical_block = chart_label.append('svg:rect');
+      // horizontal_block = chart_label.append('svg:rect');
 
 
     }else{
@@ -250,11 +249,11 @@ var IndexChart = {
       gvolume = chart.selectAll('g.volume');
       gcandlesticks = chart.selectAll('g.candlesticks');
       glinestems =  chart.selectAll('g.linestems');
-      tooltip =   chart.selectAll('rect.mouseover-overlay');
-      vertical = chart.selectAll('line.xlabelLine');
-      horizontal = chart.selectAll('line.ylabelLine');
-      vertical_block = chart_label.select('g#vertical-block');
-      horizontal_block = chart_label.select('g#horizontal-block');
+      // tooltip =   chart.selectAll('rect.mouseover-overlay');
+      // vertical = chart.selectAll('line.xlabelLine');
+      // horizontal = chart.selectAll('line.ylabelLine');
+      // vertical_block = chart_label.select('g#vertical-block');
+      // horizontal_block = chart_label.select('g#horizontal-block');
 
 
       chart.selectAll('g.xlabels')
@@ -331,79 +330,47 @@ var IndexChart = {
       var xPos = d3.mouse(this)[0];
       var yPos = d3.mouse(this)[1];
 
-      vertical
-      .attr('class', 'xlabelLine')
-      .attr('id', 'xlabelLine')
-      .attr('x1', xPos)
-      .attr('x2', xPos)
-      .attr('y1', height-margin.bottom) //make it line up with the label
-      .attr('y2', margin.top)
-      .attr('stroke', '#44b6ea');
+      // vertical
+      // .attr('class', 'xlabelLine')
+      // .attr('id', 'xlabelLine')
+      // .attr('x1', xPos)
+      // .attr('x2', xPos)
+      // .attr('y1', height-margin.bottom) //make it line up with the label
+      // .attr('y2', margin.top)
+      // .attr('stroke', '#44b6ea');
 
-      vertical_block
-      .attr('id','vertical-block')
-      .attr('x', chartWidth+50)
-      .attr('y', yPos-10)
-      .attr('height', 20)
-      .attr('width',  50)
-      .attr('fill', '#f65c4e');
+      // vertical_block
+      // .attr('id','vertical-block')
+      // .attr('x', chartWidth+50)
+      // .attr('y', yPos-10)
+      // .attr('height', 20)
+      // .attr('width',  50)
+      // .attr('fill', '#f65c4e');
 
       yPos = yPos > 370? 370: yPos;
       yPos = yPos < 10? 10: yPos;
 
-      horizontal
-      .attr('class', 'ylabelLine')
-      .attr('id', 'ylabelLine')
-      .attr('x1', chartWidth)
-      .attr('x2', 0)
-      .attr('y1', yPos) //make it line up with the label
-      .attr('y2', yPos)
-      .attr('stroke', '#f65c4e');
+      // horizontal
+      // .attr('class', 'ylabelLine')
+      // .attr('id', 'ylabelLine')
+      // .attr('x1', chartWidth)
+      // .attr('x2', 0)
+      // .attr('y1', yPos) //make it line up with the label
+      // .attr('y2', yPos)
+      // .attr('stroke', '#f65c4e');
 
-      horizontal_block
-      .attr('id','horizontal-block')
-      .attr('x', xPos+25)
-      .attr('y', chartHeight+10)
-      .attr('height', 20)
-      .attr('width',  50)
-      .attr('fill', '#44b6ea');
+      // horizontal_block
+      // .attr('id','horizontal-block')
+      // .attr('x', xPos+25)
+      // .attr('y', chartHeight+10)
+      // .attr('height', 20)
+      // .attr('width',  50)
+      // .attr('fill', '#44b6ea');
 
     });
 
 
 
-    //tooltips
-    tooltip
-    .attr('class', 'mouseover-overlay')
-    .attr('fill', 'transparent')
-    .attr('x', 0)
-    .attr('y', margin.top)
-    .attr('width', graphWidth)
-    .attr('height', height-margin.top-margin.bottom)
-    .on('mouseover', function(e){
-      return Tooltip.show(); })
-    .on('mouseout', function(){
-      return Tooltip.hide(); })
-    .on('mousemove', function(){
-      var xPos = d3.mouse(this)[0],
-      yPos = d3.mouse(this)[1],
-      j = ChartView.xInverse(xPos, x),
-      cursorPriceLevel = y2.invert(yPos)
-      d = d2 = data.daily.stockLine[j];
-
-      var model = {
-        top: d3.event.layerY-5,
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-105,
-        date: d.rdate,
-        price: cursorPriceLevel,
-        security: d,
-        sentiment: {
-          price: d2.moodindex,
-          change: d2.moodindexchg
-        }
-      };
-      return Tooltip.render.index(model);
-    });
 
     //sentimentLine
     plotLine('#25bcf1',  'sentimentLine');
@@ -455,7 +422,51 @@ var IndexChart = {
         var checkbox = $('#' + id + '-checkbox');
         d3.select('#'+ id + '-line').style('opacity', checkbox.is(':checked')? 1:0);
       }
+
     }
+
+
+
+
+    if (isNew) {
+      tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
+      .attr('fill', 'transparent');
+    } else {
+      tooltip =   chart.selectAll('rect.mouseover-overlay');
+    }
+
+    //tooltips
+    tooltip
+    .attr('class', 'mouseover-overlay')
+    .attr('fill', 'transparent')
+    .attr('x', 0)
+    .attr('y', margin.top)
+    .attr('width', graphWidth)
+    .attr('height', height-margin.top-margin.bottom)
+    .on('mouseover', function(e){
+      return Tooltip.show(); })
+    .on('mouseout', function(){
+      return Tooltip.hide(); })
+    .on('mousemove', function(){
+      var xPos = d3.mouse(this)[0],
+      yPos = d3.mouse(this)[1],
+      j = ChartView.xInverse(xPos, x),
+      cursorPriceLevel = y2.invert(yPos)
+      d = d2 = data.daily.stockLine[j];
+
+      var model = {
+        top: d3.event.layerY-5,
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-105,
+        date: d.rdate,
+        price: cursorPriceLevel,
+        security: d,
+        sentiment: {
+          price: d2.moodindex,
+          change: d2.moodindexchg
+        }
+      };
+      return Tooltip.render.index(model);
+    });
   },
 
 };

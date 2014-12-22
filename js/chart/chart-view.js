@@ -96,14 +96,14 @@ var ChartView = {
     $(window).on('resize', function() { 
       self.setProperties();
       IndexChart.init();
-          RsiChart.init();
-          MacdChart.init(); 
+      RsiChart.init();
+      MacdChart.init(); 
       self.redraw(1); });
     $('#chart-view').on('resize', function(){ 
       self.setProperties();
       IndexChart.init();
-          RsiChart.init();
-          MacdChart.init();
+      RsiChart.init();
+      MacdChart.init();
       self.redraw(1); 
     });
 
