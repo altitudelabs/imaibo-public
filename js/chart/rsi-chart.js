@@ -1,39 +1,63 @@
 var RsiChart = {
+  properties: {},
+  setProperties: function(options) {
+    var properties = {
+      height: 240,
+      interval: 40,
+    };
+    if (options) {
+      for (var key in options) {
+        properties[key] = options[key];
+      }
+    }
+    this.properties = $.extend(true, {}, properties);
+  },  
   y2: function(){
     return d3.scale.linear()
     .domain([RsiChart.properties.largest_abs*-1, RsiChart.properties.largest_abs])
     .range([RsiChart.properties.chartHeight - RsiChart.properties.margin.bottom, RsiChart.properties.margin.top])
   },
-  properties: {},
   init: function() {
-    this.properties = $.extend({}, ChartView.properties);
-    var data;
-    this.properties.zoomFactor = 1;
-    this.properties.data = data = ChartView.data;
-    this.properties.height = 240;
-    this.properties.chartHeight = this.properties.height - this.properties.margin.top - this.properties.margin.bottom;
-    this.properties.largest_abs = d3.max(data.daily.stockLine.map(function(x) {
-      return max(
-        max(Math.abs(+x.rsi6),
-            Math.abs(+x.rsi12)),
-            Math.abs(+x.rsi24)
-      );
-    }));
-    this.build();
+    this.setProperties();
+    this.drawContainer();
+    this.drawGraph(true);
+
+    // this.properties.largest_abs = d3.max(data.daily.stockLine.map(function(x) {
+    //   return max(
+    //     max(Math.abs(+x.rsi6),
+    //         Math.abs(+x.rsi12)),
+    //         Math.abs(+x.rsi24)
+    //   );
+    // }));
+
+  $('#rsi > .wrapper > .buttons > .close').on('click', function() {
+      $('#rsi').slideUp(500);
+      $('#rsi-checkbox').attr('checked', false);
+    });
   },
-  drawGraph: function(isNew, y2, x, chart) {
-    var prop = this.properties,
-    chartWidth = prop.chartWidth,
-    chartHeight = prop.chartHeight,
-    height         = prop.height,
+  drawGraph: function(isNew) {
+    var prop = ChartView.properties,
+        margin = prop.margin,
+    chartWidth = prop.width - margin.left - margin.right,
+    height      = this.properties.height,
+    chartHeight = height - margin.top - margin.bottom,
     zoomFactor     = prop.zoomFactor,
     graphWidth     = chartWidth * zoomFactor,
-    margin         = prop.margin,
-    data           = ChartView.data || this.data,
-    interval       = prop.interval,
+    data           = ChartView.data,
+    interval       = this.properties.interval,
+    x              = ChartView.x(data.daily.stockLine, 'rdate'),
     xlabels,
     gline,
     tooltip;
+
+    var y2 = d3.scale.linear()
+    .domain([this.properties.largest_abs*-1, this.properties.largest_abs])
+    .range([chartHeight - margin.bottom, margin.top]);
+
+    var chart = d3.select('#rsi-chart')
+    .attr('width', graphWidth)
+    .select('svg')
+    .attr('width', graphWidth);
 
     if(isNew){
       xlabels = chart.append('g')
@@ -118,41 +142,22 @@ var RsiChart = {
           return Tooltip.render.rsi(model);
         });
   },
-  redraw: function(zoomFactor) {
-    this.properties.zoomFactor *= zoomFactor;
-
-    var height = this.properties.height,
-    margin = this.properties.margin,
-    data = this.properties.data,
-    chartWidth = this.properties.chartWidth(),
-    chartHeight = this.properties.chartHeight,
-    graphWidth = chartWidth * this.properties.zoomFactor;
-
-    var y2 = this.y2();
-    var x = ChartView.x(graphWidth);
-
-    $('.slimScrollDiv').css('width', (graphWidth).toString() + 'px');
-
-    var chart = d3.select('#rsi-chart')
-    .select('svg')
-    .attr('width', graphWidth)
-    .attr('height', height);
-
-    this.drawGraph(false, y2, x, chart);
-  },
-  build: function(){
+  drawContainer: function(){
     // rsi-chart
     $('#rsi-chart').empty();
     $('#rsi-chart-label').empty();
 
-    var data = ChartView.data,
-    width = this.properties.width,
-    chartWidth = this.properties.chartWidth(),
-    graphWidth = chartWidth * this.properties.zoomFactor,
-    chartHeight = this.properties.chartHeight,
-    height = this.properties.height,
-    margin = this.properties.margin,
-    interval = this.properties.interval;
+    var data = ChartView.data;
+
+    var containerWidth = ChartView.properties.width;
+    var margin = ChartView.properties.margin;
+    var chartWidth = containerWidth - margin.left - margin.right;
+    var zoomFactor = ChartView.properties.zoomFactor;
+    var graphWidth = chartWidth * zoomFactor;
+
+    var height = this.properties.height;
+    var chartHeight = height - margin.top - margin.bottom;
+    var interval = this.properties.interval;
 
     var chart = d3.select('#rsi-chart')
     .append('svg:svg')
@@ -163,7 +168,7 @@ var RsiChart = {
     var chart_label = d3.select('#rsi-chart-label')
     .append('svg:svg')
     .attr('class', 'chart')
-    .attr('width', width)
+    .attr('width', containerWidth + 120)
     .attr('height', chartHeight);
 
     $('#rsi-chart-container').slimScroll({
@@ -179,13 +184,15 @@ var RsiChart = {
     .css('width', graphWidth.toString() + 'px');
 
     //vertical aligning the lines in the middle
-    var largest_abs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));
+    this.properties.largest_abs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));
 
     var y2 = d3.scale.linear()
-    .domain([largest_abs*-1, largest_abs])
+    .domain([this.properties.largest_abs*-1, this.properties.largest_abs])
     .range([chartHeight - margin.bottom, margin.top]);
 
-    var x = ChartView.x(graphWidth);
+    data = ChartView.data.daily.stockLine;
+
+    var x = ChartView.x(data, 'rdate');
 
     chart_label.append('g')
     .attr('class','y2labels')
@@ -197,7 +204,6 @@ var RsiChart = {
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
-
 
     chart_label.append('svg:line')
     .attr('class', 'guideline-80')
@@ -246,8 +252,6 @@ var RsiChart = {
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', chartHeight - margin.bottom)
     .attr('stroke', '#464646');
-
-    this.drawGraph(true, y2, x, chart);
   },
 };
 

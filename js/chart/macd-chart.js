@@ -29,6 +29,11 @@ var MacdChart = {
     this.properties.chartHeight = this.properties.height - this.properties.margin.top - this.properties.margin.bottom;
     this.properties.chartWidth = this.properties.width - this.properties.margin.left - this.properties.margin.right;
     this.build();
+
+    $('#macd > .wrapper > .buttons > .close').on('click', function() {
+      $('#macd').slideUp(500);
+      $('#macd-checkbox').attr('checked', false);
+    });
   },
   drawGraph: function(isNew, x, chart) {
     var prop = this.properties,

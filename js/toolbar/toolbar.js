@@ -85,15 +85,18 @@ var Toolbar = {
     var zoomIn = $('#zoomin');
     var zoomOut = $('#zoomout');
     zoomIn.click(function(){
-      IndexChart.redraw(1.2);
-      RsiChart.redraw(1.2);
-      MacdChart.redraw(1.2);
+      ChartView.redraw(1.2);
+      // IndexChart.redraw(1.2);
+      // RsiChart.redraw(1.2);
+      // MacdChart.redraw(1.2);
     });
 
     zoomOut.click(function(){
-      IndexChart.redraw(1/1.2);
-      RsiChart.redraw(1/1.2);
-      MacdChart.redraw(1/1.2);
+      ChartView.redraw(1/1.2);
+
+      // IndexChart.redraw(1/1.2);
+      // RsiChart.redraw(1/1.2);
+      // MacdChart.redraw(1/1.2);
     });
   },
   initRsi: function(){

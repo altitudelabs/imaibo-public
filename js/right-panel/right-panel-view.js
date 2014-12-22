@@ -70,6 +70,7 @@ var RightPanel = {
     this.render();
     RightPanelModel.getExpertData();
     RightPanelModel.getStockData();
+    this.disableBodyScroll();
   },
   render: function(){
     this.goTo('chooseStockView');
@@ -116,5 +117,13 @@ var RightPanel = {
         state.el.hide();
       }
     });
-  }
+  },
+  disableBodyScroll: function () {
+    $('#stockpicker-table-body').on('mouseenter', function (event){
+      $('html').addClass('noscroll');
+    });
+    $('#stockpicker-table-body').on('mouseleave', function (event){
+      $('html').removeClass('noscroll');
+    });
+  },
 }
