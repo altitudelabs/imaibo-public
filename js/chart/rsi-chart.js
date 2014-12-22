@@ -57,7 +57,7 @@ var RsiChart = {
     var chart = d3.select('#rsi-chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth);
+    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
 
     if(isNew){
       xlabels = chart.append('g')
@@ -97,9 +97,9 @@ var RsiChart = {
       var line = d3.svg.line()
       .x(function(d,i) { return x(i); })
       .y(function(d)   {
-        if(rsi == 6) return y2(d.rsi6);
-        if(rsi ==12) return y2(d.rsi12);
-        if(rsi ==24) return y2(d.rsi24);
+        if(rsi ===  6) return y2(d.rsi6);
+        if(rsi === 12) return y2(d.rsi12);
+        if(rsi === 24) return y2(d.rsi24);
       })
       .interpolate('linear');
 
@@ -162,7 +162,7 @@ var RsiChart = {
     var chart = d3.select('#rsi-chart')
     .append('svg:svg')
     .attr('class', 'chart')
-    .attr('width', graphWidth)
+    // .attr('width', graphWidth)
     .attr('height', chartHeight);
 
     var chart_label = d3.select('#rsi-chart-label')
@@ -179,9 +179,9 @@ var RsiChart = {
     $('#rsi-chart-container').css('top', 0);
 
     $('#rsi .slimScrollDiv').css('position', 'absolute')
-    .css('top', (margin.top+20).toString() + 'px')
+    .css('top', '45px')
     .css('left', '50px')
-    .css('width', graphWidth.toString() + 'px');
+    .css('width', chartWidth.toString() + 'px');
 
     //vertical aligning the lines in the middle
     this.properties.largest_abs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));

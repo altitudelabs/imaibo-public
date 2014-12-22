@@ -23,6 +23,8 @@ var MacdChart = {
     });
   },
   drawGraph: function(isNew) {
+    'use strict';
+
     var prop = ChartView.properties,
     margin = prop.margin,
     chartWidth = prop.width - margin.left - margin.right,
@@ -40,19 +42,19 @@ var MacdChart = {
     var chart = d3.select('#macd-chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth);
+    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
 
     if(isNew){
       xlabels = chart.append('g')
       .attr('class','xlabels');
 
-      tooltip = chart.append('rect')
-      .attr('class','mouseover-overlay')
-      .attr('fill', 'transparent');
+      // tooltip = chart.append('rect')
+      // .attr('class','mouseover-overlay')
+      // .attr('fill', 'transparent');
     }else{
       xlabels = chart.selectAll('g.xlabels');
       gline   = chart.selectAll('path.sentiment');
-      tooltip = chart.selectAll('rect.mouseover-overlay');
+      // tooltip = chart.selectAll('rect.mouseover-overlay');
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -69,8 +71,6 @@ var MacdChart = {
       .selectAll('svg > .line')
       .remove();
     }
-    var data = ChartView.data;
-
     var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
     var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 
@@ -102,12 +102,42 @@ var MacdChart = {
     .attr('width',function(d) { return 0.8 * (chartWidth)/data.daily.stockLine.length; })
     .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
 
-    tooltip.attr('class', 'mouseover-overlay')
+
+    //dea line
+    plotMACD('dea', '#d7db74');
+    plotMACD('macd', '#236a82');
+
+    function plotMACD(type, color){
+      var line = d3.svg.line()
+      .x(function(d,i) { return x(i); })
+      .y(function(d)   {
+        return type === 'dea'? y2(d.dea): y2(d.macd); })
+      .interpolate('linear');
+
+      chart.append('path')
+      .datum(data.daily.stockLine)
+      .attr('class','macd')
+      .attr('d', line)
+      .attr('stroke', color)
+      .attr('fill', 'none');
+    }
+
+    if (isNew) {
+      tooltip = chart.append('rect')
+      .attr('class','mouseover-overlay')
+      .attr('fill', 'transparent');
+    } else {
+      tooltip = chart.selectAll('rect.mouseover-overlay');
+    }
+    console.log(tooltip);
+
+    tooltip
+    .attr('class', 'mouseover-overlay')
     .attr('fill', 'transparent')
     .attr('x', 0)
     .attr('y', margin.top)
-    .attr('width', chartWidth)
-    .attr('height', chartHeight)
+    .attr('width', graphWidth)
+    .attr('height', height-margin.top-margin.bottom)
     .on('mouseover', function(e){
       return Tooltip.show(); })
     .on('mouseout', function(){
@@ -120,148 +150,129 @@ var MacdChart = {
       var model = {
         top: d3.mouse(this)[1] + height*2  + ($('#rsi-checkbox').is(':checked')? 250: 0),
         left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
-        date: Helper.toDate(d.rdate),
+        date: d.rdate,
         macd: d.macd,
         diff: d.diff,
         dea: d.dea
       };
       return Tooltip.render.macd(model);
     });
+  },
+  drawContainer: function(){
+    $('#macd-chart').empty();
+    $('#macd-chart-label').empty();
 
-        //dea line
-        plotMACD('dea', '#d7db74');
-        plotMACD('macd', '#236a82');
+    var data = ChartView.data;
 
-        function plotMACD(type, color){
-          var line = d3.svg.line()
-          .x(function(d,i) { return x(i); })
-          .y(function(d)   {
-            return type === 'dea'? y2(d.dea): y2(d.macd); })
-          .interpolate('linear');
+    var containerWidth = ChartView.properties.width;
+    var margin = ChartView.properties.margin;
+    var chartWidth = containerWidth - margin.left - margin.right;
+    var zoomFactor = ChartView.properties.zoomFactor;
+    var graphWidth = chartWidth * zoomFactor;
 
-          chart.append('path')
-          .datum(data.daily.stockLine)
-          .attr('class','macd')
-          .attr('d', line)
-          .attr('stroke', color)
-          .attr('fill', 'none');
-        }
-      },
-      drawContainer: function(){
-        $('#macd-chart').empty();
-        $('#macd-chart-label').empty();
+    var height = this.properties.height;
+    var chartHeight = height - margin.top - margin.bottom;
+    var interval = this.properties.interval;
 
-        var data = ChartView.data;
+    var chart = d3.select('#macd-chart')
+    .append('svg:svg')
+    .attr('class', 'chart')
+    // .attr('width', graphWidth)
+    .attr('height', chartHeight);
 
-        var containerWidth = ChartView.properties.width;
-        var margin = ChartView.properties.margin;
-        var chartWidth = containerWidth - margin.left - margin.right;
-        var zoomFactor = ChartView.properties.zoomFactor;
-        var graphWidth = chartWidth * zoomFactor;
+    var chart_label = d3.select('#macd-chart-label')
+    .append('svg:svg')
+    .attr('class', 'chart')
+    .attr('width', containerWidth + 120)
+    .attr('height', chartHeight);
 
-        var height = this.properties.height;
-        var chartHeight = height - margin.top - margin.bottom;
-        var interval = this.properties.interval;
+    $('#macd-chart-container').slimScroll({
+      height: height.toString() + 'px',
+      width: chartWidth.toString() + 'px',
+      color: '#ffcc00'
+    });
 
-        var chart = d3.select('#macd-chart')
-        .append('svg:svg')
-        .attr('class', 'chart')
-        .attr('width', graphWidth)
-        .attr('height', chartHeight);
+    $('#macd-chart-container').css('top', 0);
 
-        var chart_label = d3.select('#macd-chart-label')
-        .append('svg:svg')
-        .attr('class', 'chart')
-        .attr('width', containerWidth + 120)
-        .attr('height', chartHeight);
+    $('#macd .slimScrollDiv').css('position', 'absolute')
+    .css('top', '45px')
+    .css('left', '50px')
+    .css('width', chartWidth.toString() + 'px');
 
-        $('#macd-chart-container').slimScroll({
-          height: height.toString() + 'px',
-          width: chartWidth.toString() + 'px',
-          color: '#ffcc00'
-        });
+    chart_label.append('svg:line')
+    .attr('class', 'xborder-top-thick')
+    .attr('x1', margin.left)
+    .attr('x2', chartWidth + margin.left)
+    .attr('y1', margin.bottom - 20)
+    .attr('y2', margin.bottom - 20)
+    .attr('stroke', '#464646');
 
-        $('#macd-chart-container').css('top', 0);
+    chart_label.append('svg:line')
+    .attr('class', 'yborder-left')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left)
+    .attr('y1',  chartHeight - margin.bottom)
+    .attr('y2', margin.top)
+    .attr('stroke', '#464646');
 
-        $('#macd .slimScrollDiv').css('position', 'absolute')
-        .css('top', (margin.top+20).toString() + 'px')
-        .css('left', '50px')
-        .css('width', graphWidth.toString() + 'px');
+    chart_label.append('svg:line')
+    .attr('class', 'yborder-right')
+    .attr('x1', chartWidth + margin.left)
+    .attr('x2', chartWidth + margin.left)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', margin.top)
+    .attr('stroke', '#464646');
 
-        chart_label.append('svg:line')
-        .attr('class', 'xborder-top-thick')
-        .attr('x1', margin.left)
-        .attr('x2', chartWidth + margin.left)
-        .attr('y1', margin.bottom - 20)
-        .attr('y2', margin.bottom - 20)
-        .attr('stroke', '#464646');
+    chart_label.append('svg:line')
+    .attr('class', 'xaxis')
+    .attr('x1', margin.left)
+    .attr('x2', containerWidth - margin.right)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', chartHeight - margin.bottom)
+    .attr('stroke', '#464646');
 
-        chart_label.append('svg:line')
-        .attr('class', 'yborder-left')
-        .attr('x1', margin.left)
-        .attr('x2', margin.left)
-        .attr('y1',  chartHeight - margin.bottom)
-        .attr('y2', margin.top)
-        .attr('stroke', '#464646');
+    var data = ChartView.data;
 
-        chart_label.append('svg:line')
-        .attr('class', 'yborder-right')
-        .attr('x1', chartWidth + margin.left)
-        .attr('x2', chartWidth + margin.left)
-        .attr('y1', chartHeight - margin.bottom)
-        .attr('y2', margin.top)
-        .attr('stroke', '#464646');
+    var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
+    var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 
-        chart_label.append('svg:line')
-        .attr('class', 'xaxis')
-        .attr('x1', margin.left)
-        .attr('x2', containerWidth - margin.right)
-        .attr('y1', chartHeight - margin.bottom)
-        .attr('y2', chartHeight - margin.bottom)
-        .attr('stroke', '#464646');
+    var y1 = d3.scale.linear()
+    .domain([y1_diff*-1, y1_diff])
+    .range([chartHeight- margin.bottom, margin.top]);
 
-        var data = ChartView.data;
+    var y2 = d3.scale.linear()
+    .domain([y2_diff*-1, y2_diff])
+    .range([chartHeight-margin.bottom, margin.top]);
 
-        var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
-        var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
+    data  = ChartView.data.daily.stockLine;
+    var x = ChartView.x(data, 'rdate');
 
-        var y1 = d3.scale.linear()
-        .domain([y1_diff*-1, y1_diff])
-        .range([chartHeight- margin.bottom, margin.top]);
+    chart_label.append('g')
+    .attr('class','y1labels')
+    .selectAll('text.yrule')
+    .data(y1.ticks(5))
+    .enter().append('svg:text')
+    .attr('class', 'yrule')
+    .attr('x', margin.left - 15)
+    .attr('y', y1)
+    .attr('text-anchor', 'middle')
+    .text(String);
 
-        var y2 = d3.scale.linear()
-        .domain([y2_diff*-1, y2_diff])
-        .range([chartHeight-margin.bottom, margin.top]);
+    chart_label.append('g')
+    .attr('class','y2labels')
+    .selectAll('text.yrule')
+    .data(y2.ticks(5))
+    .enter().append('svg:text')
+    .attr('class', 'yrule')
+    .attr('x', containerWidth-margin.right + 15)
+    .attr('y', y2)
+    .attr('text-anchor', 'middle')
+    .text(String);
 
-        data  = ChartView.data.daily.stockLine;
-        var x = ChartView.x(data, 'rdate');
+    $('#macd-checkbox').change(function(){
+      $('#macd').css('display', $(this).is(':checked')? 'block':'none');
+    });
 
-        chart_label.append('g')
-        .attr('class','y1labels')
-        .selectAll('text.yrule')
-        .data(y1.ticks(5))
-        .enter().append('svg:text')
-        .attr('class', 'yrule')
-        .attr('x', margin.left - 15)
-        .attr('y', y1)
-        .attr('text-anchor', 'middle')
-        .text(String);
-
-        chart_label.append('g')
-        .attr('class','y2labels')
-        .selectAll('text.yrule')
-        .data(y2.ticks(5))
-        .enter().append('svg:text')
-        .attr('class', 'yrule')
-        .attr('x', containerWidth-margin.right + 15)
-        .attr('y', y2)
-        .attr('text-anchor', 'middle')
-        .text(String);
-
-        $('#macd-checkbox').change(function(){
-          $('#macd').css('display', $(this).is(':checked')? 'block':'none');
-        });
-
-      }
-    };
+  }
+};
 

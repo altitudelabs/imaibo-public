@@ -3,7 +3,7 @@ var IndexChart = {
   setProperties: function(options) {
     var properties = {
       height: 400,
-      interval: 40,
+      interval: 30,
     };
     if (options) {
       for (var key in options) {
@@ -45,13 +45,13 @@ var IndexChart = {
     .attr('height', height);
 
     $('#chart-container').slimScroll({
-      height: (height+40).toString() + 'px',
+      height: (height+20).toString() + 'px',
       width: containerWidth.toString() + 'px',
       color: '#ffcc00',
     });
 
     $('.slimScrollDiv').css('position', 'absolute')
-    .css('top', '0')
+    .css('top', '25px')
     .css('left', '50px')
     .css('width', chartWidth.toString() + 'px');
 
@@ -67,26 +67,26 @@ var IndexChart = {
     var y1 = ChartView.y1(data, height ,'moodindex');
     var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
 
-    chart_label.append('svg:line')
-    .attr('class', 'horizontal-line')
-    .attr('x1', margin.left)
-    .attr('x2', margin.left + chartWidth) //shift to the left
-    .attr('y1', height - margin.bottom)
-    .attr('y2', height - margin.bottom)
-    .attr('stroke', '#25bcf1')
-    .attr('stroke-width', '2px')
-    .on('mouseover', function(e){ return Tooltip.show(); })
-    .on('mousemove', function() {
-      var xPos = d3.mouse(this)[0],
-       yPos = d3.mouse(this)[1];
-    });
+    // chart_label.append('svg:line')
+    // .attr('class', 'horizontal-line')
+    // .attr('x1', margin.left)
+    // .attr('x2', margin.left + chartWidth) //shift to the left
+    // .attr('y1', height - margin.bottom)
+    // .attr('y2', height - margin.bottom)
+    // .attr('stroke', '#25bcf1')
+    // .attr('stroke-width', '2px')
+    // .on('mouseover', function(e){ return Tooltip.show(); })
+    // .on('mousemove', function() {
+    //   var xPos = d3.mouse(this)[0],
+    //    yPos = d3.mouse(this)[1];
+    // });
 
     chart_label.append('svg:line')
     .attr('class', 'xaxis')
     .attr('x1', margin.left)
     .attr('x2', margin.left + chartWidth) //shift to the left
-    .attr('y1', height - margin.bottom)
-    .attr('y2', height - margin.bottom)
+    .attr('y1', height - margin.bottom + 4) //offseting the border width
+    .attr('y2', height - margin.bottom + 4) //offseting the border width
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
@@ -94,7 +94,7 @@ var IndexChart = {
     .attr('class', 'border-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
-    .attr('y1', height - margin.bottom)
+    .attr('y1', height - margin.bottom + 4) //accounting border width
     .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
@@ -103,7 +103,7 @@ var IndexChart = {
     .attr('class', 'border-right')
     .attr('x1', containerWidth - margin.right )
     .attr('x2', containerWidth - margin.right )
-    .attr('y1', height - margin.bottom)
+    .attr('y1', height - margin.bottom + 4) //accounting border width
     .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
@@ -143,26 +143,26 @@ var IndexChart = {
     .text(String);
 
     $('.xlabels > text').click(function(){
-      var x = this.getAttribute('x');
-      $('#xlabelLine').remove();
-      $('#xlabelLineActive').remove();
-      chart.append('svg:line')
-      .attr('class', 'xlabelLine')
-      .attr('id', 'xlabelLine')
-      .attr('x1', x)
-      .attr('x2', x)
-      .attr('y1', height-margin.bottom) //make it line up with the label
-      .attr('y2', margin.top)
-      .attr('stroke', '#44b6ea');
+      // var x = this.getAttribute('x');
+      // $('#xlabelLine').remove();
+      // $('#xlabelLineActive').remove();
+      // chart.append('svg:line')
+      // .attr('class', 'xlabelLine')
+      // .attr('id', 'xlabelLine')
+      // .attr('x1', x)
+      // .attr('x2', x)
+      // .attr('y1', height-margin.bottom) //make it line up with the label
+      // .attr('y2', margin.top)
+      // .attr('stroke', '#44b6ea');
 
-      chart.append('g')
-      .attr('id','xlabelLineActive')
-      .append('svg:rect')
-      .attr('x', parseFloat(x) - 50)
-      .attr('y', height-margin.top)
-      .attr('height', 30)
-      .attr('width',  100)
-      .attr('fill', '#44b6ea')
+      // chart.append('g')
+      // .attr('id','xlabelLineActive')
+      // .append('svg:rect')
+      // .attr('x', parseFloat(x) - 50)
+      // .attr('y', height-margin.top)
+      // .attr('height', 30)
+      // .attr('width',  100)
+      // .attr('fill', '#44b6ea')
     });
 
     $('.y2labels > text').click(function(){
@@ -225,7 +225,7 @@ var IndexChart = {
     var chart = d3.select('#chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth);
+    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
 
     var chart_label = d3.select('#chart-label')
     .attr('width', width)
@@ -277,6 +277,8 @@ var IndexChart = {
       .remove();
     }
 
+    var startDate = data.daily.stockLine[0].rdate;
+    var currentDate = startDate; 
     //x-axis labels
     xlabels
     .selectAll('text.xrule')
@@ -286,7 +288,15 @@ var IndexChart = {
     .attr('x', function(d,i){ return x(i); })
     .attr('y', height-margin.bottom+20)
     .attr('text-anchor', 'middle')
-    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate) : ''; });
+    .text(function(d,i){ 
+      if ( (d.rdate-currentDate > 31) ) {
+        console.log(d.rdate-currentDate);
+        currentDate = d.rdate;
+        return Helper.toDate(d.rdate);
+
+        // console.log(d.rdate); console.log(interval); return i%interval===0 ? Helper.toDate(d.rdate) : ''; });
+      }
+    });
 
     //sentimetal rect bars
     gvolume
@@ -426,13 +436,12 @@ var IndexChart = {
     }
 
 
-
-
     if (isNew) {
-      tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
+      tooltip = chart.append('rect')
+      .attr('class', 'mouseover-overlay')
       .attr('fill', 'transparent');
     } else {
-      tooltip =   chart.selectAll('rect.mouseover-overlay');
+      tooltip = chart.selectAll('rect.mouseover-overlay');
     }
 
     //tooltips

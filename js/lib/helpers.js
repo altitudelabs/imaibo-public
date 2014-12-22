@@ -72,7 +72,8 @@ var Helper = {
     var month = d.slice(4, 6);
     var day = d.slice(6, 8);
 
-    return year + '-' + month + '-' + day;
+    // return year + '-' + month + '-' + day;
+    return year + '/' + month;
   },
   populateView:
     /*
