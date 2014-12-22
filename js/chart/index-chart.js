@@ -203,7 +203,9 @@ var IndexChart = {
     //not a fan of this.
     //it builds up the memory stack
     var prop = ChartView.properties,
+    width      = prop.width,
     height     = this.properties.height,
+    chartHeight = height - prop.margin.top - prop.margin.bottom,
     chartWidth = prop.width - prop.margin.left - prop.margin.right,
     graphWidth = chartWidth * prop.zoomFactor,
     margin     = prop.margin,
@@ -225,6 +227,11 @@ var IndexChart = {
     .select('svg')
     .attr('width', graphWidth);
 
+    var chart_label = d3.select('#chart-label')
+    .attr('width', width)
+    .select('svg')
+    .attr('width', width);
+
     if(isNew){
       xlabels = chart.append('g').attr('class','xlabels');
       gvolume = chart.append('g').attr('class','volume');
@@ -234,6 +241,8 @@ var IndexChart = {
       .attr('fill', 'transparent');
       vertical = chart.append('svg:line');
       horizontal = chart.append('svg:line');
+      vertical_block = chart_label.append('svg:rect');
+      horizontal_block = chart_label.append('svg:rect');
 
 
     }else{
@@ -244,7 +253,8 @@ var IndexChart = {
       tooltip =   chart.selectAll('rect.mouseover-overlay');
       vertical = chart.selectAll('line.xlabelLine');
       horizontal = chart.selectAll('line.ylabelLine');
-
+      vertical_block = chart_label.select('g#vertical-block');
+      horizontal_block = chart_label.select('g#horizontal-block');
 
 
       chart.selectAll('g.xlabels')
@@ -317,29 +327,48 @@ var IndexChart = {
     .attr('stroke', function(d){ return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; });
 
     chart
-      .on('mousemove', function(){
-        var xPos = d3.mouse(this)[0];
-        var yPos = d3.mouse(this)[1];
+    .on('mousemove', function(){
+      var xPos = d3.mouse(this)[0];
+      var yPos = d3.mouse(this)[1];
 
-        vertical
-        .attr('class', 'xlabelLine')
-        .attr('id', 'xlabelLine')
-        .attr('x1', xPos)
-        .attr('x2', xPos)
-        .attr('y1', height-margin.bottom) //make it line up with the label
-        .attr('y2', margin.top)
-        .attr('stroke', '#44b6ea');
+      vertical
+      .attr('class', 'xlabelLine')
+      .attr('id', 'xlabelLine')
+      .attr('x1', xPos)
+      .attr('x2', xPos)
+      .attr('y1', height-margin.bottom) //make it line up with the label
+      .attr('y2', margin.top)
+      .attr('stroke', '#44b6ea');
 
-        horizontal
-        .attr('class', 'ylabelLine')
-        .attr('id', 'ylabelLine')
-        .attr('x1', chartWidth)
-        .attr('x2', 0)
-        .attr('y1', yPos) //make it line up with the label
-        .attr('y2', yPos)
-        .attr('stroke', '#f65c4e');
+      vertical_block
+      .attr('id','vertical-block')
+      .attr('x', chartWidth+50)
+      .attr('y', yPos-10)
+      .attr('height', 20)
+      .attr('width',  50)
+      .attr('fill', '#f65c4e');
 
-      });
+      yPos = yPos > 370? 370: yPos;
+      yPos = yPos < 10? 10: yPos;
+
+      horizontal
+      .attr('class', 'ylabelLine')
+      .attr('id', 'ylabelLine')
+      .attr('x1', chartWidth)
+      .attr('x2', 0)
+      .attr('y1', yPos) //make it line up with the label
+      .attr('y2', yPos)
+      .attr('stroke', '#f65c4e');
+
+      horizontal_block
+      .attr('id','horizontal-block')
+      .attr('x', xPos+25)
+      .attr('y', chartHeight+10)
+      .attr('height', 20)
+      .attr('width',  50)
+      .attr('fill', '#44b6ea');
+
+    });
 
 
 
