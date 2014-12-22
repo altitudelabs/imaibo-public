@@ -179,7 +179,7 @@ var RsiChart = {
     $('#rsi-chart-container').css('top', 0);
 
     $('#rsi .slimScrollDiv').css('position', 'absolute')
-    .css('top', (margin.top+20).toString() + 'px')
+    .css('top', '45px')
     .css('left', '50px')
     .css('width', chartWidth.toString() + 'px');
 

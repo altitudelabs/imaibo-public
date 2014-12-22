@@ -3,7 +3,7 @@ var IndexChart = {
   setProperties: function(options) {
     var properties = {
       height: 400,
-      interval: 40,
+      interval: 30,
     };
     if (options) {
       for (var key in options) {
@@ -45,13 +45,13 @@ var IndexChart = {
     .attr('height', height);
 
     $('#chart-container').slimScroll({
-      height: (height+40).toString() + 'px',
+      height: (height+20).toString() + 'px',
       width: containerWidth.toString() + 'px',
       color: '#ffcc00',
     });
 
     $('.slimScrollDiv').css('position', 'absolute')
-    .css('top', '0')
+    .css('top', '25px')
     .css('left', '50px')
     .css('width', chartWidth.toString() + 'px');
 
@@ -277,6 +277,8 @@ var IndexChart = {
       .remove();
     }
 
+    var startDate = data.daily.stockLine[0].rdate;
+    var currentDate = startDate; 
     //x-axis labels
     xlabels
     .selectAll('text.xrule')
@@ -427,10 +429,11 @@ var IndexChart = {
 
 
     if (isNew) {
-      tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
+      tooltip = chart.append('rect')
+      .attr('class', 'mouseover-overlay')
       .attr('fill', 'transparent');
     } else {
-      tooltip =   chart.selectAll('rect.mouseover-overlay');
+      tooltip = chart.selectAll('rect.mouseover-overlay');
     }
 
     //tooltips

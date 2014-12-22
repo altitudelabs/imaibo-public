@@ -341,6 +341,12 @@ body {
 
 /* =Chart
 -------------------------------------------------------------- */
+.chart-header { 
+  height: 40px;
+  padding: 0px 20px 0px 20px;
+  line-height: 40px
+}
+
 .container {
   position: absolute;
   top: 25px;
@@ -1483,7 +1489,7 @@ text {
 #toolbar {
   position: absolute;
   left: 60px;
-  top: 43px;
+  top: 70px;
   z-index: 10;
 }
 ul.toolbar > li {
@@ -1597,7 +1603,7 @@ ul.toolbar > li.active > a:hover {
 
 #rsi > .wrapper,
 #macd > .wrapper{
-  height: 20px;
+  /*height: 20px;*/
 }
 
 
