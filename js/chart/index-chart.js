@@ -67,26 +67,26 @@ var IndexChart = {
     var y1 = ChartView.y1(data, height ,'moodindex');
     var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
 
-    chart_label.append('svg:line')
-    .attr('class', 'horizontal-line')
-    .attr('x1', margin.left)
-    .attr('x2', margin.left + chartWidth) //shift to the left
-    .attr('y1', height - margin.bottom)
-    .attr('y2', height - margin.bottom)
-    .attr('stroke', '#25bcf1')
-    .attr('stroke-width', '2px')
-    .on('mouseover', function(e){ return Tooltip.show(); })
-    .on('mousemove', function() {
-      var xPos = d3.mouse(this)[0],
-       yPos = d3.mouse(this)[1];
-    });
+    // chart_label.append('svg:line')
+    // .attr('class', 'horizontal-line')
+    // .attr('x1', margin.left)
+    // .attr('x2', margin.left + chartWidth) //shift to the left
+    // .attr('y1', height - margin.bottom)
+    // .attr('y2', height - margin.bottom)
+    // .attr('stroke', '#25bcf1')
+    // .attr('stroke-width', '2px')
+    // .on('mouseover', function(e){ return Tooltip.show(); })
+    // .on('mousemove', function() {
+    //   var xPos = d3.mouse(this)[0],
+    //    yPos = d3.mouse(this)[1];
+    // });
 
     chart_label.append('svg:line')
     .attr('class', 'xaxis')
     .attr('x1', margin.left)
     .attr('x2', margin.left + chartWidth) //shift to the left
-    .attr('y1', height - margin.bottom)
-    .attr('y2', height - margin.bottom)
+    .attr('y1', height - margin.bottom + 4) //offseting the border width
+    .attr('y2', height - margin.bottom + 4) //offseting the border width
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
@@ -94,7 +94,7 @@ var IndexChart = {
     .attr('class', 'border-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
-    .attr('y1', height - margin.bottom)
+    .attr('y1', height - margin.bottom + 4) //accounting border width
     .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
@@ -103,7 +103,7 @@ var IndexChart = {
     .attr('class', 'border-right')
     .attr('x1', containerWidth - margin.right )
     .attr('x2', containerWidth - margin.right )
-    .attr('y1', height - margin.bottom)
+    .attr('y1', height - margin.bottom + 4) //accounting border width
     .attr('y2', margin.top)
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
@@ -143,26 +143,26 @@ var IndexChart = {
     .text(String);
 
     $('.xlabels > text').click(function(){
-      var x = this.getAttribute('x');
-      $('#xlabelLine').remove();
-      $('#xlabelLineActive').remove();
-      chart.append('svg:line')
-      .attr('class', 'xlabelLine')
-      .attr('id', 'xlabelLine')
-      .attr('x1', x)
-      .attr('x2', x)
-      .attr('y1', height-margin.bottom) //make it line up with the label
-      .attr('y2', margin.top)
-      .attr('stroke', '#44b6ea');
+      // var x = this.getAttribute('x');
+      // $('#xlabelLine').remove();
+      // $('#xlabelLineActive').remove();
+      // chart.append('svg:line')
+      // .attr('class', 'xlabelLine')
+      // .attr('id', 'xlabelLine')
+      // .attr('x1', x)
+      // .attr('x2', x)
+      // .attr('y1', height-margin.bottom) //make it line up with the label
+      // .attr('y2', margin.top)
+      // .attr('stroke', '#44b6ea');
 
-      chart.append('g')
-      .attr('id','xlabelLineActive')
-      .append('svg:rect')
-      .attr('x', parseFloat(x) - 50)
-      .attr('y', height-margin.top)
-      .attr('height', 30)
-      .attr('width',  100)
-      .attr('fill', '#44b6ea')
+      // chart.append('g')
+      // .attr('id','xlabelLineActive')
+      // .append('svg:rect')
+      // .attr('x', parseFloat(x) - 50)
+      // .attr('y', height-margin.top)
+      // .attr('height', 30)
+      // .attr('width',  100)
+      // .attr('fill', '#44b6ea')
     });
 
     $('.y2labels > text').click(function(){
@@ -424,8 +424,6 @@ var IndexChart = {
       }
 
     }
-
-
 
 
     if (isNew) {

@@ -59,7 +59,8 @@ var SentimentChart = {
     .text(function(i){
       if(i%3600===0){
         var d = new Date(i*1000);
-        return d.getDate() + '-' + d.getHours() + ':' + (d.getMinutes() < 10? '0' + d.getMinutes(): d.getMinutes());
+        // d.getDate() + '-' +  
+        return d.getHours() + ':' + (d.getMinutes() < 10? '0' + d.getMinutes(): d.getMinutes());
       }
     });
 

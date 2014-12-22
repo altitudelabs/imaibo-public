@@ -13,7 +13,7 @@ var ChartView = {
       // chartWidth: function(){ return self.properties.width - self.properties.margin.right - self.properties.margin.left; }, //width of charts
       // graphWidth: this.chartWidth,
       volumeHeight: 50,
-      zoomFactor: self.properties.zoomFactor || 1,
+      zoomFactor: self.properties.zoomFactor || 0.8,
     };
 
     if (options) {
@@ -98,13 +98,13 @@ var ChartView = {
       IndexChart.init();
       RsiChart.init();
       MacdChart.init(); 
-      self.redraw(1); });
+      self.redraw(true); });
     $('#chart-view').on('resize', function(){ 
       self.setProperties();
       IndexChart.init();
       RsiChart.init();
       MacdChart.init();
-      self.redraw(1); 
+      self.redraw(true); 
     });
 
   },
