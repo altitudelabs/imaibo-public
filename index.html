@@ -286,7 +286,7 @@
             <div class="component-item-price fall">
           {{/ifEq}}
               <div class="title">上证指数</div>
-              <div class="value-label">{{stockIndexInfo.lastpx}}</div>
+              <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
               <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
             </div>
 
@@ -308,6 +308,7 @@
               <div class="thermo-wrapper">
                 <div class="thermometer mb thermometer-extended"></div>
                 <div class="background"></div>
+                <div class="background full"></div>
               </div>
               <div class="changes ">+{{moodindexInfo.change}}</div>
             </div>
@@ -509,6 +510,7 @@
       <li class="tt-subtitle">心情指数</li>
       <li class="tt-row"><span class="tt-label">当前</span><span class="tt-value">{{sentiment.price}}</span></li>
       <li class="tt-row"><span class="tt-label">转变</span><span class="tt-value">{{sentiment.change}}</span></li>
+      <li class="tt-lastrow"></li>
     </ul>
   </script>
   <!-- Tooltip template end -->
