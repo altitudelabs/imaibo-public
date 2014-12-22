@@ -11,7 +11,7 @@ var RsiChart = {
       }
     }
     this.properties = $.extend(true, {}, properties);
-  },  
+  },
   y2: function(){
     return d3.scale.linear()
     .domain([RsiChart.properties.largest_abs*-1, RsiChart.properties.largest_abs])
@@ -90,8 +90,8 @@ var RsiChart = {
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
     .attr('y', chartHeight - margin.top)
-    .attr('text-anchor', 'middle')
-    .text(function(d,i){return i%interval===0 ? Helper.toDate(d.rdate) : ''; });
+    .attr('text-anchor', 'end')
+    .text(function(d,i){return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy-mm') : ''; });
 
     function plotRSI(rsi, color){
       var line = d3.svg.line()

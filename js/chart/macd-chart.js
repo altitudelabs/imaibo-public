@@ -11,7 +11,7 @@ var MacdChart = {
       }
     }
     this.properties = $.extend(true, {}, properties);
-  },  
+  },
   init: function(){
     this.setProperties();
     this.drawContainer();
@@ -89,8 +89,8 @@ var MacdChart = {
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
     .attr('y', chartHeight-margin.bottom+20)
-    .attr('text-anchor', 'middle')
-    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate) : ''; });
+    .attr('text-anchor', 'end')
+    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy-mm') : ''; });
 
     chart.selectAll('bar')
     .data(data.daily.stockLine)

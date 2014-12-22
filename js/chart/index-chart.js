@@ -11,7 +11,7 @@ var IndexChart = {
       }
     }
     this.properties = $.extend(true, {}, properties);
-  },  
+  },
   init: function () {
     // ChartView.setProperties();
     this.setProperties();
@@ -285,8 +285,8 @@ var IndexChart = {
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
     .attr('y', height-margin.bottom+20)
-    .attr('text-anchor', 'middle')
-    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate) : ''; });
+    .attr('text-anchor', 'end')
+    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy-mm') : ''; });
 
     //sentimetal rect bars
     gvolume
@@ -310,7 +310,7 @@ var IndexChart = {
     .attr('y', function(d) { return y2(max(d.openpx, d.closepx)); })
     .attr('height', function(d) { return y2(min(d.openpx, d.closepx))-y2(max(d.openpx, d.closepx)); })
     .attr('width', function(d) { return 0.8 * (graphWidth)/data.daily.stockLine.length; })
-    .attr('fill', function(d) { return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; });
+    .attr('fill', function(d) { return d.openpx > d.closepx ? '#e24439' : '#1ba767'; });
 
     //verticle lines of the candlesticks graph
     glinestems
@@ -323,7 +323,7 @@ var IndexChart = {
     .attr('x2', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (graphWidth - margin.left - margin.right)/data.daily.stockLine.length; })
     .attr('y1', function(d) { return y2(d.highpx); })
     .attr('y2', function(d) { return y2(d.lowpx); })
-    .attr('stroke', function(d){ return d.openpx > d.closepx ? '#f65c4e' : '#3bbb57'; });
+    .attr('stroke', function(d){ return d.openpx > d.closepx ? '#e24439' : '#1ba767'; });
 
     chart
     .on('mousemove', function(){
@@ -455,8 +455,8 @@ var IndexChart = {
       d = d2 = data.daily.stockLine[j];
 
       var model = {
-        top: d3.event.layerY-5,
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-105,
+        top: d3.event.layerY+30,
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+60 : d3.event.layerX-105,
         date: d.rdate,
         price: cursorPriceLevel,
         security: d,
