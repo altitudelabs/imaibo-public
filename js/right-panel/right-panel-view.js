@@ -124,5 +124,5 @@ var RightPanel = {
     $('#stockpicker-table-body').on('mouseleave', function (event){
       $('html').removeClass('noscroll');
     });
-  },
+  }
 }
