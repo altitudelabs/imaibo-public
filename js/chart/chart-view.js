@@ -13,7 +13,7 @@ var ChartView = {
       // chartWidth: function(){ return self.properties.width - self.properties.margin.right - self.properties.margin.left; }, //width of charts
       // graphWidth: this.chartWidth,
       volumeHeight: 50,
-      zoomFactor: self.properties.zoomFactor || 0.8,
+      zoomFactor: self.properties.zoomFactor || 1/1.2,
     };
 
     if (options) {
@@ -152,6 +152,7 @@ var ChartView = {
     $('.container').on('mousewheel', function (event){
       event.preventDefault();
       var original = $('.container').scrollLeft();
+      console.log($('.container'));
       $('.container').scrollLeft ( original - event.originalEvent.deltaY)
     });
   },

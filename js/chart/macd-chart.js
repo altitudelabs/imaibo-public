@@ -40,7 +40,7 @@ var MacdChart = {
     var chart = d3.select('#macd-chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth);
+    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
 
     if(isNew){
       xlabels = chart.append('g')
@@ -166,7 +166,7 @@ var MacdChart = {
         var chart = d3.select('#macd-chart')
         .append('svg:svg')
         .attr('class', 'chart')
-        .attr('width', graphWidth)
+        // .attr('width', graphWidth)
         .attr('height', chartHeight);
 
         var chart_label = d3.select('#macd-chart-label')
@@ -186,7 +186,7 @@ var MacdChart = {
         $('#macd .slimScrollDiv').css('position', 'absolute')
         .css('top', (margin.top+20).toString() + 'px')
         .css('left', '50px')
-        .css('width', graphWidth.toString() + 'px');
+        .css('width', chartWidth.toString() + 'px');
 
         chart_label.append('svg:line')
         .attr('class', 'xborder-top-thick')

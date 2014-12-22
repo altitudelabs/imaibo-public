@@ -225,7 +225,7 @@ var IndexChart = {
     var chart = d3.select('#chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth);
+    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
 
     var chart_label = d3.select('#chart-label')
     .attr('width', width)
