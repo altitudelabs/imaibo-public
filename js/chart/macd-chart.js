@@ -15,16 +15,16 @@ var MacdChart = {
   init: function(){
     this.setProperties();
     this.drawContainer();
-
+    this.drawGraph(true);
 
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
       $('#macd').slideUp(500);
       $('#macd-checkbox').attr('checked', false);
     });
   },
-  drawGraph: function(isNew, x, chart) {
+  drawGraph: function(isNew) {
     var prop = ChartView.properties,
-        margin = prop.margin,
+    margin = prop.margin,
     chartWidth = prop.width - margin.left - margin.right,
     height      = this.properties.height,
     chartHeight = height - margin.top - margin.bottom,
@@ -49,8 +49,6 @@ var MacdChart = {
       tooltip = chart.append('rect')
       .attr('class','mouseover-overlay')
       .attr('fill', 'transparent');
-
-
     }else{
       xlabels = chart.selectAll('g.xlabels');
       gline   = chart.selectAll('path.sentiment');
@@ -71,9 +69,18 @@ var MacdChart = {
       .selectAll('svg > .line')
       .remove();
     }
+    var data = ChartView.data;
 
-    var y1 = this.y1();
-    var y2 = this.y2();
+    var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
+    var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
+
+    var y1 = d3.scale.linear()
+    .domain([y1_diff*-1, y1_diff])
+    .range([chartHeight- margin.bottom, margin.top]);
+
+    var y2 = d3.scale.linear()
+    .domain([y2_diff*-1, y2_diff])
+    .range([chartHeight-margin.bottom, margin.top]);
 
     xlabels
     .selectAll('text.xrule')
@@ -103,23 +110,23 @@ var MacdChart = {
     .attr('height', chartHeight)
     .on('mouseover', function(e){
       return Tooltip.show(); })
-      .on('mouseout', function(){
-        return Tooltip.hide(); })
-        .on('mousemove', function(){
-          var xPos = d3.mouse(this)[0],
-          j = ChartView.xInverse(xPos, x),
-          d = d2 = data.daily.stockLine[j];
+    .on('mouseout', function(){
+      return Tooltip.hide(); })
+    .on('mousemove', function(){
+      var xPos = d3.mouse(this)[0],
+      j = ChartView.xInverse(xPos, x),
+      d = d2 = data.daily.stockLine[j];
 
-          var model = {
-            top: d3.mouse(this)[1] + height*2 + 100 + ($('#rsi-checkbox').is(':checked')? 250: 0),
-            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
-            date: Helper.toDate(d.rdate),
-            macd: d.macd,
-            diff: d.diff,
-            dea: d.dea
-          };
-          return Tooltip.render.macd(model);
-        });
+      var model = {
+        top: d3.mouse(this)[1] + height*2 + 100 + ($('#rsi-checkbox').is(':checked')? 250: 0),
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
+        date: Helper.toDate(d.rdate),
+        macd: d.macd,
+        diff: d.diff,
+        dea: d.dea
+      };
+      return Tooltip.render.macd(model);
+    });
 
         //dea line
         plotMACD('dea', '#d7db74');
@@ -130,134 +137,131 @@ var MacdChart = {
           .x(function(d,i) { return x(i); })
           .y(function(d)   {
             return type === 'dea'? y2(d.dea): y2(d.macd); })
-            .interpolate('linear');
+          .interpolate('linear');
 
-            chart.append('path')
-            .datum(data.daily.stockLine)
-            .attr('class','macd')
-            .attr('d', line)
-            .attr('stroke', color)
-            .attr('fill', 'none');
+          chart.append('path')
+          .datum(data.daily.stockLine)
+          .attr('class','macd')
+          .attr('d', line)
+          .attr('stroke', color)
+          .attr('fill', 'none');
         }
-  },
-  drawContainer: function(){
-    $('#macd-chart').empty();
-    $('#macd-chart-label').empty();
+      },
+      drawContainer: function(){
+        $('#macd-chart').empty();
+        $('#macd-chart-label').empty();
 
-     var data = ChartView.data;
+        var data = ChartView.data;
 
-    var containerWidth = ChartView.properties.width;
-    var margin = ChartView.properties.margin;
-    var chartWidth = containerWidth - margin.left - margin.right;
-    var zoomFactor = ChartView.properties.zoomFactor;
-    var graphWidth = chartWidth * zoomFactor;
+        var containerWidth = ChartView.properties.width;
+        var margin = ChartView.properties.margin;
+        var chartWidth = containerWidth - margin.left - margin.right;
+        var zoomFactor = ChartView.properties.zoomFactor;
+        var graphWidth = chartWidth * zoomFactor;
 
-    var height = this.properties.height;
-    var chartHeight = height - margin.top - margin.bottom;
-    var interval = this.properties.interval;
+        var height = this.properties.height;
+        var chartHeight = height - margin.top - margin.bottom;
+        var interval = this.properties.interval;
 
-    var chart = d3.select('#macd-chart')
-    .append('svg:svg')
-    .attr('class', 'chart')
-    .attr('width', graphWidth)
-    .attr('height', chartHeight);
+        var chart = d3.select('#macd-chart')
+        .append('svg:svg')
+        .attr('class', 'chart')
+        .attr('width', graphWidth)
+        .attr('height', chartHeight);
 
-    var chart_label = d3.select('#macd-chart-label')
-    .append('svg:svg')
-    .attr('class', 'chart')
-    .attr('width', containerWidth + 120)
-    .attr('height', chartHeight);
+        var chart_label = d3.select('#macd-chart-label')
+        .append('svg:svg')
+        .attr('class', 'chart')
+        .attr('width', containerWidth + 120)
+        .attr('height', chartHeight);
 
-    $('#macd-chart-container').slimScroll({
-      height: height.toString() + 'px',
-      width: chartWidth.toString() + 'px',
-      color: '#ffcc00',
-    });
-    $('#macd-chart-container').css('top', 0);
+        $('#macd-chart-container').slimScroll({
+          height: height.toString() + 'px',
+          width: chartWidth.toString() + 'px',
+          color: '#ffcc00'
+        });
 
-    $('#macd .slimScrollDiv').css('position', 'absolute')
-    .css('top', (margin.top+20).toString() + 'px')
-    .css('left', '50px')
-    .css('width', graphWidth.toString() + 'px');
+        $('#macd-chart-container').css('top', 0);
 
-    chart_label.append('svg:line')
-    .attr('class', 'xborder-top-thick')
-    .attr('x1', margin.left)
-    .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.bottom - 20)
-    .attr('y2', margin.bottom - 20)
-    .attr('stroke', '#464646');
+        $('#macd .slimScrollDiv').css('position', 'absolute')
+        .css('top', (margin.top+20).toString() + 'px')
+        .css('left', '50px')
+        .css('width', graphWidth.toString() + 'px');
 
-    chart_label.append('svg:line')
-    .attr('class', 'yborder-left')
-    .attr('x1', margin.left)
-    .attr('x2', margin.left)
-    .attr('y1',  chartHeight - margin.bottom)
-    .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+        chart_label.append('svg:line')
+        .attr('class', 'xborder-top-thick')
+        .attr('x1', margin.left)
+        .attr('x2', chartWidth + margin.left)
+        .attr('y1', margin.bottom - 20)
+        .attr('y2', margin.bottom - 20)
+        .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
-    .attr('class', 'yborder-right')
-    .attr('x1', chartWidth + margin.left)
-    .attr('x2', chartWidth + margin.left)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+        chart_label.append('svg:line')
+        .attr('class', 'yborder-left')
+        .attr('x1', margin.left)
+        .attr('x2', margin.left)
+        .attr('y1',  chartHeight - margin.bottom)
+        .attr('y2', margin.top)
+        .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
-    .attr('class', 'xaxis')
-    .attr('x1', margin.left)
-    .attr('x2', containerWidth - margin.right)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', chartHeight - margin.bottom)
-    .attr('stroke', '#464646');
+        chart_label.append('svg:line')
+        .attr('class', 'yborder-right')
+        .attr('x1', chartWidth + margin.left)
+        .attr('x2', chartWidth + margin.left)
+        .attr('y1', chartHeight - margin.bottom)
+        .attr('y2', margin.top)
+        .attr('stroke', '#464646');
 
-    var data = ChartView.data;
+        chart_label.append('svg:line')
+        .attr('class', 'xaxis')
+        .attr('x1', margin.left)
+        .attr('x2', containerWidth - margin.right)
+        .attr('y1', chartHeight - margin.bottom)
+        .attr('y2', chartHeight - margin.bottom)
+        .attr('stroke', '#464646');
 
-    var y1Diff = d3.max(ChartView.data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
-    var y2Diff = d3.max(ChartView.data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
+        var data = ChartView.data;
 
-    var y1 = d3.scale.linear()
-    .domain([y1Diff*-1, y1Diff])
-    .range([MacdChart.properties.height
-      -ChartView.properties.margin.top,  
-      ChartView.properties.margin.bottom]);
+        var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
+        var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 
-    var y2 = d3.scale.linear()
-    .domain([y2Diff*-1, y2Diff])
-    .range([MacdChart.properties.height
-      -ChartView.properties.margin.top,  
-      ChartView.properties.margin.bottom]);
+        var y1 = d3.scale.linear()
+        .domain([y1_diff*-1, y1_diff])
+        .range([chartHeight- margin.bottom, margin.top]);
 
-    data  = ChartView.data.daily.stockLine;
-    var x = ChartView.x(data, 'rdate');
+        var y2 = d3.scale.linear()
+        .domain([y2_diff*-1, y2_diff])
+        .range([chartHeight-margin.bottom, margin.top]);
 
-    chart_label.append('g')
-    .attr('class','y1labels')
-    .selectAll('text.yrule')
-    .data(y1.ticks(5))
-    .enter().append('svg:text')
-    .attr('class', 'yrule')
-    .attr('x', margin.left - 15)
-    .attr('y', y1)
-    .attr('text-anchor', 'middle')
-    .text(String);
+        data  = ChartView.data.daily.stockLine;
+        var x = ChartView.x(data, 'rdate');
 
-    chart_label.append('g')
-    .attr('class','y2labels')
-    .selectAll('text.yrule')
-    .data(y2.ticks(5))
-    .enter().append('svg:text')
-    .attr('class', 'yrule')
-    .attr('x', containerWidth-margin.right + 15)
-    .attr('y', y2)
-    .attr('text-anchor', 'middle')
-    .text(String);
+        chart_label.append('g')
+        .attr('class','y1labels')
+        .selectAll('text.yrule')
+        .data(y1.ticks(5))
+        .enter().append('svg:text')
+        .attr('class', 'yrule')
+        .attr('x', margin.left - 15)
+        .attr('y', y1)
+        .attr('text-anchor', 'middle')
+        .text(String);
 
-    $('#macd-checkbox').change(function(){
-      $('#macd').css('display', $(this).is(':checked')? 'block':'none');
-    });
+        chart_label.append('g')
+        .attr('class','y2labels')
+        .selectAll('text.yrule')
+        .data(y2.ticks(5))
+        .enter().append('svg:text')
+        .attr('class', 'yrule')
+        .attr('x', containerWidth-margin.right + 15)
+        .attr('y', y2)
+        .attr('text-anchor', 'middle')
+        .text(String);
 
-  }
-};
+        $('#macd-checkbox').change(function(){
+          $('#macd').css('display', $(this).is(':checked')? 'block':'none');
+        });
+
+      }
+    };
 

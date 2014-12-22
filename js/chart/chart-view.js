@@ -133,6 +133,7 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
+    MacdChart.drawGraph(false);
     // SentimentChart.build();
     // RsiChart.init();
     // MacdChart.init();
