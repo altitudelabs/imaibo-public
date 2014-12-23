@@ -42,7 +42,7 @@ var MacdChart = {
     var chart = d3.select('#macd-chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
+    .attr('width', graphWidth);
 
     if(isNew){
       xlabels = chart.append('g')
@@ -148,8 +148,8 @@ var MacdChart = {
       d = d2 = data.daily.stockLine[j];
 
       var model = {
-        top: d3.mouse(this)[1] + height*2  + ($('#rsi-checkbox').is(':checked')? 250: 0),
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
+        top: d3.mouse(this)[1] + height  + ($('#rsi-checkbox').is(':checked')? 350: 100),
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 70 : d3.event.layerX-155,
         date: d.rdate,
         macd: d.macd,
         diff: d.diff,
@@ -193,16 +193,16 @@ var MacdChart = {
     $('#macd-chart-container').css('top', 0);
 
     $('#macd .slimScrollDiv').css('position', 'absolute')
-    .css('top', '45px')
-    .css('left', '50px')
+    .css('top', '33px')
+    .css('left', '45px')
     .css('width', chartWidth.toString() + 'px');
 
     chart_label.append('svg:line')
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.top)
-    .attr('y2', margin.top)
+    .attr('y1', margin.bottom - 25)
+    .attr('y2', margin.bottom - 25)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')

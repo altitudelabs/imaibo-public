@@ -51,8 +51,8 @@ var IndexChart = {
     });
 
     $('.slimScrollDiv').css('position', 'absolute')
-    .css('top', '25px')
-    .css('left', '50px')
+    .css('top', '9px')
+    .css('left', '45px')
     .css('width', chartWidth.toString() + 'px');
 
     var chart_label = d3.select('#chart-label')
@@ -225,7 +225,7 @@ var IndexChart = {
     var chart = d3.select('#chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
+    .attr('width', graphWidth);
 
     var chart_label = d3.select('#chart-label')
     .attr('width', width)
@@ -457,7 +457,7 @@ var IndexChart = {
 
       var model = {
         top: d3.event.layerY+30,
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+60 : d3.event.layerX-105,
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-135,
         date: d.rdate,
         price: cursorPriceLevel,
         security: d,
