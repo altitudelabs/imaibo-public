@@ -116,11 +116,19 @@ var RsiChart = {
     plotRSI(24,'#784e7a');
 
     var tooltip =  chart.attr('class', 'mouseover-overlay');
+
+    var containerMouseX;
+    $('#rsi-chart-container').mousemove(function(e){
+      containerMouseX = e.pageX - $(this).parent().offset().left;
+      containerMouseX = containerMouseX > 910? containerMouseX - 150:containerMouseX;
+    });
+    
     tooltip.attr('class', 'mouseover-overlay')
+    .attr('id', 'rsi-mouseover')
     .attr('fill', 'transparent')
     .attr('x', 0)
     .attr('y', margin.top)
-    .attr('width', chartWidth)
+    .attr('width', graphWidth)
     .attr('height', chartHeight)
     .on('mouseover', function(e){
       return Tooltip.show(); })
@@ -133,12 +141,15 @@ var RsiChart = {
 
           var model = {
             top: d3.event.pageY - 120,
-            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
+            left: containerMouseX + 55,
             date: Helper.toDate(d.rdate),
             rsi6: d.rsi6,
             rsi12: d.rsi12,
             rsi24: d.rsi24,
           };
+
+          console.log($('#rsi-mouseover').scrollLeft());
+
           return Tooltip.render.rsi(model);
         });
   },
