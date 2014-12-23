@@ -278,9 +278,9 @@ var IndexChart = {
     .enter().append('svg:text')
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
-    .attr('y', height-margin.bottom+20)
+    .attr('y', height-margin.bottom+15)
     .attr('text-anchor', 'end')
-    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy-mm') : ''; });
+    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy/mm') : ''; });
 
     //sentimetal rect bars
     gvolume
@@ -454,8 +454,8 @@ var IndexChart = {
       d = d2 = data.daily.stockLine[j];
 
       var model = {
-        top: d3.event.layerY+30,
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+80 : d3.event.layerX-135,
+        top: d3.event.layerY+40,
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
         date: d.rdate,
         price: cursorPriceLevel,
         security: d,

@@ -88,9 +88,9 @@ var MacdChart = {
     .enter().append('svg:text')
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
-    .attr('y', chartHeight-margin.bottom+20)
+    .attr('y', chartHeight-margin.bottom+10)
     .attr('text-anchor', 'end')
-    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy-mm') : ''; });
+    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy/mm') : ''; });
 
     chart.selectAll('bar')
     .data(data.daily.stockLine)
@@ -147,8 +147,8 @@ var MacdChart = {
       d = d2 = data.daily.stockLine[j];
 
       var model = {
-        top: d3.mouse(this)[1] + height  + ($('#rsi-checkbox').is(':checked')? 350: 100),
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 70 : d3.event.layerX-155,
+        top: d3.event.pageY - 120,
+        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
         date: d.rdate,
         macd: d.macd,
         diff: d.diff,
@@ -235,7 +235,7 @@ var MacdChart = {
 
     var y1 = d3.scale.linear()
     .domain([y1_diff*-1, y1_diff])
-    .range([chartHeight- margin.bottom, margin.top]);
+    .range([chartHeight-margin.bottom, margin.top]);
 
     var y2 = d3.scale.linear()
     .domain([y2_diff*-1, y2_diff])
