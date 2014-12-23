@@ -36,19 +36,19 @@ var RsiChart = {
     });
   },
   drawGraph: function(isNew) {
-    var prop = ChartView.properties,
-        margin = prop.margin,
-    chartWidth = prop.width - margin.left - margin.right,
-    height      = this.properties.height,
-    chartHeight = height - margin.top - margin.bottom,
-    zoomFactor     = prop.zoomFactor,
-    graphWidth     = chartWidth * zoomFactor,
-    data           = ChartView.data,
-    interval       = this.properties.interval,
-    x              = ChartView.x(data.daily.stockLine, 'rdate'),
-    xlabels,
-    gline,
-    tooltip;
+    var prop        = ChartView.properties,
+        margin      = prop.margin,
+        chartWidth  = prop.width - margin.left - margin.right,
+        height      = this.properties.height,
+        chartHeight = height - margin.top - margin.bottom,
+        zoomFactor  = prop.zoomFactor,
+        graphWidth  = chartWidth * zoomFactor,
+        data        = ChartView.data,
+        interval    = this.properties.interval,
+        x           = ChartView.x(data.daily.stockLine, 'rdate'),
+        xlabels,
+        gline,
+        tooltip;
 
     var y2 = d3.scale.linear()
     .domain([this.properties.largest_abs*-1, this.properties.largest_abs])
@@ -65,7 +65,7 @@ var RsiChart = {
       tooltip = chart.append('rect')
       .attr('class','mouseover-overlay')
       .attr('fill', 'transparent');
-    }else{
+    } else {
       xlabels = chart.selectAll('g.xlabels');
       gline   = chart.selectAll('path.sentiment');
       tooltip = chart.selectAll('rect.mouseover-overlay');
@@ -89,9 +89,9 @@ var RsiChart = {
     .enter().append('svg:text')
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
-    .attr('y', chartHeight - margin.top)
+    .attr('y', chartHeight-margin.bottom+15)
     .attr('text-anchor', 'end')
-    .text(function(d,i){return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy-mm') : ''; });
+    .text(function(d,i){return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy/mm') : ''; });
 
     function plotRSI(rsi, color){
       var line = d3.svg.line()
@@ -132,8 +132,8 @@ var RsiChart = {
           d = d2 = data.daily.stockLine[j];
 
           var model = {
-            top: d3.mouse(this)[1] + height + 110,
-            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 100 : d3.event.layerX-155,
+            top: d3.event.pageY - 120,
+            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
             date: Helper.toDate(d.rdate),
             rsi6: d.rsi6,
             rsi12: d.rsi12,

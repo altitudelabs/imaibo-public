@@ -188,6 +188,8 @@ body {
   display: inline;
 }
 
+#macd-chart { position: relative; }
+
 #macd-dea-legend {
   color: #d8db74;
 }
@@ -341,6 +343,10 @@ body {
 
 .chart-header {
   padding: 8px 13px;
+}
+
+#price .chart-header, #sentiment .chart-header {
+  padding: 8px 35px 8px 13px;
 }
 
 .container {
@@ -1520,6 +1526,7 @@ ul.toolbar > li.active > a:hover {
   width: 100%;
 }
 
+#rsi-chart { position: relative; }
 
 #rsi6-legend {
   color: #fff;
