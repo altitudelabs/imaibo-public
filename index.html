@@ -312,12 +312,12 @@
               <div id="changes" class="changes">+{{moodindexInfo.change}}</div>
             </div>
             {{#ifEq tradingSign.signal 1}}
-                <div class="component-item-price ind rise">
+                <div id="prediction-wrapper" class="component-item-price ind rise">
             {{else}}
               {{#ifEq tradingSign.signal 0}}
-                <div class="component-item-price ind neutral">
+                <div id="prediction-wrapper" class="component-item-price ind neutral">
                 {{else}}
-                <div class="component-item-price ind fall">
+                <div id="prediction-wrapper" class="component-item-price ind fall">
               {{/ifEq}}
             {{/ifEq}}
 
@@ -350,6 +350,7 @@
               {{else}}
                 <div class="indicator"></div>
               {{/isGreater}}
+              <div id="indicator-tooltip"></div>
             </div>
       </script>
 
@@ -477,6 +478,15 @@
   </div>
 
   <!-- Dashboard template start -->
+
+   <script id="indicator-template" type="text/x-handlebars-template">
+    <ul>
+      <li class="tt-title">{{dateStr date}}   {{clock}}</li>
+      <li class="tt-row"><span class="tt-label">上涨概率</span><span class="tt-value">{{toPercentage buy}}</span></li>
+      <li class="tt-row"><span class="tt-label">下跌概率</span><span class="tt-value">{{toPercentage sell}}</span></li>
+      <li class="tt-row"><span class="tt-label">横盘概率</span><span class="tt-value">{{toPercentage hold}}</span></li>
+    </ul>
+  </script>
 
   <!-- Dashboard template end -->
 

@@ -1023,6 +1023,31 @@ text {
 #changes {
   opacity: 0;
 }
+#indicator-tooltip {
+  width: 150px;
+  height: 100px;
+  background-color: #454545;
+  position: absolute;
+  top: 50px;
+  left: 425px;
+  display: none;
+  border-radius: 3px;
+}
+
+#indicator-tooltip .tt-title {
+  background-color: #454545;
+}
+
+#indicator-tooltip > ul {
+  width: 148px;
+  height: 98px;
+  margin-left: 1px;
+}
+
+#indicator-tooltip > ul > li{
+  padding: 5px;
+  background-color: #363636;
+}
 
 /* =Stockpicker
 ---------------------------------------------------------------*/
@@ -1415,7 +1440,7 @@ text {
 
 /* =Tooltip
 -------------------------------------------------------------- */
-#tooltip {
+#tooltip{
   visibility: hidden;
   position: absolute;
   z-index: 10;
@@ -1433,6 +1458,11 @@ text {
 #tooltip > ul > li {
   padding: 4px 8px;
 }
+
+.tt-title {
+  color: #fff;
+}
+
 #tooltip > ul > li.tt-title {
   background-color: #454545;
   padding: 7px 8px;
