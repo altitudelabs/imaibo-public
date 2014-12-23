@@ -72,7 +72,12 @@ var RightPanel = {
     // this.disableBodyScroll();
   },
   render: function(){
-    this.goTo('chooseStockView');
+    console.log(HIDE);
+    if(HIDE){ //app.js
+      this.goTo('expertsView');
+    }else{
+      this.goTo('chooseStockView');
+    }
   },
   initLinks: function(){
     var self = this;
