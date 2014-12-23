@@ -50,7 +50,7 @@ var IndexChart = {
       color: '#ffcc00',
     });
 
-    $('.slimScrollDiv').css('position', 'absolute')
+    $('#price .slimScrollDiv').css('position', 'absolute')
     .css('top', '9px')
     .css('left', '45px')
     .css('width', chartWidth.toString() + 'px');
