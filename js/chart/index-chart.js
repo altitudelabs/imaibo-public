@@ -67,19 +67,19 @@ var IndexChart = {
     var y1 = ChartView.y1(data, height ,'moodindex');
     var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
 
-    // chart_label.append('svg:line')
-    // .attr('class', 'horizontal-line')
-    // .attr('x1', margin.left)
-    // .attr('x2', margin.left + chartWidth) //shift to the left
-    // .attr('y1', height - margin.bottom)
-    // .attr('y2', height - margin.bottom)
-    // .attr('stroke', '#25bcf1')
-    // .attr('stroke-width', '2px')
-    // .on('mouseover', function(e){ return Tooltip.show(); })
-    // .on('mousemove', function() {
-    //   var xPos = d3.mouse(this)[0],
-    //    yPos = d3.mouse(this)[1];
-    // });
+    chart_label.append('svg:line')
+    .attr('class', 'horizontal-line')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left + chartWidth) //shift to the left
+    .attr('y1', height - margin.bottom)
+    .attr('y2', height - margin.bottom)
+    .attr('stroke', '#25bcf1')
+    .attr('stroke-width', '2px')
+    .on('mouseover', function(e){ return Tooltip.show(); })
+    .on('mousemove', function() {
+      var xPos = d3.mouse(this)[0],
+       yPos = d3.mouse(this)[1];
+    });
 
     chart_label.append('svg:line')
     .attr('class', 'xaxis')
@@ -242,11 +242,29 @@ var IndexChart = {
       gcandlesticks = chart.append('g').attr('class','candlesticks');
       glinestems = chart.append('g').attr('class','linestems');
 
+      tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
+      vertical = chart.append('svg:line');
+      horizontal = chart_label.append('svg:line');
+      vertical_block = chart_label.append('svg:rect');
+      horizontal_block = chart.append('svg:rect');
+      horizontal_text = chart.append('text');
+      vertical_text = chart_label.append('text');
+
+
     }else{
       xlabels = chart.selectAll('g.xlabels');
       gvolume = chart.selectAll('g.volume');
       gcandlesticks = chart.selectAll('g.candlesticks');
       glinestems =  chart.selectAll('g.linestems');
+
+      tooltip =   chart.selectAll('rect.mouseover-overlay');
+      vertical = chart.selectAll('line.xlabelLine');
+      horizontal = chart_label.selectAll('line.ylabelLine');
+      vertical_block = chart_label.select('#vertical-block');
+      horizontal_block = chart.select('#horizontal-block');
+      horizontal_text = chart.select('#horizontal-text');
+      vertical_text = chart_label.select('#vertical-text');
+
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -323,43 +341,42 @@ var IndexChart = {
     .on('mousemove', function(){
       var xPos = d3.mouse(this)[0];
       var yPos = d3.mouse(this)[1];
-
-      // vertical
-      // .attr('class', 'xlabelLine')
-      // .attr('id', 'xlabelLine')
-      // .attr('x1', xPos)
-      // .attr('x2', xPos)
-      // .attr('y1', height-margin.bottom) //make it line up with the label
-      // .attr('y2', margin.top)
-      // .attr('stroke', '#44b6ea');
-
-      // vertical_block
-      // .attr('id','vertical-block')
-      // .attr('x', chartWidth+50)
-      // .attr('y', yPos-10)
-      // .attr('height', 20)
-      // .attr('width',  50)
-      // .attr('fill', '#f65c4e');
-
-      yPos = yPos > 370? 370: yPos;
+            yPos = yPos > 230? 230: yPos;
       yPos = yPos < 10? 10: yPos;
 
-      // horizontal
-      // .attr('class', 'ylabelLine')
-      // .attr('id', 'ylabelLine')
-      // .attr('x1', chartWidth)
-      // .attr('x2', 0)
-      // .attr('y1', yPos) //make it line up with the label
-      // .attr('y2', yPos)
-      // .attr('stroke', '#f65c4e');
+      vertical
+      .attr('class', 'xlabelLine')
+      .attr('id', 'xlabelLine')
+      .attr('x1', xPos)
+      .attr('x2', xPos)
+      .attr('y1', height-margin.bottom) //make it line up with the label
+      .attr('y2', margin.top)
+      .attr('stroke', '#44b6ea');
 
-      // horizontal_block
-      // .attr('id','horizontal-block')
-      // .attr('x', xPos+25)
-      // .attr('y', chartHeight+10)
-      // .attr('height', 20)
-      // .attr('width',  50)
-      // .attr('fill', '#44b6ea');
+      vertical_block
+      .attr('id','vertical-block')
+      .attr('x', chartWidth+40)
+      .attr('y', yPos-10)
+      .attr('height', 20)
+      .attr('width',  50)
+      .attr('fill', '#f65c4e');
+
+      horizontal
+      .attr('class', 'ylabelLine')
+      .attr('id', 'ylabelLine')
+      .attr('x1', chartWidth + margin.left)
+      .attr('x2', margin.left)
+      .attr('y1', yPos) //make it line up with the label
+      .attr('y2', yPos)
+      .attr('stroke', '#f65c4e');
+
+      horizontal_block
+      .attr('id','horizontal-block')
+      .attr('x', xPos - 35)
+      .attr('y', chartHeight+10)
+      .attr('height', 20)
+      .attr('width',  70)
+      .attr('fill', '#44b6ea');
 
     });
 
@@ -464,6 +481,22 @@ var IndexChart = {
           change: d2.moodindexchg
         }
       };
+
+      horizontal_text
+      .attr('id', 'horizontal-text')
+      .attr('x', xPos)
+      .attr('y', height- 10)
+      .attr('text-anchor', 'middle')
+      .text(Helper.toDate(d.rdate))
+      .attr('color', '#fff');
+
+     vertical_text
+      .attr('id', 'vertical-text')
+      .attr('x', width - 30)
+      .attr('y', yPos + 5)
+      .attr('text-anchor', 'middle')
+      .text(cursorPriceLevel.toFixed(2))
+      .attr('color', '#fff');
       return Tooltip.render.index(model);
     });
   },

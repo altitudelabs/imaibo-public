@@ -130,13 +130,21 @@ var MacdChart = {
       tooltip = chart.selectAll('rect.mouseover-overlay');
     }
 
+    var tooltip =  chart.attr('class', 'mouseover-overlay');
+
+   var containerMouseX;
+    $('#macd-chart-container').mousemove(function(e){
+      containerMouseX = e.pageX - $(this).parent().offset().left;
+      containerMouseX = containerMouseX > 910? containerMouseX - 150:containerMouseX;
+    });
+    
     tooltip
     .attr('class', 'mouseover-overlay')
     .attr('fill', 'transparent')
     .attr('x', 0)
     .attr('y', margin.top)
     .attr('width', graphWidth)
-    .attr('height', height-margin.top-margin.bottom)
+    .attr('height', chartHeight)
     .on('mouseover', function(e){
       return Tooltip.show(); })
     .on('mouseout', function(){
@@ -148,7 +156,7 @@ var MacdChart = {
 
       var model = {
         top: d3.event.pageY - 120,
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
+        left: containerMouseX + 55,
         date: d.rdate,
         macd: d.macd,
         diff: d.diff,
