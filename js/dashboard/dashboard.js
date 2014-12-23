@@ -22,7 +22,39 @@ var Dashboard = {
    }
 
     did.dataChange(model); //?
+    this.renderIndicatorTooltip({remarks: model.tradingSign.remarks,
+                                 date: model.tradingSign.date,
+                                 clock: model.tradingSign.clock});
 
+  },
+  renderIndicatorTooltip: function(data) {
+    //risePerct fallPerct neutPerct
+    //indicator-template
+
+    $('#prediction-wrapper').hover(function(){
+      $('#indicator-tooltip').css('display', 'block');
+    }, function(){
+      $('#indicator-tooltip').css('display', 'none');
+    });
+
+    var remarks = data.remarks
+    var hold = remarks.slice(-4);
+    var buy  = remarks.substr(0, remarks.length-10).slice(-4);
+    var sell = remarks.substr(0, remarks.length-19).slice(-4);
+    var clock = data.clock.substr(0, data.clock.length-3);
+
+    var d = {
+      date: data.date,
+      clock: clock,
+      hold: hold,
+      buy: buy,
+      sell: sell
+    };
+
+    console.log(d.hold, d.buy, d.sell);
+
+
+    Helper.populateView('#indicator-tooltip', '#indicator-template', d);
   },
   renderIndicatorLines: function(model){
     // Set thermometer liquid height
