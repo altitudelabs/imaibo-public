@@ -113,10 +113,14 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     $('.loader').css('height', '441px');
 
-    function draw(date){
+    setInterval(function(){
+      var today = new Date();
+      today = today.getFullYear().toString()  +
+      (today.getMonth()+1).toString() +
+      today.getDate().toString();
       //should handle this in model.js instead
       ChartModel.getIndexData(function(data) {
-        ChartModel.getSentimentData(date, function(data){
+        ChartModel.getSentimentData(today, function(data){
           self.data.sentiment = data.sentiment;
           SentimentChart.build();
           self.data.info = data.info;
@@ -130,12 +134,7 @@ var ChartView = {
           Toolbar.render(self.data.daily);
         });
       });
-    }
-    var today = new Date();
-    today = today.getFullYear().toString()  +
-    (today.getMonth()+1).toString() +
-    today.getDate().toString();
-    draw(today);
+    }, 3000);
   },
   redraw: function (zoomFactor) {
     this.properties.zoomFactor *= zoomFactor;
