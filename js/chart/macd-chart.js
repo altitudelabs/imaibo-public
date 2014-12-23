@@ -2,7 +2,7 @@ var MacdChart = {
   properties: {},
   setProperties: function(options) {
     var properties = {
-      height: 240,
+      height: 130,
       interval: 40,
     };
     if (options) {
@@ -27,7 +27,7 @@ var MacdChart = {
 
     var prop = ChartView.properties,
     margin = prop.margin,
-    chartWidth = prop.width - margin.left - margin.right,
+    chartWidth  = prop.width - margin.left - margin.right,
     height      = this.properties.height,
     chartHeight = height - margin.top - margin.bottom,
     zoomFactor     = prop.zoomFactor,
@@ -201,15 +201,15 @@ var MacdChart = {
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.bottom - 20)
-    .attr('y2', margin.bottom - 20)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')
     .attr('class', 'yborder-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
-    .attr('y1',  chartHeight - margin.bottom)
+    .attr('y1', chartHeight - margin.bottom)
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
@@ -248,7 +248,7 @@ var MacdChart = {
     chart_label.append('g')
     .attr('class','y1labels')
     .selectAll('text.yrule')
-    .data(y1.ticks(5))
+    .data(y1.ticks(3))
     .enter().append('svg:text')
     .attr('class', 'yrule')
     .attr('x', margin.left - 15)
@@ -259,7 +259,7 @@ var MacdChart = {
     chart_label.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
-    .data(y2.ticks(5))
+    .data(y2.ticks(3))
     .enter().append('svg:text')
     .attr('class', 'yrule')
     .attr('x', containerWidth-margin.right + 15)

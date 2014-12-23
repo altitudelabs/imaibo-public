@@ -2,7 +2,7 @@ var RsiChart = {
   properties: {},
   setProperties: function(options) {
     var properties = {
-      height: 240,
+      height: 130,
       interval: 40,
     };
     if (options) {
@@ -197,7 +197,7 @@ var RsiChart = {
     chart_label.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
-    .data(y2.ticks(10))
+    .data(y2.ticks(3))
     .enter().append('svg:text')
     .attr('class', 'yrule')
     .attr('x', chartWidth + margin.left + 15 )
@@ -209,24 +209,24 @@ var RsiChart = {
     .attr('class', 'guideline-80')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.bottom + 10)
-    .attr('y2', margin.bottom + 10)
+    .attr('y1', margin.top + 10)
+    .attr('y2', margin.top + 10)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')
     .attr('class', 'guideline-20')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', chartHeight - margin.bottom - 30)
-    .attr('y2', chartHeight - margin.bottom - 30)
+    .attr('y1', chartHeight - margin.bottom - 10)
+    .attr('y2', chartHeight - margin.bottom - 10)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.bottom - 20)
-    .attr('y2', margin.bottom - 20)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')

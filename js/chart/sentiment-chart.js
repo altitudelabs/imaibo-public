@@ -5,7 +5,7 @@ var SentimentChart = {
     var data = ChartView.data,
     width = ChartView.properties.width,
     height = 200,
-    margin = { top: 30, right: 70, bottom: 30, left: 50 },
+    margin = { top: 8, right: 45, bottom: 30, left: 45 },
     interval = 40;
 
     var chart = d3.select('#sentiment-chart')
@@ -43,8 +43,8 @@ var SentimentChart = {
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', width - margin.right)
-    .attr('y1', margin.top - 20)
-    .attr('y2', margin.top - 20)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
     chart.append('g')
@@ -59,7 +59,7 @@ var SentimentChart = {
     .text(function(i){
       if(i%3600===0){
         var d = new Date(i*1000);
-        // d.getDate() + '-' +  
+        // d.getDate() + '-' +
         return d.getHours() + ':' + (d.getMinutes() < 10? '0' + d.getMinutes(): d.getMinutes());
       }
     });
@@ -79,16 +79,16 @@ var SentimentChart = {
     .attr('class', 'yborder-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
-    .attr('y1',  height - margin.top)
-    .attr('y2', margin.bottom - 20)
+    .attr('y1', margin.top)
+    .attr('y2', height-margin.bottom)
     .attr('stroke', '#464646');
 
     chart.append('svg:line')
     .attr('class', 'yborder-right')
     .attr('x1',  width - margin.right - 1)
     .attr('x2', width - margin.right - 1)
-    .attr('y1',  height - margin.top)
-    .attr('y2', margin.bottom - 20)
+    .attr('y1', margin.top)
+    .attr('y2', height-margin.bottom)
     .attr('stroke', '#464646');
 
     chart.append('g')
@@ -97,7 +97,7 @@ var SentimentChart = {
     .data(y2.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', width-margin.right + 22)
+    .attr('x', width-margin.right + 18)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
