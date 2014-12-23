@@ -9,7 +9,7 @@ var ChartView = {
     //review
     var properties = {
       width: $('#content').width(), //width of left panel
-      margin: { top: 10, right: 70, bottom: 30, left: 50 }, //margin of chart
+      margin: { top: 5, right: 45, bottom: 30, left: 45 }, //margin of chart
       // chartWidth: function(){ return self.properties.width - self.properties.margin.right - self.properties.margin.left; }, //width of charts
       // graphWidth: this.chartWidth,
       volumeHeight: 50,
@@ -37,7 +37,7 @@ var ChartView = {
   //data.daily.stockLine
   //return moodindex
   y1: function(data, height, returnProp){
-    var self = this; 
+    var self = this;
     var props = self.properties;
 
     return d3.scale.linear()
@@ -45,8 +45,8 @@ var ChartView = {
     .range([height-props.margin.bottom, props.margin.top])
   },
   //return lowpx, highpx
-  y2: function(data, height, returnPropMax, returnPropMin){   
-    var self = this; 
+  y2: function(data, height, returnPropMax, returnPropMin){
+    var self = this;
     var props = self.properties;
 
     return d3.scale.linear()
@@ -93,18 +93,18 @@ var ChartView = {
     var self = this;
     self.build();
 
-    $(window).on('resize', function() { 
-      self.setProperties();
-      IndexChart.init();
-      RsiChart.init();
-      MacdChart.init(); 
-      self.redraw(true); });
-    $('#chart-view').on('resize', function(){ 
+    $(window).on('resize', function() {
       self.setProperties();
       IndexChart.init();
       RsiChart.init();
       MacdChart.init();
-      self.redraw(true); 
+      self.redraw(true); });
+    $('#chart-view').on('resize', function(){
+      self.setProperties();
+      IndexChart.init();
+      RsiChart.init();
+      MacdChart.init();
+      self.redraw(true);
     });
 
   },

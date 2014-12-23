@@ -2,7 +2,7 @@ var IndexChart = {
   properties: {},
   setProperties: function(options) {
     var properties = {
-      height: 400,
+      height: 250,
       interval: 30,
     };
     if (options) {
@@ -125,7 +125,7 @@ var IndexChart = {
     .data(y1.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', margin.left - 15)
+    .attr('x', margin.left - 12)
     .attr('y', y1)
     .attr('text-anchor', 'middle')
     .text(String);
@@ -137,7 +137,7 @@ var IndexChart = {
     .data(y2.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', containerWidth-margin.right + 22)
+    .attr('x', containerWidth-margin.right + 18)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
@@ -278,7 +278,7 @@ var IndexChart = {
     }
 
     var startDate = data.daily.stockLine[0].rdate;
-    var currentDate = startDate; 
+    var currentDate = startDate;
     //x-axis labels
     xlabels
     .selectAll('text.xrule')
