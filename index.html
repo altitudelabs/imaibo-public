@@ -13,6 +13,7 @@
 
   <!-- Start iMaibo JS to include -->
   <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.color-2.1.2.min.js"></script>
   <!-- End iMaibo JS to include -->
 
   <!-- Start iMaibo JS to remove -->
@@ -279,9 +280,9 @@
 
       <script id="dashboard-template" type="text/x-handlebars-template">
           {{#ifEq stockIndexInfo.sign '+'}}
-            <div class="component-item-price rise">
+            <div id="dashboard-index" class="component-item-price rise">
           {{else}}
-            <div class="component-item-price fall">
+            <div id="dashboard-index" class="component-item-price fall">
           {{/ifEq}}
               <div class="title">上证指数</div>
               <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
@@ -289,12 +290,12 @@
             </div>
 
             {{#isGreater moodindexInfo.latest 0}}
-               <div class="component-item-price thermo rise">
+               <div id="dashboard-mood" class="component-item-price thermo rise">
             {{else}}
               {{#ifEq moodindexInfo.latest 0}}
-              <div class="component-item-price thermo neutral">
+              <div id="dashboard-mood" class="component-item-price thermo neutral">
               {{else}}
-              <div class="component-item-price thermo fall">
+              <div id="dashboard-mood" class="component-item-price thermo fall">
               {{/ifEq}}
             {{/isGreater}}
               <div class="prediction">
@@ -308,7 +309,7 @@
                 <div class="background"></div>
                 <div class="background full"></div>
               </div>
-              <div class="changes ">+{{moodindexInfo.change}}</div>
+              <div id="changes" class="changes">+{{moodindexInfo.change}}</div>
             </div>
             {{#ifEq tradingSign.signal 1}}
                 <div class="component-item-price ind rise">
@@ -320,7 +321,7 @@
               {{/ifEq}}
             {{/ifEq}}
 
-              <div class="prediction">
+              <div id="dashboard-signal" class="prediction">
                 <div class="title">短期预测</div>
                 <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
                 <div class="value-sublabel">
@@ -476,7 +477,6 @@
   </div>
 
   <!-- Dashboard template start -->
-
 
   <!-- Dashboard template end -->
 
