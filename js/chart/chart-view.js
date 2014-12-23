@@ -9,7 +9,7 @@ var ChartView = {
     //review
     var properties = {
       width: $('#content').width(), //width of left panel
-      margin: { top: 5, right: 45, bottom: 30, left: 45 }, //margin of chart
+      margin: { top: 8, right: 45, bottom: 25, left: 45 }, //margin of chart
       // chartWidth: function(){ return self.properties.width - self.properties.margin.right - self.properties.margin.left; }, //width of charts
       // graphWidth: this.chartWidth,
       volumeHeight: 50,

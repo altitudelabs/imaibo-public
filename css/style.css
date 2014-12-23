@@ -188,13 +188,6 @@ body {
   display: inline;
 }
 
-#price > .title,
-#sentiment > .title,
-#macd .title,
-#rsi  .title{
-  margin-left: 15px;
-}
-
 #macd-dea-legend {
   color: #d8db74;
 }
@@ -341,8 +334,9 @@ body {
 
 /* =Chart
 -------------------------------------------------------------- */
-#price.component {
+#price.component, #macd.component, #rsi.component, #sentiment.component {
   padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .chart-header {
@@ -1190,6 +1184,10 @@ text {
   padding: 12px 5px;
   margin: 5px;
 }
+#stock-table tr:last-child td {
+  border-bottom: transparent solid 1px;
+}
+
 #stock-table td {
   width: 22.5%;
 }
@@ -1457,7 +1455,7 @@ text {
 #toolbar {
   position: absolute;
   left: 54px;
-  top: 46px;
+  top: 49px;
   z-index: 10;
 }
 ul.toolbar > li {
@@ -1494,8 +1492,8 @@ ul.toolbar > li.active > a:hover {
 }
 
 #rsi > .wrapper > .buttons,
-#macd > .wrapper > .buttons{
-  margin-right: 10px;
+#macd > .wrapper > .buttons {
+  margin-right: -6px;
   width: 100px;
   height: 20px;
 }
@@ -1516,10 +1514,6 @@ ul.toolbar > li.active > a:hover {
 #rsi > .wrapper > .buttons > ul,
 #rsi > .wrapper > .buttons > .close {
   display: inline-block;
-}
-
-#rsi {
-  height: 240px;
 }
 
 #rsi-chart-container {
@@ -1564,7 +1558,7 @@ ul.toolbar > li.active > a:hover {
 .wrapper > .buttons > .close {
   background: url('../assets/chart/close.png') no-repeat center;
   width: 20px;
-  height: 20px;
+  height: 15px;
   float: right;
   cursor: pointer;
 }
