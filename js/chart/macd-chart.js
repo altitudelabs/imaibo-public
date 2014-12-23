@@ -201,8 +201,8 @@ var MacdChart = {
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.bottom - 25)
-    .attr('y2', margin.bottom - 25)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')
