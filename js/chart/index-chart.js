@@ -3,7 +3,7 @@ var IndexChart = {
   setProperties: function(options) {
     var properties = {
       height: 250,
-      interval: 30,
+      interval: 40,
     };
     if (options) {
       for (var key in options) {
