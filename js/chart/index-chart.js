@@ -451,7 +451,7 @@ var IndexChart = {
       yPos = d3.mouse(this)[1],
       j = ChartView.xInverse(xPos, x),
       cursorPriceLevel = y2.invert(yPos)
-      d = d2 = data.daily.stockLine[j];
+      d = data.daily.stockLine[j];
 
       var model = {
         top: d3.event.layerY+40,
@@ -460,8 +460,8 @@ var IndexChart = {
         price: cursorPriceLevel,
         security: d,
         sentiment: {
-          price: d2.moodindex,
-          change: d2.moodindexchg
+          price: d.moodindex,
+          change: d.moodindexchg
         }
       };
       return Tooltip.render.index(model);

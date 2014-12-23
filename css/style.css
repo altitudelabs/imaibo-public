@@ -5,6 +5,16 @@
   =Nav
   =Dropdown menu
   =SVG
+  =Dashboard
+  =Price Chart
+  =Sentiment Chart
+  =Right Panel
+  =Experts
+  =Stockpicker
+  =News
+  =Tooltip
+  =Toolbar
+  =Modal
 -------------------------------------------------------------- */
 
 /* =General
@@ -15,7 +25,6 @@
   box-sizing: border-box;
 }
 html {
-  height: 100%;
   overflow-x: hidden;
 }
 body {
@@ -23,7 +32,6 @@ body {
   color: #fff;
   margin-top: 10px;
   font-family: Arial, "Microsoft Yahei","微软雅黑", STXihei, "华文细黑", sans-serif;
-  min-height: 100%;
   overflow-x: hidden;
 }
 .nav:before, .nav:after {
@@ -35,23 +43,20 @@ body {
 .pull-right {
   float: right !important;
 }
-
 .noscroll {
   overflow: hidden !important;
 }
 
-
 /* =Layout
 -------------------------------------------------------------- */
+.outer {
+  overflow: hidden;
+}
+
 .rise { color: #d74e37; }
 .fall { color: #3bbb57; }
 .neutral { color: rgb(107, 107, 107); }
 .white, .white a { color: #fff;}
-
-.outer {
-  overflow: hidden;
-  /*position: relative;*/
-}
 
 .component-wrapper {
   display: inline-block;
@@ -79,9 +84,193 @@ body {
 .component-item {
   float: left;
 }
+
+/* =Nav
+-------------------------------------------------------------- */
+.nav {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  border-right: 1px solid #4d4d4d;
+  border-top: 1px solid #4d4d4d;
+}
+.nav > li {
+  position: relative;
+  display: block;
+}
+.nav > li > a {
+  position: relative;
+  display: block;
+  padding: 8px 20px;
+}
+.nav > li > a:hover,
+.nav > li > a:focus {
+  text-decoration: none;
+  background-color: #eee;
+}
+.nav > li.disabled > a {
+  color: #777;
+}
+.nav > li.disabled > a:hover,
+.nav > li.disabled > a:focus {
+  color: #777;
+  text-decoration: none;
+  cursor: not-allowed;
+  background-color: transparent;
+}
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+  background-color: #eee;
+  border-color: #337ab7;
+}
+.nav .nav-divider {
+  height: 1px;
+  margin: 9px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+.nav > li > a > img {
+  max-width: none;
+}
+.nav-tabs > li {
+  float: left;
+  border: 1px solid #4d4d4d;
+  background-color: rgb(38, 38, 38);
+  margin-left: -1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+}
+.nav-tabs > li:first-child {
+  margin-left: 0px;
+}
+.nav-tabs > li > a {
+  line-height: 1.42857143;
+  color: rgb(201, 201, 201);
+  border: 0px;
+  border-bottom: 2px solid transparent;
+  text-align: center;
+  font-size: 13px;
+}
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus {
+  color: rgb(201, 201, 201);
+  background-color: rgb(38, 38, 38);
+  border: 0px;
+  border-bottom: 2px solid transparent;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: #555;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+.nav-tabs > li > a.active {
+  color: rgb(48, 140, 180);
+  background-color: rgb(38, 38, 38);
+  border: 0px;
+  border-bottom: 2px solid rgb(48, 140, 180);
+  margin-right: 0px;
+}
+.nav-tabs > li > a.active:hover,
+.nav-tabs > li > a.active:focus {
+  color: rgb(48, 140, 180);
+  background-color: rgb(38, 38, 38);
+  border: 0px;
+  border-bottom: 2px solid rgb(48, 140, 180);
+}
+
+/* =Dropdown menu
+-------------------------------------------------------------- */
+.link-dropdown {
+  position: relative;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  background-color: #353535;
+  width: 120px;
+  border-radius: 3px;
+  color: #fff;
+  border: 1px solid #454545;
+  -webkit-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
+  -moz-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
+}
+
+#ma-dropdown-menu {
+  width: 125px;
+}
+
+/* replaces js/toolbar/toolbar.js initDropdown function  */
+.link-dropdown:hover > .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu > ul > li{
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #fff;
+}
+.dropdown-menu > form > ul > li{
+  padding: 6px 12px;
+  color: #fff;
+}
+
+.dropdown-menu > ul > li:hover {
+  padding: 10px 12px;
+  background-color: #434343;
+}
+.dropdown-menu > ul > li > a:hover {
+  color: #29a3d3;
+  text-decoration: none;
+}
+label.checkbox-label input[type=checkbox]{
+  vertical-align: middle;
+  position: relative;
+  bottom: 1px;
+}
+
+.dropdown-menu > ul > li > a {
+  padding: 6px 12px;
+}
+.dropdown-menu > ul > li > a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* =SVG
+-------------------------------------------------------------- */
+text {
+  fill: rgb(107, 107, 107);
+  font-size: 10px;
+}
+
+/* =Dashboard
+-------------------------------------------------------------- */
+#snapshot {
+  z-index: 1;
+  min-height: 75px;
+}
+
+.value-label {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.value-sublabel {
+  font-size: 10px;
+  line-height: 12px;
+}
+
 .component-item-price .title {
   color: rgb(107, 107, 107);
 }
+
 .component-item-price {
   width: 120px;
   height: 48px;
@@ -171,6 +360,11 @@ body {
 .rise .thermo-wrapper .background {
   background-color: #ff372f;
 }
+
+#changes {
+  opacity: 0;
+}
+
 .changes {
   display: inline-block;
   width: 10%;
@@ -184,9 +378,57 @@ body {
   transform: translateX(-180%);
 }
 
-.title,.legend {
+.title, .legend {
   display: inline;
 }
+
+@media (max-width: 1024px){
+  .btn-buy-sell-wrapper {
+    float: none;
+    margin-top: 10px;
+  }
+}
+@media (max-width: 1200px) and (min-width: 1024px) {
+  .btn-buy,
+  .btn-sell {
+    width: 90px;
+  }
+}
+
+#indicator-tooltip {
+  display: none;
+  width: 150px;
+  height: 100px;
+  font-size: 11px;
+  background-color: #363636;
+  position: absolute;
+  top: 65px;
+  left: 400px;
+  -webkit-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
+  -moz-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #454545;
+}
+
+#indicator-tooltip .tt-title {
+  background-color: #454545;
+}
+
+#indicator-tooltip > ul {
+  width: 148px;
+  height: 98px;
+}
+
+#indicator-tooltip > ul > li{
+  padding: 5px;
+  background-color: #363636;
+}
+
+/* =Charts
+-------------------------------------------------------------- */
 
 #macd-chart { position: relative; }
 
@@ -334,7 +576,7 @@ body {
   background-color: #4ac665;
 }
 
-/* =Chart
+/* =Price Chart
 -------------------------------------------------------------- */
 #price.component, #macd.component, #rsi.component, #sentiment.component {
   padding-top: 0px;
@@ -369,9 +611,7 @@ body {
   z-index: 999999;
 }
 
-
-
-/* =SentimentChart
+/* =Sentiment Chart
 ------------------------------------------------------------ */
 .tooltip {
   position: absolute;
@@ -382,7 +622,7 @@ body {
 }
 
 .news-bubble{
-  width: 20px
+  width: 20px;
   height: 20px;
   background: black;
   position: fixed;
@@ -449,181 +689,6 @@ body {
   user-select: none;
 }
 
-
-/* =Nav
--------------------------------------------------------------- */
-.nav {
-  padding-left: 0;
-  margin-bottom: 0;
-  list-style: none;
-  border-right: 1px solid #4d4d4d;
-  border-top: 1px solid #4d4d4d;
-}
-.nav > li {
-  position: relative;
-  display: block;
-}
-.nav > li > a {
-  position: relative;
-  display: block;
-  padding: 8px 20px;
-}
-.nav > li > a:hover,
-.nav > li > a:focus {
-  text-decoration: none;
-  background-color: #eee;
-}
-.nav > li.disabled > a {
-  color: #777;
-}
-.nav > li.disabled > a:hover,
-.nav > li.disabled > a:focus {
-  color: #777;
-  text-decoration: none;
-  cursor: not-allowed;
-  background-color: transparent;
-}
-.nav .open > a,
-.nav .open > a:hover,
-.nav .open > a:focus {
-  background-color: #eee;
-  border-color: #337ab7;
-}
-.nav .nav-divider {
-  height: 1px;
-  margin: 9px 0;
-  overflow: hidden;
-  background-color: #e5e5e5;
-}
-.nav > li > a > img {
-  max-width: none;
-}
-.nav-tabs > li {
-  float: left;
-  border: 1px solid #4d4d4d;
-  background-color: rgb(38, 38, 38);
-  margin-left: -1px;
-  margin-top: -1px;
-  margin-bottom: -1px;
-}
-.nav-tabs > li:first-child {
-  margin-left: 0px;
-}
-.nav-tabs > li > a {
-  line-height: 1.42857143;
-  color: rgb(201, 201, 201);
-  border: 0px;
-  border-bottom: 2px solid transparent;
-  text-align: center;
-  font-size: 13px;
-}
-.nav-tabs > li > a:hover,
-.nav-tabs > li > a:focus {
-  color: rgb(201, 201, 201);
-  background-color: rgb(38, 38, 38);
-  border: 0px;
-  border-bottom: 2px solid transparent;
-}
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus {
-  color: #555;
-  cursor: default;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
-}
-.nav-tabs > li > a.active {
-  color: rgb(48, 140, 180);
-  background-color: rgb(38, 38, 38);
-  border: 0px;
-  border-bottom: 2px solid rgb(48, 140, 180);
-  margin-right: 0px;
-}
-.nav-tabs > li > a.active:hover,
-.nav-tabs > li > a.active:focus {
-  color: rgb(48, 140, 180);
-  background-color: rgb(38, 38, 38);
-  border: 0px;
-  border-bottom: 2px solid rgb(48, 140, 180);
-}
-
-/* =Dropdown menu
--------------------------------------------------------------- */
-.link-dropdown {
-  position: relative;
-}
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  background-color: #353535;
-  width: 120px;
-  border-radius: 3px;
-  color: #fff;
-  border: 1px solid #454545;
-  -webkit-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
-  -moz-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
-}
-
-#ma-dropdown-menu {
-  width: 125px;
-}
-
-/* replaces js/toolbar/toolbar.js initDropdown function  */
-.link-dropdown:hover > .dropdown-menu{
-  display: block;
-}
-
-.dropdown-menu > ul > li{
-  padding: 10px 12px;
-  font-size: 12px;
-  color: #fff;
-}
-.dropdown-menu > form > ul > li{
-  padding: 6px 12px;
-  color: #fff;
-}
-
-.dropdown-menu > ul > li:hover {
-  padding: 10px 12px;
-  background-color: #434343;
-}
-.dropdown-menu > ul > li > a:hover {
-  color: #29a3d3;
-  text-decoration: none;
-}
-label.checkbox-label input[type=checkbox]{
-  vertical-align: middle;
-  position: relative;
-  bottom: 1px;
-}
-
-
-.dropdown-menu > ul > li > a {
-  padding: 6px 12px;
-}
-.dropdown-menu > ul > li > a:hover {
-  color: #fff;
-  text-decoration: none;
-}
-
-/* =Snapshot
--------------------------------------------------------------- */
-#snapshot {
-  z-index: 1;
-  /*height: 81px;*/
-}
-.value-label {
-  font-size: 16px;
-  line-height: 22px;
-}
-.value-sublabel {
-  font-size: 10px;
-  line-height: 12px;
-}
-
 /* =Right Panel
 -------------------------------------------------------------- */
 #content {
@@ -681,7 +746,6 @@ label.checkbox-label input[type=checkbox]{
   right: 30px;
   display: none;
 }
-
 
 .vertical-collapse.collapse {
   background: url('../assets/chart/collapse-leftwards.png') no-repeat center;
@@ -767,7 +831,6 @@ label.checkbox-label input[type=checkbox]{
   left: -200px;
   z-index: 10;
   top: 0;
-
 }
 
 #right-panel-option-container li:hover > ul{
@@ -800,19 +863,29 @@ label.checkbox-label input[type=checkbox]{
   background-color: #262626;
 }
 
-
-/* =SVG
--------------------------------------------------------------- */
-text {
-  fill: rgb(107, 107, 107);
-  font-size: 10px;
-}
-
-/* =Expert
+/* =Experts
 ---------------------------------------------------------------*/
 #experts-view {
-  padding: 0px 10px 20px 10px;
+  padding: 0px 0px 20px 0px;
   overflow: auto;
+}
+
+.experts-header {
+  padding: 20px 10px;
+  background-color: #2d2d2d;
+  cursor: pointer;
+}
+
+.experts-header .name {
+  color: rgb(48, 140, 180);
+  border: 1px solid #4d4d4d;
+  background-color: #1c1d1f;
+  border-radius: 2px;
+  padding: 2px 3px;
+}
+
+.experts-header .content {
+  padding-top: 10px;
 }
 
 .expert-block {
@@ -820,6 +893,8 @@ text {
   background-color: rgb(38, 38, 38);
   border-bottom: rgb(107, 107, 107) dotted thin;
   margin-top: 17px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .expert-block:last-child {
   border-bottom: transparent dotted thin;
@@ -843,9 +918,15 @@ text {
   height: 22px;
 }
 
-.profile-and-content .name, .profile-and-content .date {
+.profile-and-content .name, .profile-and-content .date, .experts-header .date {
   display: inline-block;
   color: rgb(107, 107, 107);
+}
+
+.profile-and-content a,
+.profile-and-content a:hover,
+.profile-and-content a:visited {
+  color: #fff;
 }
 
 .name {
@@ -1003,50 +1084,6 @@ text {
 
 .rating-and-content .rating.fall:after {
   content: "▼ 看跌";
-}
-
-/*= Dashboard
---------------------------------------------------------------*/
-@media (max-width: 1024px){
-  .btn-buy-sell-wrapper {
-    float: none;
-    margin-top: 10px;
-  }
-}
-@media (max-width: 1200px) and (min-width: 1024px) {
-  .btn-buy,
-  .btn-sell {
-    width: 90px;
-  }
-}
-
-#changes {
-  opacity: 0;
-}
-#indicator-tooltip {
-  width: 150px;
-  height: 100px;
-  background-color: #454545;
-  position: absolute;
-  top: 50px;
-  left: 425px;
-  display: none;
-  border-radius: 3px;
-}
-
-#indicator-tooltip .tt-title {
-  background-color: #454545;
-}
-
-#indicator-tooltip > ul {
-  width: 148px;
-  height: 98px;
-  margin-left: 1px;
-}
-
-#indicator-tooltip > ul > li{
-  padding: 5px;
-  background-color: #363636;
 }
 
 /* =Stockpicker
@@ -1440,7 +1477,7 @@ text {
 
 /* =Tooltip
 -------------------------------------------------------------- */
-#tooltip{
+#tooltip {
   visibility: hidden;
   position: absolute;
   z-index: 10;
@@ -1455,6 +1492,7 @@ text {
   border-radius: 3px;
   border: 1px solid #454545;
 }
+
 #tooltip > ul > li {
   padding: 4px 8px;
 }
@@ -1628,3 +1666,57 @@ ul.toolbar > li.active > a:hover {
   color: #fff;
 }
 
+/* =Modal
+-------------------------------------------------------------- */
+#experts-modal {
+  background-color: #363636;
+  border: 1px solid #4d4d4d;
+  z-index: 15000;
+  left: 50%;
+  margin-left: -202px;
+  top: 200px;
+  width: 420px;
+  height: 450px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+#experts-modal h1 {
+  padding-top: 11px;
+  text-align: center;
+  font-size: 20px;
+}
+
+#experts-modal h2 {
+  text-align: center;
+  padding: 10px 10px;
+  border-bottom: 1px dotted #4d4d4d;
+  font-size: 12px;
+  color: rgb(107, 107, 107);
+}
+
+#experts-modal p {
+  padding: 20px 10px;
+  font-size: 12px;
+}
+
+#experts-modal .modal-close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  height: 23px;
+  width: 23px;
+  background: url('../assets/chart/close-modal.png') no-repeat center;
+}
+
+#lean_overlay {
+  position: fixed;
+  z-index:100;
+  top: 0px;
+  left: 0px;
+  height:100%;
+  width:100%;
+  background: #000;
+  display: none;
+}

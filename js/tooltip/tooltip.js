@@ -21,7 +21,7 @@ var Tooltip = {
       $(Tooltip.el).css('top', model.top);
       $(Tooltip.el).css('left', model.left);
       $(Tooltip.el).html(Tooltip.template.rsi(model));
-    },
+    }
   },
   hide: function(){
     $(this.el).css('visibility', 'hidden');

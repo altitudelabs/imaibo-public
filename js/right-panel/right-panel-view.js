@@ -37,15 +37,16 @@ var RightPanel = {
       ChartView.rebuild();
     }, 400);
   },
-  populateView: /*
-                 * Populate HandlebarJS template.
-                 * ==============================
-                 * arguments:
-                 *  - target_selector: DOM object of your target div. i.e. $('#expertsView')
-                 *  - template_selector: DOM object of your template. i.e. $('#experts-template')
-                 *  - resource: the data you are passing in. e.g. {name: 'Ray'}
-                 */
-  function (target_selector, template_selector, resource){
+
+  /*
+   * Populate HandlebarJS template.
+   * ==============================
+   * arguments:
+   *  - target_selector: DOM object of your target div. i.e. $('#expertsView')
+   *  - template_selector: DOM object of your template. i.e. $('#experts-template')
+   *  - resource: the data you are passing in. e.g. {name: 'Ray'}
+   */
+  populateView: function (target_selector, template_selector, resource){
     var template = Handlebars.compile(template_selector.html());
     target_selector.html(template(resource));
   },
@@ -65,14 +66,30 @@ var RightPanel = {
     }, 400);
   },
   init: function(){
+    var self = this;
     this.initLinks();
     this.render();
-    RightPanelModel.getExpertData();
+
+    // Init stockpicker module
     RightPanelModel.getStockData();
-    // this.disableBodyScroll();
+
+    // Init experts module
+    RightPanelModel.getExpertData(function(model){
+        var experts = self.states.expertsView;
+
+        self.populateView(experts.el, experts.template, model);
+
+        // Initiate experts modal
+        $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
+
+        // Initiate like comments
+        $('#experts-like-action').click(function(evt){
+          var weiboId = $(evt.target).attr('name');
+          RightPanelModel.likeComment(weiboId);
+        });
+    });
   },
   render: function(){
-    console.log(HIDE);
     if(HIDE){ //app.js
       this.goTo('expertsView');
     }else{
@@ -102,7 +119,6 @@ var RightPanel = {
       self.expandView();
       $('.vertical-uncollapse').css('display', 'none');
     });
-
 
     $('#right-panel-option-container').hover(function() {
       $('#stock').css('display', 'inline');

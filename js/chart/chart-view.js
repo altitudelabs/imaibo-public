@@ -1,17 +1,17 @@
 var ChartView = {
   data: {
-    daily:{},
+    daily: {},
     sentiment: {}
   },
-  properties: {},
+  properties: {
+    refreshFrequency: 5000
+  },
   setProperties: function (options) {
     var self = this;
     //review
     var properties = {
-      width: $('#content').width(), //width of left panel
-      margin: { top: 8, right: 45, bottom: 25, left: 45 }, //margin of chart
-      // chartWidth: function(){ return self.properties.width - self.properties.margin.right - self.properties.margin.left; }, //width of charts
-      // graphWidth: this.chartWidth,
+      width: $('#content').width(), // width of left panel
+      margin: { top: 8, right: 45, bottom: 25, left: 45 }, // chart margins
       volumeHeight: 50,
       zoomFactor: self.properties.zoomFactor || 1,
     };
@@ -21,10 +21,10 @@ var ChartView = {
         properties[key] = options[key];
       }
     }
-    this.properties = $.extend(true, {}, properties);
+    this.properties = $.extend(true, this.properties, properties);
   },
 
-//data.daily.stockLine
+  //data.daily.stockLine
   x: function(data, returnProp){
     var self = this;
     var props = self.properties;
@@ -94,17 +94,11 @@ var ChartView = {
     self.build();
 
     $(window).on('resize', function() {
-      self.setProperties();
-      IndexChart.init();
-      RsiChart.init();
-      MacdChart.init();
-      self.redraw(true); });
+      self.rebuild();
+    });
+
     $('#chart-view').on('resize', function(){
-      self.setProperties();
-      IndexChart.init();
-      RsiChart.init();
-      MacdChart.init();
-      self.redraw(true);
+      self.rebuild();
     });
 
   },
@@ -113,36 +107,50 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     $('.loader').css('height', '441px');
 
-    setInterval(function(){
-      var today = new Date();
-      today = today.getFullYear().toString()  +
-      (today.getMonth()+1).toString() +
-      today.getDate().toString();
-      //should handle this in model.js instead
-      ChartModel.getIndexData(function(data) {
-        ChartModel.getSentimentData(today, function(data){
-          self.data.sentiment = data.sentiment;
-          SentimentChart.init();
-          self.data.info = data.info;
-          self.data.daily = data.daily;
-          self.data.minute = data.minute;
+    self.buildChartElements();
 
-          IndexChart.init();
-          RsiChart.init();
-          MacdChart.init();
-          Dashboard.render(self.data.info);
-          Toolbar.render(self.data.daily);
-        });
+    setInterval(function(){
+      self.buildChartElements();
+    }, this.properties.refreshFrequency);
+  },
+  buildChartElements: function() {
+    var self = this;
+    var today = new Date();
+    today = today.getFullYear().toString() +
+    (today.getMonth()+1).toString() +
+    today.getDate().toString();
+
+    ChartModel.getIndexData(function(data) {
+      ChartModel.getSentimentData(today, function(data){
+        self.data.sentiment = data.sentiment;
+        SentimentChart.init();
+        self.data.info = data.info;
+        self.data.daily = data.daily;
+        self.data.minute = data.minute;
+
+        IndexChart.init();
+        RsiChart.init();
+        MacdChart.init();
+        Dashboard.render(self.data.info);
+        Toolbar.render(self.data.daily);
       });
-    }, 3000);
+    });
   },
   redraw: function (zoomFactor) {
+    zoomFactor = zoomFactor || 1;
     this.properties.zoomFactor *= zoomFactor;
     $('.zoomable-chart-container').css('width', '100%');
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
     MacdChart.drawGraph(false);
     SentimentChart.drawGraph(false);
+  },
+  rebuild: function() {
+    this.setProperties();
+    IndexChart.init();
+    RsiChart.init();
+    MacdChart.init();
+    this.redraw(true);
   },
   horizontalScroll: function () {
     'use strict';
@@ -151,7 +159,7 @@ var ChartView = {
     $('.container').on('mousewheel', function (event){
       event.preventDefault();
       var original = $('.container').scrollLeft();
-      $('.container').scrollLeft ( original - event.originalEvent.deltaY)
+      $('.container').scrollLeft ( original - event.originalEvent.deltaY )
     });
   },
 };
