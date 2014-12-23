@@ -226,35 +226,27 @@ var IndexChart = {
     .attr('width', graphWidth)
     .select('svg')
     .attr('width', graphWidth);
+    // .attr('height', height);
+
 
     var chart_label = d3.select('#chart-label')
     .attr('width', width)
     .select('svg')
     .attr('width', width);
+    // .attr('height', height);
+
 
     if(isNew){
       xlabels = chart.append('g').attr('class','xlabels');
       gvolume = chart.append('g').attr('class','volume');
       gcandlesticks = chart.append('g').attr('class','candlesticks');
       glinestems = chart.append('g').attr('class','linestems');
-      // tooltip =  chart.append('rect').attr('class', 'mouseover-overlay')
-      // vertical = chart.append('svg:line');
-      // horizontal = chart.append('svg:line');
-      // vertical_block = chart_label.append('svg:rect');
-      // horizontal_block = chart_label.append('svg:rect');
-
 
     }else{
       xlabels = chart.selectAll('g.xlabels');
       gvolume = chart.selectAll('g.volume');
       gcandlesticks = chart.selectAll('g.candlesticks');
       glinestems =  chart.selectAll('g.linestems');
-      // tooltip =   chart.selectAll('rect.mouseover-overlay');
-      // vertical = chart.selectAll('line.xlabelLine');
-      // horizontal = chart.selectAll('line.ylabelLine');
-      // vertical_block = chart_label.select('g#vertical-block');
-      // horizontal_block = chart_label.select('g#horizontal-block');
-
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -371,9 +363,6 @@ var IndexChart = {
 
     });
 
-
-
-
     //sentimentLine
     plotLine('#25bcf1',  'sentimentLine');
 
@@ -431,15 +420,24 @@ var IndexChart = {
     if (isNew) {
       tooltip = chart.append('rect')
       .attr('class', 'mouseover-overlay')
+      .attr('id', 'index-overlay')
       .attr('fill', 'transparent');
     } else {
-      tooltip = chart.selectAll('rect.mouseover-overlay');
+      //need refinements
+      tooltip = chart.selectAll('rect.mouseover-overlay#index-overlay');
+      tooltip.remove();
+      // .remove();
+      tooltip = chart
+      .append('rect')
+      .attr('class', 'mouseover-overlay')
+      .attr('id', 'index-overlay')
+      .attr('fill', 'transparent');
     }
 
     //tooltips
     tooltip
-    .attr('class', 'mouseover-overlay')
-    .attr('fill', 'transparent')
+    // .attr('class', 'mouseover-overlay index')
+    // .attr('fill', 'transparent')
     .attr('x', 0)
     .attr('y', margin.top)
     .attr('width', graphWidth)
