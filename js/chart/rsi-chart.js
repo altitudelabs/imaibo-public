@@ -57,7 +57,7 @@ var RsiChart = {
     var chart = d3.select('#rsi-chart')
     .attr('width', graphWidth)
     .select('svg')
-    .attr('width', graphWidth + 100); //offset for the most recent date not fully showing
+    .attr('width', graphWidth);
 
     if(isNew){
       xlabels = chart.append('g')
@@ -132,8 +132,8 @@ var RsiChart = {
           d = d2 = data.daily.stockLine[j];
 
           var model = {
-            top: d3.mouse(this)[1] + height*2,
-            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 50 : d3.event.layerX-155,
+            top: d3.mouse(this)[1] + height + 110,
+            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX + 100 : d3.event.layerX-155,
             date: Helper.toDate(d.rdate),
             rsi6: d.rsi6,
             rsi12: d.rsi12,
@@ -179,8 +179,8 @@ var RsiChart = {
     $('#rsi-chart-container').css('top', 0);
 
     $('#rsi .slimScrollDiv').css('position', 'absolute')
-    .css('top', '45px')
-    .css('left', '50px')
+    .css('top', '40px')
+    .css('left', '45px')
     .css('width', chartWidth.toString() + 'px');
 
     //vertical aligning the lines in the middle
@@ -225,8 +225,8 @@ var RsiChart = {
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.top)
-    .attr('y2', margin.top)
+    .attr('y1', margin.bottom - 25)
+    .attr('y2', margin.bottom - 25)
     .attr('stroke', '#464646');
 
     chart_label.append('svg:line')
