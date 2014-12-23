@@ -129,7 +129,6 @@ var MacdChart = {
     } else {
       tooltip = chart.selectAll('rect.mouseover-overlay');
     }
-    console.log(tooltip);
 
     tooltip
     .attr('class', 'mouseover-overlay')

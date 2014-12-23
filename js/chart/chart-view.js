@@ -152,7 +152,6 @@ var ChartView = {
     $('.container').on('mousewheel', function (event){
       event.preventDefault();
       var original = $('.container').scrollLeft();
-      console.log($('.container'));
       $('.container').scrollLeft ( original - event.originalEvent.deltaY)
     });
   },
