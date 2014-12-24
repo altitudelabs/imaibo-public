@@ -145,15 +145,12 @@ var SentimentChart = {
     var sentimentData = data.sentiment.moodindexList.slice(0, 8);
 
     var y1 = d3.scale.linear()
-    .domain([-1 , 1])
+    .domain([-100 , 100])
     .range([chartHeight+margin.top-57, margin.top]);
 
     var y2 = d3.scale.linear()
     .domain([d3.min(data.sentiment.indexList.map(function(x) { return +x.price; })), d3.max(data.sentiment.indexList.map(function(x){return +x.price; }))])
     .range([147, 27]);
-
-    console.log();
-
 
     var seven_am = sentimentData[0].timestamp; //seven_am in epoch time
     var min_before_midnight = seven_am + 61140; //the same day as seven_am

@@ -14,7 +14,7 @@ var RsiChart = {
   },
   y2: function(){
     return d3.scale.linear()
-    .domain([RsiChart.properties.largest_abs*-1, RsiChart.properties.largest_abs])
+    .domain([0, 100])
     .range([RsiChart.properties.chartHeight - RsiChart.properties.margin.bottom, RsiChart.properties.margin.top])
   },
   init: function() {
@@ -22,7 +22,7 @@ var RsiChart = {
     this.drawContainer();
     this.drawGraph(true);
 
-    // this.properties.largest_abs = d3.max(data.daily.stockLine.map(function(x) {
+    // this.properties.largestAbs = d3.max(data.daily.stockLine.map(function(x) {
     //   return max(
     //     max(Math.abs(+x.rsi6),
     //         Math.abs(+x.rsi12)),
@@ -51,7 +51,7 @@ var RsiChart = {
         tooltip;
 
     var y2 = d3.scale.linear()
-    .domain([this.properties.largest_abs*-1, this.properties.largest_abs])
+    .domain([0, 100])
     .range([chartHeight - margin.bottom, margin.top]);
 
     var chart = d3.select('#rsi-chart')
@@ -89,7 +89,7 @@ var RsiChart = {
     .enter().append('svg:text')
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
-    .attr('y', chartHeight-margin.bottom+15)
+    .attr('y', chartHeight-margin.bottom+5)
     .attr('text-anchor', 'end')
     .text(function(d,i){return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy/mm') : ''; });
 
@@ -115,7 +115,7 @@ var RsiChart = {
     plotRSI(12,'#d8db74');
     plotRSI(24,'#784e7a');
 
-    var tooltip =  chart.attr('class', 'mouseover-overlay');
+    var tooltip = chart.attr('class', 'mouseover-overlay');
     tooltip.attr('class', 'mouseover-overlay')
     .attr('fill', 'transparent')
     .attr('x', 0)
@@ -129,7 +129,7 @@ var RsiChart = {
         .on('mousemove', function(){
           var xPos = d3.mouse(this)[0],
           j = ChartView.xInverse(xPos, x),
-          d = d2 = data.daily.stockLine[j];
+          d = data.daily.stockLine[j];
 
           var model = {
             top: d3.event.pageY - 120,
@@ -165,7 +165,7 @@ var RsiChart = {
     // .attr('width', graphWidth)
     .attr('height', chartHeight);
 
-    var chart_label = d3.select('#rsi-chart-label')
+    var chartLabel = d3.select('#rsi-chart-label')
     .append('svg:svg')
     .attr('class', 'chart')
     .attr('width', containerWidth + 120)
@@ -184,44 +184,44 @@ var RsiChart = {
     .css('width', chartWidth.toString() + 'px');
 
     //vertical aligning the lines in the middle
-    this.properties.largest_abs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));
+    this.properties.largestAbs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));
 
     var y2 = d3.scale.linear()
-    .domain([this.properties.largest_abs*-1, this.properties.largest_abs])
+    .domain([0, 100])
     .range([chartHeight - margin.bottom, margin.top]);
 
     data = ChartView.data.daily.stockLine;
 
     var x = ChartView.x(data, 'rdate');
 
-    chart_label.append('g')
+    chartLabel.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
     .data(y2.ticks(3))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', chartWidth + margin.left + 15 )
+    .attr('x', margin.left - 15)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
 
-    chart_label.append('svg:line')
-    .attr('class', 'guideline-80')
+    chartLabel.append('svg:line')
+    .attr('class', 'guideline-70')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.top + 10)
-    .attr('y2', margin.top + 10)
+    .attr('y1', y2(70))
+    .attr('y2', y2(70))
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
-    .attr('class', 'guideline-20')
+    chartLabel.append('svg:line')
+    .attr('class', 'guideline-30')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
-    .attr('y1', chartHeight - margin.bottom - 10)
-    .attr('y2', chartHeight - margin.bottom - 10)
+    .attr('y1', y2(30))
+    .attr('y2', y2(30))
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
@@ -229,7 +229,7 @@ var RsiChart = {
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'yborder-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
@@ -237,7 +237,7 @@ var RsiChart = {
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'yborder-right')
     .attr('x1',  chartWidth + margin.left)
     .attr('x2',  chartWidth + margin.left)
@@ -245,7 +245,7 @@ var RsiChart = {
     .attr('y2',  margin.top)
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'xaxis')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)

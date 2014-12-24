@@ -18,7 +18,11 @@ var ContentView = {
     var self = this;
     _.each(this.states, function(state, name){
       state.link.on('click', function(){
-        self.goTo(name);
+        if (name === 'aboutIndexView'){
+          window.open("http://www.imaibo.net");
+        } else {
+          self.goTo(name);
+        }
       });
     });
   },

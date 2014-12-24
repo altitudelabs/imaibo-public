@@ -16,7 +16,9 @@ var MacdChart = {
     this.setProperties();
     this.drawContainer();
     this.drawGraph(true);
-
+    this.initCloseAction();
+  },
+  initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
       $('#macd').slideUp(500);
       $('#macd-checkbox').attr('checked', false);
@@ -25,19 +27,19 @@ var MacdChart = {
   drawGraph: function(isNew) {
     'use strict';
 
-    var prop = ChartView.properties,
-    margin = prop.margin,
-    chartWidth  = prop.width - margin.left - margin.right,
-    height      = this.properties.height,
-    chartHeight = height - margin.top - margin.bottom,
-    zoomFactor     = prop.zoomFactor,
-    graphWidth     = chartWidth * zoomFactor,
-    data           = ChartView.data,
-    interval       = this.properties.interval,
-    x              = ChartView.x(data.daily.stockLine, 'rdate'),
-    xlabels,
-    gline,
-    tooltip;
+    var prop        = ChartView.properties,
+        margin      = prop.margin,
+        chartWidth  = prop.width - margin.left - margin.right,
+        height      = this.properties.height,
+        chartHeight = height - margin.top - margin.bottom,
+        zoomFactor  = prop.zoomFactor,
+        graphWidth  = chartWidth * zoomFactor,
+        data        = ChartView.data,
+        interval    = this.properties.interval,
+        x           = ChartView.x(data.daily.stockLine, 'rdate'),
+        xlabels,
+        gline,
+        tooltip;
 
     var chart = d3.select('#macd-chart')
     .attr('width', graphWidth)
@@ -71,15 +73,15 @@ var MacdChart = {
       .selectAll('svg > .line')
       .remove();
     }
-    var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
-    var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
+    var y1Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
+    var y2Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 
     var y1 = d3.scale.linear()
-    .domain([y1_diff*-1, y1_diff])
+    .domain([y1Diff*-1, y1Diff])
     .range([chartHeight- margin.bottom, margin.top]);
 
     var y2 = d3.scale.linear()
-    .domain([y2_diff*-1, y2_diff])
+    .domain([y2Diff*-1, y2Diff])
     .range([chartHeight-margin.bottom, margin.top]);
 
     xlabels
@@ -144,7 +146,7 @@ var MacdChart = {
     .on('mousemove', function(){
       var xPos = d3.mouse(this)[0],
       j = ChartView.xInverse(xPos, x),
-      d = d2 = data.daily.stockLine[j];
+      d = data.daily.stockLine[j];
 
       var model = {
         top: d3.event.pageY - 120,
@@ -174,10 +176,9 @@ var MacdChart = {
     var chart = d3.select('#macd-chart')
     .append('svg:svg')
     .attr('class', 'chart')
-    // .attr('width', graphWidth)
     .attr('height', chartHeight);
 
-    var chart_label = d3.select('#macd-chart-label')
+    var chartLabel = d3.select('#macd-chart-label')
     .append('svg:svg')
     .attr('class', 'chart')
     .attr('width', containerWidth + 120)
@@ -196,7 +197,7 @@ var MacdChart = {
     .css('left', '45px')
     .css('width', chartWidth.toString() + 'px');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'xborder-top-thick')
     .attr('x1', margin.left)
     .attr('x2', chartWidth + margin.left)
@@ -204,7 +205,7 @@ var MacdChart = {
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'yborder-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
@@ -212,7 +213,7 @@ var MacdChart = {
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'yborder-right')
     .attr('x1', chartWidth + margin.left)
     .attr('x2', chartWidth + margin.left)
@@ -220,7 +221,7 @@ var MacdChart = {
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'xaxis')
     .attr('x1', margin.left)
     .attr('x2', containerWidth - margin.right)
@@ -230,21 +231,21 @@ var MacdChart = {
 
     var data = ChartView.data;
 
-    var y1_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
-    var y2_diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
+    var y1Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
+    var y2Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 
     var y1 = d3.scale.linear()
-    .domain([y1_diff*-1, y1_diff])
+    .domain([y1Diff*-1, y1Diff])
     .range([chartHeight-margin.bottom, margin.top]);
 
     var y2 = d3.scale.linear()
-    .domain([y2_diff*-1, y2_diff])
+    .domain([y2Diff*-1, y2Diff])
     .range([chartHeight-margin.bottom, margin.top]);
 
     data  = ChartView.data.daily.stockLine;
     var x = ChartView.x(data, 'rdate');
 
-    chart_label.append('g')
+    chartLabel.append('g')
     .attr('class','y1labels')
     .selectAll('text.yrule')
     .data(y1.ticks(3))
@@ -255,7 +256,7 @@ var MacdChart = {
     .attr('text-anchor', 'middle')
     .text(String);
 
-    chart_label.append('g')
+    chartLabel.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
     .data(y2.ticks(3))

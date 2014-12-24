@@ -1,3 +1,4 @@
+// Hide Phase II features
 var HIDE = false;
 
 $(function(){
@@ -10,6 +11,7 @@ $(function(){
   // Sets up routing logic for right content panel
   RightPanel.init();
 
+  // Hides certain features
   if(HIDE){
   	$('#frequency').remove();
   	$('#rsi-icon').remove();

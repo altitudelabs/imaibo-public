@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
   <title>心情指数</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -34,6 +33,8 @@
   <script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
   <script type="text/javascript" src="bower_components/handlebars/handlebars.min.js"></script>
   <script type="text/javascript" src="bower_components/lodash/dist/lodash.min.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.slimscroll.min.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.leanModal.min.js"></script>
   <!-- End new JS -->
 
   <!--[if lte IE 8]><script src="bower_components/aight/aight.min.js" charset="utf-8"></script><![endif]-->
@@ -162,69 +163,6 @@
       </div>
       <!-- Stockpicker view end -->
 
-      <script id="stockpicker-template" type="text/x-handlebars-template">
-        {{#each this}}
-          {{#ifEq sign '+'}}
-            <tr class="rise">
-          {{else}}
-            {{#ifEq sign '-'}}
-            <tr class="fall">
-              {{else}}
-            <tr class="neutral">
-              {{/ifEq}}
-          {{/ifEq}}
-            <td><div class="indicator"></div></td>
-            <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td>
-            <td class="zxg-price">{{lastpx}}</td>
-            <td class="zxg-price-change-abs">{{pxchg}}</td>
-            <td class="zxg-price-change-rel">{{pxchgratio}}</td>
-          </tr>
-        {{/each}}
-      </script>
-
-      <script id="experts-template" type="text/x-handlebars-template">
-        {{#each this}}
-        <div class="expert-block">
-          <div class="profile-and-content">
-            <div class="profile-pic" style="background: url('{{uFace}}') center no-repeat"></div>
-            <div class="name-and-date">
-              <div class="name">{{uName}}</div>
-              <div class="date">{{time}}</div>
-            </div>
-            <div class="rating-and-content">
-              {{#ifEq weiboMood 1}}
-              <div class="rating rise"><span></span></div>
-              {{/ifEq}}
-
-              {{#ifEq weiboMood -1}}
-              <div class="rating fall"><span></span></div>
-              {{/ifEq}}
-              {{content}}
-            </div>
-          </div>
-          <div class="like-and-discussion">
-            <div class="like">
-              <div class="sprite icon"></div>
-              <div class="text">
-                <p>
-                  赞({{dig}})
-                </p>
-              </div>
-
-            </div>
-            <div class="discussion">
-              <div class="icon"></div>
-              <div class="text">
-                <p>
-                  评论({{cmt}})
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        {{/each}}
-      </script>
-
       <!-- Experts view start -->
       <div id="experts-view" class="component"></div>
       <!-- Experts view end -->
@@ -277,82 +215,6 @@
         <li><a class="link-chart-view active" href="#">心情指数</a></li>
         <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
       </ul>
-
-      <script id="dashboard-template" type="text/x-handlebars-template">
-          {{#ifEq stockIndexInfo.sign '+'}}
-            <div id="dashboard-index" class="component-item-price rise">
-          {{else}}
-            <div id="dashboard-index" class="component-item-price fall">
-          {{/ifEq}}
-              <div class="title">上证指数</div>
-              <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
-              <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
-            </div>
-
-            {{#isGreater moodindexInfo.latest 0}}
-               <div id="dashboard-mood" class="component-item-price thermo rise">
-            {{else}}
-              {{#ifEq moodindexInfo.latest 0}}
-              <div id="dashboard-mood" class="component-item-price thermo neutral">
-              {{else}}
-              <div id="dashboard-mood" class="component-item-price thermo fall">
-              {{/ifEq}}
-            {{/isGreater}}
-              <div class="prediction">
-                <div class="title">心情指数</div>
-                <div class="value-label">{{moodindexInfo.latest}}</div>
-                <div class="value-sublabel ">{{moodindexInfo.before}}({{moodindexInfo.changeRatio}})</div>
-              </div>
-
-              <div class="thermo-wrapper">
-                <div class="thermometer mb thermometer-extended"></div>
-                <div class="background"></div>
-                <div class="background full"></div>
-              </div>
-              <div id="changes" class="changes">+{{moodindexInfo.change}}</div>
-            </div>
-            {{#ifEq tradingSign.signal 1}}
-                <div id="prediction-wrapper" class="component-item-price ind rise">
-            {{else}}
-              {{#ifEq tradingSign.signal 0}}
-                <div id="prediction-wrapper" class="component-item-price ind neutral">
-                {{else}}
-                <div id="prediction-wrapper" class="component-item-price ind fall">
-              {{/ifEq}}
-            {{/ifEq}}
-
-              <div id="dashboard-signal" class="prediction">
-                <div class="title">短期预测</div>
-                <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
-                <div class="value-sublabel">
-
-              {{#ifEq tradingSign.signal 1}}
-                {{#isGreater trading.prob 0.8}}
-                     强烈买入
-                {{else}}
-                      买入
-                {{/isGreater}}
-              {{else}}
-                {{#ifEq tradingSign.signal 0}}
-                    持仓
-                {{else}}
-                  {{#isGreater trading.prob 0.8}}
-                     强烈卖出
-                  {{else}}
-                      卖出
-                  {{/isGreater}}
-                {{/ifEq}}
-              {{/ifEq}}
-                </div>
-              </div>
-              {{#isGreater trading.prob 0.8}}
-                <div class="indicator strong"></div>
-              {{else}}
-                <div class="indicator"></div>
-              {{/isGreater}}
-              <div id="indicator-tooltip"></div>
-            </div>
-      </script>
 
       <!-- Chart view start -->
       <div id="chart-view">
@@ -480,8 +342,85 @@
     <!-- Content panel end -->
   </div>
 
-  <!-- Dashboard template start -->
+  <!-- Dashboard start -->
+  <script id="dashboard-template" type="text/x-handlebars-template">
+    {{#ifEq stockIndexInfo.sign '+'}}
+      <div id="dashboard-index" class="component-item-price rise">
+    {{else}}
+      <div id="dashboard-index" class="component-item-price fall">
+    {{/ifEq}}
+        <div class="title">上证指数</div>
+        <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
+        <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+      </div>
 
+      {{#isGreater moodindexInfo.latest 0}}
+         <div id="dashboard-mood" class="component-item-price thermo rise">
+      {{else}}
+        {{#ifEq moodindexInfo.latest 0}}
+        <div id="dashboard-mood" class="component-item-price thermo neutral">
+        {{else}}
+        <div id="dashboard-mood" class="component-item-price thermo fall">
+        {{/ifEq}}
+      {{/isGreater}}
+        <div class="prediction">
+          <div class="title">心情指数</div>
+          <div class="value-label">{{moodindexInfo.latest}}</div>
+          <div class="value-sublabel ">{{moodindexInfo.before}}({{moodindexInfo.changeRatio}})</div>
+        </div>
+
+        <div class="thermo-wrapper">
+          <div class="thermometer mb thermometer-extended"></div>
+          <div class="background"></div>
+          <div class="background full"></div>
+        </div>
+        <div id="changes" class="changes">+{{moodindexInfo.change}}</div>
+      </div>
+      {{#ifEq tradingSign.signal 1}}
+          <div id="prediction-wrapper" class="component-item-price ind rise">
+      {{else}}
+        {{#ifEq tradingSign.signal 0}}
+          <div id="prediction-wrapper" class="component-item-price ind neutral">
+          {{else}}
+          <div id="prediction-wrapper" class="component-item-price ind fall">
+        {{/ifEq}}
+      {{/ifEq}}
+
+        <div id="dashboard-signal" class="prediction">
+          <div class="title">短期预测</div>
+          <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
+          <div class="value-sublabel">
+
+        {{#ifEq tradingSign.signal 1}}
+          {{#isGreater trading.prob 0.8}}
+               强烈买入
+          {{else}}
+                买入
+          {{/isGreater}}
+        {{else}}
+          {{#ifEq tradingSign.signal 0}}
+              持仓
+          {{else}}
+            {{#isGreater trading.prob 0.8}}
+               强烈卖出
+            {{else}}
+                卖出
+            {{/isGreater}}
+          {{/ifEq}}
+        {{/ifEq}}
+          </div>
+        </div>
+        {{#isGreater trading.prob 0.8}}
+          <div class="indicator strong"></div>
+        {{else}}
+          <div class="indicator"></div>
+        {{/isGreater}}
+        <div id="indicator-tooltip"></div>
+      </div>
+  </script>
+  <!-- Dashboard end -->
+
+  <!-- Dashboard indicator tooltip start -->
    <script id="indicator-template" type="text/x-handlebars-template">
     <ul>
       <li class="tt-title">{{dateStr date}}   {{clock}}</li>
@@ -490,8 +429,7 @@
       <li class="tt-row"><span class="tt-label">横盘概率</span><span class="tt-value">{{toPercentage hold}}</span></li>
     </ul>
   </script>
-
-  <!-- Dashboard template end -->
+  <!-- Dashboard indicator tooltip end -->
 
   <!-- Legend template start -->
   <script id="legend-template" type="text/x-handlebars-template">
@@ -503,6 +441,7 @@
   </script>
   <!-- Legend template end -->
 
+  <!-- MA template start -->
   <script id="ma-template" type="text/x-handlebars-template">
     <ul>
       {{#each data}}
@@ -510,8 +449,9 @@
       {{/each}}
     </ul>
   </script>
+  <!-- MA template end -->
 
-  <!-- Tooltip template start -->
+  <!-- Price chart tooltip template start -->
   <script id="tooltip-template" type="text/x-handlebars-template">
     <ul>
       <li class="tt-title">{{dateStr date}}</li>
@@ -528,7 +468,9 @@
       <li class="tt-lastrow"></li>
     </ul>
   </script>
-  <!-- Tooltip template end -->
+  <!-- Price chart tooltip template end -->
+
+  <!-- MACD tooltip template start -->
   <script id="macd-tooltip-template" type="text/x-handlebars-template">
     <ul>
       <li class="tt-title">{{dateStr date}}</li>
@@ -538,7 +480,9 @@
       <li class="tt-lastrow"></li>
     </ul>
   </script>
-  <!-- Tooltip template end -->
+  <!-- MACD tooltip template end -->
+
+  <!-- RSI tooltip template start -->
   <script id="rsi-tooltip-template" type="text/x-handlebars-template">
     <ul>
       <li class="tt-title">{{dateStr date}}</li>
@@ -548,10 +492,95 @@
       <li class="tt-lastrow"></li>
     </ul>
   </script>
+  <!-- RSI tooltip template end -->
+
+  <!-- Stockpicker template start -->
+  <script id="stockpicker-template" type="text/x-handlebars-template">
+    {{#each this}}
+      {{#ifEq sign '+'}}
+        <tr class="rise">
+      {{else}}
+        {{#ifEq sign '-'}}
+        <tr class="fall">
+          {{else}}
+        <tr class="neutral">
+          {{/ifEq}}
+      {{/ifEq}}
+        <td><div class="indicator"></div></td>
+        <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td>
+        <td class="zxg-price">{{lastpx}}</td>
+        <td class="zxg-price-change-abs">{{pxchg}}</td>
+        <td class="zxg-price-change-rel">{{pxchgratio}}</td>
+      </tr>
+    {{/each}}
+  </script>
+  <!-- Stockpicker template end -->
+
+  <!-- Experts template start -->
+  <script id="experts-template" type="text/x-handlebars-template">
+    <div class="experts-header">
+      <div class="name-and-date">
+        <div class="name">今天解读</div>
+        <div class="date">{{headline.time}}</div>
+      </div>
+      <div class="content">
+        {{headline.content}}
+      </div>
+    </div>
+    {{#each list}}
+    <div class="expert-block">
+      <div class="profile-and-content">
+        <div class="profile-pic" style="background: url('{{uFace}}') center no-repeat"></div>
+        <div class="name-and-date">
+          <div class="name">{{uName}}</div>
+          <div class="date">{{time}}</div>
+        </div>
+        <div class="rating-and-content">
+          {{#ifEq weiboMood 1}}
+          <div class="rating rise"><span></span></div>
+          {{/ifEq}}
+
+          {{#ifEq weiboMood -1}}
+          <div class="rating fall"><span></span></div>
+          {{/ifEq}}
+          <span>{{{content}}}</span>
+        </div>
+      </div>
+      <div class="like-and-discussion">
+        <div class="like">
+          <a id="experts-like-action" name="{{weiboId}}" class="sprite icon" href="#"></a>
+          <div class="text">
+            <p>
+              赞({{dig}})
+            </p>
+          </div>
+
+        </div>
+        <div class="discussion">
+          <a class="icon" href="{{url}}"></a>
+          <div class="text">
+            <p>
+              评论({{cmt}})
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </script>
+  <!-- Experts template end -->
+
+  <!-- Modal Dialog start -->
+  <div id="experts-modal" style="display: none; position: fixed; opacity: 0; z-index: 11000; left: 50%; margin-left: -202px; top: 200px;">
+    <h1>Title</h1>
+    <h2>Subtitle</h2>
+    <p>Content</p>
+    <a class="modal-close" href="#"></a>
+  </div>
+  <!-- Modal End start -->
 
   <!-- Start charting JS files -->
   <script type="text/javascript" src="js/lib/helpers.js"></script>
-  <script type="text/javascript" src="js/lib/jquery.slimscroll.min.js"></script>
   <script type="text/javascript" src="js/toolbar/toolbar.js"></script>
   <script type="text/javascript" src="js/tooltip/tooltip.js"></script>
   <script type="text/javascript" src="js/chart/chart-model.js"></script>
