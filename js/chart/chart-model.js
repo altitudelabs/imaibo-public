@@ -26,15 +26,22 @@ var ChartModel = {
       callback(self.model);
     });
   },
+  showContent: function(){
+    $('#price').css('visibility', 'visible');
+    $('#macd').css('visibility', 'visible');
+    $('#rsi').css('visibility', 'visible');
+    $('#sentiment').css('visibility', 'visible');
+    $('#about-index-view').css('visibility', 'visible');
+  },
   removeLoaders: function(){
     $('.loader').fadeOut(500);
     $('#loading').remove();
-    $('.btn-buy-sell-wrapper > .btn').removeClass('disabled');
   },
   tryRemoveLoaders: function(){
     this.model.dataReceived++;
     if(this.model.dataReceived > 1){
       this.removeLoaders();
+      this.showContent();
       this.model.dataReceived = 0;
     }
   }

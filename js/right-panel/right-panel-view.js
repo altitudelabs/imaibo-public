@@ -73,7 +73,7 @@ var RightPanel = {
     this.render();
 
     // Init stockpicker module
-    RightPanelModel.getStockData();
+    if (!HIDE) RightPanelModel.getStockData();
 
     // Init experts module
     $.when(RightPanelModel.getExpertHeadlineAsync(), RightPanelModel.getExpertDataAsync())
@@ -99,6 +99,10 @@ var RightPanel = {
           console.log('Expert like action failure', res);
         });
       });
+
+      // Remove loader
+      $('#experts-view').css('visibility', 'visible');
+      $('.panel-loader').remove();
     });
   },
   render: function(){

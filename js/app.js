@@ -13,9 +13,12 @@ $(function(){
 
   // Hides certain features
   if(HIDE){
-  	$('#frequency').remove();
-  	$('#rsi-icon').remove();
-  	$('.link-stockpicker-view').remove();
-  	$('.link-news-view').remove();
+    $('#frequency').remove();
+    $('#rsi-icon').remove();
+    $('.link-stockpicker-view').remove();
+    $('.link-news-view').remove();
   }
+
+  // Show contents only after DOM loads
+  $('.outer').css('visibility', 'visible');
 });
