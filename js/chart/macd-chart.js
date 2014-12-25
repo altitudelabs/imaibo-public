@@ -149,7 +149,7 @@ var MacdChart = {
       d = data.daily.stockLine[j];
 
       var model = {
-        top: d3.event.pageY - 120,
+        top: d3.event.pageY-180,
         left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
         date: d.rdate,
         macd: d.macd,

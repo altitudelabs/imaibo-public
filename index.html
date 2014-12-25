@@ -6,30 +6,75 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
-  <title>心情指数</title>
-  <meta name="description" content="">
+  <title>股市心情指数 - 投资脉搏网</title>
+  <meta name="description" content="股市心情指数是通过对A股市场投资者当前对市场的多空情绪、对个股的偏好情况进行统计和分析，所得出的一个指数。可以给投资者在选股和操作时提供很大程度的参考和帮助，它分为大盘的心情指数和个股的心情指数。">
+  <meta name="keywords" content="A股心情指数，股市心情指数，上证指数">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-  <!-- Start iMaibo JS to include -->
+  <!-- Start iMaibo shared JS -->
   <script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
   <script type="text/javascript" src="js/lib/jquery.color-2.1.2.min.js"></script>
-  <!-- End iMaibo JS to include -->
+  <script async="" src="//www.google-analytics.com/analytics.js"></script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/themes/Maibo/common_v1/js/combine.min.js?v=20141120001"></script>
+  <script type="text/javascript">
+    var no_update_weibo=0;
+    var _UID_ = '588577';
+    var _MID_ = '588577';
+    var _ROOT_ = '';
+    var _THEME_ = 'http://t3-www.imaibo.net/public/themes/Maibo';
+    var _PUBLIC_ = 'http://t3-www.imaibo.net/public';
+    var _PUBLICSF_ = 'http://t-www.imaibo.net/public';
+    var _THEMESF_ = 'http://t-www.imaibo.net/public/themes/Maibo';
+    var _LENGTH_ = "10000";
+    var _LANG_SET_ = 'zh-cn';
+    var IJZ_HOST_URL = "";
+    var $CONFIG = {};
+    var upload_img_s_secret = '';
+    var upload_img_s_time = '';
 
-  <!-- Start iMaibo JS to remove -->
-  <!-- <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/jquery/plugins/jquery.plugins-contact.min.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/sea-module/seajs/2.1.1/sea.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/highcharts/3.0.9/highcharts.js"></script>
-  <script type="text/javascript" src="http://www.imaibo.net/public/front-modules/highstock/2.0.3/highstock.js"></script> -->
-  <!-- Start iMaibo JS to remove -->
+    $CONFIG['uid'] = '588577';
+    $CONFIG['mid'] = '588577';
+    $CONFIG['root_path'] = '';
+    $CONFIG['theme_path'] = 'http://t3-www.imaibo.net/public/themes/Maibo';
+    $CONFIG['public_path'] = 'http://t3-www.imaibo.net/public';
+    $CONFIG['weibo_length'] = "10000";
+    $CONFIG['lang'] = 'zh-cn';
+    var _APP_ = 'home';
 
-  <!-- Start iMaibo CSS -->
-  <link rel="stylesheet" type="text/css" href="css/common_base.css">
-  <link rel="stylesheet" type="text/css" href="css/common_v1.css">
-  <link rel="stylesheet" type="text/css" href="css/sprites.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <!-- End iMaibo CSS -->
+    var _MOD_ = 'User';
 
-  <!-- Start new JS -->
+    var _ACT_ = 'index';
+
+    var _TYPE_ = '';
+
+    var URL_ROUTER_ON = '1';
+
+    var skip_links = '/home';
+    var img_server_site = "http://t-img.imaibo.net";
+    var img_server_host = "t-img.imaibo.net";
+    var is_live_user = '';
+  </script>
+  <script src="http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/lang/zh-cn/zh-cn.js" type="text/javascript" defer="defer"></script>
+  <link href="http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/themes/default/css/ueditor.css" type="text/css" rel="stylesheet">
+  <script src="http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/third-party/codemirror/codemirror.js" type="text/javascript" defer="defer"></script>
+  <link rel="stylesheet" type="text/css" href="http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/third-party/codemirror/codemirror.css">
+  <!-- End iMaibo shared JS -->
+
+  <!-- Start iMaibo favicon -->
+  <link rel="shortcut icon" href="http://t-www.imaibo.net/public/themes/Maibo/favicon.ico?v=20141120001">
+  <!-- End iMaibo favicon -->
+
+  <!-- Start iMaibo shared CSS -->
+  <link type="text/css" rel="stylesheet" href="http://t-www.imaibo.net/public/themes/Maibo/common_v1/css/widget.min.css?v=20141120001">
+  <link type="text/css" rel="stylesheet" href="http://t-www.imaibo.net/public/themes/Maibo/common_v1/css/combine.min.css?v=20141120001">
+  <!-- End iMaibo shared CSS -->
+
+  <!-- Start Sentiment CSS -->
+  <link type="text/css" rel="stylesheet" href="css/sprites.css">
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <!-- End Sentiment CSS -->
+
+  <!-- Start Sentiment JS -->
   <script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
   <script type="text/javascript" src="bower_components/handlebars/handlebars.min.js"></script>
   <script type="text/javascript" src="bower_components/lodash/dist/lodash.min.js"></script>
@@ -44,15 +89,29 @@
   <!--[if gte IE 9]><!-->
   <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
   <!--<![endif]-->
-
-
+  <!-- End Sentiment JS -->
 </head>
 <body>
+  <!-- Start iMaibo header -->
+  <script src="http://tajs.qq.com/jiathis.php?uid=1775634&amp;dm=t3-www.imaibo.net" charset="utf-8"></script>
+  <link href="http://v3.jiathis.com/code/css/jiathis_share.css" rel="stylesheet" type="text/css">
+  <div class="header default_layout"><div class="header_container" style="position: fixed;"><div class="position_relative wrap default_layout"><!--登录之后 start--><div class="right position_relative"><div class="search clear_fix left position_relative"><!-- 屏蔽全部搜索 --><!-- <form id="searchKeyForm" action="http://t3-www.imaibo.net/search" method="post" > --><!-- 默认搜索用户 --><form id="searchKeyForm" action="http://t3-www.imaibo.net/search/user" method="GET">
+  <div class="username cWhite fs14"><a href="http://t3-www.imaibo.net/space/588577" title="jyek" class="cWhite">jyek</a></div><input type="text" id="fs_k" name="k" value="搜索股票/人/微博" data="搜索股票/人/微博" class="unfocus input-text" extend-input-text="" autocomplete="off"><div id="fs_r" class="search_results"></div><a rel="nofollow" href="javascript:;" class="bg_sprites_v1 position_absolute search_logo"></a></form></div><div class="position_absolute setting_entrance"><div style="height:18px; background-color: #222;"></div><ul><li><a href="http://t3-www.imaibo.net/setting" class="cWhite" target="_blank">个人设置</a></li><li><a href="http://t3-www.imaibo.net/logout" class="cWhite">退出帐号</a></li></ul></div><div class="cggs clear_fix left h60 alC ml10 position_relative"><a href="javascript:void(0);" class="cWhite clear_fix bg_sprites_v1 cggs_label"></a><div class="position_absolute cggs_content hide"><div class="mt5"><span class="top_arrow"></span></div><ul class="position_relative label"><li class="buy-label hand"><div title="买入" onclick="ga('send', 'event','股神大赛','点击','买入');"></div><p class="mt10">买入</p></li><li class="sale-label hand"><div title="卖出" onclick="ga('send', 'event','股神大赛','点击','卖出');"></div><p class="mt10">卖出 / 持仓</p></li><li class="cancel-label hand"><div title="撤单" onclick="ga('send', 'event','股神大赛','点击','撤单');"></div><p class="mt10">撤单</p></li><li class="match-label hand"><div title="我的比赛" onclick="ga('send', 'event','股神大赛','点击','我的比赛');"></div><p class="mt10">我的比赛</p></li></ul><div class="position_relative cleaner pt5 fyh fs14 overflowH total-info"><ul><li>
+      我的排名
+      <div class="color_stock_red" id="top-cggs-ranking">1000+</div></li><li>
+      浮动盈利
+      <div class="" id="top-cggs-holdingProfit">0</div></li><li>
+      总资产
+      <div class="" id="top-cggs-total-asset">100000</div></li><li>
+      盈利率
+      <div id="top-cggs-yield" class="color_stock_red">0%</div></li></ul></div></div></div><div class="publish clear_fix left h60 alC ml10 position_relative"><a href="javascript:void(0);" class="cWhite clear_fix bg_sprites_v1 edit_label"></a><div class="position_absolute publish_list_content hide"><div class="mt5"><span class="top_arrow"></span></div><ul class="position_relative label"><li class="wb-label position_relative hand"><div onclick="publishWeibo(588577);" title="写微博"></div><em class="position_absolute">写微博</em></li><li class="cwb-label position_relative hand"><div title="写文章" href="javascript:void(0);" lwbtype="global" onclick="weibo.addcwb(this);"></div><em class="position_absolute">写文章</em></li></ul></div></div><div class="msg clear_fix left h60 alC ml10 position_relative"><i class="W_ico20 header_info_news" style="display: inline;"></i><a href="javascript:;" class="clear_fix bg_sprites_v1 msg_label"></a><ul class="position_absolute msg_list_content hide"><li><a href="http://t3-www.imaibo.net/message" class="cWhite">私信<span class="cRed fb pl20" id="count_message">1</span></a></li><li><a href="http://t3-www.imaibo.net/notification" class="cWhite">系统通知 <span class="cRed fb pl20" id="count_notify">1</span></a></li><li><a href="http://t3-www.imaibo.net/atme" class="cWhite">@提到我<span class="cRed fb pl20" id="count_atme"></span></a></li><li><a href="http://t3-www.imaibo.net/comment" class="cWhite">我的评论<span class="cRed fb pl20" id="count_comment"></span></a></li><li><a href="http://t3-www.imaibo.net/dig" class="cWhite">赞我的<span class="cRed fb pl20" id="count_dig"></span></a></li><li><a target="_blank" href="http://t3-www.imaibo.net/invite" class="cWhite">邀请好友<span class="cRed fb pl20" id="count_dig"></span></a></li></ul></div><!-- 提示框 --><dl class="notice_block position_absolute" style=""><dd class="position_absolute W_ico20 closed_windows_ico"></dd><dd><a href="/message" target=""><i class="color_blue">1</i>条私信</a></dd><dd><a href="/notification" target=""><i class="color_blue">1</i>条系统通知</a></dd></dl><div class="cfzx_entrance clear_fix left h60 alC mr20 position_relative"><i class="W_ico20 header_info_news_label hide"></i><a href="javascript:;" class="clear_fix bg_sprites_v1 cfzx_entrance_label"></a><ul class="position_absolute cfzx_entrance_list_content hide"><li><a href="/pay" class="cWhite" target="_blank">充值中心</a></li><!--<li><a href="/pay" class="cWhite" target="_blank">充值中心</a></li>--><li><a href="http://t3-www.imaibo.net/cfzx" class="cWhite" target="_blank">财富中心</a><span class="cRed fb pl10" id="count_account_notify"></span></li><li><a href="http://t3-www.imaibo.net/cfzx/gift/receive" class="cWhite" target="_blank">礼物账户 <span class="cRed fb pl10" id="count_gift_notify"></span></a></li><li><a href="http://t3-www.imaibo.net/cfzx/mypool" class="cWhite">播主博文账户 <span class="cRed fb pl10" id="count_pool"></span></a></li><li><a href="http://t3-www.imaibo.net/cfzx/longWeiboLog" class="cWhite">长微博账户 <span class="cRed fb pl10" id="count_lwb_notify"></span></a></li><li><a href="http://t3-www.imaibo.net/cfzx/vipWeibo" class="cWhite">vip微博账户 <span class="cRed fb pl10" id="count_vip_weibo"></span></a></li></ul></div></div><!--登录之后 end--><div class="pl20 logo"><a href="http://t3-www.imaibo.net/home"><img src="http://t-www.imaibo.net/public/themes/Maibo/common_v1/images/logo.png" alt="imaibo logo" width="124" height="60"></a></div><div class="left section"><ul class="channel"><li class="border_l_000"></li><li class="nav w70 pl10 pr10"><a href="http://t3-www.imaibo.net/home">首页</a></li><li class="border_l_000"></li><li class="nav w70 pl10 pr10"><a href="http://t3-www.imaibo.net/assemble" target="_blank">沪深直播</a><div class="position_absolute"><div class="nav_list live_list position_absolute hide"><div class="position_absolute"><span class="clear_fix position_relative top_arrow"></span></div><div class="list OverH"><ul class="overflowH"><li><a href="http://t3-www.imaibo.net/live/25554" title="A股狙击狂" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/25554/middle.jpg?v=20141120001" title="A股狙击狂" alt="A股狙击狂" width="58" height="58"><!----></a><em>A股狙击狂</em></li><li><a href="http://t3-www.imaibo.net/live/24649" title="索马里" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24649/middle.jpg?v=20141120001" title="索马里" alt="索马里" width="58" height="58"><!----></a><em>索马里</em></li><li><a href="http://t3-www.imaibo.net/live/31696" title="股坛盟主" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/31696/middle.jpg?v=20141120001" title="股坛盟主" alt="股坛盟主" width="58" height="58"><!----></a><em>股坛盟主</em></li><li><a href="http://t3-www.imaibo.net/live/50714" title="老古珉" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/50714/middle.jpg?v=20141120001" title="老古珉" alt="老古珉" width="58" height="58"><!----></a><em>老古珉</em></li><li><a href="http://t3-www.imaibo.net/live/56266" title="文子投资" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/56266/middle.jpg?v=20141120001" title="文子投资" alt="文子投资" width="58" height="58"><!----></a><em>文子投资</em></li><li><a href="http://t3-www.imaibo.net/live/26836" title="后知后觉股市直播" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/26836/middle.jpg?v=20141120001" title="后知后觉股市直播" alt="后知后觉股市直播" width="58" height="58"><!----></a><em>后知后觉股市直播</em></li><li><a href="http://t3-www.imaibo.net/live/80246" title="绵州一哥" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/80246/middle.jpg?v=20141120001" title="绵州一哥" alt="绵州一哥" width="58" height="58"><!----></a><em>绵州一哥</em></li><li><a href="http://t3-www.imaibo.net/live/27639" title="某男舒立" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/27639/middle.jpg?v=20141120001" title="某男舒立" alt="某男舒立" width="58" height="58"><!----></a><em>某男舒立</em></li><li><a href="http://t3-www.imaibo.net/live/113374" title="王文健-天人合一" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/113374/middle.jpg?v=20141120001" title="王文健-天人合一" alt="王文健-天人合一" width="58" height="58"><!----></a><em>王文健-天人合一</em></li><li><a href="http://t3-www.imaibo.net/live/181" title="A股百晓生" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/181/middle.jpg?v=20141120001" title="A股百晓生" alt="A股百晓生" width="58" height="58"><!----></a><em>A股百晓生</em></li><li><a href="http://t3-www.imaibo.net/live/146475" title="投资者阮某人" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/146475/middle.jpg?v=20141120001" title="投资者阮某人" alt="投资者阮某人" width="58" height="58"><!----></a><em>投资者阮某人</em></li><li><a href="http://t3-www.imaibo.net/live/149051" title="股海十一少" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/149051/middle.jpg?v=20141120001" title="股海十一少" alt="股海十一少" width="58" height="58"><!----></a><em>股海十一少</em></li><li><a href="http://t3-www.imaibo.net/live/162111" title="伯乐股票池" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/162111/middle.jpg?v=20141120001" title="伯乐股票池" alt="伯乐股票池" width="58" height="58"><!----></a><em>伯乐股票池</em></li><li><a href="http://t3-www.imaibo.net/live/170907" title="板板惊人" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/170907/middle.jpg?v=20141120001" title="板板惊人" alt="板板惊人" width="58" height="58"><!----></a><em>板板惊人</em></li><li><a href="http://t3-www.imaibo.net/live/178120" title="救市军参谋史宁" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/178120/middle.jpg?v=20141120001" title="救市军参谋史宁" alt="救市军参谋史宁" width="58" height="58"><!----></a><em>救市军参谋史宁</em></li><li><a href="http://t3-www.imaibo.net/live/197396" title="熊市猎人" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/197396/middle.jpg?v=20141120001" title="熊市猎人" alt="熊市猎人" width="58" height="58"><!----></a><em>熊市猎人</em></li><li><a href="http://t3-www.imaibo.net/live/216762" title="老者渔翁" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/216762/middle.jpg?v=20141120001" title="老者渔翁" alt="老者渔翁" width="58" height="58"><!----></a><em>老者渔翁</em></li><li><a href="http://t3-www.imaibo.net/live/216945" title="宇辉战舰" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/216945/middle.jpg?v=20141120001" title="宇辉战舰" alt="宇辉战舰" width="58" height="58"><!----></a><em>宇辉战舰</em></li><li><a href="http://t3-www.imaibo.net/live/216975" title="作手泽文" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/216975/middle.jpg?v=20141120001" title="作手泽文" alt="作手泽文" width="58" height="58"><!----></a><em>作手泽文</em></li><li><a href="http://t3-www.imaibo.net/live/242071" title="有限次重复博弈" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/242071/middle.jpg?v=20141120001" title="有限次重复博弈" alt="有限次重复博弈" width="58" height="58"><!----></a><em>有限次重复博弈</em></li><li><a href="http://t3-www.imaibo.net/live/221943" title="板板经济学家" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/221943/middle.jpg?v=20141120001" title="板板经济学家" alt="板板经济学家" width="58" height="58"><!----></a><em>板板经济学家</em></li><li><a href="http://t3-www.imaibo.net/live/274821" title="WIN_股市人生" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/274821/middle.jpg?v=20141120001" title="WIN_股市人生" alt="WIN_股市人生" width="58" height="58"><!----></a><em>WIN_股市人生</em></li><li><a href="http://t3-www.imaibo.net/live/253113" title="沪深翰林" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/253113/middle.jpg?v=20141120001" title="沪深翰林" alt="沪深翰林" width="58" height="58"><!----></a><em>沪深翰林</em></li><li><a href="http://t3-www.imaibo.net/live/235674" title="小小辛巴" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/235674/middle.jpg?v=20141120001" title="小小辛巴" alt="小小辛巴" width="58" height="58"><!----></a><em>小小辛巴</em></li><li><a href="http://t3-www.imaibo.net/live/218523" title="张学林" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/218523/middle.jpg?v=20141120001" title="张学林" alt="张学林" width="58" height="58"><!----></a><em>张学林</em></li><li><a href="http://t3-www.imaibo.net/live/302268" title="1996入市" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/302268/middle.jpg?v=20141120001" title="1996入市" alt="1996入市" width="58" height="58"><!----></a><em>1996入市</em></li><li><a href="http://t3-www.imaibo.net/live/218726" title="雪野彩虹" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/218726/middle.jpg?v=20141120001" title="雪野彩虹" alt="雪野彩虹" width="58" height="58"><!----></a><em>雪野彩虹</em></li><li><a href="http://t3-www.imaibo.net/live/218479" title="秀玲谈股" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/218479/middle.jpg?v=20141120001" title="秀玲谈股" alt="秀玲谈股" width="58" height="58"><!----></a><em>秀玲谈股</em></li><li><a href="http://t3-www.imaibo.net/live/299755" title="莫大仙岳居" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/299755/middle.jpg?v=20141120001" title="莫大仙岳居" alt="莫大仙岳居" width="58" height="58"><!----></a><em>莫大仙岳居</em></li><li><a href="http://t3-www.imaibo.net/live/411668" title="燕燕于飞0614" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/411668/middle.jpg?v=20141120001" title="燕燕于飞0614" alt="燕燕于飞0614" width="58" height="58"><!----></a><em>燕燕于飞0614</em></li><li><a href="http://t3-www.imaibo.net/live/371312" title="小帅谈股" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/371312/middle.jpg?v=20141120001" title="小帅谈股" alt="小帅谈股" width="58" height="58"><!----></a><em>小帅谈股</em></li><li><a href="http://t3-www.imaibo.net/live/284282" title="三少爷的剑很贱" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/284282/middle.jpg?v=20141120001" title="三少爷的剑很贱" alt="三少爷的剑很贱" width="58" height="58"><!----></a><em>三少爷的剑很贱</em></li><li><a href="http://t3-www.imaibo.net/live/476134" title="丫丫阳" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/476134/middle.jpg?v=20141120001" title="丫丫阳" alt="丫丫阳" width="58" height="58"><!----></a><em>丫丫阳</em></li><li><a href="http://t3-www.imaibo.net/live/476392" title="混沌与概率1997" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/476392/middle.jpg?v=20141120001" title="混沌与概率1997" alt="混沌与概率1997" width="58" height="58"><!----></a><em>混沌与概率1997</em></li><li><a href="http://t3-www.imaibo.net/live/187360" title="宥_宥" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/187360/middle.jpg?v=20141120001" title="宥_宥" alt="宥_宥" width="58" height="58"><!----></a><em>宥_宥</em></li><li><a href="http://t3-www.imaibo.net/live/488680" title="时冲" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/488680/middle.jpg?v=20141120001" title="时冲" alt="时冲" width="58" height="58"><!----></a><em>时冲</em></li><li><a href="http://t3-www.imaibo.net/live/614784" title="天道-老子骑牛" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/614784/middle.jpg?v=20141120001" title="天道-老子骑牛" alt="天道-老子骑牛" width="58" height="58"><!----></a><em>天道-老子骑牛</em></li><li><a href="http://t3-www.imaibo.net/live/75104" title="A股黄药师" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/75104/middle.jpg?v=20141120001" title="A股黄药师" alt="A股黄药师" width="58" height="58"><!----></a><em>A股黄药师</em></li><li><a href="http://t3-www.imaibo.net/live/619270" title="贾玉珍" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/619270/middle.jpg?v=20141120001" title="贾玉珍" alt="贾玉珍" width="58" height="58"><!----></a><em>贾玉珍</em></li><li><a href="http://t3-www.imaibo.net/live/159514" title="淘金柚" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/159514/middle.jpg?v=20141120001" title="淘金柚" alt="淘金柚" width="58" height="58"><!----></a><em>淘金柚</em></li><li><a href="http://t3-www.imaibo.net/live/641987" title="熊天恩" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/641987/middle.jpg?v=20141120001" title="熊天恩" alt="熊天恩" width="58" height="58"><!----></a><em>熊天恩</em></li><li><a href="http://t3-www.imaibo.net/live/277348" title="蔡老兄" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/277348/middle.jpg?v=20141120001" title="蔡老兄" alt="蔡老兄" width="58" height="58"><!----></a><em>蔡老兄</em></li><li><a href="http://t3-www.imaibo.net/live/659817" title="股海大浪淘金" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/659817/middle.jpg?v=20141120001" title="股海大浪淘金" alt="股海大浪淘金" width="58" height="58"><!----></a><em>股海大浪淘金</em></li><li><a href="http://t3-www.imaibo.net/live/277232" title="股海觅食的奶爸" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/277232/middle.jpg?v=20141120001" title="股海觅食的奶爸" alt="股海觅食的奶爸" width="58" height="58"><!----></a><em>股海觅食的奶爸</em></li><li><a href="http://t3-www.imaibo.net/live/667245" title="念父" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/667245/middle.jpg?v=20141120001" title="念父" alt="念父" width="58" height="58"><!----></a><em>念父</em></li><li><a href="http://t3-www.imaibo.net/live/681484" title="朱琼华" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/681484/middle.jpg?v=20141120001" title="朱琼华" alt="朱琼华" width="58" height="58"><!----></a><em>朱琼华</em></li><li><a href="http://t3-www.imaibo.net/live/686494" title="杜牛牛" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/686494/middle.jpg?v=20141120001" title="杜牛牛" alt="杜牛牛" width="58" height="58"><!----></a><em>杜牛牛</em></li><li><a href="http://t3-www.imaibo.net/live/183723" title="萧饮马" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/183723/middle.jpg?v=20141120001" title="萧饮马" alt="萧饮马" width="58" height="58"><!----></a><em>萧饮马</em></li></ul><div class="cleaner alR"><div class="mt10 mb10"><a href="http://t3-www.imaibo.net/assemble" target="_blank" class="cWhite clear_fix right" style=" padding:0 10px; background-color:#0383cc; ">                    不知道选谁？进去看看先</a></div></div></div></div></div></li><li class="border_l_000"></li><li class="nav w70 pl10 pr10"><a href="http://t3-www.imaibo.net/moodindex">心情指数</a><div class="position_absolute"><div class="nav_list mood position_absolute hide"><a href="http://t3-www.imaibo.net/moodindex">指数首页</a><a href="http://t3-www.imaibo.net/moodindex/list/rise">谁在看升</a><a href="http://t3-www.imaibo.net/moodindex/list/down">谁在看跌</a></div></div></li><li class="border_l_000"></li><li class="nav w70 pl10 pr10"><a href="javascript:void(0);">脉搏精选</a><div class="position_absolute"><div class="nav_list position_absolute hide recommand_famous"><div class="position_absolute"><span class="clear_fix position_relative top_arrow"></span></div><div class="list OverH"><dl class="handpick pb10"><dt class="mb5">脉搏精选</dt><dd><a href="http://t3-www.imaibo.net/hot-topic" target="_parent">今日话题</a></dd><dd><a href="http://t3-www.imaibo.net/visit/customColumn/5" target="_parent">早盘聚焦</a></dd><dd><a href="http://t3-www.imaibo.net/visit/customColumn/6" target="_parent">名家看盘</a></dd><dd><a href="http://t3-www.imaibo.net/visit/customColumn/4" target="_parent">题材热点</a></dd><dd><a href="http://t3-www.imaibo.net/visit/customColumn/3" target="_parent">操作策略</a></dd><dd><a href="http://t3-www.imaibo.net/visit/customColumn/1" target="_parent">收盘点评</a></dd><dd class="last"><a href="http://t3-www.imaibo.net/fangtan" target="_parent">专家访谈</a></dd></dl><dl class="xxhd mt10 pb10 overflowH"><dt class="left bg_sprites_v1">脉搏活动</dt><dd class="mt5 ml10"><a href="http://t3-www.imaibo.net/caixinghui2014">财&nbsp;&nbsp;星&nbsp;&nbsp;汇</a></dd><dd class="mt5 ml10"><a href="http://t3-www.imaibo.net/ggztc2014">港股论坛</a></dd><dd class="mt5 last"><a href="http://t3-www.imaibo.net/activity/shaijiangtai">晒奖台</a></dd></dl><dl class="hspl mt10 pb10 overflowH"><dt class="left bg_sprites_v1">沪深评论</dt><dd class="left alL"><a target="_blank" href="http://t3-www.imaibo.net/hspl/4"></a></dd></dl><dl class="hspl mt10 pb10 overflowH"><dt class="left bg_sprites_v1">港股直通车</dt><dd class="left alL"><a target="_blank" href="http://t3-www.imaibo.net/hspl/1"></a></dd></dl><dl class="cleaner mt15 pb10 overflowH"><dt class="mb10">投资名人</dt><dd><a href="http://t3-www.imaibo.net/famous/1" title="张宗永" target="_blank"><img src="http://t-www.imaibo.net/public/themes/Maibo/common_v1/images/famous/58x58-zzy.png" alt="张宗永" width="58" height="58"></a><em>张宗永</em></dd><dd><a href="http://t3-www.imaibo.net/famous/2" title="Manus Ng" target="_blank"><img src="http://t-www.imaibo.net/public/themes/Maibo/common_v1/images/famous/58x58-manus.png" alt="Manus Ng" width="58" height="58"></a><em>Manus Ng</em></dd><dd><a href="http://t3-www.imaibo.net/space/24452" title="鲁政委" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24452/big.jpg?v=20141120001" alt="鲁政委" width="58" height="58"></a><em>鲁政委</em></dd><dd><a href="http://t3-www.imaibo.net/space/24369" title="叶檀" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24369/big.jpg?v=20141120001" alt="叶檀" width="58" height="58"></a><em>叶檀</em></dd><dd><a href="http://t3-www.imaibo.net/space/24416" title="皮海洲" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24416/big.jpg?v=20141120001" alt="皮海洲" width="58" height="58"></a><em>皮海洲</em></dd><dd><a href="http://t3-www.imaibo.net/space/24391" title="水皮" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24391/big.jpg?v=20141120001" alt="水皮" width="58" height="58"></a><em>水皮</em></dd><dd><a href="http://t3-www.imaibo.net/space/24372" title="徐小明" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24372/big.jpg?v=20141120001" alt="徐小明" width="58" height="58"></a><em>徐小明</em></dd><dd><a href="http://t3-www.imaibo.net/space/24457" title="老艾观察" target="_blank"><img src="http://t-img.imaibo.net/data/uploads/avatar/24457/big.jpg?v=20141120001" alt="老艾观察" width="58" height="58"></a><em>老艾观察</em></dd></dl><dl class="cleaner mt15 pt15" style="border-top:1px solid #ddd;"><dt class="mb10">证券开户</dt><dd><img src="http://t3-www.imaibo.net/public/themes/Maibo/common_v1/images/qsgd.png?v=20141120001" alt="券商观点" width="521" height="80"></dd></dl></div></div></div></li><li class="border_l_000 position_relative"><i class="W_ico20 header_info_news position_absolute" style="display: inline; top:17px !important; right:-85px !important;"></i></li><li class="nav w70 pl10 pr10"><a href="javascript:;">有奖活动</a><div class="position_absolute"><div class="nav_list activies position_absolute hide"><a href="http://t3-www.imaibo.net/activities" target="_parent">有奖活动</a><a href="http://t3-www.imaibo.net/cggs/match" target="_parent" style="font-weight: bold;color: #FFA615">股神大赛</a><a href="http://t3-www.imaibo.net/campusTopic" target="_parent" style="font-weight: bold;color: #FFA615">校园行</a><a href="http://t3-www.imaibo.net/guess" target="_blank">竞猜指数</a><a href="http://t3-www.imaibo.net/lottery" target="_blank">邀请有奖</a><!-- <a href="http://t3-www.imaibo.net/combination">名&nbsp;&nbsp;人&nbsp;&nbsp;赛</a>--></div></div></li><li class="border_l_000 position_relative"><i class="W_ico20 header_info_news position_absolute" style="display: inline; top:17px !important; right:-85px !important;"></i></li><li class="nav w70 pl10 pr10" style="margin-top: 20px; margin-bottom: 20px; padding-top: 0px; padding-bottom: 0px; background-color: transparent;"><a href="javascript:;">App客户端</a><div class="position_absolute"><div class="nav_list app_list position_absolute hide" style="display: none;"><div class="position_absolute"><span class="clear_fix position_relative top_arrow"></span></div><div class="list OverH"><div><dl><dt><a href="http://t3-www.imaibo.net/app-download" target="_blank">投资脉搏APP</a></dt><dd style="color:#cd1515;">11.20-12.03领取免费VIP</dd><dd><a href="http://t3-www.imaibo.net/app-download" target="_blank">实时推送自选股、播主、股神动态，捉住每个机会</a></dd><dd class="label"><a href="http://t3-www.imaibo.net/app-download" target="_blank"><img src="http://t-www.imaibo.net/public/themes/Maibo/common_v1/images/imb_logo.png?v=20141120001" width="50" height="50" alt="图标"></a></dd></dl></div><div class="line"></div><div><dl><dt><a href="http://cggs.tzmaibo.com/" target="_blank">草根股神APP</a><span style="color:#979797;">每天前500个下载送5个脉搏币</span></dt><dd><a href="http://cggs.tzmaibo.com/" target="_blank">A股高仿交易工具，随时随地与草根达人PK</a></dd><dd class="label"><a href="http://cggs.tzmaibo.com/" target="_blank"><img src="http://t-www.imaibo.net/public/themes/Maibo/common_v1/images/cggs_logo.png" width="50" height="50" alt="图标"></a></dd></dl></div><div class="line"></div><div><dl><dt><a href="http://yy.tzmaibo.com/" target="_blank">股神摇摇APP</a></dt><dd><a href="http://yy.tzmaibo.com/" target="_blank">基于股民情绪算法，轻松获得股票</a></dd><dd class="label"><a href="http://yy.tzmaibo.com/" target="_blank"><img src="http://t-www.imaibo.net/public/themes/Maibo/common_v1/images/yy_logo.png" width="50" height="50" alt="图标"></a></dd></dl></div></div></div></div></li></ul></div><div class="cleaner"></div></div></div></div>
+  <!-- End iMaibo header -->
+
   <div class="outer">
     <!-- Right panel start -->
     <div id="right-panel">
       <div class="vertical-collapse"></div>
-      <ul class="nav nav-tabs nav-tabs-full-width">
+      <ul class="mb-nav mb-nav-tabs mb-nav-tabs-full-width">
         <li><a class="link-stockpicker-view" href="#">自选股</a></li>
         <li><a class="link-experts-view" href="#">专家解读</a></li>
         <li><a class="link-news-view" href="#">新闻</a></li>
@@ -201,7 +260,7 @@
     <!-- Right panel collapsed start -->
      <div class="vertical-uncollapse"></div>
     <div id="right-panel-collapsed" class="collapsed">
-      <ul class="nav nav-tabs-collapsed">
+      <ul class="mb-nav mb-nav-tabs-collapsed">
         <li><a class="link-stockpicker-view" href="#">自选股</a></li>
         <li><a class="link-experts-view" href="#">专家解读</a></li>
         <li><a class="link-news-view" href="#">新闻</a></li>
@@ -211,7 +270,7 @@
 
     <!-- Content panel start -->
     <div id="content">
-      <ul class="nav nav-tabs">
+      <ul class="mb-nav mb-nav-tabs">
         <li><a class="link-chart-view active" href="#">心情指数</a></li>
         <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
       </ul>
@@ -549,7 +608,7 @@
       <div class="like-and-discussion">
         <div class="like">
           <a id="experts-like-action" name="{{weiboId}}" class="sprite icon" href="#"></a>
-          <div class="text">
+          <div class="mb-text">
             <p>
               赞({{dig}})
             </p>
@@ -558,7 +617,7 @@
         </div>
         <div class="discussion">
           <a class="icon" href="{{url}}"></a>
-          <div class="text">
+          <div class="mb-text">
             <p>
               评论({{cmt}})
             </p>
@@ -578,6 +637,80 @@
     <a class="modal-close" href="#"></a>
   </div>
   <!-- Modal End start -->
+
+  <!--合并js文件开始-->
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/front-modules/jquery/plugins/jquery.plugins-contact.min.js?v=20141120001"></script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/themes/Maibo/common_v1/js/widget.combine.min.js?v=20141120001"></script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/themes/Maibo/common/js/user.js?v=20141120001"></script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/themes/Maibo/common_v1/js/moodindex.js?v=20141120001"></script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/front-modules/highcharts/3.0.9/highcharts.js?v=20141120001"></script>
+  <script type="text/javascript">
+    var fsw = new quickSearch();
+        fsw.stock = 1;
+        fsw.bind('fs_k', 'fs_r');
+
+    function search_checking_null() {
+        ga('send', 'event', '搜索', '点击', '搜索');
+        var $form = $('#searchKeyForm'),
+                $target_val = $('.text_search').val();
+        if ($target_val == '' || $target_val == null || $target_val == '股票 / 人 / 微博') {
+            $form.attr('onsubmit', 'return false');
+        } else {
+            $form.attr('onsubmit', 'return true');
+            alert($target_val);
+            //$('#searchKeyForm').submit();
+        }
+    }
+
+    function showSubscribe() {
+        var mid = parseInt(_MID_);
+        if (mid > 0) {
+            ui.box.load("http://t3-www.imaibo.net/index.php?app=home&mod=Public&act=subscribe", {title: "邮件订阅"});
+        } else if (mid == 0) {
+            login_show('subscribeEmail', 1);
+        }
+
+    }
+    var isFirstClick = 0;
+
+    $(document).ready(function(e) {
+      $('.search_a_button').bind('click',search_checking_null);
+      $('#fs_r').live({
+        mouseover:function(){
+          $('#fs_r').show();
+        },
+        mouseout:function(){
+          $('#fs_r').hide();
+        }
+      });
+      $("a[rel='face']").userCard();
+    });
+
+    var return_skip_type = '',    //触发类型
+        return_skip_id   = '',    //触发ID
+        return_skip_para = 0,
+        skip_links = stockUrl = '/moodindex';
+  </script>
+  <!--长微博e-->
+  <script type="text/javascript">
+    var defaultImage = $('.preview_upload img').attr('src');//'http://t-www.imaibo.net/public/themes/Maibo/common/images/gsds/upload_img.jpg';
+    var IMB_HOST = img_server_site;
+  </script>
+  <!-- ueditor -->
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/ueditor.config.js"></script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/ueditor.all.js"></script>
+  <!-- ueditor -->
+  <script type="text/javascript" src="http://t3-www.imaibo.net/public/themes/Maibo/common_v1/js/longweibo_user.js"></script>
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-40325599-1');
+    ga('send', 'pageview');
+  </script>
+  <script type="text/javascript" src="http://t3-www.imaibo.net/home/widget/addonsRequest?addon=WeiboType&amp;hook=loadJs"></script>
+  <!--合并js文件完毕-->
 
   <!-- Start charting JS files -->
   <script type="text/javascript" src="js/lib/helpers.js"></script>
