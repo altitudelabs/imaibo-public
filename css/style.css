@@ -1545,7 +1545,7 @@ label.checkbox-label input[type=checkbox]{
   visibility: hidden;
   position: absolute;
   z-index: 10;
-  width: 150px;
+  width: 170px;
   font-size: 11px;
   background-color: rgb(15, 15, 15);
   -webkit-box-shadow: 2px 2px 10px rgba(0,0,0,0.87);
@@ -1582,12 +1582,12 @@ label.checkbox-label input[type=checkbox]{
 }
 .tt-label {
   display: inline-block;
-  width: 50%;
+  width: 25%;
   color: rgb(140, 140, 140);
 }
 .tt-value {
   display: inline-block;
-  width: 50%;
+  width: 75%;
   color: #fff;
   text-align: right;
 }

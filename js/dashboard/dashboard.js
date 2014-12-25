@@ -120,6 +120,7 @@ var Dashboard = {
         this.prevData.change = model.moodindexInfo.change;
     } else {
       this.firstLoad = !this.firstLoad;
+      this.prevData.change = model.moodindexInfo.change;
     }
   },
 };

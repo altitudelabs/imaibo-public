@@ -17,11 +17,6 @@ var ChartModel = {
 
       // self.randomize();
 
-      _.each(self.model.daily.stockLine, function(v){
-        console.log(v.value);
-        v.hello = parseFloat(v.value);
-      });
-
       callback(self.model);
     });
   },
