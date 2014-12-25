@@ -415,25 +415,25 @@
         <div id="dashboard-mood" class="component-item-price thermo fall">
         {{/ifEq}}
       {{/isGreater}}
-        <div class="prediction">
+        <div class="prediction prediction-mood">
           <div class="title">心情指数</div>
           <div class="value-label">{{moodindexInfo.latest}}</div>
-          <div class="value-sublabel ">{{moodindexInfo.before}}({{moodindexInfo.changeRatio}})</div>
+          <div class="value-sublabel ">{{moodindexInfo.change}}({{moodindexInfo.changeRatio}})</div>
         </div>
 
         <div class="thermo-wrapper">
           <div class="thermometer mb thermometer-extended"></div>
           <div class="background"></div>
-          <div class="background full"></div>
+          <div class="background-full"></div>
         </div>
-        <div id="changes" class="changes">+{{moodindexInfo.change}}</div>
+        <div id="changes" class="changes">{{toAbs moodindexInfo.change}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
-          <div id="prediction-wrapper" class="component-item-price ind rise">
+        <div id="prediction-wrapper" class="component-item-price ind rise">
       {{else}}
         {{#ifEq tradingSign.signal 0}}
           <div id="prediction-wrapper" class="component-item-price ind neutral">
-          {{else}}
+        {{else}}
           <div id="prediction-wrapper" class="component-item-price ind fall">
         {{/ifEq}}
       {{/ifEq}}
@@ -444,7 +444,7 @@
           <div class="value-sublabel">
 
         {{#ifEq tradingSign.signal 1}}
-          {{#isGreater trading.prob 0.8}}
+          {{#isGreater tradingSign.prob 0.8}}
                强烈买入
           {{else}}
                 买入
@@ -453,7 +453,7 @@
           {{#ifEq tradingSign.signal 0}}
               持仓
           {{else}}
-            {{#isGreater trading.prob 0.8}}
+            {{#isGreater tradingSign.prob 0.8}}
                强烈卖出
             {{else}}
                 卖出
@@ -462,7 +462,7 @@
         {{/ifEq}}
           </div>
         </div>
-        {{#isGreater trading.prob 0.8}}
+        {{#isGreater tradingSign.prob 0.8}}
           <div class="indicator strong"></div>
         {{else}}
           <div class="indicator"></div>
@@ -517,9 +517,9 @@
       <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{formatNumber security.highpx 2}}</span></li>
       <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{formatNumber security.lowpx 2}}</span></li>
       <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{formatNumber security.closepx 2}}</span></li>
-      <li class="tt-row"><span class="tt-label">成交额</span><span class="tt-value">{{formatLargeNumber security.volumn}}</span></li>
+      <li class="tt-row"><span class="tt-label">成交量</span><span class="tt-value">{{formatWan security.volumn 2}}</span></li>
       <li class="tt-subtitle">心情指数</li>
-      <li class="tt-row"><span class="tt-label">当前</span><span class="tt-value">{{sentiment.price}}</span></li>
+      <li class="tt-row"><span class="tt-label">当前</span><span class="tt-value">{{formatNumber sentiment.price 0}}</span></li>
       <li class="tt-row"><span class="tt-label">转变</span><span class="tt-value">{{sentiment.change}}</span></li>
       <li class="tt-lastrow"></li>
     </ul>

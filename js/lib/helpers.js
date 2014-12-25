@@ -24,11 +24,15 @@ function min(a, b){ return a < b ? a : b ; }
 function max(a, b){ return a > b ? a : b; }
 
 Handlebars.registerHelper('ifEq', function(a, b, opts){
-  return (a==b? opts.fn(this): opts.inverse(this));
+  return (a === b ? opts.fn(this): opts.inverse(this));
 });
 
-Handlebars.registerHelper('isGreater', function(a,b, opts){
-  return (a > b? opts.fn(this): opts.inverse(this));
+Handlebars.registerHelper('isGreater', function(a, b, opts){
+  return (a > b ? opts.fn(this): opts.inverse(this));
+});
+
+Handlebars.registerHelper('toAbs', function(num){
+  return Math.abs(num);
 });
 
 Handlebars.registerHelper('toPercentage', function(a){
@@ -45,8 +49,18 @@ Handlebars.registerHelper('dateStr', function(text) {
   }
 });
 
-Handlebars.registerHelper('formatLargeNumber', function(num){
-  return new Handlebars.SafeString(Math.round(num/1000000)/100 + '亿');
+Handlebars.registerHelper('formatYi', function(num, dp){
+  var numberWithCommas = function(x) {
+    return x.toFixed(dp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return new Handlebars.SafeString(numberWithCommas(num/1000000) + '亿');
+});
+
+Handlebars.registerHelper('formatWan', function(num, dp){
+  var numberWithCommas = function(x) {
+    return x.toFixed(dp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return new Handlebars.SafeString(numberWithCommas(num/10000) + '万');
 });
 
 Handlebars.registerHelper('formatNumber', function(num, dp){
@@ -57,7 +71,7 @@ Handlebars.registerHelper('formatNumber', function(num, dp){
   }
 
   if (dp === 0){
-    return new Handlebars.SafeString(Math.round(num));
+    return new Handlebars.SafeString(numberWithCommas(num));
   } else {
     var base = Math.pow(10, dp),
         roundedNum = Math.round(num*base)/base;

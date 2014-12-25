@@ -453,6 +453,10 @@ var IndexChart = {
       cursorPriceLevel = y2.invert(yPos)
       d = data.daily.stockLine[j];
 
+      // _.each(data.daily.stockLine, function(v){
+      //   console.log(v.value);
+      // });
+
       var model = {
         top: d3.event.layerY+40,
         left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
