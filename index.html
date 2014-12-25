@@ -580,10 +580,10 @@
     <div class="experts-header">
       <div class="name-and-date">
         <div class="name">今天解读</div>
-        <div class="date">{{headline.time}}</div>
+        <div class="date">{{headline.uptime}}</div>
       </div>
       <div class="content">
-        {{headline.content}}
+        {{headline.title}}
       </div>
     </div>
     {{#each list}}
@@ -607,7 +607,7 @@
       </div>
       <div class="like-and-discussion">
         <div class="like">
-          <a id="experts-like-action" name="{{weiboId}}" class="sprite icon" href="#"></a>
+          <a class="experts-like-action sprite icon" name="{{weiboId}}" href="#"></a>
           <div class="mb-text">
             <p>
               赞({{dig}})
@@ -629,14 +629,16 @@
   </script>
   <!-- Experts template end -->
 
-  <!-- Modal Dialog start -->
-  <div id="experts-modal" style="display: none; position: fixed; opacity: 0; z-index: 11000; left: 50%; margin-left: -202px; top: 200px;">
-    <h1>Title</h1>
-    <h2>Subtitle</h2>
-    <p>Content</p>
+  <!-- Start experts modal dialog -->
+  <div id="experts-modal"></div>
+
+  <script id="experts-modal-template" type="text/x-handlebars-template">
+    <h1>{{headline.title}}</h1>
+    <h2>{{headline.uptime}}</h2>
+    <div class="content">{{{headline.content}}}</div>
     <a class="modal-close" href="#"></a>
-  </div>
-  <!-- Modal End start -->
+  </script>
+  <!-- End experts modal dialog -->
 
   <!--合并js文件开始-->
   <script type="text/javascript" src="http://t3-www.imaibo.net/public/front-modules/jquery/plugins/jquery.plugins-contact.min.js?v=20141120001"></script>

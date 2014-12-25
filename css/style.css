@@ -20,6 +20,8 @@
 /* =General
 -------------------------------------------------------------- */
 .outer * {
+  font-family: Arial, "Microsoft Yahei","微软雅黑", STXihei, "华文细黑", sans-serif;
+
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -29,8 +31,6 @@ html {
 }
 body {
   background-color: rgb(15, 15, 15);
-  color: #fff;
-  font-family: Arial, "Microsoft Yahei","微软雅黑", STXihei, "华文细黑", sans-serif;
   overflow-x: hidden;
 }
 .mb-nav:before, .mb-nav:after {
@@ -69,6 +69,7 @@ body {
 }
 
 .component {
+  color: #fff;
   position: relative;
   background-color: rgb(38, 38, 38);
   border: 1px solid #4d4d4d;
@@ -1749,14 +1750,20 @@ ul.toolbar > li.active > a:hover {
 /* =Modal
 -------------------------------------------------------------- */
 #experts-modal {
+  display: none;
+  position: fixed;
+  opacity: 0;
   background-color: #363636;
+  color: rgb(216,216,216);
   border: 1px solid #4d4d4d;
   z-index: 15000;
   left: 50%;
   margin-left: -202px;
   top: 200px;
   width: 420px;
-  height: 450px;
+  z-index: 11000;
+  left: 50%;
+
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -1776,7 +1783,7 @@ ul.toolbar > li.active > a:hover {
   color: rgb(107, 107, 107);
 }
 
-#experts-modal p {
+#experts-modal .content {
   padding: 20px 10px;
   font-size: 12px;
 }
