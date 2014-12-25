@@ -118,7 +118,9 @@
         <li class="close-button pull-right"><a class="link-right-panel-collapsed" href="#"></a></li>
       </ul>
 
-      <div class="panel-loader"></div>
+      <div class="panel-loader-wrapper">
+        <div class="panel-loader"></div>
+      </div>
 
       <!-- Stockpicker view start -->
       <div id="stockpicker-view" class="component">
@@ -278,18 +280,10 @@
       <!-- Chart view start -->
       <div id="chart-view">
         <div id="snapshot" class="component">
-          <div class="wrapper" id="loader-wrapper">
-            <div class="component-wrapper" id="dashboard">
-            </div>
-            <div class=".loader" id="loading"></div>
-          </div>
-          <!-- component wrapper end -->
-          <div class="btn-buy-sell-wrapper">
-            <div class="btn btn-sell disabled">卖出</div>
-            <div class="btn btn-buy disabled">买入</div>
-          </div>
-          <!-- Snapshot template end -->
+          <div id="loading"></div>
+          <div class="component-wrapper" id="dashboard"></div>
         </div>
+
         <div class="loader"></div>
         <div id="price" class="component">
           <div class="chart-header">
@@ -358,7 +352,6 @@
           <div class='container zoomable-chart-container' id="rsi-chart-container" >
             <div class="zoomable-chart" id="rsi-chart"></div>
           </div>
-
         </div>
         <div id="macd" class="component">
           <div class="wrapper chart-header">
@@ -475,6 +468,10 @@
           <div class="indicator"></div>
         {{/isGreater}}
         <div id="indicator-tooltip"></div>
+      </div>
+      <div class="btn-buy-sell-wrapper">
+        <div class="btn btn-sell">卖出</div>
+        <div class="btn btn-buy">买入</div>
       </div>
   </script>
   <!-- Dashboard end -->
@@ -607,7 +604,7 @@
       </div>
       <div class="like-and-discussion">
         <div class="like">
-          <a class="experts-like-action sprite icon" name="{{weiboId}}" href="#"></a>
+          <a class="experts-like-action icon mb like" name="{{weiboId}}" href="#"></a>
           <div class="mb-text">
             <p>
               赞({{dig}})
@@ -616,7 +613,7 @@
 
         </div>
         <div class="discussion">
-          <a class="icon" href="{{url}}"></a>
+          <a class="icon mb comments" href="{{url}}"></a>
           <div class="mb-text">
             <p>
               评论({{cmt}})
@@ -636,7 +633,7 @@
     <h1>{{headline.title}}</h1>
     <h2>{{headline.uptime}}</h2>
     <div class="content">{{{headline.content}}}</div>
-    <a class="modal-close" href="#"></a>
+    <a class="modal-close mb close-modal" href="#"></a>
   </script>
   <!-- End experts modal dialog -->
 

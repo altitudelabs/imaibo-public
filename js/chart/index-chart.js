@@ -125,7 +125,7 @@ var IndexChart = {
     .data(y1.ticks(5))
     .enter().append('svg:text')
     .attr('class', 'yrule')
-    .attr('x', margin.left - 12)
+    .attr('x', margin.left - 15)
     .attr('y', y1)
     .attr('text-anchor', 'middle')
     .text(String);

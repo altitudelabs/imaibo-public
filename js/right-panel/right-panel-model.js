@@ -59,8 +59,8 @@ var RightPanelModel = {
           $('#suggestion').remove();
           $('#stockpicker-view > .wrapper:first-child').css('height', '0');
         }
-        $('.panel-loader').remove();
         $('#stockpicker-view').css('opacity', '1');
+        $('.panel-loader').remove();
     });
   },
   // Experts tab: Handles user like action
