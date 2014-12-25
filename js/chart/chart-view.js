@@ -107,20 +107,20 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     $('.loader').css('height', '441px');
 
-    self.buildChartElements();
+    self.buildChartElements(true);
 
     setInterval(function(){
-      self.buildChartElements();
+      self.buildChartElements(false);
     }, this.properties.refreshFrequency);
   },
-  buildChartElements: function() {
+  buildChartElements: function(initial) {
     var self = this;
     var today = new Date();
     today = today.getFullYear().toString() +
     (today.getMonth()+1).toString() +
     today.getDate().toString();
 
-    ChartModel.getIndexData(function(data) {
+    ChartModel.getIndexData(today,function(data) {
       ChartModel.getSentimentData(today, function(data){
         self.data.sentiment = data.sentiment;
         SentimentChart.init();
@@ -132,7 +132,7 @@ var ChartView = {
         RsiChart.init();
         MacdChart.init();
         Dashboard.render(self.data.info);
-        Toolbar.render(self.data.daily);
+        if(initial) Toolbar.render(self.data.daily);
       });
     });
   },

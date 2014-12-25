@@ -172,6 +172,11 @@ text {
 .value-label {
   font-size: 16px;
   line-height: 22px;
+
+  -webkit-transition: all 500ms ease-out;
+  -moz-transition: all 500ms ease-out;
+  -o-transition: all 500ms ease-out;
+  transition: all 500ms ease-out;
 }
 
 .value-sublabel {
@@ -191,6 +196,10 @@ text {
 
 .prediction, .indicator {
   display: inline-block;
+}
+
+.prediction-mood {
+  width: 60px;
 }
 
 .component-item-price.ind {
@@ -226,7 +235,7 @@ text {
   background: url('../assets/chart/trend-indicator-up.png') no-repeat center;
 }
 
-.rise .indicator.strong{
+.rise .indicator.strong {
   background: url('../assets/chart/trend-indicator-strong-up.png') no-repeat center;
 }
 
@@ -252,7 +261,7 @@ text {
   bottom: -2px;
   z-index: -1;
 }
-.thermo-wrapper .background.full {
+.thermo-wrapper .background-full {
   position: absolute;
   background-color: #fff !important;
   left: 25px;
