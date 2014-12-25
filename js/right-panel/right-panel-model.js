@@ -1,32 +1,56 @@
 var RightPanelModel = {
+  baseUrl: 'http://t3-www.imaibo.net',
   model: {
     experts: {},
     stock: {},
     news: {}
   },
-  getExpertData: function(callback){
+  getExpertDataAsync: function(){
     var self = this;
-     $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
-        self.model.experts = expertData.data;
+    return $.Deferred(function(d){
+      self.getExpertData(d.resolve, d.reject);
+    }).promise();
+  },
+  getExpertHeadlineAsync: function(){
+    var self = this;
+    return $.Deferred(function(d){
+      self.getExpertHeadline(d.resolve, d.reject);
+    }).promise();
+  },
+  likeCommentAsync: function(weiboId){
+    var self = this;
+    return $.Deferred(function(d){
+      self.likeComment(weiboId, d.resolve, d.reject);
+    }).promise();
+  },
+  getExpertHeadline: function(successHandler, errorHandler){
+    var self = this;
+    $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res){
+      if (res.code === 0){
+        self.model.experts.headline = res.data;
+        successHandler(res.data);
+      } else {
+        errorHandler(res.data);
+      }
+    })
+  },
+  getExpertData: function(successHandler){
+    var self = this;
+    $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
+        _.extend(self.model.experts, expertData.data);
 
         self.model.experts.list.map(function(res){
           res.time = self.getTimestampStr(res.time);
         });
 
-        // TODO: Update headline info with actual API
-        self.model.experts.headline = {
-          time: self.getTimestampStr(1000000),
-          content: "午盘开始下跌，尾盘在MAC尾盘在背离下小幅反弹。"
-        }
-
-        callback(self.model.experts);
+        successHandler(self.model.experts);
 	   });
   },
-  getNewsData: function(callback){
+  getNewsData: function(successHandler){
   },
   getStockData: function(){
     var self = this;
-    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
+    $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
         self.model.stock = stockData.data;
         var stock = RightPanel.states.chooseStockView;
         RightPanel.populateView(stock.table, stock.template, self.model.stock.list);
@@ -40,9 +64,16 @@ var RightPanelModel = {
     });
   },
   // Experts tab: Handles user like action
-  likeComment: function(weiboId, callback){
-    $.get('http://t3-www.imaibo.net/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId, function(res){
-      console.log(res);
+  likeComment: function(weiboId, successHandler, errorHandler){
+    $.get(this.baseUrl + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
+    .done(function(res){
+      if (res.code === 0){
+        successHandler(res);
+      } else {
+        errorHandler(res);
+      }
+    }).fail(function(res){
+      errorHandler(res);
     });
   },
   get: function(){

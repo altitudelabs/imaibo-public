@@ -22,7 +22,9 @@ var RightPanel = {
     expertsView: {
       el: $('#experts-view'),
       link: $('.link-experts-view'),
-      template: $('#experts-template')
+      template: $('#experts-template'),
+      modalEl: $('#experts-modal'),
+      modalTemplate: $('#experts-modal-template')
     },
     newsView: {
       el: $('#news-view'),
@@ -74,19 +76,29 @@ var RightPanel = {
     RightPanelModel.getStockData();
 
     // Init experts module
-    RightPanelModel.getExpertData(function(model){
-        var experts = self.states.expertsView;
+    $.when(RightPanelModel.getExpertHeadlineAsync(), RightPanelModel.getExpertDataAsync())
+    .done(function(headlineModel, model){
+      var experts = self.states.expertsView;
 
-        self.populateView(experts.el, experts.template, model);
+      // Populate views
+      self.populateView(experts.el, experts.template, RightPanelModel.model.experts);
+      self.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
-        // Initiate experts modal
-        $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
+      // Init experts modal
+      $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
 
-        // Initiate like comments
-        $('#experts-like-action').click(function(evt){
-          var weiboId = $(evt.target).attr('name');
-          RightPanelModel.likeComment(weiboId);
+      // Init like comments action
+      $('.experts-like-action').click(function(e){
+        e.preventDefault();
+        var weiboId = $(e.target).attr('name');
+
+        RightPanelModel.likeCommentAsync(weiboId)
+        .then(function(res){
+          console.log('Expert like action success', res);
+        }, function(res) {
+          console.log('Expert like action failure', res);
         });
+      });
     });
   },
   render: function(){
