@@ -8,7 +8,7 @@ var ChartModel = {
   },
   getIndexData: function(date, callback){
     var self = this;
-    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=main&dailyLineSdate='+date+'&info=1&trading=1&daily=1&callback=?', function(dailyData) {
+    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=main&dailyLineSdate='+date+'&latest=1&info=1&trading=1&daily=1&callback=?', function(dailyData) {
       self.model.info   = dailyData.data.info;
       self.model.daily  = dailyData.data.daily;
       self.model.minute = dailyData.data.minute;

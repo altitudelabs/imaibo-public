@@ -191,10 +191,11 @@ var IndexChart = {
 
     var latest_daily = data.slice(-1)[0];
 
-    $('#ma60-label').text(' MA60=' + latest_daily.ma60);
-    $('#ma20-label').text(' MA20=' + latest_daily.ma20);
-    $('#ma10-label').text(' MA10=' + latest_daily.ma10);
-    $('#ma5-label').text(' MA5=' + latest_daily.ma5);
+    // Update MA labels
+    $('#ma60-label').text(' MA60');
+    $('#ma20-label').text(' MA20');
+    $('#ma10-label').text(' MA10');
+    $('#ma5-label').text(' MA5');
   },
   drawGraph: function(isNew) {
     // $('#chart').empty();
