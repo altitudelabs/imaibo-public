@@ -22,7 +22,8 @@ var ChartModel = {
   },
   getSentimentData: function(date, callback){
     var self = this;
-    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLineUpdate&reqDate='+ date +'&callback=?', function(sentimentData) {
+    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
+               // http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine
       self.model.sentiment = sentimentData.data;
       self.tryRemoveLoaders();
       callback(self.model);
