@@ -13,7 +13,7 @@ var Toolbar = {
       t.push({
         ma_id: 'ma'+res+'-checkbox',
         ma_label_id: 'ma'+res+'-label',
-        ma_label: 'MA'+res+'=' + temp['ma'+res]
+        ma_label: 'MA'+res
       });
     });
 
@@ -24,11 +24,19 @@ var Toolbar = {
     toggleMA('20');
     toggleMA('60');
 
-
     //bind checkbox listeners to each MA line
     function toggleMA(val){
-      var ma = 'ma' + val;
-      $('#' + ma + '-checkbox').change(function(){
+      var ma = 'ma' + val,
+          $checkbox = $('#' + ma + '-checkbox');
+          $row = $('.' + ma + '-checkbox');
+
+      $row.click(function(e) {
+        var cb = $(this).find(':checkbox')[0];
+        //if the click wasn't from the checkbox already, toggle it
+        if(e.target != cb) cb.click();
+      });
+
+      $checkbox.change(function(e){
         /*
          * see http://jsperf.com/boolean-int-conversion/3 for ternary operators speed
          * Chrome benefits greatly using explicit rather than implicit.
@@ -63,7 +71,7 @@ var Toolbar = {
           if(!isNaN(ma)){
             $('#legend').prepend('<li id="ma' + ma + '-legend">'                                    +
                                  '<div id="ma' + ma + '-legend-line" class="legend-line"></div>' +
-                                 '<span>MA' + ma + '</span>'                                     +
+                                 '<span>MA' + ma + '=' + temp['ma'+ma] + '</span>'                                     +
                                  '</li>');
           }
         });
@@ -100,8 +108,12 @@ var Toolbar = {
     });
   },
   initRsi: function(){
-    //TODO
-    //
+    $('#rsi-checkbox-row').click(function(e) {
+      var cb = $(this).find(':checkbox')[0];
+      //if the click wasn't from the checkbox already, toggle it
+      if(e.target != cb) cb.click();
+    });
+
     if($('#rsi-checkbox').checked){
        $('#rsi').css('display', 'block');
     }else{

@@ -317,8 +317,8 @@
                 <a class="mb annotations-button" id="rsi-icon"></a>
                 <div class="dropdown-menu" data-target="chart-toggle">
                   <ul>
-                    <li><input type="checkbox" id="macd-checkbox"><label> MACD</label></li>
-                    <li><input type="checkbox" id="rsi-checkbox"><label> RSI</label></li>
+                    <li id="macd-checkbox-row"><input type="checkbox" id="macd-checkbox"><label> MACD</label></li>
+                    <li id="rsi-checkbox-row"><input type="checkbox" id="rsi-checkbox"><label> RSI</label></li>
                   </ul>
                </div>
               </li>
@@ -467,8 +467,8 @@
         {{else}}
           <div class="indicator"></div>
         {{/isGreater}}
-        <div id="indicator-tooltip"></div>
       </div>
+      <div id="indicator-tooltip"></div>
       <div class="btn-buy-sell-wrapper">
         <div class="btn btn-sell">卖出</div>
         <div class="btn btn-buy">买入</div>
@@ -501,7 +501,7 @@
   <script id="ma-template" type="text/x-handlebars-template">
     <ul>
       {{#each data}}
-        <li><input type="checkbox" id="{{ma_id}}" ><label id="{{ma_label_id}}"> {{ma_label}} </label></li>
+        <li class="{{ma_id}}"><input type="checkbox" id="{{ma_id}}" ><label id="{{ma_label_id}}"> {{ma_label}} </label></li>
       {{/each}}
     </ul>
   </script>
@@ -603,23 +603,8 @@
         </div>
       </div>
       <div class="like-and-discussion">
-        <div class="like">
-          <a class="experts-like-action icon mb like" name="{{weiboId}}" href="#"></a>
-          <div class="mb-text">
-            <p>
-              赞({{dig}})
-            </p>
-          </div>
-
-        </div>
-        <div class="discussion">
-          <a class="icon mb comments" href="{{url}}"></a>
-          <div class="mb-text">
-            <p>
-              评论({{cmt}})
-            </p>
-          </div>
-        </div>
+        <a class="experts-like-action mb-icon mb like" name="{{weiboId}}" href="#">赞({{dig}})</a>
+        <a class="experts-comments-action mb-icon mb comments" href="{{url}}">评论({{cmt}})</a>
       </div>
     </div>
     {{/each}}

@@ -9,7 +9,11 @@ var Dashboard = {
     var self = this;
 
     // Render dashboard
-    Helper.populateView('#dashboard','#dashboard-template', model);
+    if (self.firstLoad){
+      Helper.populateView('#dashboard','#dashboard-template', model);
+    } else {
+      self.updateDashboard('#dashboard','#dashboard-template', model);
+    }
 
     self.updateData(model);
     self.renderThermoLiquid(model);
@@ -21,10 +25,17 @@ var Dashboard = {
     });
 
   },
-  renderIndicatorTooltip: function(data) {
-    //risePerct fallPerct neutPerct
-    //indicator-template
+  updateDashboard: function(targetId, templateId, resource){
+    var targetSelector = $(targetId);
+    var templateSelector = $(templateId);
+    var template = Handlebars.compile(templateSelector.html());
+    var html = template(resource);
 
+    targetSelector.find('#dashboard-index').replaceWith($(html)[0]);
+    targetSelector.find('#dashboard-mood').replaceWith($(html)[2]);
+    targetSelector.find('#prediction-wrapper').replaceWith($(html)[4]);
+  },
+  renderIndicatorTooltip: function(data) {
     $('#prediction-wrapper').hover(function(){
       $('#indicator-tooltip').css('display', 'block');
     }, function(){
@@ -44,8 +55,6 @@ var Dashboard = {
       buy: buy,
       sell: sell
     };
-
-    // console.log(d.hold, d.buy, d.sell);
 
     Helper.populateView('#indicator-tooltip', '#indicator-template', d);
   },
@@ -119,7 +128,7 @@ var Dashboard = {
         });
         this.prevData.change = model.moodindexInfo.change;
     } else {
-      this.firstLoad = !this.firstLoad;
+      this.firstLoad = false;
       this.prevData.change = model.moodindexInfo.change;
     }
   },
