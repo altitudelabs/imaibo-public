@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 5000
+    refreshFrequency: 500
   },
   setProperties: function (options) {
     var self = this;
@@ -109,9 +109,9 @@ var ChartView = {
 
     self.buildChartElements(true);
 
-    setInterval(function(){
-      self.buildChartElements(false);
-    }, this.properties.refreshFrequency);
+    // setInterval(function(){
+    //   self.buildChartElements(false);
+    // }, this.properties.refreshFrequency);
   },
   buildChartElements: function(initial) {
     var self = this;
@@ -121,9 +121,10 @@ var ChartView = {
     today.getDate().toString();
 
     ChartModel.getIndexData(today,function(data) {
+      // console.log(data);
       ChartModel.getSentimentData(today, function(data){
         self.data.sentiment = data.sentiment;
-        SentimentChart.init();
+        if(initial) { SentimentChart.init(); }
         self.data.info = data.info;
         self.data.daily = data.daily;
         self.data.minute = data.minute;
@@ -132,7 +133,9 @@ var ChartView = {
         RsiChart.init();
         MacdChart.init();
         Dashboard.render(self.data.info);
-        if(initial) Toolbar.render(self.data.daily);
+        if(initial) {
+          Toolbar.render(self.data.daily);
+        }
       });
     });
   },
@@ -140,6 +143,7 @@ var ChartView = {
     zoomFactor = zoomFactor || 1;
     this.properties.zoomFactor *= zoomFactor;
     $('.zoomable-chart-container').css('width', '100%');
+    // IndexChart.drawContainer(false);
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
     MacdChart.drawGraph(false);
@@ -150,6 +154,7 @@ var ChartView = {
     IndexChart.init();
     RsiChart.init();
     MacdChart.init();
+    SentimentChart.init();
     this.redraw(true);
   },
   horizontalScroll: function () {

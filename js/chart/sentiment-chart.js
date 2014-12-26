@@ -30,23 +30,22 @@ var SentimentChart = {
     var height = this.properties.height;
     var chartHeight = height - margin.top - margin.bottom;
     var interval = this.properties.interval;
-
-    var sentimentData = data.sentiment.moodindexList.slice(0, 8);
-
+    
+    var moodindexList = data.sentiment.moodindexList;
+    var indexList = data.sentiment.indexList;
+    
     var y1 = d3.scale.linear()
-    .domain([-1 , 1])
+    .domain([d3.min(moodindexList.map(function(x) { return +x.mood; })) - 30, d3.max(moodindexList.map(function(x) { return +x.mood; })) + 30])
+    // .domain([1550, 1700])
     .range([chartHeight-margin.bottom, margin.top+20]);
 
     var y2 = d3.scale.linear()
-    .domain([d3.min(data.sentiment.indexList.map(function(x) { return +x.price; })), d3.max(data.sentiment.indexList.map(function(x){return +x.price; }))])
+    .domain([d3.min(indexList.map(function(x) { return +x.price; })), d3.max(indexList.map(function(x){return +x.price; }))])
     .range([chartHeight-margin.bottom, margin.top+20]);
 
-    var seven_am = sentimentData[0].timestamp; //seven_am in epoch time
-    var min_before_midnight = seven_am + 61140; //the same day as seven_am
-
-    var x = d3.scale.linear()
-    .domain([seven_am, min_before_midnight])
-    .range([margin.left, chartWidth + margin.left ]);
+    // var x = d3.scale.ordinal()
+    // .domain(sentimentData)
+    // .rangePoints(40, [margin.left, chartWidth + margin.left ]);
 
     var chart_label = d3.select('#sentiment-chart-label')
     .append('svg:svg')
@@ -136,130 +135,186 @@ var SentimentChart = {
     chartHeight = height - margin.top - margin.bottom,
     zoomFactor     = prop.zoomFactor,
     graphWidth     = chartWidth * zoomFactor,
-    data           = ChartView.data,
     interval       = this.properties.interval,
     xlabels,
     gline,
     tooltip;
 
-    var sentimentData = data.sentiment.moodindexList.slice(0, 8);
+    var moodindexList = data.sentiment.moodindexList;
+    var indexList = data.sentiment.indexList;
+    var startTime = d3.min(moodindexList.map(function(x) { return x.timestamp; }));
+    var startDate = new Date(startTime * 1000);
+    var endTime = d3.max(moodindexList.map(function(x) { return x.timestamp; }));
+
+    var endDate = new Date(endTime * 1000);
+
+    startTime -= ( (startDate.getHours()*3600) + (startDate.getMinutes()*60));
+    endTime += (86400 - (endDate.getHours()*3600) + (endDate.getMinutes()*60));
+    
+    var sentimentData = [];
+    var today = new Date(indexList[indexList.length-1].timestamp * 1000);
+    var currentTime = startTime;
+    var sentimentDataIndex = 0;
+    while (currentTime <= endTime) {
+      sentimentData[sentimentDataIndex] = {
+        timestamp: currentTime
+      };
+      currentTime += 60;
+      sentimentDataIndex += 1;
+    }
+    currentTime = startTime;
+
+    var numberOfDate = 0;
+    for (var j = 0; j < indexList.length; j++) {
+      var indexData = indexList[j];
+      var timeDiff = indexData.timestamp - startTime;
+      var sentimentIndex = timeDiff / 60;
+      sentimentData[sentimentIndex] = indexData; 
+    }
 
     var y1 = d3.scale.linear()
-    .domain([-100 , 100])
+    .domain([d3.min(moodindexList.map(function(x) { return +x.mood; })) - 30, d3.max(moodindexList.map(function(x) { return +x.mood; })) + 30])
     .range([chartHeight+margin.top-57, margin.top]);
 
     var y2 = d3.scale.linear()
-    .domain([d3.min(data.sentiment.indexList.map(function(x) { return +x.price; })), d3.max(data.sentiment.indexList.map(function(x){return +x.price; }))])
+    .domain([d3.min(indexList.map(function(x) { return +x.price; })), d3.max(indexList.map(function(x){return +x.price; }))])
     .range([147, 27]);
 
-    var seven_am = sentimentData[0].timestamp; //seven_am in epoch time
-    var min_before_midnight = seven_am + 61140; //the same day as seven_am
-
-    var x = d3.scale.linear()
-    .domain([seven_am, min_before_midnight])
-    .range([margin.left, chartWidth-margin.right ]);
+    var x = ChartView.x(sentimentData, 'timestamp');
 
     var chart = d3.select('#sentiment-chart')
     .append('svg:svg')
     .attr('class', 'chart')
     .attr('width', chartWidth)
     .attr('height', chartHeight);
-
     chart.append('g')
     .attr('class','xlabels')
     .selectAll('text.xrule')
-    .data(x.ticks(400))
+    .data(sentimentData)
     .enter().append('svg:text')
     .attr('class', 'xrule')
-    .attr('x', function(i){ return x(i); })
+    .attr('x', function (d, i) { return x(d.timestamp); })
     .attr('y', chartHeight-margin.bottom-margin.top)
     .attr('text-anchor', 'middle')
-    .text(function(i){
-      if(i%3600===0){
-        var d = new Date(i*1000);
-        // d.getDate() + '-' +
-        return d.getHours() + ':' + (d.getMinutes() < 10? '0' + d.getMinutes(): d.getMinutes());
+    .text(function (d, i) {
+      var date = new Date(d.timestamp * 1000);
+      // if (i === 0) {
+        // return date.getMonth() + '/' + date.getDate();
+      // }
+      if ((d.timestamp + 7200) % 21600 === 0) {
+        // if (date.getHours() + date.getMinutes() === 0) {
+        //   return date.getMonth() + '/' + date.getDate();
+        // }
+
+        return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
       }
     });
+
     var sentimentLine = d3.svg.line()
-    .x(function(d,i) {
-      return x(d.timestamp); })
-      .y(function(d) { return y1(d.mood); })
-      .interpolate('linear');
+    .x(function(d,i) { return x(d.timestamp); })
+    .y(function(d) { return y1(d.mood); })
+    .interpolate('linear');
 
-      chart.append('path')
-      .datum(sentimentData)
-      .attr('class','sentiment')
-      .attr('d', sentimentLine)
-      .attr('stroke', '#25bcf1')
-      .attr('fill', 'none');
+    chart.append('path')
+    .datum(moodindexList)
+    .attr('class','sentiment')
+    .attr('d', sentimentLine)
+    .attr('stroke', '#25bcf1')
+    .attr('fill', 'none');
 
-      var tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip').style('opacity', 0);
+    tooltip = d3.select('body').append('div')
+    .attr('class', 'tooltip').style('opacity', 0);
+
+    var news_count = chart.selectAll("scatter-dots")
+    .data(moodindexList)  // using the values in the ydata array
+    .enter().append("text")  // create a new circle for each value
+    .attr("y", function (d) { return y1(d.mood) - 10; } ) // translate y value to a pixel
+    .attr("x", function (d,i) { return x(d.timestamp); } ) // translate x value
+    .text(function(d, i){
+      return d.newsCount;
+    });
+
+    var tes = chart.selectAll("scatter-dots")
+    .data(moodindexList)  // using the values in the ydata array
+    .enter().append("svg:circle")  // create a new circle for each value
+    .attr("cy", function (d) { return y1(d.mood); } ) // translate y value to a pixel
+    .attr("cx", function (d,i) { return x(d.timestamp); } ) // translate x value
+    .attr("r", 5)
+    .attr('stroke', '#25bcf1')
+    .attr('stroke-width', '1')
+    .style("opacity", 1)
+    .on("mouseover", function(d) {
+      this.setAttribute('fill', '#3bc1ef');
+      this.setAttribute('r', '5');
+      this.setAttribute('stroke', '#fff');
+      this.setAttribute('stroke-width', '1.5');
+
+      var arrow = (d.newsSign === '+'? 'rise':'fall');
+      var show_extra = (d.newsTitle.length < 12? 'hide':'show');
+
+      tooltip.transition()
+      .duration(200)
+      .style("opacity", .9);
+
+      tooltip.html('<div class="tooltip-date"> 日期： ' + Helper.toDate(d.rdate) + '   ' + d.clock.slice(0, -3) + '</div>' +
+                   '<div class="wrapper">' +
+                   '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
+                   '<div class="arrow ' + arrow + '">                     </div>' +
+                   '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
+                   '<div class="extra ' + show_extra + '">...</div>' +
+                   '</div>')
+      .style("left", (d3.event.pageX + 10) + "px")
+      .style("top", (d3.event.pageY ) + "px");
+    }).on("mouseout", function(d) {
+      this.setAttribute('fill','#000');
+      this.setAttribute('r', '5');
+      this.setAttribute('stroke', '#25bcf1');
+      this.setAttribute('stroke-width', '1');
+
+      tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+    });
 
 
-      var news_count = chart.selectAll("scatter-dots")
-      .data(sentimentData)  // using the values in the ydata array
-      .enter().append("text")  // create a new circle for each value
-      .attr("y", function (d) { return y1(d.mood) - 10; } ) // translate y value to a pixel
-      .attr("x", function (d,i) { return x(d.timestamp); } ) // translate x value
-      .text(function(d, i){
-        return d.newsCount;
-      });
+    var securityLine = d3.svg.line()
+    .x(function(d,i) { return x(d.timestamp); })
+    .y(function(d)   { return y2(+d.price); })
+    .interpolate('basis');
+  
+    var drawSecurityLine = function (data) {
+      var linear = [];
+      var dotted = [];
+      var start = 0;
+      for (var i = 0; i < data.length-1; i++) {
+        if ( data[i+1].timestamp - data[i].timestamp > 3590 ) {
+          linear.push(data.slice(start, i));
+          dotted.push(data.slice(i, i+2));
+          start = i+1;
+        }
+      }
+      linear.push(data.slice(start, data.length-1));
+      for (var j = 0; j < linear.length; j++) {
+          chart.append('path')
+          .datum(linear[j])
+          .attr('class','security')
+          .attr('d', securityLine)
+          .attr('stroke', '#fff')
+          .attr('fill', 'none')
+          .style('stroke');
+      }
+      for (var k = 0; k < dotted.length; k++) {
+          chart.append('path')
+          .datum(dotted[k])
+          .attr('class','security')
+          .attr('d', securityLine)
+          .attr('stroke', '#fff')
+          .attr('fill', 'none')
+          .style('stroke-dasharray', ('1, 3'));
+      }
 
-
-      var tes = chart.selectAll("scatter-dots")
-      .data(sentimentData)  // using the values in the ydata array
-      .enter().append("svg:circle")  // create a new circle for each value
-      .attr("cy", function (d) { return y1(d.mood); } ) // translate y value to a pixel
-      .attr("cx", function (d,i) { return x(d.timestamp); } ) // translate x value
-      .attr("r", 4)
-      .attr('stroke', '#25bcf1')
-      .attr('stroke-width', '1.5')
-      .style("opacity", 1)
-      .on("mouseover", function(d) {
-        this.setAttribute('fill', '#3bc1ef');
-        this.setAttribute('r', '6');
-        this.setAttribute('stroke', '#fff');
-
-        var arrow = (d.newsSign === '+'? 'rise':'fall');
-        var show_extra = (d.newsTitle.length < 12? 'hide':'show');
-
-        tooltip.transition()
-        .duration(200)
-        .style("opacity", .9);
-
-        tooltip.html('<div class="tooltip-date"> 日期： ' + Helper.toDate(d.rdate) + '   ' + d.clock.slice(0, -3) + '</div>' +
-                     '<div class="wrapper">' +
-                     '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
-                     '<div class="arrow ' + arrow + '">                     </div>' +
-                     '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
-                     '<div class="extra ' + show_extra + '">...</div>' +
-                     '</div>')
-        .style("left", (d3.event.pageX + 10) + "px")
-        .style("top", (d3.event.pageY ) + "px");
-      }).on("mouseout", function(d) {
-        this.setAttribute('fill','#000');
-        this.setAttribute('r', '4');
-        this.setAttribute('stroke', '#25bcf1');
-
-        tooltip.transition()
-        .duration(500)
-        .style("opacity", 0);
-      });
-
-      var securityLine = d3.svg.line()
-      .x(function(d,i) { return x(d.timestamp); })
-      .y(function(d)   { return y2(+d.price); })
-      .interpolate('basis');
-
-      chart.append('path')
-      .datum(data.sentiment.indexList)
-      .attr('class','security')
-      .attr('d', securityLine)
-      .attr('stroke', '#fff')
-      .attr('fill', 'none');
-
+    };
+    drawSecurityLine(indexList);
   },
 };
 
