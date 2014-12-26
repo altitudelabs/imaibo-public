@@ -206,9 +206,13 @@ var SentimentChart = {
     .attr('y', chartHeight-margin.bottom-margin.top)
     .attr('text-anchor', 'middle')
     .text(function (d, i) {
-        if (i.time % 3600 === 0) {
-          return i.clock;
+      var date = new Date(d.time * 1000);
+      if ((d.time + 7200) % 21600 === 0) {
+        if (date.getHours() + date.getMinutes() === 0) {
+          return date.getMonth() + '/' + date.getDate() + ' - ' + date.getHours() + ':0' + date.getMinutes();
         }
+        return date.getHours() + ':0' + date.getMinutes();
+      }
     });
 
     var sentimentLine = d3.svg.line()
@@ -290,8 +294,9 @@ var SentimentChart = {
           linear.push(data.slice(start, i));
           dotted.push(data.slice(i, i+2));
           start = i+1;
-        } 
+        }
       }
+      linear.push(data.slice(start, data.length-1));
       for (var j = 0; j < linear.length; j++) {
           chart.append('path')
           .datum(linear[j])

@@ -123,7 +123,7 @@ var ChartView = {
     ChartModel.getIndexData(today,function(data) {
       ChartModel.getSentimentData(today, function(data){
         self.data.sentiment = data.sentiment;
-        SentimentChart.init();
+        if(initial) { SentimentChart.init(); }
         self.data.info = data.info;
         self.data.daily = data.daily;
         self.data.minute = data.minute;
@@ -132,7 +132,9 @@ var ChartView = {
         RsiChart.init();
         MacdChart.init();
         Dashboard.render(self.data.info);
-        if(initial) Toolbar.render(self.data.daily);
+        if(initial) {
+          Toolbar.render(self.data.daily);
+        }
       });
     });
   },
