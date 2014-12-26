@@ -34,23 +34,18 @@ var SentimentChart = {
     var moodindexList = data.sentiment.moodindexList;
     var indexList = data.sentiment.indexList;
     
-    var sentimentData = [];
-    sentimentData[1439] = 0;
-
     var y1 = d3.scale.linear()
-    .domain([1500 , 1600])
+    .domain([d3.min(moodindexList.map(function(x) { return +x.mood; })) - 30, d3.max(moodindexList.map(function(x) { return +x.mood; })) + 30])
+    // .domain([1550, 1700])
     .range([chartHeight-margin.bottom, margin.top+20]);
 
     var y2 = d3.scale.linear()
     .domain([d3.min(indexList.map(function(x) { return +x.price; })), d3.max(indexList.map(function(x){return +x.price; }))])
     .range([chartHeight-margin.bottom, margin.top+20]);
 
-    var seven_am = moodindexList[0].timestamp; //seven_am in epoch time
-    var min_before_midnight = seven_am + 61140; //the same day as seven_am
-
-    var x = d3.scale.ordinal()
-    .domain(sentimentData)
-    .rangePoints(40, [margin.left, chartWidth + margin.left ]);
+    // var x = d3.scale.ordinal()
+    // .domain(sentimentData)
+    // .rangePoints(40, [margin.left, chartWidth + margin.left ]);
 
     var chart_label = d3.select('#sentiment-chart-label')
     .append('svg:svg')
@@ -147,71 +142,71 @@ var SentimentChart = {
 
     var moodindexList = data.sentiment.moodindexList;
     var indexList = data.sentiment.indexList;
+    var startTime = d3.min(moodindexList.map(function(x) { return x.timestamp; }));
+    var startDate = new Date(startTime * 1000);
+    var endTime = d3.max(moodindexList.map(function(x) { return x.timestamp; }));
 
-    var startTime = d3.min(indexList.map(function(x) { return x.time; }));
-    var endTime = d3.max(indexList.map(function(x) { return x.time; }));
+    var endDate = new Date(endTime * 1000);
 
+    startTime -= ( (startDate.getHours()*3600) + (startDate.getMinutes()*60));
+    endTime += (86400 - (endDate.getHours()*3600) + (endDate.getMinutes()*60));
+    
     var sentimentData = [];
-    var today = new Date(indexList[indexList.length-1].time * 1000);
+    var today = new Date(indexList[indexList.length-1].timestamp * 1000);
     var currentTime = startTime;
     var sentimentDataIndex = 0;
     while (currentTime <= endTime) {
       sentimentData[sentimentDataIndex] = {
-        time: currentTime
+        timestamp: currentTime
       };
       currentTime += 60;
       sentimentDataIndex += 1;
     }
+    currentTime = startTime;
 
     var numberOfDate = 0;
     for (var j = 0; j < indexList.length; j++) {
       var indexData = indexList[j];
-      var timeDiff = indexData.time - startTime;
+      var timeDiff = indexData.timestamp - startTime;
       var sentimentIndex = timeDiff / 60;
       sentimentData[sentimentIndex] = indexData; 
     }
 
     var y1 = d3.scale.linear()
-    .domain([1500 , 1600])
+    .domain([d3.min(moodindexList.map(function(x) { return +x.mood; })) - 30, d3.max(moodindexList.map(function(x) { return +x.mood; })) + 30])
     .range([chartHeight+margin.top-57, margin.top]);
 
     var y2 = d3.scale.linear()
     .domain([d3.min(indexList.map(function(x) { return +x.price; })), d3.max(indexList.map(function(x){return +x.price; }))])
     .range([147, 27]);
 
-    var x = d3.scale.ordinal()
-    .domain(sentimentData.map(function(x, i) { return x.time; }))
-    .rangeBands([0, graphWidth]);
-
-    var getTotalMin = function (clock) {
-      var hour = parseInt(clock.slice(0,2));
-      var min = parseInt(clock.slice(3,5));
-      var totalMin = hour * 60 + min;
-      return totalMin;
-    };
+    var x = ChartView.x(sentimentData, 'timestamp');
 
     var chart = d3.select('#sentiment-chart')
     .append('svg:svg')
     .attr('class', 'chart')
     .attr('width', chartWidth)
     .attr('height', chartHeight);
-
     chart.append('g')
     .attr('class','xlabels')
     .selectAll('text.xrule')
     .data(sentimentData)
     .enter().append('svg:text')
     .attr('class', 'xrule')
-    .attr('x', function (d, i) { return x(d.time); })
+    .attr('x', function (d, i) { return x(d.timestamp); })
     .attr('y', chartHeight-margin.bottom-margin.top)
     .attr('text-anchor', 'middle')
     .text(function (d, i) {
-      var date = new Date(d.time * 1000);
-      if ((d.time + 7200) % 21600 === 0) {
-        if (date.getHours() + date.getMinutes() === 0) {
-          return date.getMonth() + '/' + date.getDate() + ' - ' + date.getHours() + ':0' + date.getMinutes();
-        }
-        return date.getHours() + ':0' + date.getMinutes();
+      var date = new Date(d.timestamp * 1000);
+      // if (i === 0) {
+        // return date.getMonth() + '/' + date.getDate();
+      // }
+      if ((d.timestamp + 7200) % 21600 === 0) {
+        // if (date.getHours() + date.getMinutes() === 0) {
+        //   return date.getMonth() + '/' + date.getDate();
+        // }
+
+        return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
       }
     });
 
@@ -244,14 +239,15 @@ var SentimentChart = {
     .enter().append("svg:circle")  // create a new circle for each value
     .attr("cy", function (d) { return y1(d.mood); } ) // translate y value to a pixel
     .attr("cx", function (d,i) { return x(d.timestamp); } ) // translate x value
-    .attr("r", 4)
+    .attr("r", 5)
     .attr('stroke', '#25bcf1')
-    .attr('stroke-width', '1.5')
+    .attr('stroke-width', '1')
     .style("opacity", 1)
     .on("mouseover", function(d) {
       this.setAttribute('fill', '#3bc1ef');
-      this.setAttribute('r', '6');
+      this.setAttribute('r', '5');
       this.setAttribute('stroke', '#fff');
+      this.setAttribute('stroke-width', '1.5');
 
       var arrow = (d.newsSign === '+'? 'rise':'fall');
       var show_extra = (d.newsTitle.length < 12? 'hide':'show');
@@ -271,8 +267,9 @@ var SentimentChart = {
       .style("top", (d3.event.pageY ) + "px");
     }).on("mouseout", function(d) {
       this.setAttribute('fill','#000');
-      this.setAttribute('r', '4');
+      this.setAttribute('r', '5');
       this.setAttribute('stroke', '#25bcf1');
+      this.setAttribute('stroke-width', '1');
 
       tooltip.transition()
       .duration(500)
@@ -281,7 +278,7 @@ var SentimentChart = {
 
 
     var securityLine = d3.svg.line()
-    .x(function(d,i) { return x(d.time); })
+    .x(function(d,i) { return x(d.timestamp); })
     .y(function(d)   { return y2(+d.price); })
     .interpolate('basis');
   
@@ -290,7 +287,7 @@ var SentimentChart = {
       var dotted = [];
       var start = 0;
       for (var i = 0; i < data.length-1; i++) {
-        if ( data[i+1].time - data[i].time > 3590 ) {
+        if ( data[i+1].timestamp - data[i].timestamp > 3590 ) {
           linear.push(data.slice(start, i));
           dotted.push(data.slice(i, i+2));
           start = i+1;
