@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 500
+    refreshFrequency: 5000
   },
   setProperties: function (options) {
     var self = this;
@@ -100,7 +100,7 @@ var ChartView = {
     $('#chart-view').on('resize', function(){
       self.rebuild();
     });
-
+    
   },
   build: function(){
     var self = this;
@@ -120,14 +120,11 @@ var ChartView = {
     (today.getMonth()+1).toString() +
     today.getDate().toString();
 
-    ChartModel.getIndexData(today,function(data) {
-      // console.log(data);
-      ChartModel.getSentimentData(today, function(data){
-        self.data.sentiment = data.sentiment;
-        if(initial) { SentimentChart.init(); }
-        self.data.info = data.info;
-        self.data.daily = data.daily;
-        self.data.minute = data.minute;
+    ChartModel.getIndexData(today,function() {
+      ChartModel.getSentimentData(today, function(){
+        self.data = ChartModel.model;
+        
+        SentimentChart.init();
 
         IndexChart.init();
         RsiChart.init();
@@ -143,11 +140,10 @@ var ChartView = {
     zoomFactor = zoomFactor || 1;
     this.properties.zoomFactor *= zoomFactor;
     $('.zoomable-chart-container').css('width', '100%');
-    // IndexChart.drawContainer(false);
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
     MacdChart.drawGraph(false);
-    SentimentChart.drawGraph(false);
+    // SentimentChart.drawGraph(false);
   },
   rebuild: function() {
     this.setProperties();
