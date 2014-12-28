@@ -17,16 +17,16 @@ var ChartModel = {
 
       // self.randomize();
 
-      callback(self.model);
+      callback();
     });
   },
   getSentimentData: function(date, callback){
     var self = this;
-    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
-               // http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine
+    // $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
+    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&callback=?', function(sentimentData) {
       self.model.sentiment = sentimentData.data;
       self.tryRemoveLoaders();
-      callback(self.model);
+      callback();
     });
   },
   showContent: function(){
