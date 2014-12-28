@@ -161,7 +161,10 @@ text {
   fill: rgb(107, 107, 107);
   font-size: 10px;
 }
-
+text.sentiment {
+  fill: white;
+  cursor: default;
+}
 /* =Dashboard
 -------------------------------------------------------------- */
 #snapshot {
@@ -402,12 +405,14 @@ text {
 #ma20-legend-line { border-color: #94599d; }
 #ma60-legend-line { border-color: #36973a; }
 #sentiment-legend-line { border-color: #25bcf1; }
+#security-legend-line { border-color: #FFFFFF; }
 
 #ma5-legend { color: #ffffff;  }
 #ma10-legend { color: #d7db74; }
 #ma20-legend { color: #94599d; }
 #ma60-legend { color: #36973a; }
 #sentiment-legend { color: #25bcf1; }
+#security-legend { color: #FFFFFF; }
 
 .legend-line, .legend > li > span {
   display: inline-block;
@@ -537,11 +542,30 @@ text {
 ------------------------------------------------------------ */
 .tooltip {
   position: absolute;
-  width: 200px;
+  width: 150px;
   height: 60px;
   pointer-events: none;
-  font-size: 10px;
+  font-size: 11px;
 }
+
+.sentiment-tooltip {
+  color: white;
+}
+
+.sentiment-tooltip .arrow {
+  /*padding: 0px 1px 0px 1px;*/
+}
+
+.sentiment-tooltip .mood {
+  padding-left: 2px;
+  height: 22px;
+  line-height: 22px
+}
+
+.sentiment-tooltip .content {
+  line-height: 22px
+}
+
 
 .news-bubble{
   width: 20px;
@@ -593,7 +617,7 @@ text {
 .tooltip-date {
   background-color: #666;
   padding: 5px 3px 5px 3px;
-  width: 200px;
+  width: 150px;
 }
 
 .news-bubble {
