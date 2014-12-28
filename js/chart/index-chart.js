@@ -24,7 +24,7 @@ var IndexChart = {
 
     var data = ChartView.data;
 
-    data.sentiment.indexList.length = data.daily.stockLine.length;
+    // data.sentiment.indexList.length = data.daily.stockLine.length;
 
     //Inheriting from ChartView
     var containerWidth = ChartView.properties.width;
