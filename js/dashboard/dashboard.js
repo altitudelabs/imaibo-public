@@ -3,7 +3,8 @@ var Dashboard = {
   prevData: {
     lastpx: 0,
     change: -200,
-    signal: 0
+    signal: 0,
+    thermoH: 0
   },
   render: function(model){
     var self = this;
@@ -65,9 +66,11 @@ var Dashboard = {
     var minY = 25,
         maxY = 90,
         h = Math.abs(change)/100 * (maxY-minY) + minY;
+        h = h>100? 100:h;
 
-    if(this.prevData.change !== -200){
+    if(this.prevData.thermoH !== h){
       selector.animate({height: h + '%'}, 1000);
+      this.prevData.thermoH = h;
     } else {
       selector.css('height', h + '%');
     }
