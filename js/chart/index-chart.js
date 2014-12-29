@@ -242,24 +242,28 @@ var IndexChart = {
 
 
     if(isNew){
-      xlabels = chart.append('g').attr('class','xlabels');
-      gvolume = chart.append('g').attr('class','volume');
-      gcandlesticks = chart.append('g').attr('class','candlesticks');
-      glinestems = chart.append('g').attr('class','linestems');
-      vertical = chart.append('svg:line');
-      horizontal = chart_label.append('svg:line');
-      vertical_block = chart_label.append('svg:rect');
+      xlabels          = chart.append('g').attr('class','xlabels');
+      gvolume          = chart.append('g').attr('class','volume');
+      gcandlesticks    = chart.append('g').attr('class','candlesticks');
+      glinestems       = chart.append('g').attr('class','linestems');
+      vertical         = chart.append('svg:line');
+      horizontal       = chart_label.append('svg:line');
+      vertical_block   = chart_label.append('svg:rect');
       horizontal_block = chart_label.append('svg:rect');
+      vertical_text    = chart_label.append('text');
+      horizontal_text  = chart_label.append('text');
 
     }else{
-      xlabels = chart.selectAll('g.xlabels');
-      gvolume = chart.selectAll('g.volume');
-      gcandlesticks = chart.selectAll('g.candlesticks');
-      glinestems =  chart.selectAll('g.linestems');
-      vertical = chart.selectAll('line.xlabelLine');
-      horizontal = chart_label.selectAll('line.ylabelLine');
-      vertical_block = chart_label.select('g#vertical-block');
+      xlabels          = chart.selectAll('g.xlabels');
+      gvolume          = chart.selectAll('g.volume');
+      gcandlesticks    = chart.selectAll('g.candlesticks');
+      glinestems       = chart.selectAll('g.linestems');
+      vertical         = chart.selectAll('line.xlabelLine');
+      horizontal       = chart_label.selectAll('line.ylabelLine');
+      vertical_block   = chart_label.select('g#vertical-block');
       horizontal_block = chart_label.select('g#horizontal-block');
+      horizontal_text  = chart_label.select('#horizontal-text');
+      vertical_text    = chart_label.select('#vertical-text');
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -282,7 +286,7 @@ var IndexChart = {
       .remove();
     }
 
-    var startDate = data.daily.stockLine[0].rdate;
+    var startDate   = data.daily.stockLine[0].rdate;
     var currentDate = startDate;
     //x-axis labels
     xlabels
@@ -349,6 +353,7 @@ var IndexChart = {
 
       yPos = yPos > 230? 230: yPos;
       yPos = yPos < 10? 10: yPos;
+
       vertical_block
       .attr('id','vertical-block')
       .attr("rx", 3)
@@ -366,16 +371,17 @@ var IndexChart = {
       .attr('x2', margin.left)
       .attr('y1', yPos) //make it line up with the label
       .attr('y2', yPos)
-      .attr('stroke', '#f65c4e');
+      .attr('stroke', '#f65c4e')
+      .style('z-index', '20');
 
       horizontal_block
       .attr('id','horizontal-block')
       .attr("rx", 3)
       .attr("ry", 3)
-      .attr('x', xPos+25)
+      .attr('x', xPos + 15)
       .attr('y', chartHeight+12)
       .attr('height', 20)
-      .attr('width',  50)
+      .attr('width',  70)
       .attr('fill', '#44b6ea');
 
     });
@@ -485,6 +491,22 @@ var IndexChart = {
           change: d.moodindexchg
         }
       };
+
+      horizontal_text
+      .attr('id', 'horizontal-text')
+      .attr('x', xPos + 50)
+      .attr('y', height- 7)
+      .attr('text-anchor', 'middle')
+      .text(Helper.toDate(d.rdate, 'yyyy/mm/dd'))
+      .style('fill', 'white');
+
+     vertical_text
+      .attr('id', 'vertical-text')
+      .attr('x', width - 20)
+      .attr('y', yPos + 5)
+      .attr('text-anchor', 'middle')
+      .text(cursorPriceLevel.toFixed(2))
+      .style('fill', 'white');
       return Tooltip.render.index(model);
     });
   },

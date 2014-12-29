@@ -88,6 +88,8 @@ var Helper = {
 
     if (format === 'yyyy/mm'){
       return year + '/' + month;
+    } else if(format === 'yyyy/mm/dd') {
+      return year + '/' + month + '/' + day;
     } else {
       return year + '-' + month + '-' + day;
     }
@@ -112,3 +114,5 @@ var Helper = {
       }
     }
 }
+
+
