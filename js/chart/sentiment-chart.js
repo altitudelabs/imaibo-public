@@ -367,7 +367,6 @@ var SentimentChart = {
 
     };
     drawSecurityLine(indexList);
-    console.log(indexList);
   },
 };
 
