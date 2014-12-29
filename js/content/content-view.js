@@ -1,5 +1,5 @@
 var ContentView = {
-  baseUrl: 'http://t3-www.imaibo.net',
+  baseUrl: 'http://www.imaibo.net',
   el: $('#content'),
   states: {
     chartView: {
@@ -20,7 +20,7 @@ var ContentView = {
     _.each(this.states, function(state, name){
       state.link.on('click', function(){
         if (name === 'aboutIndexView'){
-          self.states.aboutIndexView.url = self.baseUrl + '/about-moodindex';
+          self.states.aboutIndexView.url = self.baseUrl + '/moodindex/moodindexDesc';
           window.open(self.states.aboutIndexView.url);
         } else {
           self.goTo(name);
