@@ -137,6 +137,9 @@ var SentimentChart = {
 
     var moodindexList = data.sentiment.moodindexList;
     var indexList = data.sentiment.indexList;
+    for (var i = 0; i < indexList.length; i++) {
+      indexList[i].timestamp = indexList[i].time;
+    }
     var combinedIndexList = moodindexList.concat(indexList);
     var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
     var startDate = new Date(startTime * 1000);
@@ -364,6 +367,7 @@ var SentimentChart = {
 
     };
     drawSecurityLine(indexList);
+    console.log(indexList);
   },
 };
 
