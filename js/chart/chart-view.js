@@ -114,27 +114,27 @@ var ChartView = {
     }, this.properties.refreshFrequency);
   },
   buildChartElements: function(initial) {
-    var self = this;
+    var self  = this;
     var today = new Date();
-    today = today.getFullYear().toString() +
-    (today.getMonth()+1).toString() +
-    today.getDate().toString();
+        today = today.getFullYear().toString() +
+               (today.getMonth()+1).toString() +
+                today.getDate().toString();
 
-    ChartModel.getIndexData(today,function() {
-      ChartModel.getSentimentData(today, function(){
-        self.data = ChartModel.model;
-        
-        SentimentChart.init();
+      ChartModel.getIndexData(today, initial, function() {
+        ChartModel.getSentimentData(today, initial, function(){
+          self.data = ChartModel.model;
+          
+          SentimentChart.init();
 
-        IndexChart.init();
-        RsiChart.init();
-        MacdChart.init();
-        Dashboard.render(self.data.info);
-        if(initial) {
-          Toolbar.render(self.data.daily);
-        }
+          IndexChart.init();
+          RsiChart.init();
+          MacdChart.init();
+          Dashboard.render(self.data.info);
+          if(initial) {
+            Toolbar.render(self.data.daily);
+          }
+        });
       });
-    });
   },
   redraw: function (zoomFactor) {
     zoomFactor = zoomFactor || 1;

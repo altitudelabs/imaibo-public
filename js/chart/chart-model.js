@@ -6,13 +6,46 @@ var ChartModel = {
     sentiment:    {},
     dataReceived: 0
   },
-  getIndexData: function(date, callback){
+  api: {
+    base: 'http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow',
+    indexData:     '&act=main',
+    sentimentData: '&act=moodindexLine',
+    latest:        '&latest=1',
+    daily:         '&daily=1',
+    jsonp:         '&callback=?'
+  },
+  /*
+   * func getIndexData()
+   * ===================
+   * Arguments:
+   * - date: date in yyyymmdd format
+   * - initial: boolean, indicates if we are only fetching new data
+   * - callback: callback function
+  */
+  getIndexData: function(date, initial, callback){
     var self = this;
-    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=main&dailyLineSdate='+date+'&latest=1&info=1&trading=1&daily=1&callback=?', function(dailyData) {
+    var api  = self.api.base   + self.api.indexData  + '&dailyLineSdate=' + date; 
+        api += (initial? self.api.daily: '');
+        api += self.api.latest + '&info=1&trading=1' 
+        api += self.api.jsonp;
+    $.getJSON(api, function(dailyData) {
       self.model.info   = dailyData.data.info;
-      self.model.daily  = dailyData.data.daily;
       self.model.minute = dailyData.data.minute;
-      self.model.daily.stockLine.reverse(); //API in descending order, need to revese it.
+
+      if(initial){ 
+        self.model.daily  = dailyData.data.daily;
+        //API returns data in descending order
+        self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
+        self.model.daily.stockLine.reverse(); 
+      }else{
+        var latestPrice = dailyData.data.latestPrice;
+        var lastData    = self.model.daily.stockLine.slice(-1).pop();
+
+        if(lastData.timestamp !== dailyData.data.latestPrice.timestamp){
+          self.model.daily.stockLine.push(dailyData.data.latestPrice);
+        }
+      } 
+
       self.tryRemoveLoaders();
 
       // self.randomize();
@@ -20,10 +53,11 @@ var ChartModel = {
       callback();
     });
   },
-  getSentimentData: function(date, callback){
+  getSentimentData: function(date, initial ,callback){
     var self = this;
+    var api = self.api.base + self.api.sentimentData + self.api.jsonp;
     // $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
-    $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&callback=?', function(sentimentData) {
+    $.getJSON(api, function(sentimentData) {
       self.model.sentiment = sentimentData.data;
       self.tryRemoveLoaders();
       callback();
