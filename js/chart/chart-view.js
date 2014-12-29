@@ -109,9 +109,9 @@ var ChartView = {
 
     self.buildChartElements(true);
 
-    // setInterval(function(){
-    //   self.buildChartElements(false);
-    // }, this.properties.refreshFrequency);
+    setInterval(function(){
+      self.buildChartElements(false);
+    }, this.properties.refreshFrequency);
   },
   buildChartElements: function(initial) {
     var self = this;

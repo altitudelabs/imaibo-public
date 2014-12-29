@@ -552,10 +552,6 @@ text.sentiment {
   color: white;
 }
 
-.sentiment-tooltip .arrow {
-  /*padding: 0px 1px 0px 1px;*/
-}
-
 .sentiment-tooltip .mood {
   padding-left: 2px;
   height: 22px;

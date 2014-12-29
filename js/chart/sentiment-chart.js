@@ -149,11 +149,11 @@ var SentimentChart = {
 
     // startTime -= ( (startDate.getHours()*3600) + (startDate.getMinutes()*60));
     // startTime -= 21600;
-    // endTime += (86400 - (endDate.getHours()*3600) + (endDate.getMinutes()*60));
+    endTime += (18000 - (endDate.getHours()%3*3600) + (endDate.getMinutes()*60));
     // endTime += 21600;
 
     startTime -= 3000;
-    endTime += 10800;
+    // endTime += 10800;
     
     var sentimentData = [];
     var today = new Date(indexList[indexList.length-1].timestamp * 1000);
