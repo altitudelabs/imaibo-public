@@ -32,14 +32,27 @@ var SentimentChart = {
     var interval = this.properties.interval;
     var moodindexList = data.sentiment.moodindexList;
     var indexList = data.sentiment.indexList;
+
+    var minMoodIndex = function (prop) {
+      return d3.min(moodindexList.map(function(x) { return +x[prop]; }));
+    };
+    var maxMoodIndex = function (prop) {
+      return d3.max(moodindexList.map(function(x) { return +x[prop]; }));
+    };
+    var minIndex = function (prop) {
+      return d3.min(indexList.map(function(x) { return +x[prop]; }));
+    };
+    var maxIndex = function (prop) {
+      return d3.max(indexList.map(function(x) { return +x[prop]; }));
+    };
     
     var y1 = d3.scale.linear()
-    .domain([d3.min(moodindexList.map(function(x) { return +x.mood; })) - 30, d3.max(moodindexList.map(function(x) { return +x.mood; })) + 50])
+    .domain([ minMoodIndex('mood') - 30,  maxMoodIndex('mood') + 50])
     // .domain([1550, 1700])
     .range([chartHeight-margin.bottom, margin.top+20]);
 
     var y2 = d3.scale.linear()
-    .domain([d3.min(indexList.map(function(x) { return +x.price; })), d3.max(indexList.map(function(x){return +x.price; }))])
+    .domain([minIndex('price'), maxIndex('price')])
     .range([chartHeight-margin.bottom, margin.top+20]);
 
     var chart_label = d3.select('#sentiment-chart-label')
@@ -330,9 +343,30 @@ var SentimentChart = {
             price: dotted[0][0].price
           });
         }
-        if ( data[i+1].timestamp - data[i].timestamp > 3590 ) {
+        if ( data[i+1].timestamp - data[i].timestamp > 3590) {
+          //linear graph
           linear.push(data.slice(start, i));
-          dotted.push(data.slice(i, i+2));
+          
+          //straight dotted line
+          var dottedArray = data.slice(i, i+1)
+                            .concat([{
+                              timestamp: data[i+1].timestamp,
+                              price: data[i].price
+                            }]);
+          dotted.push(dottedArray);
+          
+          //vertical linear line right after dotted line
+          linear.push([
+            {
+              timestamp: data[i+1].timestamp,
+              price: data[i].price
+            }, 
+            {
+              timestamp: data[i+1].timestamp,
+              price: data[i+1].price
+            }
+          ]);
+
           start = i+1;
         }
       }
