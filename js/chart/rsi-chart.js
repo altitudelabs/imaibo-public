@@ -132,8 +132,8 @@ var RsiChart = {
           d = data.daily.stockLine[j];
 
           var model = {
-            top: d3.event.pageY-180,
-            left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
+            top: d3.event.pageY - 180,
+            left: chartWidth - d3.event.pageX > 150 ? d3.event.pageX : d3.event.pageX - 195,
             date: Helper.toDate(d.rdate),
             rsi6: d.rsi6,
             rsi12: d.rsi12,

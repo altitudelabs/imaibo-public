@@ -192,10 +192,11 @@ var IndexChart = {
     var latest_daily = data.slice(-1)[0];
 
     // Update MA labels
-    $('#ma60-label').text(' MA60');
-    $('#ma20-label').text(' MA20');
-    $('#ma10-label').text(' MA10');
-    $('#ma5-label').text(' MA5');
+    // pointless to update to the same thing everytime, so I comment them out
+    //$('#ma60-label').text(' MA60');
+    //$('#ma20-label').text(' MA20');
+    //$('#ma10-label').text(' MA10');
+    //$('#ma5-label').text(' MA5');
   },
   drawGraph: function(isNew) {
     // $('#chart').empty();
@@ -478,8 +479,8 @@ var IndexChart = {
       d.moodindexchg = d.moodindexchg? d.moodindexchg : data.daily.stockLine[j].moodindex - data.daily.stockLine[j-1].moodindex;
 
       var model = {
-        top: d3.event.layerY+40,
-        left: chartWidth-d3.event.layerX>150 ? d3.event.layerX+55 : d3.event.layerX-115,
+        top: d3.event.pageY - 180,
+        left: chartWidth - d3.event.pageX > 150 ? d3.event.pageX : d3.event.pageX - 195,
         date: d.rdate,
         price: cursorPriceLevel,
         security: d,
