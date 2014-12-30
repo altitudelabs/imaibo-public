@@ -161,17 +161,19 @@ var SentimentChart = {
     var currentTime = 0;
 
     //filtering out non trading days
-    var moodIndexTimeStampsArray = moodindexList
-    .filter(function (x) {
-      if (!!x.isTradingDay) {
+    moodindexList = moodindexList.filter(function (x) {
+       if (!!x.isTradingDay) {
         return true;
       } else {
         return false;
       }
-    })
-    .map(function (x) { 
+    });
+
+    var moodIndexTimeStampsArray = moodindexList.map(function (x) { 
       return x.timestamp;
     });
+
+    // sorting. the api seems to be sorting it for now
     // moodIndexTimeStampsArray.sort(function(a, b){return a-b;});
 
     //timeStampsArray will only be used to draw x axis
@@ -187,6 +189,7 @@ var SentimentChart = {
           var diff = currentTimeStamp - previousTimeStamp;
           var days = diff - (diff%86400);
           previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600;
+
           timeStampsArray.push(previousTimeStamp);
         }
       }
