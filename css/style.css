@@ -230,6 +230,10 @@ text.sentiment {
   width: 70px;
 }
 
+.lt-ie9 .prediction-mood {
+  width: 65px;
+}
+
 .component-item-price.ind {
   width: 100px;
 }
@@ -316,6 +320,7 @@ text.sentiment {
 
 .changes {
   display: inline-block;
+  opacity: 0;
   width: 10%;
   height: 100%;
   vertical-align: top;
@@ -325,7 +330,9 @@ text.sentiment {
   -ms-transform: translateX(-180%);
   -webkit-transform: translateX(-180%);
   transform: translateX(-180%);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
+
 
 .title, .legend {
   display: inline;

@@ -233,6 +233,22 @@ var SentimentChart = {
     .attr('width', chartWidth)
     .attr('height', chartHeight);
 
+    // chart.append('g')
+    // .attr('class','xlabels')
+    // .selectAll('text.xrule')
+    // .data(sentimentData)
+    // .enter().append('svg:text')
+    // .attr('class', 'xrule')
+    // .attr('x', function (d, i) { return x(d.timestamp); })
+    // .attr('y', chartHeight-margin.bottom-margin.top)
+    // .attr('text-anchor', 'middle')
+    // .text(function (d, i) {
+      // var date = new Date(d.timestamp * 1000);
+      // if ((d.timestamp + 7200) % 21600 === 0 && i !== 0) {
+        // return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+      // }
+    // });
+
     drawXLabels();
     // drawYLabels();
     drawSecurityLine(indexList);
@@ -361,6 +377,8 @@ var SentimentChart = {
         return 'sd-' + i;
       });
 
+      var style, fadeIn, fadeOut;
+
       var hoverC = chart.selectAll('scatter-dots')
       .data(moodindexList)  // using the values in the ydata array
       .enter().append('svg:circle')  // create a new circle for each value
@@ -369,6 +387,22 @@ var SentimentChart = {
       .attr('r', 8)
       .style('opacity', 0)
       .on('mouseover', function(d, i) {
+        var xPos;
+        var yPos;
+        
+        if(IE8){
+          xPos = event.clientX;
+          yPos = event.clientY;
+          style = 'display';
+          fadeIn = 'inline-block';
+          fadeOut = 'none';
+        }else{
+          xPos = d3.event.pageX + 8;
+          yPos = d3.event.pageY + 3;
+          style = 'opacity';
+          fadeIn = 1;
+          fadeOut = 0;
+        }
         var target = d3.select('#sd-' + i);
         target.attr('fill', '#3bc1ef');
         target.attr('r', '4');
@@ -380,7 +414,7 @@ var SentimentChart = {
 
         tooltip.transition()
         .duration(200)
-        .style('opacity', .9);
+        .style(style, fadeIn);
         tooltip.html('<div class="sentiment-tooltip">' + 
                         '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                         '<div class="wrapper">' +
@@ -392,8 +426,8 @@ var SentimentChart = {
                           '</div>' +
                         '</div>' +
                      '</div>')
-        .style('left', (d3.event.pageX + 8) + 'px')
-        .style('top', (d3.event.pageY + 3) + 'px');
+        .style('left', xPos + 'px')
+        .style('top', yPos + 'px');
       })
       .on('mouseout', function(d, i) {
         var target = d3.select('#sd-' + i);
@@ -404,7 +438,7 @@ var SentimentChart = {
 
         tooltip.transition()
         .duration(500)
-        .style('opacity', 0);
+        .style(style, fadeOut);
       });
     }
     function drawSecurityLine (data) {
@@ -413,6 +447,7 @@ var SentimentChart = {
       .y(function(d)   { return y2(+d.price); })
       .interpolate('basis');
     
+
       var linear = [];
       var dotted = [];
       var start = 0;

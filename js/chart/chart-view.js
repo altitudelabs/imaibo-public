@@ -30,7 +30,8 @@ var ChartView = {
     var props = self.properties;
     var graphWidth = (props.width - props.margin.left - props.margin.right)*props.zoomFactor;
     return d3.scale.ordinal()
-    .domain(data.map(function(x) { return x[returnProp]; }))
+    .domain(data.map(function(x) {
+      return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
   },
 
@@ -93,14 +94,15 @@ var ChartView = {
     var self = this;
     self.build();
 
-    $(window).on('resize', function() {
-      self.rebuild();
-    });
+    if(!IE8){ //app.js
+      $(window).on('resize', function() {
+        self.rebuild();
+      });
 
-    $('#chart-view').on('resize', function(){
-      self.rebuild();
-    });
-
+      $('#chart-view').on('resize', function(){
+        self.rebuild();
+      });
+    }
   },
   build: function(){
     var self = this;
@@ -109,9 +111,11 @@ var ChartView = {
 
     self.buildChartElements(true);
 
-    setInterval(function(){
-      self.buildChartElements(false);
-    }, this.properties.refreshFrequency);
+    if(!IE8){ //app.js
+      setInterval(function(){
+        self.buildChartElements(false);
+      }, this.properties.refreshFrequency);
+    }
   },
   buildChartElements: function(initial) {
     var self  = this;
