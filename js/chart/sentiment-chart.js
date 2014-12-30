@@ -151,42 +151,55 @@ var SentimentChart = {
       indexList[i].timestamp = indexList[i].time;
     }
     var combinedIndexList = moodindexList.concat(indexList);
-    
+
     var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
     var startDate = new Date(startTime * 1000);
     
     var endTime = d3.max(combinedIndexList.map(function(x) { return x.timestamp; }));
     var endDate = new Date(endTime * 1000);
 
-    // startTime -= ( (startDate.getHours()*3600) + (startDate.getMinutes()*60));
-    // startTime -= 21600;
-    endTime += (27000 - (endDate.getHours()%3*3600) + (endDate.getMinutes()*60));
-    // endTime += 21600;
+    var currentTime = 0;
 
-    startTime -= 6000;
-    // endTime += 10800;
-    
-    // add dummy data to draw ordinal graph
-    var sentimentData = [];
-    var today = new Date(indexList[indexList.length-1].timestamp * 1000);
-    var currentTime = startTime;
-    var sentimentDataIndex = 0;
-    while (currentTime <= endTime) {
-      sentimentData[sentimentDataIndex] = {
-        timestamp: currentTime
-      };
-      currentTime += 60;
-      sentimentDataIndex += 1;
-    }
-    currentTime = startTime;
+    //filtering out non trading days
+    var moodIndexTimeStampsArray = moodindexList
+    .filter(function (x) {
+      if (!!x.isTradingDay) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .map(function (x) { 
+      return x.timestamp;
+    });
+    // moodIndexTimeStampsArray.sort(function(a, b){return a-b;});
 
-    var numberOfDate = 0;
-    for (var j = 0; j < indexList.length; j++) {
-      var indexData = indexList[j];
-      var timeDiff = indexData.timestamp - startTime;
-      var sentimentIndex = timeDiff / 60;
-      sentimentData[sentimentIndex] = indexData; 
+    //timeStampsArray will only be used to draw x axis
+    var timeStampsArray = [];
+    for (var j = 0; j < moodIndexTimeStampsArray.length; j++) {
+      var currentTimeStamp = moodIndexTimeStampsArray[j];
+      var previousTimeStamp = moodIndexTimeStampsArray[j-1];
+      if (j === 0) {
+        previousTimeStamp = startTime - 6000; // x padding on the left
+        timeStampsArray.push(previousTimeStamp);
+      } else {
+        if (currentTimeStamp - previousTimeStamp >= 86400) {
+          var diff = currentTimeStamp - previousTimeStamp;
+          var days = diff - (diff%86400);
+          previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600;
+          timeStampsArray.push(previousTimeStamp);
+        }
+      }
+      if (j === moodIndexTimeStampsArray.length - 1) {
+        var currentDate = new Date(currentTimeStamp * 1000);
+        
+        currentTimeStamp += (27000 - (endDate.getHours()%3*3600) + (endDate.getMinutes()*60)); // x padding on the right
+      }
+      while (previousTimeStamp < currentTimeStamp) {
+        timeStampsArray.push(previousTimeStamp+=60);
+      }
     }
+    timeStampsArray.push(timeStampsArray[timeStampsArray.length-1]+60);
 
     var minMoodIndex = function (prop) { return d3.min(moodindexList.map(function(x) { return +x[prop]; })); },
     maxMoodIndex = function (prop) { return d3.max(moodindexList.map(function(x) { return +x[prop]; })); },
@@ -202,7 +215,7 @@ var SentimentChart = {
     .range([147, 27]);
 
     var x = d3.scale.ordinal()
-    .domain(sentimentData.map(function(x) { return x.timestamp; }))
+    .domain(timeStampsArray.map(function(x) { return x; }))
     .rangeBands([0, chartWidth]); //inversed the x axis because api came in descending order
 
     var chart = d3.select('#sentiment-chart')
@@ -230,22 +243,22 @@ var SentimentChart = {
       chart.append('g')
       .attr('class','xlabels')
       .selectAll('text.xrule')
-      .data(sentimentData)
+      .data(timeStampsArray)
       .enter().append('svg:text')
       .attr('class', 'xrule')
-      .attr('x', function (d, i) { return x(d.timestamp); })
+      .attr('x', function (d, i) { return x(d); })
       .attr('y', chartHeight-margin.bottom-margin.top)
       .attr('text-anchor', 'middle')
       .text(function (d, i) {
-        var date = new Date(d.timestamp * 1000);
+        var date = new Date(d * 1000);
 
         //6 hours Interval
         if (xLabelInterval === 6) {
-          if ((d.timestamp + 7200) % 21600 === 0 && i !== 0) {
+          if ((d + 7200) % 21600 === 0 && i !== 0) {
             return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
           }
         } else if (xLabelInterval === 12) {
-          if ((d.timestamp - 14400) % 43200 === 0 && i !== 0) {
+          if ((d - 14400) % 43200 === 0 && i !== 0) {
             return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
           }
 
@@ -261,7 +274,7 @@ var SentimentChart = {
     //   // chart.append('g')
     //   // .attr('class','xlabels')
     //   // .selectAll('text.xrule')
-    //   // .data(sentimentData)
+    //   // .data(timeStampsArray)
     //   // .enter().append('svg:text')
 
     //   chart.append('g')
@@ -410,7 +423,6 @@ var SentimentChart = {
             price: dotted[0][0].price
           });
         }
-
 
         if ( data[i+1].timestamp - data[i].timestamp > 3590) {
           //linear graph
