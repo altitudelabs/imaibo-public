@@ -32,6 +32,7 @@ var SentimentChart = {
     var interval = this.properties.interval;
     var moodindexList = data.sentiment.moodindexList;
     var indexList = data.sentiment.indexList;
+    // indexList.slice(0, 80);
 
     var minMoodIndex = function (prop) {
       return d3.min(moodindexList.map(function(x) { return +x[prop]; }));
@@ -147,6 +148,7 @@ var SentimentChart = {
 
     var moodindexList = data.sentiment.moodindexList;
     var indexList = data.sentiment.indexList;
+
     for (var i = 0; i < indexList.length; i++) {
       indexList[i].timestamp = indexList[i].time;
     }
@@ -155,7 +157,9 @@ var SentimentChart = {
     var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
     var startDate = new Date(startTime * 1000);
     
-    var endTime = d3.max(combinedIndexList.map(function(x) { return x.timestamp; }));
+    var endTime = new Date().getTime();
+    endTime = (endTime - endTime%1000)/1000;
+    // var endTime = d3.max(combinedIndexList.map(function(x) { return x.timestamp; }));
     var endDate = new Date(endTime * 1000);
 
     var currentTime = 0;
@@ -194,9 +198,9 @@ var SentimentChart = {
         }
       }
       if (j === moodIndexTimeStampsArray.length - 1) {
-        var currentDate = new Date(currentTimeStamp * 1000);
+        // var currentDate = new Date(currentTimeStamp * 1000);
         
-        currentTimeStamp += (27000 - (endDate.getHours()%3*3600) + (endDate.getMinutes()*60)); // x padding on the right
+        currentTimeStamp = endTime + (27000 - (endDate.getHours()%3*3600) + (endDate.getMinutes()*60)); // x padding on the right
       }
       while (previousTimeStamp < currentTimeStamp) {
         timeStampsArray.push(previousTimeStamp+=60);
@@ -243,11 +247,32 @@ var SentimentChart = {
         xLabelInterval = 6;
       }
       // var xLabelsCount = 0;
+
+
+      var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
+        var date = new Date(e * 1000);
+        if (xLabelInterval === 6) {
+          if ((e + 7200) % 21600 === 0) {
+            return true;
+          }
+        } else if (xLabelInterval === 12) {
+          if ((e - 14400) % 43200 === 0) {
+            return true;
+          }
+
+        } else if (xLabelInterval === 24) {
+          if (date.getHours() === 0 && date.getMinutes() === 0) {
+            return true;
+          }
+        }
+      });
+
       chart.append('g')
       .attr('class','xlabels')
       .selectAll('text.xrule')
-      .data(timeStampsArray)
-      .enter().append('svg:text')
+      .data(xLabelTimeStampsArray)
+      .enter()
+      .append('svg:text')
       .attr('class', 'xrule')
       .attr('x', function (d, i) { return x(d); })
       .attr('y', chartHeight-margin.bottom-margin.top)
@@ -259,63 +284,15 @@ var SentimentChart = {
         // }
         //6 hours Interval
         if (xLabelInterval === 6) {
-          if ((d + 7200) % 21600 === 0) {
-            // if (xLabelsCount === 0) {
-            //   xLabelsCount+=1;
-            //   return;
-            // }
-            return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
-          }
+          return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
         } else if (xLabelInterval === 12) {
-          if ((d - 14400) % 43200 === 0) {
-            // if (xLabelsCount === 0) {
-            //   xLabelsCount+=1;
-            //   return;
-            // }
-            return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
-          }
-
+          return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
         } else if (xLabelInterval === 24) {
-          if (date.getHours() === 0 && date.getMinutes() === 0) {
-            // if (xLabelsCount === 0) {
-            //   xLabelsCount+=1;
-            //   return;
-            // }
-            return date.getMonth() + '/' + date.getDate();
-          }
+          return date.getMonth() + '/' + date.getDate();
         }
       });
     }
-    // function drawYLabels () {
-
-    //   // chart.append('g')
-    //   // .attr('class','xlabels')
-    //   // .selectAll('text.xrule')
-    //   // .data(timeStampsArray)
-    //   // .enter().append('svg:text')
-
-    //   chart.append('g')
-    //   .attr('class','y1labels')
-    //   .selectAll('text.yrule')
-    //   .data(y1.ticks(5))
-    //   .enter().append('svg:text')
-    //   .attr('class', 'yrule')
-    //   .attr('x', margin.left - 60)
-    //   .attr('y', y1)
-    //   .attr('text-anchor', 'middle')
-    //   .text(String);
-
-    //   chart.append('g')
-    //   .attr('class','y2labels')
-    //   .selectAll('text.yrule')
-    //   .data(y2.ticks(5))
-    //   .enter().append('svg:text')
-    //   .attr('class', 'yrule')
-    //   .attr('x', chartWidth + margin.left + 18)
-    //   .attr('y', y2)
-    //   .attr('text-anchor', 'middle')
-    //   .text(String);
-    // }
+    
     function drawSentimentLine () {
 
       var sentimentLine = d3.svg.line()
@@ -470,17 +447,15 @@ var SentimentChart = {
       }
       linear.push(data.slice(start, data.length-1)); //last bit of data
 
-      //last dotted line if no real data for longer than a minute
-      // var now = new Date().getTime();
-      // now = (now - now%1000)/1000;
-      // var lastData = data[data.length-1];
-      // if (now - lastData.timestamp > 60) {
-      //   dotted.push([lastData, {
-      //     timestamp: lastData.timestamp - 1,
-      //     price: lastData.price
-      //   }]);
-      // }
-
+      // last dotted line if no real data for longer than a minute
+      var lastData = data[data.length-1];
+      if (endTime - lastData.timestamp > 60) {
+        dotted.push([lastData, {
+          timestamp: (endTime - endTime%60),
+          price: lastData.price
+        }]);
+      }
+      
       for (var j = 0; j < linear.length; j++) {
         drawLinear(linear[j]);
       }
