@@ -64,7 +64,7 @@ var ChartModel = {
     }
 
     // Randomize mood index
-    this.model.info.moodindexInfo.change = Math.round((Math.random()-0.5)/0.5*100*100)/100;
+    this.model.info.moodindexInfo.before = Math.round((Math.random()-0.5)/0.5*100*100)/100;
     this.model.info.moodindexInfo.latest = (parseFloat(this.model.info.moodindexInfo.latest) + this.model.info.moodindexInfo.change).toFixed(2);
 
     // Randomize trading sign
