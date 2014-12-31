@@ -12,6 +12,7 @@ var ChartModel = {
     sentimentData: '&act=moodindexLine',
     latest:        '&latest=1',
     daily:         '&daily=1',
+    date:          '&reqDate=',
     jsonp:         '&callback=?'
   },
   /*
@@ -55,7 +56,13 @@ var ChartModel = {
   },
   getSentimentData: function(date, initial ,callback){
     var self = this;
-    var api = self.api.base + self.api.sentimentData + self.api.jsonp;
+    var api;
+    if (initial) {
+      api = self.api.base + self.api.sentimentData + self.api.jsonp;
+    } else {
+      api = self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
+    }
+
     // $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
     $.getJSON(api, function(sentimentData) {
       self.model.sentiment = sentimentData.data;

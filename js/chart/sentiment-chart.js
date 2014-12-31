@@ -1,6 +1,7 @@
 var SentimentChart = {
   properties: {},
   setProperties: function(options) {
+    'use strict';
     var properties = {
       height: 244,
       interval: 40,
@@ -14,16 +15,22 @@ var SentimentChart = {
     this.properties = $.extend(true, {}, properties);
   },
   init: function(){
+    'use strict';
+
     this.setProperties();
     this.drawContainer();
     this.drawGraph();
   },
   update: function () {
+    'use strict';
+
     this.updateContainer();
     this.updateGraph();
   },
   // x: 
   drawContainer: function(){
+    'use strict';
+    
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
 
@@ -202,7 +209,7 @@ var SentimentChart = {
       if (j === moodIndexTimeStampsArray.length - 1) {
         // var currentDate = new Date(currentTimeStamp * 1000);
         
-        currentTimeStamp = endTime + (27000 - (endDate.getHours()%3*3600) + (endDate.getMinutes()*60)); // x padding on the right
+        currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())) + 21500; // x padding on the right
       }
       while (previousTimeStamp < currentTimeStamp) {
         timeStampsArray.push(previousTimeStamp+=60);
@@ -250,10 +257,8 @@ var SentimentChart = {
     // });
 
     drawXLabels();
-    // drawYLabels();
     drawSecurityLine(indexList);
     drawSentimentLine(); //drawing sentiment line last so it's on top
-
 
     function drawXLabels () {
       var xLabelInterval;
@@ -284,6 +289,7 @@ var SentimentChart = {
           }
         }
       });
+      xLabelTimeStampsArray.pop();
 
       chart.append('g')
       .attr('class','xlabels')
@@ -297,9 +303,6 @@ var SentimentChart = {
       .attr('text-anchor', 'middle')
       .text(function (d, i) {
         var date = new Date(d * 1000);
-        // if (i === 1) {
-        //   return;
-        // }
         //6 hours Interval
         if (xLabelInterval === 6) {
           return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
@@ -366,13 +369,13 @@ var SentimentChart = {
 
       var tes = chart.selectAll('scatter-dots')
       .data(moodindexList)  // using the values in the ydata array
-      .enter().append("svg:circle")  // create a new circle for each value
-      .attr("cy", function (d) { return y1(d.mood); } ) // translate y value to a pixel
-      .attr("cx", function (d,i) { return x(d.timestamp); } ) // translate x value
-      .attr("r", 4)
+      .enter().append('svg:circle')  // create a new circle for each value
+      .attr('cy', function (d) { return y1(d.mood); } ) // translate y value to a pixel
+      .attr('cx', function (d,i) { return x(d.timestamp); } ) // translate x value
+      .attr('r', 4)
       .attr('stroke', '#25bcf1')
       .attr('stroke-width', '1')
-      .style("opacity", 1)
+      .style('opacity', 1)
       .attr('id', function (d, i) {
         return 'sd-' + i;
       });
