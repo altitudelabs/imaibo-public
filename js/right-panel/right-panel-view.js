@@ -95,6 +95,10 @@ var RightPanel = {
         RightPanelModel.likeCommentAsync(weiboId)
         .then(function(res){
           console.log('Expert like action success', res);
+          var content = $(e.target).html();
+          var likes = parseInt(content.match(/[^()]+(?=\))/g));
+          likes++;
+          $(e.target).html('赞(' + likes + ')');
         }, function(res) {
           console.log('Expert like action failure', res);
         });
