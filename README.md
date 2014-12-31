@@ -8,6 +8,7 @@
 1. Connect to VPN
 2. Connect to FTP
 3. Manually update chart.html, bearing in mind the change in path for JS and CSS files [TODO: Any way to make this more efficient]
-3. Upload public\themes\Maibo\apps\moodindex\Feelings\chart.html
-4. Upload JS files in public\themes\Maibo\common_v2
-5. Upload bower components: public\bower_components
+4. Update template in deploy/chart.html to public/themes/Maibo/apps/moodindex/Feelings/chart.html
+5. Toggle HIDE in app.js
+6. Update JS files in public/themes/Maibo/common_v2
+7. Update bower components in public/bower_components
