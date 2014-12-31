@@ -302,8 +302,12 @@ var IndexChart = {
     .data(data.daily.stockLine)
     .enter().append('svg:rect')
     .attr('x', function(d, i) { return x(i) - 2.8*zoomFactor; })
-    .attr('y', function(d) { return y2(max(d.openpx, d.closepx)); })
-    .attr('height', function(d) { return y2(min(d.openpx, d.closepx))-y2(max(d.openpx, d.closepx)); })
+    .attr('y', function(d) {
+      var closepx = d.closepx? d.closepx:d.preclosepx;
+     return y2(max(d.openpx, closepx)); })
+    .attr('height', function(d) { 
+      var closepx = d.closepx? d.closepx:d.preclosepx;
+      return y2(min(d.openpx, closepx))-y2(max(d.openpx, closepx)); })
     .attr('width', function(d) { return 0.8 * (graphWidth)/data.daily.stockLine.length; })
     .attr('fill', function(d) { return d.openpx > d.closepx ? '#e24439' : '#1ba767'; });
 
@@ -457,6 +461,9 @@ var IndexChart = {
       // _.each(data.daily.stockLine, function(v){
       //   console.log(v.value);
       // });
+      var length = data.daily.stockLine.length;
+      d.closepx = d.closepx? d.closepx : d.preclosepx;
+      d.moodindexchg = d.moodindexchg? d.moodindexchg : data.daily.stockLine[j].moodindex - data.daily.stockLine[j-1].moodindex;
 
       var model = {
         top: d3.event.layerY+40,
