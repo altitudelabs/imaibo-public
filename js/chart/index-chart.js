@@ -3,7 +3,7 @@ var IndexChart = {
   setProperties: function(options) {
     var properties = {
       height: 250,
-      interval: 40,
+      interval: 30,
     };
     if (options) {
       for (var key in options) {
@@ -272,16 +272,28 @@ var IndexChart = {
 
     var startDate = data.daily.stockLine[0].rdate;
     var currentDate = startDate;
+    
     //x-axis labels
+    var months = [];
+    var xLabelData = data.daily.stockLine.filter(function (e, i) {
+      // console.log(new Date(e.timestamp*1000).getDate());
+      var month = new Date(e.timestamp*1000).getMonth();
+      if (months.indexOf(month) === -1) {
+        months.push(month);
+        return true;
+      }
+    });
+    console.log('x', xLabelData);
+
     xlabels
     .selectAll('text.xrule')
-    .data(data.daily.stockLine)
+    .data(xLabelData)
     .enter().append('svg:text')
     .attr('class', 'xrule')
-    .attr('x', function(d,i){ return x(i); })
+    .attr('x', function(d,i){ console.log(d.rdate); return x(d.rdate); })
     .attr('y', height-margin.bottom+15)
     .attr('text-anchor', 'end')
-    .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy/mm') : ''; });
+    .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
 
     //sentimetal rect bars
     gvolume
