@@ -46,7 +46,7 @@
 .mb.trend-indicator-up { background-position: 0px -1576px; width: 42px; height: 40px;  }
 .mb.up-arrow-small { background-position: 0px -1626px; width: 10px; height: 6px;  }
 .mb.up-arrow { background-position: 0px -1642px; width: 16px; height: 13px;  }
-.mb.zoomin:hover { background-position: 0px -1665px; width: 20px; height: 20px;  }
-.mb.zoomin { background-position: 0px -1695px; width: 20px; height: 20px;  }
-.mb.zoomout:hover { background-position: 0px -1725px; width: 20px; height: 20px;  }
-.mb.zoomout { background-position: 0px -1755px; width: 20px; height: 20px;  }
+.mb.zoomin:hover { background-position: 0px -1666px; width: 20px; height: 20px;  }
+.mb.zoomin { background-position: 0px -1696px; width: 20px; height: 20px;  }
+.mb.zoomout:hover { background-position: 0px -1726px; width: 20px; height: 20px;  }
+.mb.zoomout { background-position: 0px -1756px; width: 20px; height: 20px;  }
