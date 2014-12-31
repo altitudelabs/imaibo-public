@@ -281,6 +281,8 @@ var IndexChart = {
       if (months.indexOf(month) === -1) {
         months.push(month);
         return true;
+      }else{
+        return false;
       }
     });
     console.log('x', xLabelData);
@@ -292,7 +294,7 @@ var IndexChart = {
     .attr('class', 'xrule')
     .attr('x', function(d,i){ console.log(d.rdate); return x(d.rdate); })
     .attr('y', height-margin.bottom+15)
-    .attr('text-anchor', 'end')
+    .attr('text-anchor', 'middle')
     .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
 
     //sentimetal rect bars
