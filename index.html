@@ -420,7 +420,7 @@
         <div class="prediction prediction-mood">
           <div class="title">心情指数</div>
           <div class="value-label">{{moodindexInfo.latest}}</div>
-          <div class="value-sublabel ">{{moodindexInfo.change}}({{moodindexInfo.changeRatio}})</div>
+          <div class="value-sublabel ">{{formatNumber moodindexInfo.change 0}}({{moodindexInfo.changeRatio}})</div>
         </div>
 
         <div class="thermo-wrapper">
@@ -428,7 +428,7 @@
           <div class="background"></div>
           <div class="background-full"></div>
         </div>
-        <div id="changes" class="changes">{{toAbs moodindexInfo.change}}</div>
+        <div id="changes" class="changes">{{toAbs moodindexInfo.before}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
         <div id="prediction-wrapper" class="component-item-price ind rise">
