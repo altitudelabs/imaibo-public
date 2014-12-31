@@ -182,7 +182,7 @@ var SentimentChart = {
       var currentTimeStamp = moodIndexTimeStampsArray[j];
       var previousTimeStamp = moodIndexTimeStampsArray[j-1];
       if (j === 0) {
-        previousTimeStamp = startTime - 6000; // x padding on the left
+        previousTimeStamp = startTime - 9000; // x padding on the left
         timeStampsArray.push(previousTimeStamp);
       } else {
         if (currentTimeStamp - previousTimeStamp >= 86400) {
@@ -242,7 +242,7 @@ var SentimentChart = {
       } else {
         xLabelInterval = 6;
       }
-
+      // var xLabelsCount = 0;
       chart.append('g')
       .attr('class','xlabels')
       .selectAll('text.xrule')
@@ -254,19 +254,33 @@ var SentimentChart = {
       .attr('text-anchor', 'middle')
       .text(function (d, i) {
         var date = new Date(d * 1000);
-
+        // if (i === 1) {
+        //   return;
+        // }
         //6 hours Interval
         if (xLabelInterval === 6) {
-          if ((d + 7200) % 21600 === 0 && i !== 0) {
+          if ((d + 7200) % 21600 === 0) {
+            // if (xLabelsCount === 0) {
+            //   xLabelsCount+=1;
+            //   return;
+            // }
             return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
           }
         } else if (xLabelInterval === 12) {
-          if ((d - 14400) % 43200 === 0 && i !== 0) {
+          if ((d - 14400) % 43200 === 0) {
+            // if (xLabelsCount === 0) {
+            //   xLabelsCount+=1;
+            //   return;
+            // }
             return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
           }
 
         } else if (xLabelInterval === 24) {
           if (date.getHours() === 0 && date.getMinutes() === 0) {
+            // if (xLabelsCount === 0) {
+            //   xLabelsCount+=1;
+            //   return;
+            // }
             return date.getMonth() + '/' + date.getDate();
           }
         }
@@ -494,6 +508,5 @@ var SentimentChart = {
         .style('stroke-dasharray', ('1, 3'));
       }
     }
-  },
+  }
 };
-
