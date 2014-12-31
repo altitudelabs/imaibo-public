@@ -16,8 +16,13 @@ var SentimentChart = {
   init: function(){
     this.setProperties();
     this.drawContainer();
-    this.drawGraph(true);
+    this.drawGraph();
   },
+  update: function () {
+    this.updateContainer();
+    this.updateGraph();
+  },
+  // x: 
   drawContainer: function(){
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
@@ -130,7 +135,7 @@ var SentimentChart = {
     .attr('text-anchor', 'middle')
     .text(String);
   },
-  drawGraph: function(isNew){
+  drawGraph: function(){
     'use strict';
 
     $('#sentiment-chart').empty();
@@ -307,8 +312,15 @@ var SentimentChart = {
       .attr('stroke', '#25bcf1')
       .attr('fill', 'none');
 
-      tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip').style('opacity', 0);
+      if (!!d3.select('#sentiment-tooltip')[0][0]) {
+        tooltip = d3.select('#sentiment-tooltip');
+      } else {
+        tooltip = d3.select('body')
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('opacity', 0)
+        .attr('id', 'sentiment-tooltip');
+      }
 
       if (!HIDE) { //hiding for v1
         chart.selectAll('scatter-dots')
