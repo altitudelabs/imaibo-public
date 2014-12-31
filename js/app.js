@@ -18,6 +18,7 @@ $(function(){
     $('.link-stockpicker-view').remove();
     $('.link-news-view').remove();
     $('.vertical-collapse').remove();
+    $('.vertical-uncollapse').remove();
   }
 
   // Show contents only after DOM loads
