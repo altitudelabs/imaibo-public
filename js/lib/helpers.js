@@ -63,11 +63,13 @@ Handlebars.registerHelper('formatWan', function(num, dp){
   return new Handlebars.SafeString(numberWithCommas(num/10000) + '万');
 });
 
-Handlebars.registerHelper('formatNumber', function(num, dp){
+Handlebars.registerHelper('formatNumber', function(num, dp, addPlusSign){
   if (typeof num === 'string') num = parseFloat(num);
 
   var numberWithCommas = function(x) {
-      return x.toFixed(dp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    var prefix = '';
+    if (addPlusSign === 1 && x > 0) prefix = '+';
+    return prefix + x.toFixed(dp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   if (dp === 0){

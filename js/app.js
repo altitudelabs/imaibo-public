@@ -17,6 +17,7 @@ $(function(){
     $('#rsi-icon').remove();
     $('.link-stockpicker-view').remove();
     $('.link-news-view').remove();
+    $('.vertical-collapse').remove();
   }
 
   // Show contents only after DOM loads
