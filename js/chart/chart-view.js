@@ -124,7 +124,7 @@ var ChartView = {
         ChartModel.getSentimentData(today, initial, function(){
           self.data = ChartModel.model;
           
-          SentimentChart.init();
+          SentimentChart.init(initial);
 
           IndexChart.init();
           RsiChart.init();
@@ -150,7 +150,7 @@ var ChartView = {
     IndexChart.init();
     RsiChart.init();
     MacdChart.init();
-    SentimentChart.init();
+    SentimentChart.init(true);
     this.redraw(true);
   },
   horizontalScroll: function () {

@@ -276,7 +276,6 @@ var IndexChart = {
     //x-axis labels
     var months = [];
     var xLabelData = data.daily.stockLine.filter(function (e, i) {
-      // console.log(new Date(e.timestamp*1000).getDate());
       var month = new Date(e.timestamp*1000).getMonth();
       if (!months.length){ months.push(month); }
       if (months.indexOf(month) === -1) {
@@ -285,14 +284,13 @@ var IndexChart = {
       }
       return false;
     });
-    console.log('x', xLabelData);
 
     xlabels
     .selectAll('text.xrule')
     .data(xLabelData)
     .enter().append('svg:text')
     .attr('class', 'xrule')
-    .attr('x', function(d,i){ console.log(d.rdate); return x(d.rdate); })
+    .attr('x', function(d,i){ return x(d.rdate); })
     .attr('y', height-margin.bottom+15)
     .attr('text-anchor', 'middle')
     .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
