@@ -278,12 +278,12 @@ var IndexChart = {
     var xLabelData = data.daily.stockLine.filter(function (e, i) {
       // console.log(new Date(e.timestamp*1000).getDate());
       var month = new Date(e.timestamp*1000).getMonth();
+      if (!months.length){ months.push(month); }
       if (months.indexOf(month) === -1) {
         months.push(month);
         return true;
-      }else{
-        return false;
       }
+      return false;
     });
     console.log('x', xLabelData);
 
