@@ -35,7 +35,6 @@ var ChartModel = {
       if(initial){ 
         self.model.daily  = dailyData.data.daily;
         //API returns data in descending order
-        self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
         self.model.daily.stockLine.reverse(); 
       }else{
         var latestPrice = dailyData.data.latestPrice;
