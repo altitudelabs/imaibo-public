@@ -202,7 +202,7 @@ text.sentiment {
 }
 
 .prediction-mood {
-  width: 60px;
+  width: 70px;
 }
 
 .component-item-price.ind {
@@ -1563,6 +1563,9 @@ ul.toolbar > li {
   display: inline-block;
   height: 18px;
   margin-top: 2px;
+}
+ul.toolbar > li.zoom {
+  margin-top: 0px;
 }
 ul.toolbar > li > a {
   color: rgb(120, 120, 120);

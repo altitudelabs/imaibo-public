@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 5000
+    refreshFrequency: 60000
   },
   setProperties: function (options) {
     var self = this;
@@ -100,7 +100,7 @@ var ChartView = {
     $('#chart-view').on('resize', function(){
       self.rebuild();
     });
-    
+
   },
   build: function(){
     var self = this;
@@ -123,7 +123,7 @@ var ChartView = {
       ChartModel.getIndexData(today, initial, function() {
         ChartModel.getSentimentData(today, initial, function(){
           self.data = ChartModel.model;
-          
+
           SentimentChart.init(initial);
 
           IndexChart.init();
