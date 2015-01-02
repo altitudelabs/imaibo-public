@@ -124,11 +124,18 @@ var Dashboard = {
       this.glow(targetId, orgColor, altColor);
     }
 
-    if(!this.firstLoad && parseFloat(model.moodindexInfo.before) !== parseFloat(this.prevData.before)){
+    if(!this.firstLoad && parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
+      if($('.lt-ie9').length){
+        $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"});
+        setTimeout(function(){
+          $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"});
+        }, 1000);
+      }else{
         $('#changes').animate({opacity: 1}, 1000, function(){
           $('#changes').animate({opacity: 0}, 300);
         });
-        this.prevData.before = model.moodindexInfo.before;
+      }
+      this.prevData.change = model.moodindexInfo.change;
     } else {
       this.firstLoad = false;
       this.prevData.before = model.moodindexInfo.before;

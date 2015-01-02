@@ -4,6 +4,7 @@ var Toolbar = {
     //this.initDropdown();
     this.initZoom();
     this.initRsi();
+ // this.initMacd();
   },
   render: function(model){
     var temp = model.stockLine.slice(-1).pop();
@@ -75,8 +76,11 @@ var Toolbar = {
                                  '</li>');
           }
         });
-
-        d3.select('#' + ma + '-line').style('opacity', this.checked? 1:0);
+    if(IE8){
+      d3.select('#'+ ma + '-line').style('stroke-opacity', this.checked? '1':'0');
+    }else{
+      d3.select('#' + ma + '-line').style('opacity', this.checked? 1:0);
+    }
         $('#' + ma + '-legend').css('opacity', this.checked? 1:0);
       });
     }
@@ -125,6 +129,27 @@ var Toolbar = {
        $('#rsi').css('display', 'block');
       }else{
        $('#rsi').css('display', 'none');
+      }
+    });
+  },
+  initMacd: function(){
+    $('#macd-checkbox-row').click(function(e) {
+      var cb = $(this).find(':checkbox')[0];
+      //if the click wasn't from the checkbox already, toggle it
+      if(e.target != cb) cb.click();
+    });
+
+    if($('#macd-checkbox').checked){
+       $('#macd').css('display', 'block');
+    }else{
+       $('#macd').css('display', 'none');
+    }
+
+    $('#macd-checkbox').change(function(){
+      if(this.checked){
+       $('#macd').css('display', 'block');
+      }else{
+       $('#macd').css('display', 'none');
       }
     });
   }

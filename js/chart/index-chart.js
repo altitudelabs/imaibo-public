@@ -270,7 +270,6 @@ var IndexChart = {
       .selectAll('svg > .line')
       .remove();
     }
-
     var startDate = data.daily.stockLine[0].rdate;
     var currentDate = startDate;
     
@@ -339,8 +338,8 @@ var IndexChart = {
 
     chart
     .on('mousemove', function(){
-      var xPos = d3.mouse(this)[0];
-      var yPos = d3.mouse(this)[1];
+      // var xPos = d3.mouse(this)[0];
+      // var yPos = d3.mouse(this)[1];
 
       // vertical
       // .attr('class', 'xlabelLine')
@@ -359,8 +358,8 @@ var IndexChart = {
       // .attr('width',  50)
       // .attr('fill', '#f65c4e');
 
-      yPos = yPos > 370? 370: yPos;
-      yPos = yPos < 10? 10: yPos;
+      // yPos = yPos > 370? 370: yPos;
+      // yPos = yPos < 10? 10: yPos;
 
       // horizontal
       // .attr('class', 'ylabelLine')
@@ -426,10 +425,14 @@ var IndexChart = {
       .attr('stroke', color)
       .attr('fill', 'none')
       .attr('id', _id);
-
+    
       if(id != 'sentimentLine'){
         var checkbox = $('#' + id + '-checkbox');
-        d3.select('#'+ id + '-line').style('opacity', checkbox.is(':checked')? 1:0);
+        if(IE8){
+          d3.select('#'+ id + '-line').style('stroke-opacity', checkbox.checked? '1':'0');
+        }else{
+          d3.select('#'+ id + '-line').style('opacity', checkbox.is(':checked')? 1:0);
+        }
       }
 
     }
@@ -453,9 +456,10 @@ var IndexChart = {
     }
 
     //tooltips
+     //tooltips
     tooltip
     // .attr('class', 'mouseover-overlay index')
-    // .attr('fill', 'transparent')
+    .attr('fill-opacity', 0)
     .attr('x', 0)
     .attr('y', margin.top)
     .attr('width', graphWidth)
@@ -465,11 +469,26 @@ var IndexChart = {
     .on('mouseout', function(){
       return Tooltip.hide(); })
     .on('mousemove', function(){
-      var xPos = d3.mouse(this)[0],
-      yPos = d3.mouse(this)[1],
-      j = ChartView.xInverse(xPos, x),
-      cursorPriceLevel = y2.invert(yPos)
-      d = data.daily.stockLine[j];
+      var xPos;
+      var yPos;
+      var top;
+      var leftOffset;
+    
+      if(IE8){
+        xPos = event.clientX; 
+        yPos = event.clientY;
+        top = yPos-243;
+        leftOffset = xPos-60;
+      }else{
+        xPos = d3.mouse(this)[0];
+        yPos = d3.mouse(this)[1];
+        top = d3.event.layerY;
+        leftOffset = d3.event.layerX;
+      }
+      
+      var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
+      var cursorPriceLevel = y2.invert((IE8?yPos-243:yPos));
+      var d = data.daily.stockLine[j];
 
       // _.each(data.daily.stockLine, function(v){
       //   console.log(v.value);
@@ -479,8 +498,8 @@ var IndexChart = {
       d.moodindexchg = d.moodindexchg? d.moodindexchg : data.daily.stockLine[j].moodindex - data.daily.stockLine[j-1].moodindex;
 
       var model = {
-        top: d3.event.pageY - 180,
-        left: chartWidth - d3.event.pageX > 150 ? d3.event.pageX : d3.event.pageX - 195,
+        top: top+40,
+        left: chartWidth-leftOffset>235 ? leftOffset+100 : leftOffset-175,
         date: d.rdate,
         price: cursorPriceLevel,
         security: d,

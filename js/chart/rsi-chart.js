@@ -117,30 +117,43 @@ var RsiChart = {
 
     var tooltip = chart.attr('class', 'mouseover-overlay');
     tooltip.attr('class', 'mouseover-overlay')
-    .attr('fill', 'transparent')
+    .attr('fill-opacity', 1)
     .attr('x', 0)
     .attr('y', margin.top)
-    .attr('width', chartWidth)
-    .attr('height', chartHeight)
+    .attr('width', graphWidth)
+    .attr('height', height-margin.top-margin.bottom)
     .on('mouseover', function(e){
       return Tooltip.show(); })
-      .on('mouseout', function(){
+    .on('mouseout', function(){
         return Tooltip.hide(); })
-        .on('mousemove', function(){
-          var xPos = d3.mouse(this)[0],
-          j = ChartView.xInverse(xPos, x),
-          d = data.daily.stockLine[j];
+    .on('mousemove', function(){
+      var eventX = event.clientX;
+      var leftOffset;
+      var xPos;
+      var top;
+      if($('.lt-ie9').length) {
+        xPos = eventX;
+        leftOffset = eventX - 60;
+        top = event.offsetY + 300;
+      }else{
+        xPos = d3.mouse(this)[0];
+        leftOffset = d3.event.clientX;
+        top = d3.event.pageY - 180;
+      }
+      
+      var j = ChartView.xInverse(($('.lt-ie9').length==0?xPos:xPos-55), x);
+      var d = data.daily.stockLine[j];
 
-          var model = {
-            top: d3.event.pageY - 180,
-            left: chartWidth - d3.event.pageX > 150 ? d3.event.pageX : d3.event.pageX - 195,
-            date: Helper.toDate(d.rdate),
-            rsi6: d.rsi6,
-            rsi12: d.rsi12,
-            rsi24: d.rsi24,
-          };
-          return Tooltip.render.rsi(model);
-        });
+      var model = {
+        top: top,
+        left: chartWidth-leftOffset>235 ? leftOffset+100 : leftOffset-175,
+        date: Helper.toDate(d.rdate),
+        rsi6: d.rsi6,
+        rsi12: d.rsi12,
+        rsi24: d.rsi24,
+      };
+      return Tooltip.render.rsi(model);
+    });
   },
   drawContainer: function(){
     // rsi-chart

@@ -16,7 +16,7 @@ var MacdChart = {
     this.setProperties();
     this.drawContainer();
     this.drawGraph(true);
-    this.initCloseAction();
+    // this.initCloseAction();
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
@@ -91,7 +91,7 @@ var MacdChart = {
     .attr('class', 'xrule')
     .attr('x', function(d,i){ return x(i); })
     .attr('y', chartHeight-margin.bottom+10)
-    .attr('text-anchor', 'end')
+    .attr('text-anchor', 'middle')
     .text(function(d,i){ return i%interval===0 ? Helper.toDate(d.rdate, 'yyyy/mm') : ''; });
 
     chart.selectAll('bar')
@@ -99,8 +99,7 @@ var MacdChart = {
     .enter().append('svg:rect')
     .attr('x', function(d, i) { return x(i); })
     .attr('y', function(d) {    return y1(max(+d.diff, 0)); })
-    .attr('height', function(d) {
-      return Math.abs(y1(+d.diff) - y1(0)); })
+    .attr('height', function(d) { return Math.abs(y1(+d.diff) - y1(0)); })
     .attr('width',function(d) { return 0.8 * (chartWidth)/data.daily.stockLine.length; })
     .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
 
@@ -132,9 +131,10 @@ var MacdChart = {
       tooltip = chart.selectAll('rect.mouseover-overlay');
     }
 
+    var tooltip = chart.attr('class', 'mouseover-overlay');
     tooltip
     .attr('class', 'mouseover-overlay')
-    .attr('fill', 'transparent')
+    .attr('fill-opacity', 1)
     .attr('x', 0)
     .attr('y', margin.top)
     .attr('width', graphWidth)
@@ -144,13 +144,25 @@ var MacdChart = {
     .on('mouseout', function(){
       return Tooltip.hide(); })
     .on('mousemove', function(){
-      var xPos = d3.mouse(this)[0],
-      j = ChartView.xInverse(xPos, x),
-      d = data.daily.stockLine[j];
+      var eventX = event.clientX;
+      var leftOffset;
+      var xPos;
+      var top;
+      if(IE8) {
+        xPos = eventX;
+        leftOffset = eventX - 60;
+        top = event.offsetY + ($('#rsi-checkbox').is(':checked')? 450:300);
+      }else{
+        xPos = d3.mouse(this)[0];
+        leftOffset = d3.event.clientX;
+        top = d3.event.pageY - 180;
+      }
+      var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
+      var d = data.daily.stockLine[j];
 
       var model = {
-        top: d3.event.pageY - 180,
-        left: chartWidth - d3.event.pageX > 150 ? d3.event.pageX : d3.event.pageX - 195,
+        top: top,
+        left: chartWidth-leftOffset>235 ? leftOffset+100 : leftOffset-175,
         date: d.rdate,
         macd: d.macd,
         diff: d.diff,
