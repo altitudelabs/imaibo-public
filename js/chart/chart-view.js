@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 60000
+    refreshFrequency: 5000
   },
   setProperties: function (options) {
     var self = this;
@@ -108,7 +108,6 @@ var ChartView = {
     var self = this;
     $('.loader').css('width', this.properties.width);
     $('.loader').css('height', '441px');
-
     self.buildChartElements(true);
 
     if(!IE8){ //app.js
@@ -128,10 +127,11 @@ var ChartView = {
         today = year + month + day;
 
       ChartModel.getIndexData(today, initial, function() {
-        ChartModel.getSentimentData(today, initial, function(){
+        ChartModel.getSentimentData(today, initial, function(isNewSentimentData){
           self.data = ChartModel.model;
-
+          // if (isNewSentimentData) {
           SentimentChart.init(initial);
+          // }
 
           IndexChart.init();
           RsiChart.init();
@@ -154,11 +154,11 @@ var ChartView = {
   },
   rebuild: function() {
     this.setProperties();
-    IndexChart.init();
-    RsiChart.init();
-    MacdChart.init();
-    SentimentChart.init(true);
-    this.redraw(true);
+    // IndexChart.init();
+    // RsiChart.init();
+    // MacdChart.init();
+    SentimentChart.init(false);
+    // this.redraw(true);
   },
   horizontalScroll: function () {
     'use strict';

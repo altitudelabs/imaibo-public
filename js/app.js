@@ -3,6 +3,7 @@ var HIDE = false;
 var IE8 = !!$('.lt-ie9').length;
 
 $(function(){
+  'use strict';
   //  if(!IE8) { injectScript();}
   // Sets up routing logic for left content panel
   ContentView.init();

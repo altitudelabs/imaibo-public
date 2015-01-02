@@ -55,20 +55,39 @@ var ChartModel = {
     });
   },
   getSentimentData: function(date, initial ,callback){
+    'use strict';
+    
     var self = this;
     var api;
     if (initial) {
       api = self.api.base + self.api.sentimentData + self.api.jsonp;
+      $.getJSON(api, function(sentimentData) {
+        self.model.sentiment = sentimentData.data;
+        self.tryRemoveLoaders();
+        callback(true);
+      });
     } else {
       api = self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
-    }
+      $.getJSON(api, function(updateSentimentData) {
+        var isNewData = true;
 
+        //very rough way of checking whether there is new data  =REFACTOR
+        if (updateSentimentData.data.indexList.length === self.model.sentiment.indexList.length) {
+          if (updateSentimentData.data.moodindexList.length === self.model.sentiment.moodindexList.length) {
+            isNewData = false;
+          }
+        }
+        self.model.sentiment = updateSentimentData.data;
+        self.tryRemoveLoaders();
+        callback(isNewData);
+      });
+    }
     // $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
-    $.getJSON(api, function(sentimentData) {
-      self.model.sentiment = sentimentData.data;
-      self.tryRemoveLoaders();
-      callback();
-    });
+    // $.getJSON(api, function(sentimentData) {
+    //   self.model.sentiment = sentimentData.data;
+    //   self.tryRemoveLoaders();
+    //   callback();
+    // });
   },
   showContent: function(){
     $('#price').css('visibility', 'visible');
@@ -90,8 +109,6 @@ var ChartModel = {
     }
   },
   randomize: function(){
-    console.log(this.model.info);
-
     // Randomize stock price
     var stockIndexSign = Math.random() > 0.5;
     if (stockIndexSign){
