@@ -163,7 +163,13 @@ var ChartView = {
     $('.container').on('mousewheel', function (event){
       event.preventDefault();
       var original = $('.container').scrollLeft();
-      $('.container').scrollLeft ( original - event.originalEvent.deltaY )
+      $('.container').scrollLeft ( original - event.originalEvent.deltaY );
+    });
+
+    $('.container').on('DOMMouseScroll', function (event){
+      event.preventDefault();
+      var original = $('.container').scrollLeft();
+      $('.container').scrollLeft ( original - event.originalEvent.detail * 20 );
     });
   },
 };

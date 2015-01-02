@@ -2,6 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if IE 9]>         <html class="no-js ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <html>
 <head>
@@ -149,28 +150,36 @@
                           <td class="rise">9.89</td>
                           <td class="rise">0.46</td>
                           <td class="rise">12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                         <tr>
                           <td>股票名称</td>
                           <td class="fall">9.89</td>
                           <td class="fall">0.46</td>
                           <td class="fall">12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                         <tr>
                           <td>股票名称</td>
                           <td>9.89</td>
                           <td>0.46</td>
                           <td>12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                         <tr>
                           <td>股票名称</td>
                           <td>9.89</td>
                           <td>0.46</td>
                           <td>12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -303,9 +312,22 @@
                 <div class="dropdown-menu" data-target="frequency">
                   <form>
                   <ul>
-                    <li><label><input type="radio" name="freq" id="minute-radio"> 分时</label></li>
-                    <li><label><input type="radio" name="freq" id="day-radio"> 1日</label></li>
-                    <li><label><input type="radio" name="freq" id="week-radio"> 1周</label></li>
+
+                    <li>
+                      <input type="radio" name="freq" id="minute-radio">
+                      <label for="minute-radio"><span></span>分时</label>
+                    </li>
+
+                    <li>
+                      <input type="radio" name="freq" id="day-radio">
+                      <label for="day-radio"><span></span>1日</label>
+                    </li>
+
+                    <li>
+                      <input type="radio" name="freq" id="week-radio" checked>
+                      <label for="week-radio"><span></span>1周</label>
+                    </li>
+
                   </ul>
                 </form>
                 </div>
@@ -318,8 +340,17 @@
                 <a class="mb annotations-button" id="rsi-icon"></a>
                 <div class="dropdown-menu" data-target="chart-toggle">
                   <ul>
-                    <li id="macd-checkbox-row"><input type="checkbox" id="macd-checkbox"><label> MACD</label></li>
-                    <li id="rsi-checkbox-row"><input type="checkbox" id="rsi-checkbox"><label> RSI</label></li>
+
+                    <li id="macd-checkbox-row">
+                      <input type="checkbox" id="macd-checkbox">
+                      <label><span></span>MACD</label>
+                    </li>
+
+                    <li id="rsi-checkbox-row">
+                      <input type="checkbox" id="rsi-checkbox">
+                      <label><span></span>RSI</label>
+                    </li>
+
                   </ul>
                </div>
               </li>
@@ -502,9 +533,14 @@
   <!-- MA template start -->
   <script id="ma-template" type="text/x-handlebars-template">
     <ul>
+
       {{#each data}}
-        <li class="{{ma_id}}"><input type="checkbox" id="{{ma_id}}" ><label id="{{ma_label_id}}"> {{ma_label}} </label></li>
+        <li class="{{ma_id}}">
+          <input type="checkbox" id="{{ma_id}}">
+          <label id="{{ma_label_id}}"><span></span>{{ma_label}}</label>
+        </li>
       {{/each}}
+
     </ul>
   </script>
   <!-- MA template end -->
