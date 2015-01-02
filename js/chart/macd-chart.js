@@ -278,17 +278,6 @@ var MacdChart = {
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
-
-    $('#macd-checkbox-row').click(function(e) {
-      var cb = $(this).find(':checkbox')[0];
-      //if the click wasn't from the checkbox already, toggle it
-      if(e.target != cb) cb.click();
-    });
-
-    $('#macd-checkbox').change(function(){
-      $('#macd').css('display', $(this).is(':checked')? 'block':'none');
-    });
-
   }
 };
 
