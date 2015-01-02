@@ -116,9 +116,12 @@ var ChartView = {
   buildChartElements: function(initial) {
     var self  = this;
     var today = new Date();
-        today = today.getFullYear().toString() +
-               (today.getMonth()+1).toString() +
-                today.getDate().toString();
+    var year = today.getFullYear().toString();
+    var month = (today.getMonth()+1).toString();
+        month = month.length<2? '0' + month: month;
+    var day = today.getDate().toString();
+        day = day.length < 2? '0'+day:day;
+        today = year + month + day;
 
       ChartModel.getIndexData(today, initial, function() {
         ChartModel.getSentimentData(today, initial, function(){
