@@ -48,7 +48,6 @@ var IndexChart = {
       width: chartWidth.toString() + 'px',
       color: '#ffcc00',
     });
-    console.log(containerWidth);
 
     $('#price .slimScrollDiv').css('position', 'absolute')
     .css('top', '9px')

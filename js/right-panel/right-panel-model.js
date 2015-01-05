@@ -1,4 +1,5 @@
 var RightPanelModel = {
+  productionUrl: 'http://www.imaibo.net',
   baseUrl: 'http://t3-www.imaibo.net',
   model: {
     experts: {},
@@ -25,7 +26,7 @@ var RightPanelModel = {
   },
   getExpertHeadline: function(successHandler, errorHandler){
     var self = this;
-    $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res){
+    $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res){
       if (res.code === 0){
         self.model.experts.headline = res.data;
         successHandler(res.data);
@@ -36,7 +37,7 @@ var RightPanelModel = {
   },
   getExpertData: function(successHandler){
     var self = this;
-    $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
+    $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
         _.extend(self.model.experts, expertData.data);
 
         self.model.experts.list.map(function(res){
@@ -50,7 +51,7 @@ var RightPanelModel = {
   },
   getStockData: function(){
     var self = this;
-    $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
+    $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
         self.model.stock = stockData.data;
         var stock = RightPanel.states.chooseStockView;
         if(self.model.stock.list.length != 0 ){
@@ -69,7 +70,7 @@ var RightPanelModel = {
   },
   // Experts tab: Handles user like action
   likeComment: function(weiboId, successHandler, errorHandler){
-    $.get(this.baseUrl + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
+    $.get((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
     .done(function(res){
       if (res.code === 0){
         successHandler(res);
