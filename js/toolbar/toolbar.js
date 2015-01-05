@@ -4,7 +4,8 @@ var Toolbar = {
     //this.initDropdown();
     this.initZoom();
     this.initRsi();
- // this.initMacd();
+    this.initMacd();
+    this.initFreq();
   },
   render: function(model){
     var temp = model.stockLine.slice(-1).pop();
@@ -132,7 +133,7 @@ var Toolbar = {
       }
     });
   },
-  initMacd: function(){
+  initMacd: function() {
     $('#macd-checkbox-row').click(function(e) {
       var cb = $(this).find(':checkbox')[0];
       //if the click wasn't from the checkbox already, toggle it
@@ -151,6 +152,22 @@ var Toolbar = {
       }else{
        $('#macd').css('display', 'none');
       }
+    });
+  },
+  initFreq: function() {
+    $('#minute-radio-row').click(function(e) {
+      var rb = $(this).find(':radio')[0];
+      if(e.target != rb) rb.click();
+    });
+
+    $('#day-radio-row').click(function(e) {
+      var rb = $(this).find(':radio')[0];
+      if(e.target != rb) rb.click();
+    });
+
+    $('#week-radio-row').click(function(e) {
+      var rb = $(this).find(':radio')[0];
+      if(e.target != rb) rb.click();
     });
   }
 };
