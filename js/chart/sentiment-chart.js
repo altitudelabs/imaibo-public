@@ -340,7 +340,7 @@ var SentimentChart = {
         } else if (xLabelInterval === 12) {
           if ((d - 14400) % 43200 === 0) {
             if (date.getHours() + date.getMinutes() === 0) {
-              return date.getMonth()+1 + '/' + date.getDate();
+              return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
             } else {
               return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
             }
@@ -511,17 +511,19 @@ var SentimentChart = {
         //initial dotted line
         if (i === 0) {
           var timestamp = data.slice(i, 1)[0].timestamp - (data.slice(i, 1)[0].timestamp%86400);
-          
-          // dotted.push(data.slice(i, 1));
-          // dotted[0].unshift({
+
+          // if data is array          
+          // dottedArray = data.slice(i, 1).unshift({
           //   timestamp: timestamp+1,
-          //   price: dotted[0][0].price
+          //   price: data.slice(i, 1)[0].price
           // });
 
-          dottedArray = data.slice(i, 1).unshift({
-            timestamp: timestamp+1,
+          dottedArray = [];
+          dottedArray[0] = {
+            timestamp: startTime,
             price: data.slice(i, 1)[0].price
-          });
+          };
+          dottedArray[1] = data.slice(i, 1)[0];
           drawDotted(dottedArray);
         }
 
@@ -663,11 +665,97 @@ var SentimentChart = {
 
     //update components is there is new data;
     if (hasNewData) {
+      if (!HIDE) {
+        self.components.scatterDotsBubble = self.components.scatterDotsBubble.data(moodindexList);
+        self.components.scatterDotsBubbleText = self.components.scatterDotsBubbleText.data(moodindexList);
+
+        self.components.scatterDotsBubble
+        .enter()
+        .append('path')
+        .attr('fill', function (d,i) {
+          return '#31BBED'; 
+        })
+        .attr('d', function (d,i) {
+          if (d.newsCount) { 
+            return 'M29,17.375c0,6.1-3.877,11.125-6.5,11.125s-6.75-5.35-6.75-11.25c0-4.004,4.06-5.167,6.683-5.167  S29,13.371,29,17.375z';
+          }
+        });
+
+        self.components.scatterDotsBubbleText
+        .enter().append('text')  // create a new circle for each value
+        .attr('class', 'sentiment')
+        .attr('fill', 'white')
+        .text(function(d, i){
+          if (d.newsCount) { return d.newsCount; }
+        });
+        
+        var style, fadeIn, fadeOut;
+
+        self.components.scatterDotsHover
+        .enter().append('svg:circle')  // create a new circle for each value
+        .attr('r', 8)
+        .style('opacity', 0)
+        .on('mouseover', function(d, i) {
+          var xPos;
+          var yPos;
+          
+          if(IE8){
+            xPos = event.clientX;
+            yPos = event.clientY;
+            style = 'display';
+            fadeIn = 'inline-block';
+            fadeOut = 'none';
+          }else{
+            xPos = d3.event.pageX + 8;
+            yPos = d3.event.pageY + 3;
+            style = 'opacity';
+            fadeIn = 1;
+            fadeOut = 0;
+          }
+
+          var target = d3.select('#sd-' + i);
+          target.attr('fill', '#3bc1ef');
+          target.attr('r', '4');
+          target.attr('stroke', '#fff');
+          target.attr('stroke-width', '1.5');
+
+          var arrow = (d.newsSign === '+'? 'rise':'fall');
+          var show_extra = (d.newsTitle.length < 12? 'hide':'show');
+
+          self.components.tooltip.transition()
+          .duration(200)
+          .style(style, fadeIn);
+          self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' + 
+                          '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
+                          '<div class="wrapper">' +
+                            '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
+                            '<div>' +
+                              '<div class="arrow ' + arrow + '">                     </div>' +
+                              '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
+                              '<div class="extra ' + show_extra + '">...</div>' +
+                            '</div>' +
+                          '</div>' +
+                       '</div>')
+          .style('left', xPos + 'px')
+          .style('top', yPos + 'px');
+        })
+        .on('mouseout', function(d, i) {
+          var target = d3.select('#sd-' + i);
+          target.attr('fill','#000');
+          target.attr('r', '4');
+          target.attr('stroke', '#25bcf1');
+          target.attr('stroke-width', '1');
+
+          self.components.tooltip.transition()
+          .duration(500)
+          .style(style, fadeOut);
+        });
+
+
+      }
       self.components.xLabels = self.components.xLabels.data(getXLabelTimeStampsArray(ordinalTimeStamps));
       self.components.sentimentLine = self.components.sentimentLine.datum(moodindexList);
       self.components.scatterDots = self.components.scatterDots.data(moodindexList);
-      self.components.scatterDotsBubble = self.components.scatterDotsBubble.data(moodindexList);
-      self.components.scatterDotsBubbleText = self.components.scatterDotsBubbleText.data(moodindexList);
       self.components.scatterDotsHover = self.components.scatterDotsHover.data(moodindexList);
       
       //redrawing securityLines. refactor later
@@ -685,88 +773,6 @@ var SentimentChart = {
       .style('opacity', 1)
       .attr('id', function (d, i) {
         return 'sd-' + i;
-      });
-
-      self.components.scatterDotsBubble
-      .enter()
-      .append('path')
-      .attr('fill', function (d,i) {
-        return '#31BBED'; 
-      })
-      .attr('d', function (d,i) {
-        if (d.newsCount) { 
-          return 'M29,17.375c0,6.1-3.877,11.125-6.5,11.125s-6.75-5.35-6.75-11.25c0-4.004,4.06-5.167,6.683-5.167  S29,13.371,29,17.375z';
-        }
-      });
-
-      self.components.scatterDotsBubbleText
-      .enter().append('text')  // create a new circle for each value
-      .attr('class', 'sentiment')
-      .attr('fill', 'white')
-      .text(function(d, i){
-        if (d.newsCount) { return d.newsCount; }
-      });
-      
-      var style, fadeIn, fadeOut;
-
-      self.components.scatterDotsHover
-      .enter().append('svg:circle')  // create a new circle for each value
-      .attr('r', 8)
-      .style('opacity', 0)
-      .on('mouseover', function(d, i) {
-        var xPos;
-        var yPos;
-        
-        if(IE8){
-          xPos = event.clientX;
-          yPos = event.clientY;
-          style = 'display';
-          fadeIn = 'inline-block';
-          fadeOut = 'none';
-        }else{
-          xPos = d3.event.pageX + 8;
-          yPos = d3.event.pageY + 3;
-          style = 'opacity';
-          fadeIn = 1;
-          fadeOut = 0;
-        }
-
-        var target = d3.select('#sd-' + i);
-        target.attr('fill', '#3bc1ef');
-        target.attr('r', '4');
-        target.attr('stroke', '#fff');
-        target.attr('stroke-width', '1.5');
-
-        var arrow = (d.newsSign === '+'? 'rise':'fall');
-        var show_extra = (d.newsTitle.length < 12? 'hide':'show');
-
-        self.components.tooltip.transition()
-        .duration(200)
-        .style(style, fadeIn);
-        self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' + 
-                        '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
-                        '<div class="wrapper">' +
-                          '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
-                          '<div>' +
-                            '<div class="arrow ' + arrow + '">                     </div>' +
-                            '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
-                            '<div class="extra ' + show_extra + '">...</div>' +
-                          '</div>' +
-                        '</div>' +
-                     '</div>')
-        .style('left', xPos + 'px')
-        .style('top', yPos + 'px');
-      })
-      .on('mouseout', function(d, i) {
-        var target = d3.select('#sd-' + i);
-        target.attr('fill','#000');
-        target.attr('r', '4');
-        target.attr('stroke', '#25bcf1');
-        target.attr('stroke-width', '1');
-
-        self.components.tooltip.transition()
-        .duration(500)
-        .style(style, fadeOut);
       });
 
       self.components.xLabels
@@ -826,7 +832,7 @@ var SentimentChart = {
       } else if (xLabelInterval === 12) {
         if ((d - 14400) % 43200 === 0) {
           if (date.getHours() + date.getMinutes() === 0) {
-            return date.getMonth()+1 + '/' + date.getDate();
+            return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
           } else {
             return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
           }
@@ -896,18 +902,21 @@ var SentimentChart = {
         //initial dotted line
         if (i === 0) {
           var timestamp = data.slice(i, 1)[0].timestamp - (data.slice(i, 1)[0].timestamp%86400);
-          
-          // dotted.push(data.slice(i, 1));
-          // dotted[0].unshift({
+  
+          // if data is array          
+          // dottedArray = data.slice(i, 1).unshift({
           //   timestamp: timestamp+1,
-          //   price: dotted[0][0].price
+          //   price: data.slice(i, 1)[0].price
           // });
 
-          dottedArray = data.slice(i, 1).unshift({
-            timestamp: timestamp+1,
+          dottedArray = [];
+          dottedArray[0] = {
+            timestamp: startTime,
             price: data.slice(i, 1)[0].price
-          });
+          };
+          dottedArray[1] = data.slice(i, 1)[0];
           drawDotted(dottedArray);
+
         }
 
         if ( data[i+1].timestamp - data[i].timestamp > 3590) {
