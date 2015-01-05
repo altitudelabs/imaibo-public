@@ -238,8 +238,6 @@ var IndexChart = {
     .attr('width', width);
     // .attr('height', height);
 
-    $('#chart-container').css('width', graphWidth);
-
 
     if(isNew){
       xlabels = chart.append('g').attr('class','xlabels');

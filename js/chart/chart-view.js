@@ -110,11 +110,11 @@ var ChartView = {
     $('.loader').css('height', '441px');
     self.buildChartElements(true);
 
-    // if(!IE8){ //app.js
-    //   setInterval(function(){
-    //     self.buildChartElements(false);
-    //   }, this.properties.refreshFrequency);
-    // }
+    if(!IE8){ //app.js
+      setInterval(function(){
+        self.buildChartElements(false);
+      }, this.properties.refreshFrequency);
+    }
   },
   buildChartElements: function(initial) {
     var self  = this;
@@ -154,9 +154,10 @@ var ChartView = {
   },
   rebuild: function() {
     this.setProperties();
+    $('.zoomable-chart-container').css('width', '100%');
     IndexChart.init();
-    // RsiChart.init();
-    // MacdChart.init();
+    RsiChart.init();
+    MacdChart.init();
     SentimentChart.init(false);
     // this.redraw(true);
   },
