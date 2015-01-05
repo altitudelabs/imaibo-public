@@ -240,7 +240,8 @@ var SentimentChart = {
     
     var allTimeStampsArray = combinedIndexList.map(function (x) { 
         return x.timestamp;
-    });
+    }).sort();
+
 
     //timeStampsArray will only be used to draw ordinal x axis
     var ordinalTimeStamps = getOrdinalTimeStampsArray(allTimeStampsArray);
@@ -291,19 +292,25 @@ var SentimentChart = {
         currentTimeStamp = allTimeStamps[j];
         previousTimeStamp = allTimeStamps[j-1];
         if (j === 0) {
-          previousTimeStamp = startTime - 9000; // x padding on the left
+          previousTimeStamp = startTime - 3600; // x padding on the left
           timeStamps.push(previousTimeStamp);
         } else {
-          if (currentTimeStamp - previousTimeStamp >= 86400) {
+          if (currentTimeStamp - previousTimeStamp >= 18000) {
             var diff = currentTimeStamp - previousTimeStamp;
             var days = diff - (diff%86400);
-            previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600;
+            //plotting from 8am - 18pm
+            previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600 + 28860;
             timeStamps.push(previousTimeStamp);
           }
         }
         if (j === allTimeStamps.length - 1) {
-          currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-          currentTimeStamp += 18000;
+          if (new Date(currentTimeStamp*1000).getHours() === 17) {
+            currentTimeStamp += 3540;
+          } else {
+            currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
+            currentTimeStamp += 18000;
+          }
+          endTime = currentTimeStamp;
         }
         while (previousTimeStamp < currentTimeStamp) {
           timeStamps.push(previousTimeStamp+=60);
@@ -314,7 +321,7 @@ var SentimentChart = {
     function getXLabelTimeStampsArray (timeStampsArray) {
       var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
         var date = new Date(e * 1000);
-        if ((e + 7200) % 21600 === 0) {
+        if ((e + 7200) % 10800 === 0) {
           return true;
         }
       });
@@ -335,22 +342,22 @@ var SentimentChart = {
         var date = new Date(d * 1000);
         if (xLabelInterval === 24) {
           if ((d - 14400) % 86400 === 0) {
-            return date.getMonth()+1 + '/' + (date.getDate()<10 ? '0' + date.getDate() : date.getDate());
+            // return date.getMonth()+1 + '/' + (date.getDate()<10 ? '0' + date.getDate() : date.getDate());
           }
         } else if (xLabelInterval === 12) {
           if ((d - 14400) % 43200 === 0) {
             if (date.getHours() + date.getMinutes() === 0) {
-              return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
+              // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
             } else {
-              return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
+              // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
             }
           }
         } else if (xLabelInterval === 6) {
           if ((d + 7200) % 21600 === 0) {
-            return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
+            // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
           }
         }
-
+        return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':00';
       });
       self.components.xLabels
       .exit()
@@ -559,9 +566,12 @@ var SentimentChart = {
 
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      if (!!lastData && endTime - lastData.timestamp > 60) {
+      var currentTime = new Date().getTime();
+      currentTime = (currentTime - currentTime%1000)/1000;
+      currentTime = currentTime - (currentTime%60);
+      if (!!lastData && currentTime - lastData.timestamp > 60) {
         drawDotted([lastData, {
-          timestamp: (endTime - endTime%60),
+          timestamp: currentTime,
           price: lastData.price
         }]);
       }
@@ -627,10 +637,9 @@ var SentimentChart = {
 
     var allTimeStampsArray = combinedIndexList.map(function (x) { 
         return x.timestamp;
-    });
+    }).sort();
 
     var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
-    
     var endTime = new Date().getTime();
     endTime = (endTime - endTime%1000)/1000;
     var endDate = new Date(endTime * 1000);
@@ -827,22 +836,22 @@ var SentimentChart = {
       var date = new Date(d * 1000);
       if (xLabelInterval === 24) {
         if ((d - 14400) % 86400 === 0) {
-          return date.getMonth()+1 + '/' + (date.getDate()<10 ? '0' + date.getDate() : date.getDate());
+          // return date.getMonth()+1 + '/' + (date.getDate()<10 ? '0' + date.getDate() : date.getDate());
         }
       } else if (xLabelInterval === 12) {
         if ((d - 14400) % 43200 === 0) {
           if (date.getHours() + date.getMinutes() === 0) {
-            return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
+            // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
           } else {
-            return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
+            // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
           }
         }
       } else if (xLabelInterval === 6) {
         if ((d + 7200) % 21600 === 0) {
-          return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
+          // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
         }
       }
-
+      return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':00';
     });
     
     function getOrdinalTimeStampsArray (allTimeStamps) {
@@ -853,22 +862,26 @@ var SentimentChart = {
         currentTimeStamp = allTimeStamps[j];
         previousTimeStamp = allTimeStamps[j-1];
         if (j === 0) {
-          previousTimeStamp = startTime - 9000; // x padding on the left
+          previousTimeStamp = startTime - 3600; // x padding on the left
           timeStamps.push(previousTimeStamp);
         } else {
-          if (currentTimeStamp - previousTimeStamp >= 86400) {
+          if (currentTimeStamp - previousTimeStamp >= 18000) {
             var diff = currentTimeStamp - previousTimeStamp;
             var days = diff - (diff%86400);
-            previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600;
+            //plotting from 8am - 18pm
+            previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600 + 28860;
 
             timeStamps.push(previousTimeStamp);
           }
         }
         if (j === allTimeStamps.length - 1) {
-          // var currentDate = new Date(currentTimeStamp * 1000);
-
-          currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-          currentTimeStamp += 18000;
+          if (new Date(currentTimeStamp*1000).getHours() === 17) {
+            currentTimeStamp += 3540;
+          } else {
+            currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
+            currentTimeStamp += 18000;
+          }
+          endTime = currentTimeStamp;
         }
         while (previousTimeStamp < currentTimeStamp) {
           timeStamps.push(previousTimeStamp+=60);
@@ -879,7 +892,7 @@ var SentimentChart = {
     function getXLabelTimeStampsArray (timeStampsArray) {
       var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
         var date = new Date(e * 1000);
-        if ((e + 7200) % 21600 === 0) {
+        if ((e + 7200) % 10800 === 0) {
           return true;
         }
       });
@@ -948,12 +961,16 @@ var SentimentChart = {
         }
       }
       drawLinear(data.slice(start, data.length-1)); //last bit of data
-
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      if (!!lastData && endTime - lastData.timestamp > 60) {
+      var currentTime = new Date().getTime();
+      currentTime = (currentTime - currentTime%1000)/1000;
+      currentTime = currentTime - (currentTime%60);
+      if (!!lastData && currentTime - lastData.timestamp > 60) {
+        console.log(new Date(lastData.timestamp*1000));
+        console.log(new Date(currentTime*1000));
         drawDotted([lastData, {
-          timestamp: (endTime - endTime%60),
+          timestamp: currentTime,
           price: lastData.price
         }]);
       }
