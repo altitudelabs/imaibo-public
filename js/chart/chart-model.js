@@ -7,7 +7,9 @@ var ChartModel = {
     dataReceived: 0
   },
   api: {
-    base: 'http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow',
+    production: 'http://www.imaibo.net',
+    staging: 'http://t3-www.imaibo.net',
+    base: '/index.php?app=moodindex&mod=IndexShow',
     indexData:     '&act=main',
     sentimentData: '&act=moodindexLine',
     latest:        '&latest=1',
@@ -25,7 +27,7 @@ var ChartModel = {
   */
   getIndexData: function(date, initial, callback){
     var self = this;
-    var api  = self.api.base   + self.api.indexData  + '&dailyLineSdate=' + date; 
+    var api  = (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.indexData  + '&dailyLineSdate=' + date; 
         api += (initial? self.api.daily: '');
         api += self.api.latest + '&info=1&trading=1' 
         api += self.api.jsonp;
@@ -62,7 +64,7 @@ var ChartModel = {
     var self = this;
     var api;
     if (initial) {
-      api = self.api.base + self.api.sentimentData + self.api.jsonp;
+      api =  (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.sentimentData + self.api.jsonp;
       $.getJSON(api, function(sentimentData) {
         self.model.sentiment = sentimentData.data;
 
@@ -72,7 +74,7 @@ var ChartModel = {
         callback(true);
       });
     } else {
-      api = self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
+      api = (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
       $.getJSON(api, function(updateSentimentData) {
         var isNewData = true;
 

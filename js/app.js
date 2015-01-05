@@ -1,10 +1,10 @@
+var PRODUCTION = false;
 // Hide Phase II features
-var HIDE = false;
+var HIDE = PRODUCTION;
 var IE8 = !!$('.lt-ie9').length;
 
 $(function(){
   'use strict';
-  //  if(!IE8) { injectScript();}
   // Sets up routing logic for left content panel
   ContentView.init();
 
@@ -31,16 +31,3 @@ $(function(){
   $('.outer').css('visibility', 'visible');
 });
 
-function injectScript(){
-	var sources = ['//www.google-analytics.com/analytics.js',
-				   'http://t3-www.imaibo.net/public/themes/Maibo/common_v1/js/combine.min.js?v=20141120001',
-				   'http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/lang/zh-cn/zh-cn.js',
-				   'http://t3-www.imaibo.net/public/front-modules/ueditor/1.3.5/third-party/codemirror/codemirror.js']
-	for(var i in sources){
-		var script = document.createElement('script');
-		script.type = 'text/javascript';
-		script.src = sources[i];
-		document.getElementsByTagName('head')[0].appendChild(script);
-	}
-
-}

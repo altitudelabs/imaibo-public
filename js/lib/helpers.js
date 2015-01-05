@@ -107,7 +107,6 @@ var Helper = {
       var targetSelector = $(targetId);
       var templateSelector = $(templateId);
       var template = Handlebars.compile(templateSelector.html());
-      console.log(resource);
       if(resource.constructor === Array){
         targetSelector.html(template({data: resource}));
       }else{
