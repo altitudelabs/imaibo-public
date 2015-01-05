@@ -13,7 +13,6 @@ var IndexChart = {
     this.properties = $.extend(true, {}, properties);
   },
   init: function () {
-    // ChartView.setProperties();
     this.setProperties();
     this.drawContainer();
     this.drawGraph(true);
