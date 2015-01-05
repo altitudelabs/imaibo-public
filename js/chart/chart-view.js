@@ -137,6 +137,7 @@ var ChartView = {
         // if (hasNewSentimentData) {
         if (initial) {
           SentimentChart.init();
+          Toolbar.render(self.data.daily);
           if(stockLine.length === 0) { $('#toolbar').remove(); }
         } else {
           SentimentChart.update(hasNewSentimentData);

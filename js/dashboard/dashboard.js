@@ -80,8 +80,8 @@ var Dashboard = {
     }
   },
   glow: function(targetId, orgColor, altColor){
-      $(targetId).animate({color: altColor}, 500, function() {
-         $(targetId).animate({color: orgColor}, 500);
+      $(targetId).animate({color: altColor}, 2000, function() {
+         $(targetId).animate({color: orgColor}, 2000);
       });
   },
   updateData: function(model){
@@ -130,13 +130,13 @@ var Dashboard = {
     }
 
     if(!this.firstLoad && parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
-      if($('.lt-ie9').length){
+      if(IE8){
         $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"});
         setTimeout(function(){
           $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"});
         }, 1000);
       }else{
-        $('#changes').animate({opacity: 1}, 1000, function(){
+        $('#changes').animate({opacity: 1}, 10000, function(){
           $('#changes').animate({opacity: 0}, 300);
         });
       }
