@@ -433,8 +433,13 @@
       <div id="dashboard-index" class="component-item-price fall">
     {{/ifEq}}
         <div class="title">上证指数</div>
-        <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
-        <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+        {{#ifEq stockIndexInfo.length 0}}
+          <div class="value-label">稍后再试</div>
+          <div class="value-sublabel ">无法下载数据</div>
+        {{else}}
+          <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
+          <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+        {{/ifEq}}
       </div>
 
       {{#isGreater moodindexInfo.latest 0}}
@@ -448,8 +453,13 @@
       {{/isGreater}}
         <div class="prediction prediction-mood">
           <div class="title">心情指数</div>
-          <div class="value-label">{{moodindexInfo.latest}}</div>
-          <div class="value-sublabel ">{{formatNumber moodindexInfo.change 0}}({{moodindexInfo.changeRatio}})</div>
+          {{#ifEq moodindexInfo.length 0}}
+            <div class="value-label">稍后再试</div>
+            <div class="value-sublabel ">无法下载数据</div>
+          {{else}}
+            <div class="value-label">{{moodindexInfo.latest}}</div>
+            <div class="value-sublabel ">{{formatNumber moodindexInfo.change 0}}({{moodindexInfo.changeRatio}})</div>
+          {{/ifEq}}
         </div>
 
         <div class="thermo-wrapper">
@@ -469,11 +479,20 @@
         {{/ifEq}}
       {{/ifEq}}
 
+      {{#ifEq tradingSign.prob undefined}}
+        <div id="dashboard-signal" class="prediction no-data">
+          <div class="title">短期预测</div>
+            <div class="value-label">稍后再试</div>
+            <div class="value-sublabel"></div>
+        {{else}}
         <div id="dashboard-signal" class="prediction">
           <div class="title">短期预测</div>
           <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
           <div class="value-sublabel">
-
+        {{/ifEq}}
+        {{#ifEq tradingSign.prob undefined}}
+            无法下载数据
+        {{else}}
         {{#ifEq tradingSign.signal 1}}
           {{#isGreater tradingSign.prob 0.8}}
                强烈买入
@@ -490,6 +509,7 @@
                 卖出
             {{/isGreater}}
           {{/ifEq}}
+        {{/ifEq}}
         {{/ifEq}}
           </div>
         </div>
@@ -531,11 +551,10 @@
   <!-- MA template start -->
   <script id="ma-template" type="text/x-handlebars-template">
     <ul>
-
       {{#each data}}
-        <li class="{{ma_id}}">
-          <input type="checkbox" id="{{ma_id}}">
-          <label id="{{ma_label_id}}"><span></span>{{ma_label}}</label>
+        <li class="{{maId}}">
+          <input type="checkbox" id="{{maId}}">
+          <label id="{{maLabelId}}"><span></span>{{maLabel}}</label>
         </li>
       {{/each}}
 
@@ -610,6 +629,11 @@
 
   <!-- Experts template start -->
   <script id="experts-template" type="text/x-handlebars-template">
+  {{#ifEq list.length 0}}
+    <div class="experts-header disabled">
+      暂时无法下载数据，请稍后再试
+    </div>
+  {{else}}
     <div class="experts-header">
       <div class="name-and-date">
         <div class="name">今天解读</div>
@@ -644,6 +668,7 @@
       </div>
     </div>
     {{/each}}
+    {{/ifEq}}
   </script>
   <!-- Experts template end -->
 

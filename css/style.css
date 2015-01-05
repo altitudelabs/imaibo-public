@@ -131,6 +131,14 @@ input[type="checkbox"]:checked + label span {
   float: left;
 }
 
+.empty-data {
+  position: absolute;
+  top: 35%;
+  left: 40%;
+  right: 35%;
+  bottom: 35%;
+}
+
 /* =Dropdown menu
 -------------------------------------------------------------- */
 .link-dropdown {
@@ -232,6 +240,7 @@ text.sentiment {
 .component-item-price .title {
   color: rgb(107, 107, 107);
 }
+
 
 .component-item-price {
   width: 120px;
@@ -399,6 +408,7 @@ text.sentiment {
   padding: 5px;
   background-color: #363636;
 }
+
 
 /* =Charts
 -------------------------------------------------------------- */
@@ -610,7 +620,6 @@ text.sentiment {
 .sentiment-tooltip .content {
   line-height: 22px
 }
-
 
 .news-bubble{
   width: 20px;
@@ -1048,6 +1057,10 @@ label.checkbox-label input[type=checkbox]{
   background-color: #1c1d1f;
   border-radius: 2px;
   padding: 2px 3px;
+}
+
+.experts-header.disabled {
+  cursor: auto;
 }
 
 .experts-header .content {

@@ -13,9 +13,9 @@ var Toolbar = {
     var t = [];
     ma.forEach(function(res){
       t.push({
-        ma_id: 'ma'+res+'-checkbox',
-        ma_label_id: 'ma'+res+'-label',
-        ma_label: 'MA'+res
+        maId: 'ma'+res+'-checkbox',
+        maLabelId: 'ma'+res+'-label',
+        maLabel: 'MA'+res
       });
     });
 
@@ -73,7 +73,7 @@ var Toolbar = {
           if(!isNaN(ma)){
             $('#legend').prepend('<li id="ma' + ma + '-legend">'                                    +
                                  '<div id="ma' + ma + '-legend-line" class="legend-line"></div>' +
-                                 '<span>MA' + ma + '=' + temp['ma'+ma] + '</span>'                                     +
+                                 '<span>MA' + ma + ': ' + temp['ma'+ma] + '</span>'                                     +
                                  '</li>');
           }
         });

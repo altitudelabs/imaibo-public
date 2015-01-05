@@ -177,6 +177,8 @@ var RsiChart = {
     var chartHeight = height - margin.top - margin.bottom;
     var interval = this.properties.interval;
 
+    var isEmpty = data.daily.stockLine.length == 0;
+
     var chart = d3.select('#rsi-chart')
     .append('svg:svg')
     .attr('class', 'chart')
@@ -212,6 +214,7 @@ var RsiChart = {
 
     var x = ChartView.x(data, 'rdate');
 
+    if(!isEmpty){
     chartLabel.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
@@ -222,6 +225,8 @@ var RsiChart = {
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
+    }
+
 
     chartLabel.append('svg:line')
     .attr('class', 'guideline-70')

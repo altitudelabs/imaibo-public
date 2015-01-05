@@ -65,7 +65,9 @@ var SentimentChart = {
 
     var height = this.properties.height;
     var chartHeight = height - margin.top - margin.bottom;
-    
+
+    var isEmpty = self.data.moodindexList.length == 0;
+
     var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
     var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
     var minY2 = self.helpers.minIndex('price', self.data.indexList);
@@ -133,28 +135,30 @@ var SentimentChart = {
     .attr('y2', margin.top)
     .attr('stroke', '#464646');
 
-    self.components.y1Labels
-    .attr('class','y1labels')
-    .enter().append('svg:text')
-    .attr('class', 'yrule');
+    if(!isEmpty) {
+      self.components.y1Labels
+      .attr('class','y1labels')
+      .enter().append('svg:text')
+      .attr('class', 'yrule');
 
-    self.components.y1Labels
-    .attr('x', margin.left - 15)
-    .attr('y', y1)
-    .attr('text-anchor', 'middle')
-    .text(String);
+      self.components.y1Labels
+      .attr('x', margin.left - 15)
+      .attr('y', y1)
+      .attr('text-anchor', 'middle')
+      .text(String);
 
-    self.components.y2Labels
-    .attr('class','y2labels')
-    .enter()
-    .append('svg:text')
-    .attr('class', 'yrule');
+      self.components.y2Labels
+      .attr('class','y2labels')
+      .enter()
+      .append('svg:text')
+      .attr('class', 'yrule');
 
-    self.components.y2Labels
-    .attr('x', chartWidth + margin.left + 18)
-    .attr('y', y2)
-    .attr('text-anchor', 'middle')
-    .text(String);
+      self.components.y2Labels
+      .attr('x', chartWidth + margin.left + 18)
+      .attr('y', y2)
+      .attr('text-anchor', 'middle')
+      .text(String);
+    }
   },
   updateContainer: function (hasNewData) {
     'use strict';
@@ -205,6 +209,11 @@ var SentimentChart = {
 
     var moodindexList = self.data.moodindexList;
     var indexList = self.data.indexList;
+    var isEmpty = moodindexList.length == 0;
+
+    if(isEmpty) {
+      $('#sentiment-chart-container').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
+    }
 
     //filtering out non trading days
     moodindexList = moodindexList.filter(function (x) {
@@ -987,10 +996,16 @@ var SentimentChart = {
       .range([props.height - props.margin.top - props.margin.bottom - props.margin.bottom, props.margin.top+20]);
     },
     minIndex: function (prop, data) {
-      return d3.min(data.map(function(x) { return +x[prop]; }));
+      if(data && data.length != 0){
+        return d3.min(data.map(function(x) { return +x[prop]; }));
+      }
+      return 0;
     },
     maxIndex: function (prop, data) {
-      return d3.max(data.map(function(x) { return +x[prop]; }));
+      if(data && data.length != 0) {
+        return d3.max(data.map(function(x) { return +x[prop]; }));
+      }
+      return 0;
     }
   }
 };

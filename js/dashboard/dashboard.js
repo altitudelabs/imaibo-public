@@ -38,26 +38,31 @@ var Dashboard = {
   },
   renderIndicatorTooltip: function(data) {
     $('#prediction-wrapper').hover(function(){
-      $('#indicator-tooltip').css('display', 'block');
+      if(!$('#dashboard-signal').hasClass('no-data')){
+        $('#indicator-tooltip').css('display', 'block');
+      }
     }, function(){
       $('#indicator-tooltip').css('display', 'none');
     });
 
-    var remarks = data.remarks
-    var hold = remarks.slice(-4);
-    var buy  = remarks.substr(0, remarks.length-10).slice(-4);
-    var sell = remarks.substr(0, remarks.length-19).slice(-4);
-    var clock = data.clock.substr(0, data.clock.length-3);
+    if(data.remarks !== undefined) {
+      var remarks = data.remarks.split(' ');
 
-    var d = {
-      date: data.date,
-      clock: clock,
-      hold: hold,
-      buy: buy,
-      sell: sell
-    };
+      var hold    = remarks[6];
+      var buy     = remarks[4];
+      var sell    = remarks[2];
+      var clock   = data.clock.substr(0, data.clock.length-3);
 
-    Helper.populateView('#indicator-tooltip', '#indicator-template', d);
+      var d = {
+        date: data.date,
+        clock: clock,
+        hold: hold,
+        buy: buy,
+        sell: sell
+      };
+
+      Helper.populateView('#indicator-tooltip', '#indicator-template', d);
+    }
   },
   renderThermoLiquid: function(model){
     var selector = $('.thermo > .thermo-wrapper > .background');
@@ -75,8 +80,8 @@ var Dashboard = {
     }
   },
   glow: function(targetId, orgColor, altColor){
-      $(targetId).animate({color: altColor}, 500, function() {
-         $(targetId).animate({color: orgColor}, 500);
+      $(targetId).animate({color: altColor}, 2000, function() {
+         $(targetId).animate({color: orgColor}, 2000);
       });
   },
   updateData: function(model){
@@ -125,13 +130,13 @@ var Dashboard = {
     }
 
     if(!this.firstLoad && parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
-      if($('.lt-ie9').length){
+      if(IE8){
         $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"});
         setTimeout(function(){
           $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"});
         }, 1000);
       }else{
-        $('#changes').animate({opacity: 1}, 1000, function(){
+        $('#changes').animate({opacity: 1}, 10000, function(){
           $('#changes').animate({opacity: 0}, 300);
         });
       }
