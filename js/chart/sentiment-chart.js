@@ -334,13 +334,17 @@ var SentimentChart = {
       .attr('y', chartHeight-margin.bottom-margin.top)
       .text(function (d, i) {
         var date = new Date(d * 1000);
-        if (xLabelInterval === 6) {
-          if ((d + 7200) % 21600 === 0) {
-            return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+        if (xLabelInterval === 24) {
+          if ((d - 14400) % 86400 === 0) {
+            return date.getMonth()+1 + '/' + date.getDate();
           }
         } else if (xLabelInterval === 12) {
           if ((d - 14400) % 43200 === 0) {
-            return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+            if (date.getHours() + date.getMinutes() === 0) {
+              return date.getDate();
+            } else {
+              return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+            }
           }
 
         } else if (xLabelInterval === 24) {
@@ -348,6 +352,7 @@ var SentimentChart = {
             return date.getMonth()+1 + '/' + date.getDate();
           }
         }
+
       });
       self.components.xLabels
       .exit()
@@ -809,13 +814,17 @@ var SentimentChart = {
     .attr('y', chartHeight-margin.bottom-margin.top)
     .text(function (d, i) {
       var date = new Date(d * 1000);
-      if (xLabelInterval === 6) {
-        if ((d + 7200) % 21600 === 0) {
-          return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+      if (xLabelInterval === 24) {
+        if ((d - 14400) % 86400 === 0) {
+          return date.getMonth()+1 + '/' + date.getDate();
         }
       } else if (xLabelInterval === 12) {
         if ((d - 14400) % 43200 === 0) {
-          return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+          if (date.getHours() + date.getMinutes() === 0) {
+            return date.getDate();
+          } else {
+            return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
+          }
         }
 
       } else if (xLabelInterval === 24) {
@@ -823,6 +832,7 @@ var SentimentChart = {
           return date.getMonth()+1 + '/' + date.getDate();
         }
       }
+
     });
     
     function getOrdinalTimeStampsArray (allTimeStamps) {
