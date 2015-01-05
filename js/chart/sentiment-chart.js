@@ -29,7 +29,7 @@ var SentimentChart = {
       this.updateData();
     }
     this.updateContainer();
-    this.updateGraph(true);
+    this.updateGraph(hasNewData);
   },
   updateData: function () {
     'use strict';
@@ -766,22 +766,19 @@ var SentimentChart = {
       .append('svg:text')
       .attr('class', 'xrule')
       .attr('text-anchor', 'middle');
+      //redrawing securityLines. refactor later
+      reDrawSecurityLine(self.data.indexList);
     }
 
-    //redrawing securityLines. refactor later
-    reDrawSecurityLine(self.data.indexList);
-
-    // var securityLine = d3.svg.line()
-    // .x(function(d,i) { return x(d.timestamp); })
-    // .y(function(d)   { return y2(+d.price); })
-    // .interpolate('basis');
+    var securityLine = d3.svg.line()
+    .x(function(d,i) { return x(d.timestamp); })
+    .y(function(d)   { return y2(+d.price); })
+    .interpolate('basis');
     
-    // for (var i = 0; i < self.components.securityLines.length; i++) {
-    //   self.components.securityLines[i] = self.components.securityLines[i]
-      
-    //   self.components.securityLines[i]
-    //   .attr('d', securityLine);
-    // }
+    for (var j = 0; j < self.components.securityLines.length; j++) {
+      self.components.securityLines[j]
+      .attr('d', securityLine);
+    }
 
     var sentimentLine = d3.svg.line()
     .x(function(d,i) { return x(d.timestamp); })
@@ -958,7 +955,7 @@ var SentimentChart = {
         .style('stroke');
       }
       function drawDotted (data) {
-        var dottedPath = chart.append('path')
+        var dottedPath = self.components.chart.append('path')
         .datum(data);
         self.components.securityLines.push(dottedPath);
         
