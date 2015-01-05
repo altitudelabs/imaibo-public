@@ -249,7 +249,7 @@ var IndexChart = {
       .text(function(d,i){
         var today = new Date();
 
-       if(today.getDate() < 10 && i == xLabelData.length-1){
+       if(today.getDate() < 10 && i === xLabelData.length-1){
           return '';
         }else{
           return Helper.toDate(d.rdate, 'yyyy/mm');
