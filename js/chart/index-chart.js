@@ -246,7 +246,14 @@ var IndexChart = {
       .attr('x', function(d,i){ return x(d.rdate); })
       .attr('y', height-margin.bottom+15)
       .attr('text-anchor', 'middle')
-      .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
+      .text(function(d,i){
+        var today = new Date();
+
+       if(today.getDate() < 10 && i == xLabelData.length-1){
+          return '';
+        }else{
+          return Helper.toDate(d.rdate, 'yyyy/mm');
+        } });
 
       //sentimetal rect bars
       gvolume
