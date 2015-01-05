@@ -1,5 +1,6 @@
 var IndexChart = {
   properties: {},
+  components: {},
   setProperties: function(options) {
     var properties = {
       height: 250,
@@ -42,7 +43,8 @@ var IndexChart = {
     .append('svg:svg')
     .attr('class', 'chart')
     .attr('id', 'graph')
-    .attr('height', height);
+    .attr('height', height)
+    .attr('width', graphWidth);
 
     $('#chart-container').slimScroll({
       height: (height+20).toString() + 'px',
@@ -55,7 +57,7 @@ var IndexChart = {
     .css('left', '45px')
     .css('width', chartWidth.toString() + 'px');
 
-    var chart_label = d3.select('#chart-label')
+    var chartLabel = d3.select('#chart-label')
     .append('svg:svg')
     .attr('class', 'chart')
     .attr('width', containerWidth + 120)
@@ -67,7 +69,7 @@ var IndexChart = {
     var y1 = ChartView.y1(data, height ,'moodindex');
     var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
 
-    // chart_label.append('svg:line')
+    // chartLabel.append('svg:line')
     // .attr('class', 'horizontal-line')
     // .attr('x1', margin.left)
     // .attr('x2', margin.left + chartWidth) //shift to the left
@@ -81,7 +83,7 @@ var IndexChart = {
     //    yPos = d3.mouse(this)[1];
     // });
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'xaxis')
     .attr('x1', margin.left)
     .attr('x2', margin.left + chartWidth) //shift to the left
@@ -90,7 +92,7 @@ var IndexChart = {
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'border-left')
     .attr('x1', margin.left)
     .attr('x2', margin.left)
@@ -99,7 +101,7 @@ var IndexChart = {
     .attr('stroke', '#464646')
     .attr('stroke-width', '2px');
 
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'border-right')
     .attr('x1', containerWidth - margin.right )
     .attr('x2', containerWidth - margin.right )
@@ -109,7 +111,7 @@ var IndexChart = {
     .attr('stroke-width', '2px');
 
     //top border
-    chart_label.append('svg:line')
+    chartLabel.append('svg:line')
     .attr('class', 'border-top')
     .attr('x1', margin.left)
     .attr('x2', containerWidth - margin.right )
@@ -119,7 +121,7 @@ var IndexChart = {
     .attr('stroke-width', '2px');
 
     // left y-axis labels
-    chart_label.append('g')
+    chartLabel.append('g')
     .attr('class','y1labels')
     .selectAll('text.yrule')
     .data(y1.ticks(5))
@@ -131,7 +133,7 @@ var IndexChart = {
     .text(String);
 
     // right y-axis labels
-    chart_label.append('g')
+    chartLabel.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
     .data(y2.ticks(5))
@@ -230,12 +232,13 @@ var IndexChart = {
     .attr('width', graphWidth);
     // .attr('height', height);
 
-
-    var chart_label = d3.select('#chart-label')
+    var chartLabel = d3.select('#chart-label')
     .attr('width', width)
     .select('svg')
     .attr('width', width);
     // .attr('height', height);
+
+    $('#chart-container').css('width', graphWidth);
 
 
     if(isNew){
