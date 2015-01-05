@@ -63,7 +63,8 @@ var ChartModel = {
     
     var self = this;
     var api;
-    if (initial) {
+    // if (initial) {
+    if (true) {
       api =  (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.sentimentData + self.api.jsonp;
       $.getJSON(api, function(sentimentData) {
         self.model.sentiment = sentimentData.data;
