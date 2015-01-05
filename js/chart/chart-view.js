@@ -126,22 +126,23 @@ var ChartView = {
         day = day.length < 2? '0'+day:day;
         today = year + month + day;
 
-      ChartModel.getIndexData(today, initial, function() {
-        ChartModel.getSentimentData(today, initial, function(isNewSentimentData){
-          self.data = ChartModel.model;
-          // if (isNewSentimentData) {
-          SentimentChart.init(initial);
-          // }
+    ChartModel.getIndexData(today, initial, function() {
+      ChartModel.getSentimentData(today, initial, function(hasNewSentimentData){
+        self.data = ChartModel.model;
+        // if (hasNewSentimentData) {
+        if (initial) {
+          SentimentChart.init();
+          Toolbar.render(self.data.daily);
+        } else {
+          SentimentChart.update(hasNewSentimentData);
+        }
 
-          IndexChart.init();
-          RsiChart.init();
-          MacdChart.init();
-          Dashboard.render(self.data.info);
-          if(initial) {
-            Toolbar.render(self.data.daily);
-          }
-        });
+        IndexChart.init();
+        RsiChart.init();
+        MacdChart.init();
+        Dashboard.render(self.data.info);
       });
+    });
   },
   redraw: function (zoomFactor) {
     zoomFactor = zoomFactor || 1;
@@ -150,15 +151,14 @@ var ChartView = {
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
     MacdChart.drawGraph(false);
-    // SentimentChart.drawGraph(false);
   },
   rebuild: function() {
     this.setProperties();
-    // IndexChart.init();
-    // RsiChart.init();
-    // MacdChart.init();
-    SentimentChart.init(false);
-    // this.redraw(true);
+    IndexChart.init();
+    RsiChart.init();
+    MacdChart.init();
+    SentimentChart.update();
+    this.redraw(true);
   },
   horizontalScroll: function () {
     'use strict';
