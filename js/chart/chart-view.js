@@ -154,6 +154,7 @@ var ChartView = {
   },
   rebuild: function() {
     this.setProperties();
+    $('.zoomable-chart-container').css('width', '100%');
     IndexChart.init();
     RsiChart.init();
     MacdChart.init();

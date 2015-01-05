@@ -624,7 +624,6 @@ var SentimentChart = {
     endTime = (endTime - endTime%1000)/1000;
     var endDate = new Date(endTime * 1000);
 
-
     //timeStampsArray will only be used to draw ordinal x axis
     var minMoodIndex = function (prop) { return d3.min(moodindexList.map(function(x) { return +x[prop]; })); },
     maxMoodIndex = function (prop) { return d3.max(moodindexList.map(function(x) { return +x[prop]; })); },
