@@ -31,6 +31,29 @@ Handlebars.registerHelper('isGreater', function(a, b, opts){
   return (a > b ? opts.fn(this): opts.inverse(this));
 });
 
+Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+    switch (operator) {
+        case '==':
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
+    }
+});
+
 Handlebars.registerHelper('toAbs', function(num){
   return Math.abs(num);
 });
@@ -63,12 +86,13 @@ Handlebars.registerHelper('formatWan', function(num, dp){
   return new Handlebars.SafeString(numberWithCommas(num/10000) + '万');
 });
 
-Handlebars.registerHelper('formatNumber', function(num, dp, addPlusSign){
+Handlebars.registerHelper('formatNumber', function(num, dp, addSign){
   if (typeof num === 'string') num = parseFloat(num);
 
   var numberWithCommas = function(x) {
     var prefix = '';
-    if (addPlusSign === 1 && x > 0) prefix = '+';
+    if (addSign === 1 && x > 0) prefix = '+';
+    if (addSign === 0 && x < 0) prefix = '-';
     return prefix + x.toFixed(dp).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 

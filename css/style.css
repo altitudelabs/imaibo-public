@@ -547,6 +547,11 @@ text.sentiment {
   border-radius: 2px;
 }
 
+.btn-buy a:hover,
+.btn-sell a:hover{
+  text-decoration: none;
+}
+
 .btn-buy:hover {
   background-color: #f77266;
 }

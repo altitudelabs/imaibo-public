@@ -9,6 +9,8 @@ var Dashboard = {
   render: function(model){
     var self = this;
 
+    model.moodindexInfo.change = parseFloat(model.moodindexInfo.change);
+
     // Render dashboard
     if (self.firstLoad){
       Helper.populateView('#dashboard','#dashboard-template', model);
@@ -72,6 +74,7 @@ var Dashboard = {
         maxY = 93,
         h = Math.min(Math.abs(before)/100*(maxY-minY)+minY,100);
 
+
     if(this.prevData.thermoH !== h){
       selector.animate({height: h + '%'}, 1000);
       this.prevData.thermoH = h;
@@ -93,6 +96,7 @@ var Dashboard = {
     var sign   = model.stockIndexInfo.sign;
     var latest = model.moodindexInfo.latest;
     var signal = model.tradingSign.signal;
+    var change = parseFloat(model.moodindexInfo.change);
 
     if(lastpx != this.prevData.lastpx){
       var orgColor = (sign === '+'? rise : fall);
@@ -104,8 +108,8 @@ var Dashboard = {
     }
 
     if(latest != this.prevData.latest){
-      var orgColor = (latest > 0 ? rise: fall);
-      var altColor = (latest > 0 ? riseLight: fallLight);
+      var orgColor = (change > 0 ? rise: fall);
+      var altColor = (change > 0 ? riseLight: fallLight);
       var targetId = '#dashboard-mood';
       this.prevData.latest = latest;
       this.glow(targetId, orgColor, altColor);
@@ -128,8 +132,9 @@ var Dashboard = {
       this.prevData.signal = signal;
       this.glow(targetId, orgColor, altColor);
     }
-
     if(!this.firstLoad && parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
+      $('#small-change').text(model.moodindexInfo.change);
+      $('#changes').text(model.moodindexInfo.change);
       if(IE8){
         $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"});
         setTimeout(function(){
@@ -141,9 +146,11 @@ var Dashboard = {
           $('#changes').animate({opacity: 0}, 1500);
         }, 8500); 
       }
+      this.renderThermoLiquid(model);
       this.prevData.change = model.moodindexInfo.change;
     } else {
       this.firstLoad = false;
+      this.prevData.change = model.moodindexInfo.change;
       this.prevData.before = model.moodindexInfo.before;
     }
   },

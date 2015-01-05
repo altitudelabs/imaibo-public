@@ -248,7 +248,6 @@ var IndexChart = {
       .attr('text-anchor', 'middle')
       .text(function(d,i){
         var today = new Date();
-
        if(today.getDate() < 10 && i === xLabelData.length-1){
           return '';
         }else{
@@ -414,6 +413,13 @@ var IndexChart = {
         .attr('fill', 'transparent');
       }
 
+      function updateMAValue(ma, data){
+          var toggled = $('#ma' + ma + '-checkbox').is(':checked');
+          if(toggled){
+            $('#ma' + ma + '-legend span').text('MA' + ma + ': ' + data);
+          }
+      }
+
     //tooltips
     tooltip
     // .attr('class', 'mouseover-overlay index')
@@ -445,6 +451,11 @@ var IndexChart = {
       var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
       var cursorPriceLevel = y2.invert((IE8?yPos-243:yPos));
       var d = data.daily.stockLine[j];
+
+      updateMAValue('5', d.ma5);
+      updateMAValue('10', d.ma10);
+      updateMAValue('20', d.ma20);
+      updateMAValue('60', d.ma60);
 
       // _.each(data.daily.stockLine, function(v){
       //   console.log(v.value);
