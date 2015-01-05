@@ -246,7 +246,19 @@ var IndexChart = {
       .attr('x', function(d,i){ return x(d.rdate); })
       .attr('y', height-margin.bottom+15)
       .attr('text-anchor', 'middle')
-      .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
+      .text(function(d,i){
+        var today = new Date();
+        var day = today.getDate().toString();
+            day = day.length < 2? '0'+day:day;
+        var year = today.getFullYear().toString();
+         var month = (today.getMonth()+1).toString();
+        month = month.length<2? '0' + month: month;
+        var date = year + month + day;
+       if(parseInt(day) < 10 && d.rdate.toString() === date.toString()){
+          return '';
+        }else{
+          return Helper.toDate(d.rdate, 'yyyy/mm');
+        } });
 
       //sentimetal rect bars
       gvolume
