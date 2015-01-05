@@ -110,11 +110,11 @@ var ChartView = {
     $('.loader').css('height', '441px');
     self.buildChartElements(true);
 
-    if(!IE8){ //app.js
-      setInterval(function(){
-        self.buildChartElements(false);
-      }, this.properties.refreshFrequency);
-    }
+    // if(!IE8){ //app.js
+    //   setInterval(function(){
+    //     self.buildChartElements(false);
+    //   }, this.properties.refreshFrequency);
+    // }
   },
   buildChartElements: function(initial) {
     var self  = this;
@@ -154,7 +154,7 @@ var ChartView = {
   },
   rebuild: function() {
     this.setProperties();
-    // IndexChart.init();
+    IndexChart.init();
     // RsiChart.init();
     // MacdChart.init();
     SentimentChart.init(false);
