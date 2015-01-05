@@ -178,18 +178,18 @@ var ChartView = {
 
     //should optimize should not
     // scrollDistance is stored to prevent bouncing back of zoomed chart during data update
-    $('.container').on('mousewheel', function (event){
+    $('#chart-container').on('mousewheel', function (event){
       event.preventDefault();
-      var original = $('.container').scrollLeft();
+      var original = $('#chart-container').scrollLeft();
       thisProperties.scrollDistance = original - event.originalEvent.deltaY;
-      $('.container').scrollLeft(thisProperties.scrollDistance);
+      $('#chart-container').scrollLeft(thisProperties.scrollDistance);
     });
 
-    $('.container').on('DOMMouseScroll', function (event){
+    $('#chart-container').on('DOMMouseScroll', function (event){
       event.preventDefault();
-      var original = $('.container').scrollLeft();
+      var original = $('#chart-container').scrollLeft();
       thisProperties.scrollDistance = original - event.originalEvent.detail * 20;
-      $('.container').scrollLeft(thisProperties.scrollDistance);
+      $('#chart-container').scrollLeft(thisProperties.scrollDistance);
     });
   },
 };
