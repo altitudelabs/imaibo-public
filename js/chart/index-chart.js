@@ -455,7 +455,6 @@ var IndexChart = {
     }
 
     //tooltips
-     //tooltips
     tooltip
     // .attr('class', 'mouseover-overlay index')
     .attr('fill-opacity', 0)
@@ -468,21 +467,19 @@ var IndexChart = {
     .on('mouseout', function(){
       return Tooltip.hide(); })
     .on('mousemove', function(){
-      var xPos;
-      var yPos;
-      var top;
-      var leftOffset;
+      var xPos, yPos, mouseX, mouseY;
     
-      if(IE8){
+      if(IE8) {
         xPos = event.clientX; 
         yPos = event.clientY;
-        top = yPos-243;
-        leftOffset = xPos-60;
-      }else{
+        mouseX = xPos;
+        mouseY = yPos;
+      }
+      else {
         xPos = d3.mouse(this)[0];
         yPos = d3.mouse(this)[1];
-        top = d3.event.layerY;
-        leftOffset = d3.event.layerX;
+        mouseX = d3.event.pageX;
+        mouseY = d3.event.pageY;
       }
       
       var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
@@ -497,8 +494,11 @@ var IndexChart = {
       d.moodindexchg = d.moodindexchg? d.moodindexchg : data.daily.stockLine[j].moodindex - data.daily.stockLine[j-1].moodindex;
 
       var model = {
-        top: top+40,
-        left: chartWidth-leftOffset>235 ? leftOffset+100 : leftOffset-175,
+        top: mouseY + 10,
+        // 10 = horizontal distance from mouse cursor
+        left: chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
+        // if the right edge touches the right y axis
+        // 180 = width of tooltip, 10 = vertical distance from cursor
         date: d.rdate,
         price: cursorPriceLevel,
         security: d,

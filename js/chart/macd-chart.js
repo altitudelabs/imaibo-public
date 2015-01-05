@@ -16,7 +16,7 @@ var MacdChart = {
     this.setProperties();
     this.drawContainer();
     this.drawGraph(true);
-    // this.initCloseAction();
+    this.initCloseAction();
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
@@ -144,25 +144,30 @@ var MacdChart = {
     .on('mouseout', function(){
       return Tooltip.hide(); })
     .on('mousemove', function(){
-      var eventX = event.clientX;
-      var leftOffset;
-      var xPos;
-      var top;
+      var xPos, mouseX, mouseY;
+
       if(IE8) {
+        /* TO BE FIXED: 
         xPos = eventX;
         leftOffset = eventX - 60;
         top = event.offsetY + ($('#rsi-checkbox').is(':checked')? 450:300);
-      }else{
-        xPos = d3.mouse(this)[0];
-        leftOffset = d3.event.clientX;
-        top = d3.event.pageY - 180;
+        */
       }
+      else {
+        xPos = d3.mouse(this)[0];
+        mouseX = d3.event.pageX;
+        mouseY = d3.event.pageY;
+      }
+
       var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
       var d = data.daily.stockLine[j];
 
       var model = {
-        top: top,
-        left: chartWidth-leftOffset>235 ? leftOffset+100 : leftOffset-175,
+        top: mouseY + 10,
+        // 10 = horizontal distance from mouse cursor
+        left: chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
+        // if the right edge touches the right y axis
+        // 180 = width of tooltip, 10 = vertical distance from cursor
         date: d.rdate,
         macd: d.macd,
         diff: d.diff,
