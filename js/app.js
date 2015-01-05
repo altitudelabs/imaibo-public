@@ -1,4 +1,4 @@
-var PRODUCTION = false;
+var PRODUCTION = true;
 // Hide Phase II features
 var HIDE = PRODUCTION;
 var IE8 = !!$('.lt-ie9').length;

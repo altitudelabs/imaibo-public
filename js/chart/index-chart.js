@@ -141,52 +141,6 @@ var IndexChart = {
     .attr('text-anchor', 'middle')
     .text(String);
 
-    $('.xlabels > text').click(function(){
-      // var x = this.getAttribute('x');
-      // $('#xlabelLine').remove();
-      // $('#xlabelLineActive').remove();
-      // chart.append('svg:line')
-      // .attr('class', 'xlabelLine')
-      // .attr('id', 'xlabelLine')
-      // .attr('x1', x)
-      // .attr('x2', x)
-      // .attr('y1', height-margin.bottom) //make it line up with the label
-      // .attr('y2', margin.top)
-      // .attr('stroke', '#44b6ea');
-
-      // chart.append('g')
-      // .attr('id','xlabelLineActive')
-      // .append('svg:rect')
-      // .attr('x', parseFloat(x) - 50)
-      // .attr('y', height-margin.top)
-      // .attr('height', 30)
-      // .attr('width',  100)
-      // .attr('fill', '#44b6ea')
-    });
-
-    $('.y2labels > text').click(function(){
-      $('#y2labelLine').remove();
-      $('#y2labelLineActive').remove();
-      var y = parseFloat(this.getAttribute('y')) - 5;
-
-      chart.append('g')
-      .attr('id','y2labelLineActive')
-      .append('svg:rect')
-      .attr('x', width-margin.right-5)
-      .attr('y', y-5)
-      .attr('height', 15)
-      .attr('width',  50)
-      .attr('fill', '#f65c4e')
-
-      chart.append('svg:line')
-      .attr('class', 'y2labelLine')
-      .attr('id', 'y2labelLine')
-      .attr('x1', margin.left-100)
-      .attr('x2', width - margin.right)
-      .attr('y1', y) //make it line up with the label
-      .attr('y2', y)
-      .attr('stroke', '#df5748');
-    });
 
     var latest_daily = data.slice(-1)[0];
 
@@ -379,15 +333,6 @@ var IndexChart = {
 
       });
 
-      //sentimentLine
-      plotLine('#25bcf1',  'sentimentLine');
-
-      //add all MA lines
-      plotLine('#fff',  'ma5');
-      plotLine('#d8db74', 'ma10');
-      plotLine('#94599d', 'ma20');
-      plotLine('#36973a', 'ma60');
-
       var line = d3.svg.line()
       .x(function(d, i){ return x(i); })
       .y(function(d){ return y2(0); });
@@ -407,7 +352,7 @@ var IndexChart = {
        *  - id: what you want to id your line as. Don't put '#'
        e.g 'ma5', 'ma10'. NOT 'ma5-line'
        */
-       function plotLine(color ,id){
+      function plotLine(color ,id){
         var _id = (id == 'sentimentLine'? 'sentimentLine': id+'-line'); // _id concats into, e.g, ma5-line
         var line = d3.svg.line()
         .x(function(d, i){ return x(i); })
@@ -435,6 +380,15 @@ var IndexChart = {
         }
 
       }
+
+      //sentimentLine
+      plotLine('#25bcf1',  'sentimentLine');
+
+      //add all MA lines
+      plotLine('#fff',  'ma5');
+      plotLine('#d8db74', 'ma10');
+      plotLine('#94599d', 'ma20');
+      plotLine('#36973a', 'ma60');
 
       if (isNew) {
         tooltip = chart.append('rect')

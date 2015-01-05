@@ -144,8 +144,10 @@ var ChartView = {
         }
 
         IndexChart.init();
-        RsiChart.init();
-        MacdChart.init();
+        if(!HIDE) {
+          RsiChart.init();
+          MacdChart.init();
+        }
         Dashboard.render(self.data.info);
       });
     });
