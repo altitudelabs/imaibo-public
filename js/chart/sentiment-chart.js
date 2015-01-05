@@ -346,10 +346,9 @@ var SentimentChart = {
               return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
             }
           }
-
-        } else if (xLabelInterval === 24) {
-          if ((d - 14400) % 86400 === 0) {
-            return date.getMonth()+1 + '/' + date.getDate();
+        } else if (xLabelInterval === 6) {
+          if ((d + 7200) % 21600 === 0) {
+            return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
           }
         }
 
@@ -826,10 +825,9 @@ var SentimentChart = {
             return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
           }
         }
-
-      } else if (xLabelInterval === 24) {
-        if ((d - 14400) % 86400 === 0) {
-          return date.getMonth()+1 + '/' + date.getDate();
+      } else if (xLabelInterval === 6) {
+        if ((d + 7200) % 21600 === 0) {
+          return date.getDate() + '-' + date.getHours() + ':0' + date.getMinutes();
         }
       }
 
