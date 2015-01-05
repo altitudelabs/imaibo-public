@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 5000
+    refreshFrequency: 10000
   },
   setProperties: function (options) {
     var self = this;
@@ -155,6 +155,7 @@ var ChartView = {
   redraw: function (zoomFactor) {
     zoomFactor = zoomFactor || 1;
     this.properties.zoomFactor *= zoomFactor;
+    this.properties.zoomFactor = max(this.properties.zoomFactor, 1);
     $('.zoomable-chart-container').css('width', '100%');
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);

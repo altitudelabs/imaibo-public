@@ -136,9 +136,10 @@ var Dashboard = {
           $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"});
         }, 1000);
       }else{
-        $('#changes').animate({opacity: 1}, 10000, function(){
-          $('#changes').animate({opacity: 0}, 300);
-        });
+        $('#changes').animate({opacity: 1}, 500);
+        setTimeout(function(){
+          $('#changes').animate({opacity: 0}, 1500);
+        }, 8500); 
       }
       this.prevData.change = model.moodindexInfo.change;
     } else {
