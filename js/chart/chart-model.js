@@ -63,6 +63,9 @@ var ChartModel = {
       api = self.api.base + self.api.sentimentData + self.api.jsonp;
       $.getJSON(api, function(sentimentData) {
         self.model.sentiment = sentimentData.data;
+
+        self.model.sentiment.moodindexList = self.model.sentiment.moodindexList;
+        
         self.tryRemoveLoaders();
         callback(true);
       });
