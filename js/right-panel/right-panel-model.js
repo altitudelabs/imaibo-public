@@ -49,7 +49,7 @@ var RightPanelModel = {
   },
   getNewsData: function(successHandler){
   },
-  getStockData: function(){
+  getStockData: function(successHandler){
     var self = this;
     $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
         self.model.stock = stockData.data;
@@ -66,6 +66,8 @@ var RightPanelModel = {
         }
         $('#stockpicker-view').css('opacity', '1');
         $('.panel-loader').remove();
+
+        successHandler();
     });
   },
   // Experts tab: Handles user like action
