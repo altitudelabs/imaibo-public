@@ -156,12 +156,13 @@ var ChartView = {
   },
   redraw: function (zoomFactor) {
     zoomFactor = zoomFactor || 1;
-    this.properties.zoomFactor *= zoomFactor;
-    this.properties.zoomFactor = max(this.properties.zoomFactor, 1);
+    this.properties.zoomFactor = zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
     $('.zoomable-chart-container').css('width', '100%');
     IndexChart.drawGraph(false);
     RsiChart.drawGraph(false);
     MacdChart.drawGraph(false);
+    $('#chart-container').scrollLeft(this.properties.scrollDistance);
+
   },
   rebuild: function() {
     this.setProperties();
@@ -174,22 +175,23 @@ var ChartView = {
   },
   horizontalScroll: function () {
     'use strict';
-    var thisProperties = this.properties;
+
+    var self = this;
 
     //should optimize should not
     // scrollDistance is stored to prevent bouncing back of zoomed chart during data update
     $('#chart-container').on('mousewheel', function (event){
       event.preventDefault();
       var original = $('#chart-container').scrollLeft();
-      thisProperties.scrollDistance = original - event.originalEvent.deltaY;
-      $('#chart-container').scrollLeft(thisProperties.scrollDistance);
+      self.properties.scrollDistance = original;
+      $('#chart-container').scrollLeft(self.properties.scrollDistance - event.originalEvent.deltaY);
     });
 
     $('#chart-container').on('DOMMouseScroll', function (event){
       event.preventDefault();
       var original = $('#chart-container').scrollLeft();
-      thisProperties.scrollDistance = original - event.originalEvent.detail * 20;
-      $('#chart-container').scrollLeft(thisProperties.scrollDistance);
+      self.properties.scrollDistance = original;
+      $('#chart-container').scrollLeft(self.properties.scrollDistance - event.originalEvent.detail * 20);
     });
   },
 };
