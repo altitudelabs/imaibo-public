@@ -607,6 +607,7 @@ text.sentiment {
 
 .sentiment-tooltip {
   color: white;
+  width: 180px;
 }
 
 .sentiment-tooltip .mood {
@@ -669,7 +670,7 @@ text.sentiment {
 .tooltip-date {
   background-color: #666;
   padding: 5px 3px 5px 3px;
-  width: 150px;
+  width: 180px;
 }
 
 .news-bubble {

@@ -470,11 +470,11 @@ var SentimentChart = {
                         '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                         '<div class="wrapper">' +
                           '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
-                          '<div>' +
-                            '<div class="arrow ' + arrow + '">                     </div>' +
-                            '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
-                            '<div class="extra ' + show_extra + '">...</div>' +
-                          '</div>' +
+                          // '<div>' +
+                          //   '<div class="arrow ' + arrow + '">                     </div>' +
+                          //   '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
+                          //   '<div class="extra ' + show_extra + '">...</div>' +
+                          // '</div>' +
                         '</div>' +
                      '</div>')
         .style('left', xPos + 'px')
