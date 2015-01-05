@@ -80,12 +80,16 @@ var RightPanel = {
     .done(function(headlineModel, model){
       var experts = self.states.expertsView;
 
+      var isEmpty = RightPanelModel.model.experts.list.length == 0;
+
       // Populate views
-      self.populateView(experts.el, experts.template, RightPanelModel.model.experts);
-      self.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
+      Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
+      Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
       // Init experts modal
-      $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
+      if(!isEmpty){
+        $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
+      }
 
       // Init like comments action
       $('.experts-like-action').click(function(e){

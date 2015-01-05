@@ -36,13 +36,15 @@ var ChartModel = {
       if(initial){ 
         self.model.daily  = dailyData.data.daily;
         //API returns data in descending order
-        self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
+        if(self.model.daily.stockLine[0].timestamp != dailyData.data.latestPrice.timestamp) {
+          self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
+        }
         self.model.daily.stockLine.reverse();       
       }else{
         var latestPrice = dailyData.data.latestPrice;
         var lastData    = self.model.daily.stockLine.slice(-1).pop();
 
-        if(lastData.timestamp !== dailyData.data.latestPrice.timestamp){
+        if(lastData && lastData.timestamp !== dailyData.data.latestPrice.timestamp){
           self.model.daily.stockLine.push(dailyData.data.latestPrice);
         }
       } 

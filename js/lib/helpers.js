@@ -103,14 +103,15 @@ var Helper = {
      *  - template_id: id template. i.e. '#experts-template'
      *  - resource: the data you are passing in. e.g. {name: 'Ray'}
      */
-    function (target_id, template_id, resource){
-      var target_selector = $(target_id);
-      var template_selector = $(template_id);
-      var template = Handlebars.compile(template_selector.html());
+    function (targetId, templateId, resource){
+      var targetSelector = $(targetId);
+      var templateSelector = $(templateId);
+      var template = Handlebars.compile(templateSelector.html());
+      console.log(resource);
       if(resource.constructor === Array){
-        target_selector.html(template({data: resource}));
+        targetSelector.html(template({data: resource}));
       }else{
-        target_selector.html(template(resource));
+        targetSelector.html(template(resource));
       }
     }
 }

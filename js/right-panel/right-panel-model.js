@@ -53,7 +53,11 @@ var RightPanelModel = {
     $.getJSON(this.baseUrl + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
         self.model.stock = stockData.data;
         var stock = RightPanel.states.chooseStockView;
-        RightPanel.populateView(stock.table, stock.template, self.model.stock.list);
+        if(self.model.stock.list.length != 0 ){
+          RightPanel.populateView(stock.table, stock.template, self.model.stock.list);
+        }else{
+          $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+        }
         if(self.model.stock.isLogin){
           $('#stock-login').remove();
           $('#suggestion').remove();

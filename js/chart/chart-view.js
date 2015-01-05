@@ -110,11 +110,14 @@ var ChartView = {
     $('.loader').css('height', '441px');
     self.buildChartElements(true);
 
-    if(!IE8){ //app.js
-      setInterval(function(){
-        self.buildChartElements(false);
-      }, this.properties.refreshFrequency);
-    }
+    //potential problem: initially empty data, display empty chart.
+    // fetches new data, not empty. what do
+
+    // if(!IE8){ //app.js
+    //   setInterval(function(){
+    //     self.buildChartElements(false);
+    //   }, this.properties.refreshFrequency);
+    // }
   },
   buildChartElements: function(initial) {
     var self  = this;
@@ -129,10 +132,12 @@ var ChartView = {
     ChartModel.getIndexData(today, initial, function() {
       ChartModel.getSentimentData(today, initial, function(hasNewSentimentData){
         self.data = ChartModel.model;
+
+        var stockLine = self.data.daily.stockLine;
         // if (hasNewSentimentData) {
         if (initial) {
           SentimentChart.init();
-          Toolbar.render(self.data.daily);
+          if(stockLine.length === 0) { $('#toolbar').remove(); }
         } else {
           SentimentChart.update(hasNewSentimentData);
         }
