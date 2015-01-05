@@ -15,7 +15,11 @@ $(function(){
   RightPanel.init();
 
   // Sets up sticky left and right columns
-  $('#right-panel, #content').stick_in_parent({ recalc_every: 1 });
+  $('#right-panel, #content').stick_in_parent();
+  setInterval(function() {
+    $('#right-panel, #content').trigger('sticky_kit:recalc');
+    $('.container').scrollLeft(ChartView.properties.scrollDistance);
+  }, 1000);
 
   // Hides certain features
   if(HIDE){
