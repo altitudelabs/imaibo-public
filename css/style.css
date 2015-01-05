@@ -62,7 +62,6 @@ input[type="checkbox"] + label span {
     vertical-align: middle;
     width: 16px;
     height: 16px;
-    background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
     background-position: 0px -25px;
     margin-top: -5px;
     margin-right: 5px;
@@ -70,7 +69,6 @@ input[type="checkbox"] + label span {
 }
 
 input[type="checkbox"]:checked + label span {
-    background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
     background-position: 0px 0px;
 }
 
@@ -1777,32 +1775,26 @@ input[type="radio"]:checked + label {
 }
 
 #minute-radio + label span {
-  background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
   background-position: 0px -152px;
 }
 
 #minute-radio:checked + label span {
-    background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
     background-position: 0px -129px;
 }
 
 #day-radio + label span {
-  background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
   background-position: 0px -106px;
 }
 
 #day-radio:checked + label span {
-    background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
     background-position: 0px -83px;
 }
 
 #week-radio + label span {
-  background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
   background-position: 0px -198px;
 }
 
 #week-radio:checked + label span {
-    background:url('../assets/mb-spritesheet.png') bottom left no-repeat;
     background-position: 0px -175px;
 }
 
