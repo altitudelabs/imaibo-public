@@ -21,7 +21,7 @@ var RsiChart = {
     this.setProperties();
     this.drawContainer();
     this.drawGraph(true);
-
+    this.initCloseAction();
     // this.properties.largestAbs = d3.max(data.daily.stockLine.map(function(x) {
     //   return max(
     //     max(Math.abs(+x.rsi6),
@@ -29,8 +29,9 @@ var RsiChart = {
     //         Math.abs(+x.rsi24)
     //   );
     // }));
-
-  $('#rsi > .wrapper > .buttons > .close').on('click', function() {
+  },
+  initCloseAction: function() {
+    $('#rsi > .wrapper > .buttons > .close').on('click', function() {
       $('#rsi').slideUp(500);
       $('#rsi-checkbox').attr('checked', false);
     });
@@ -127,26 +128,30 @@ var RsiChart = {
     .on('mouseout', function(){
         return Tooltip.hide(); })
     .on('mousemove', function(){
-      var eventX = event.clientX;
-      var leftOffset;
-      var xPos;
-      var top;
-      if($('.lt-ie9').length) {
+      var xPos, mouseX, mouseY;
+
+      if(IE8) {
+        /* TO BE FIXED:
         xPos = eventX;
         leftOffset = eventX - 60;
         top = event.offsetY + 300;
-      }else{
+        */
+      }
+      else {
         xPos = d3.mouse(this)[0];
-        leftOffset = d3.event.clientX;
-        top = d3.event.pageY - 180;
+        mouseX = d3.event.pageX;
+        mouseY = d3.event.pageY;
       }
       
-      var j = ChartView.xInverse(($('.lt-ie9').length==0?xPos:xPos-55), x);
+      var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
       var d = data.daily.stockLine[j];
 
       var model = {
-        top: top,
-        left: chartWidth-leftOffset>235 ? leftOffset+100 : leftOffset-175,
+        top: mouseY + 10,
+        // 10 = horizontal distance from mouse cursor
+        left: chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
+        // if the right edge touches the right y axis
+        // 180 = width of tooltip, 10 = vertical distance from cursor
         date: Helper.toDate(d.rdate),
         rsi6: d.rsi6,
         rsi12: d.rsi12,
