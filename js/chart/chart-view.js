@@ -113,11 +113,11 @@ var ChartView = {
     //potential problem: initially empty data, display empty chart.
     // fetches new data, not empty. what do
 
-    // if(!IE8){ //app.js
-    //   setInterval(function(){
-    //     self.buildChartElements(false);
-    //   }, this.properties.refreshFrequency);
-    // }
+    if(!IE8){ //app.js
+      setInterval(function(){
+        self.buildChartElements(false);
+      }, this.properties.refreshFrequency);
+    }
   },
   buildChartElements: function(initial) {
     var self  = this;
