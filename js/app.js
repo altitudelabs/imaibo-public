@@ -1,10 +1,11 @@
 var PRODUCTION = false;
 // Hide Phase II features
-var HIDE = true;
+var HIDE = false;
 var IE8 = !!$('.lt-ie9').length;
 
 $(function(){
   'use strict';
+
   // Sets up routing logic for left content panel
   ContentView.init();
 
@@ -16,10 +17,6 @@ $(function(){
 
   // Sets up sticky left and right columns
   $('#right-panel, #content').stick_in_parent();
-  setInterval(function() {
-    $('#right-panel, #content').trigger('sticky_kit:recalc');
-    $('.container').scrollLeft(ChartView.properties.scrollDistance);
-  }, 1000);
 
   // Hides certain features
   if(HIDE){

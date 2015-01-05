@@ -68,14 +68,22 @@ var RightPanel = {
     }, 400);
   },
   init: function(){
-    var self = this;
     this.initLinks();
     this.render();
+    this.initStockpickerModule();
+    this.initExpertsModule();
+  },
+  initStockpickerModule: function(){
+    var self = this;
+    if (!HIDE) {
+      RightPanelModel.getStockData(function(){
+        self.refreshStickyColumns();
+      });
+    }
+  },
+  initExpertsModule: function(){
+    var self = this;
 
-    // Init stockpicker module
-    if (!HIDE) RightPanelModel.getStockData();
-
-    // Init experts module
     $.when(RightPanelModel.getExpertHeadlineAsync(), RightPanelModel.getExpertDataAsync())
     .done(function(headlineModel, model){
       var experts = self.states.expertsView;
@@ -90,6 +98,9 @@ var RightPanel = {
       if(!isEmpty){
         $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
       }
+
+      // Refresh sticky columns positions
+      self.refreshStickyColumns();
 
       // Init like comments action
       $('.experts-like-action').click(function(e){
@@ -112,6 +123,10 @@ var RightPanel = {
       $('#experts-view').css('visibility', 'visible');
       $('.panel-loader').remove();
     });
+  },
+  refreshStickyColumns: function() {
+    $('#right-panel, #content').trigger('sticky_kit:recalc');
+    $('.container').scrollLeft(ChartView.properties.scrollDistance);
   },
   render: function(){
     if(HIDE){ //app.js
@@ -152,10 +167,12 @@ var RightPanel = {
 
   },
   goTo: function(toState){
+    var self = this;
     _.each(this.states, function(state, stateName){
       if(stateName === toState) {
         state.link.addClass('active');
         state.el.show();
+        self.refreshStickyColumns();
       } else {
         state.link.removeClass('active');
         state.el.hide();
