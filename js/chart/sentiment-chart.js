@@ -307,8 +307,10 @@ var SentimentChart = {
           if (new Date(currentTimeStamp*1000).getHours() === 17) {
             currentTimeStamp += 3540;
           } else {
-            currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            currentTimeStamp += 9000;
+            // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
+            // currentTimeStamp += 9000;
+            currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
+            currentTimeStamp += 57400;
           }
           endTime = currentTimeStamp;
         }
@@ -577,16 +579,16 @@ var SentimentChart = {
       drawLinear(data.slice(start, data.length-1)); //last bit of data
 
       // last dotted line if no real data for longer than a minute
-      var lastData = data[data.length-1];
-      var currentTime = new Date().getTime();
-      currentTime = (currentTime - currentTime%1000)/1000;
-      currentTime = currentTime - (currentTime%60);
-      if (!!lastData && currentTime - lastData.timestamp > 60) {
-        drawDotted([lastData, {
-          timestamp: currentTime,
-          price: lastData.price
-        }]);
-      }
+      // var lastData = data[data.length-1];
+      // var currentTime = new Date().getTime();
+      // currentTime = (currentTime - currentTime%1000)/1000;
+      // currentTime = currentTime - (currentTime%60);
+      // if (!!lastData && currentTime - lastData.timestamp > 60) {
+      //   drawDotted([lastData, {
+      //     timestamp: currentTime,
+      //     price: lastData.price
+      //   }]);
+      // }
 
       function drawLinear (data) {
         var linearPath = chart.append('path')
@@ -902,8 +904,10 @@ var SentimentChart = {
           if (new Date(currentTimeStamp*1000).getHours() === 17) {
             currentTimeStamp += 3540;
           } else {
-            currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            currentTimeStamp += 9000;
+            currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
+            currentTimeStamp += 57400;
+            // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
+            // currentTimeStamp += 9000;
           }
           endTime = currentTimeStamp;
         }
@@ -986,16 +990,16 @@ var SentimentChart = {
       }
       drawLinear(data.slice(start, data.length-1)); //last bit of data
       // last dotted line if no real data for longer than a minute
-      var lastData = data[data.length-1];
-      var currentTime = new Date().getTime();
-      currentTime = (currentTime - currentTime%1000)/1000;
-      currentTime = currentTime - (currentTime%60);
-      if (!!lastData && currentTime - lastData.timestamp > 60) {
-        drawDotted([lastData, {
-          timestamp: currentTime,
-          price: lastData.price
-        }]);
-      }
+      // var lastData = data[data.length-1];
+      // var currentTime = new Date().getTime();
+      // currentTime = (currentTime - currentTime%1000)/1000;
+      // currentTime = currentTime - (currentTime%60);
+      // if (!!lastData && currentTime - lastData.timestamp > 60) {
+      //   drawDotted([lastData, {
+      //     timestamp: currentTime,
+      //     price: lastData.price
+      //   }]);
+      // }
 
       function drawLinear (data) {
         var linearPath = self.components.chart.append('path')
