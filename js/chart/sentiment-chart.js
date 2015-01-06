@@ -21,7 +21,11 @@ var SentimentChart = {
     this.setProperties();
     this.updateData();
     this.drawContainer();
-    this.drawGraph();
+    if(ChartView.data.sentimentError) {
+      $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
+    }else{
+      this.drawGraph();
+    }
   },
   update: function (hasNewData) {
     'use strict';
@@ -29,11 +33,11 @@ var SentimentChart = {
       this.updateData();
     }
     this.updateContainer();
-    this.updateGraph(hasNewData);
+    if(!ChartView.data.sentimentError) this.updateGraph(hasNewData);
   },
   updateData: function () {
     'use strict';
-
+    if(ChartView.data.sentimentError) return;
     var self = this;
     var moodindexList = ChartView.data.sentiment.moodindexList;
     var indexList = ChartView.data.sentiment.indexList;
@@ -65,8 +69,6 @@ var SentimentChart = {
 
     var height = this.properties.height;
     var chartHeight = height - margin.top - margin.bottom;
-
-    var isEmpty = self.data.moodindexList.length == 0;
 
     var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
     var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
@@ -154,7 +156,7 @@ var SentimentChart = {
     .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
-    if(!isEmpty) {
+    if(!ChartView.data.sentimentError) {
       self.components.y1Labels
       .attr('class','y1labels')
       .enter().append('svg:text')
@@ -234,12 +236,6 @@ var SentimentChart = {
 
     var moodindexList = self.data.moodindexList;
     var indexList = self.data.indexList;
-    var isEmpty = moodindexList.length == 0;
-
-
-    if(isEmpty) {
-      $('#sentiment-chart-container').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
-    }
 
     //filtering out non trading days
     moodindexList = moodindexList.filter(function (x) {
@@ -364,10 +360,8 @@ var SentimentChart = {
             // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
             // currentTimeStamp += 9000;
             currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            console.log(new Date(currentTimeStamp*1000));
 
             currentTimeStamp += 62400;
-            console.log(new Date(currentTimeStamp*1000));
           }
           endTime = currentTimeStamp;
         }

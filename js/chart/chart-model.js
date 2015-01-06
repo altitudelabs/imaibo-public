@@ -4,6 +4,8 @@ var ChartModel = {
     daily:        {},
     minute:       {},
     sentiment:    {},
+    indexError:   true,
+    sentimentError: true,
     dataReceived: 0
   },
   api: {
@@ -32,25 +34,29 @@ var ChartModel = {
         api += self.api.latest + '&info=1&trading=1' 
         api += self.api.jsonp;
     $.getJSON(api, function(dailyData) {
-      self.model.info   = dailyData.data.info;
-      self.model.minute = dailyData.data.minute;
+      // dailyData = { data: {indexList: [{yo: 1}]}};
+      self.errorCheck(self.api.indexData, dailyData);
+      if(!self.model.indexError) {
+        self.model.info   = dailyData.data.info;
+        self.model.minute = dailyData.data.minute;
 
-      if(initial){ 
-        self.model.daily  = dailyData.data.daily;
+        if(initial){ 
+          self.model.daily  = dailyData.data.daily;
         //API returns data in descending order
-        if(self.model.daily.stockLine[0].timestamp != dailyData.data.latestPrice.timestamp) {
-          self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
-        }
-        self.model.daily.stockLine.reverse();       
-      }else{
-        var latestPrice = dailyData.data.latestPrice;
-        var lastData    = self.model.daily.stockLine.slice(-1).pop();
+          if(self.model.daily.stockLine[0].timestamp != dailyData.data.latestPrice.timestamp) {
+            self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
+          }
+          self.model.daily.stockLine.reverse();       
+        }else{
+          var latestPrice = dailyData.data.latestPrice;
+          var lastData    = self.model.daily.stockLine.slice(-1).pop();
 
-        if(lastData && lastData.timestamp !== dailyData.data.latestPrice.timestamp){
-          self.model.daily.stockLine.push(dailyData.data.latestPrice);
-        }
-      } 
+          if(lastData && lastData.timestamp !== dailyData.data.latestPrice.timestamp){
+            self.model.daily.stockLine.push(dailyData.data.latestPrice);
+          }
+        } 
 
+      }
       self.tryRemoveLoaders();
 
       // self.randomize();
@@ -67,10 +73,14 @@ var ChartModel = {
     if (true) {
       api =  (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.sentimentData + self.api.jsonp;
       $.getJSON(api, function(sentimentData) {
-        self.model.sentiment = sentimentData.data;
+        // sentimentData = { data: {indexList: [{yo: 1}]}};
+        self.errorCheck(self.api.sentimentData, sentimentData);
+        if(!self.model.sentimentError) {
+          self.model.sentiment = sentimentData.data;
 
-        self.model.sentiment.moodindexList = self.model.sentiment.moodindexList;
-        
+          self.model.sentiment.moodindexList = self.model.sentiment.moodindexList;
+          
+        }
         self.tryRemoveLoaders();
         callback(true);
       });
@@ -90,12 +100,65 @@ var ChartModel = {
         callback(isNewData);
       });
     }
-    // $.getJSON('http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate='+ date +'&callback=?', function(sentimentData) {
-    // $.getJSON(api, function(sentimentData) {
-    //   self.model.sentiment = sentimentData.data;
-    //   self.tryRemoveLoaders();
-    //   callback();
-    // });
+  },
+  errorCheck: function(api, json) {
+    function isObject(val) {
+      if (val === null) { return false;}
+      return typeof val === 'object';
+    }
+    if(api === this.api.sentimentData) {
+      //do not use (!json.data)
+      //cases such as empty string '' will be falsely accepted
+      if(json.data === undefined){
+        this.log(0, api + ' has no \'data\'');
+      }else if(!isObject(json.data)){
+        this.log(0, api + ' "data" variable is not an object');
+      }else if(json.data.indexList === undefined){
+        this.log(0, api + ' data.indexList does not exist');
+      }else if(json.data.indexList.constructor !== Array){
+        this.log(0, api + ' data.indexList is not an array');
+      }else if(json.data.indexList.length === 0){
+        this.log(0, api + ' array data.indexList is empty');
+      }else if(json.data.indexList[0].price === undefined){
+        this.log(0, api + ' data.indexList does not have variable "price"');
+      }else if(json.data.indexList[0].volumn === undefined){
+        this.log(0, api + ' data.indexList does not have variable "volumn"');
+      }else if(json.data.indexList[0].timestamp === undefined){
+        this.log(0, api + ' data.indexList does not have variable "timestamp"');
+      }else if(json.data.indexList[0].rdate === undefined){
+        this.log(0, api + ' data.indexList does not have variable "rdate"');
+      }else {
+        this.model.sentimentError = false;
+      }
+      if(json.data.moodindexList === undefined){
+        this.log(0, api + ' data.moodindexList does not exist');
+      }
+    }
+
+    if(api === this.api.indexData){
+      if(json.data === undefined){
+        this.log(0, api + ' has no \'data\'');
+      }else if(!isObject(json.data)){
+        this.log(0, api + ' "data" variable is not an object');
+      }else if(json.data.info === undefined){
+        this.log(0, api + ' data.info does not exist');
+      }else if(json.data.info.stockIndexInfo === undefined){
+        this.log(0, api + ' data.info.stockIndexInfo does not exist');
+      }else if(json.data.info.moodindexInfo === undefined){
+        this.log(0, api + ' data.info.moodindexInfo does not exist');
+      }else if(json.data.info.tradingSign === undefined){
+        this.log(0, api + ' data.info.tradingSign does not exist');
+      }else if(json.data.daily === undefined){
+        this.log(0, api + ' data.daily does not exist');
+      }else {
+        this.model.indexError = false;
+      }
+    }
+  },
+  log: function(code, message) {
+    if(PRODUCTION) return;
+    var now = new Date();
+    console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
   showContent: function(){
     $('#price').css('visibility', 'visible');

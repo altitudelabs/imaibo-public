@@ -15,7 +15,7 @@ var MacdChart = {
   init: function(){
     this.setProperties();
     this.drawContainer();
-    this.drawGraph(true);
+    if(!ChartView.data.indexError) this.drawGraph(true);
     this.initCloseAction();
   },
   initCloseAction: function(){
@@ -247,7 +247,7 @@ var MacdChart = {
     .attr('stroke', '#464646');
 
     var data = ChartView.data;
-
+    if(data.indexError) return;
     var y1Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
     var y2Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 

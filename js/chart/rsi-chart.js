@@ -20,7 +20,7 @@ var RsiChart = {
   init: function() {
     this.setProperties();
     this.drawContainer();
-    this.drawGraph(true);
+    if(!ChartView.data.indexError) this.drawGraph(true);
     this.initCloseAction();
     // this.properties.largestAbs = d3.max(data.daily.stockLine.map(function(x) {
     //   return max(
@@ -179,8 +179,6 @@ var RsiChart = {
     var chartHeight = height - margin.top - margin.bottom;
     var interval = this.properties.interval;
 
-    var isEmpty = data.daily.stockLine.length == 0;
-
     var chart = d3.select('#rsi-chart')
     .append('svg:svg')
     .attr('class', 'chart')
@@ -204,6 +202,8 @@ var RsiChart = {
     // .css('left', '45px')
     // .css('width', chartWidth.toString() + 'px');
 
+    if(ChartView.data.indexError) return;
+
     //vertical aligning the lines in the middle
     this.properties.largestAbs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));
 
@@ -215,7 +215,6 @@ var RsiChart = {
 
     var x = ChartView.x(data, 'rdate');
 
-    if(!isEmpty){
     chartLabel.append('g')
     .attr('class','y2labels')
     .selectAll('text.yrule')
@@ -226,8 +225,6 @@ var RsiChart = {
     .attr('y', y2)
     .attr('text-anchor', 'middle')
     .text(String);
-    }
-
 
     chartLabel.append('svg:line')
     .attr('class', 'guideline-70')
@@ -243,38 +240,6 @@ var RsiChart = {
     .attr('x2', chartWidth + margin.left)
     .attr('y1', y2(30))
     .attr('y2', y2(30))
-    .attr('stroke', '#464646');
-
-    chartLabel.append('svg:line')
-    .attr('class', 'xborder-top-thick')
-    .attr('x1', margin.left)
-    .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.top)
-    .attr('y2', margin.top)
-    .attr('stroke', '#464646');
-
-    chartLabel.append('svg:line')
-    .attr('class', 'yborder-left')
-    .attr('x1', margin.left)
-    .attr('x2', margin.left)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', margin.top)
-    .attr('stroke', '#464646');
-
-    chartLabel.append('svg:line')
-    .attr('class', 'yborder-right')
-    .attr('x1',  chartWidth + margin.left)
-    .attr('x2',  chartWidth + margin.left)
-    .attr('y1',  chartHeight - margin.bottom)
-    .attr('y2',  margin.top)
-    .attr('stroke', '#464646');
-
-    chartLabel.append('svg:line')
-    .attr('class', 'xaxis')
-    .attr('x1', margin.left)
-    .attr('x2', chartWidth + margin.left)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', chartHeight - margin.bottom)
     .attr('stroke', '#464646');
   },
 };

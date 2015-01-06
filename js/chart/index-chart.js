@@ -15,7 +15,11 @@ var IndexChart = {
   init: function () {
     this.setProperties();
     this.drawContainer();
-    this.drawGraph(true);
+    if(!ChartView.data.indexError){
+      this.drawGraph(true);
+    }else if($('#index-no-data').length == 0){
+      $('#chart-container').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
+    }
   },
   drawContainer: function () {
     $('#chart').empty();
@@ -62,9 +66,8 @@ var IndexChart = {
 
     data = ChartView.data.daily.stockLine;
 
-    var x = ChartView.x(data, 'rdate');
-    var y1 = ChartView.y1(data, height ,'moodindex');
-    var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
+    // var x = ChartView.x(data, 'rdate');
+    
 
     // chart_label.append('svg:line')
     // .attr('class', 'horizontal-line')
@@ -117,34 +120,36 @@ var IndexChart = {
     .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
-    // left y-axis labels
-    chart_label.append('g')
-    .attr('class','y1labels')
-    .selectAll('text.yrule')
-    .data(y1.ticks(5))
-    .enter().append('svg:text')
-    .attr('class', 'yrule')
-    .attr('x', margin.left - 15)
-    .attr('y', y1)
-    .attr('text-anchor', 'middle')
-    .style('fill','rgb(129, 129, 129)')
-    .text(String);
+    if(!ChartView.data.indexError) {
+      var y1 = ChartView.y1(data, height ,'moodindex');
+      var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
+      // left y-axis labels
+      chart_label.append('g')
+      .attr('class','y1labels')
+      .selectAll('text.yrule')
+      .data(y1.ticks(5))
+      .enter().append('svg:text')
+      .attr('class', 'yrule')
+      .attr('x', margin.left - 15)
+      .attr('y', y1)
+      .attr('text-anchor', 'middle')
+      .style('fill','rgb(129, 129, 129)')
+      .text(String);
 
-    // right y-axis labels
-    chart_label.append('g')
-    .attr('class','y2labels')
-    .selectAll('text.yrule')
-    .data(y2.ticks(5))
-    .enter().append('svg:text')
-    .attr('class', 'yrule')
-    .attr('x', containerWidth-margin.right + 18)
-    .attr('y', y2)
-    .attr('text-anchor', 'middle')
-    .style('fill','rgb(129, 129, 129)')
-    .text(String);
+      // right y-axis labels
+      chart_label.append('g')
+      .attr('class','y2labels')
+      .selectAll('text.yrule')
+      .data(y2.ticks(5))
+      .enter().append('svg:text')
+      .attr('class', 'yrule')
+      .attr('x', containerWidth-margin.right + 18)
+      .attr('y', y2)
+      .attr('text-anchor', 'middle')
+      .style('fill','rgb(129, 129, 129)')
+      .text(String);
+    }
 
-
-    var latest_daily = data.slice(-1)[0];
 
     // Update MA labels
     // pointless to update to the same thing everytime, so I comment them out
@@ -154,6 +159,7 @@ var IndexChart = {
     //$('#ma5-label').text(' MA5');
   },
   drawGraph: function(isNew) {
+
     // $('#chart').empty();
     // $('#chart-label').empty();
 
@@ -523,10 +529,6 @@ var IndexChart = {
       .style('fill', 'white');
         return Tooltip.render.index(model);
       });
-
-    }
-    if(isEmpty && $('#index-no-data').length == 0){
-      $('#chart-container').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
     }
   },
 

@@ -110,6 +110,10 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     $('.loader').css('height', '441px');
     self.buildChartElements(true);
+    if(!PRODUCTION) {
+      console.log('%c Developer Mode Enabled. ', 'background: #222; color: #bada55;  font-size: 4em;');
+      console.log('%c 如看见这信息，请与我们的团队联络。If you see this message, please contact our technical team.', 'color: red;  font-size: 2em;');
+    }
 
     //potential problem: initially empty data, display empty chart.
     // fetches new data, not empty. what do
@@ -118,6 +122,13 @@ var ChartView = {
       setInterval(function(){
         self.buildChartElements(false);
       }, this.properties.refreshFrequency);
+    }
+  },
+  tryRenderToolbar: function(hasError, data) {
+    if(hasError){
+      $('#toolbar').remove();
+    }else{
+      Toolbar.render(data);
     }
   },
   buildChartElements: function(initial) {
@@ -134,12 +145,11 @@ var ChartView = {
       ChartModel.getSentimentData(today, initial, function(hasNewSentimentData){
         self.data = ChartModel.model;
 
-        var stockLine = self.data.daily.stockLine;
+        var stockLine = self.data.indexError? 0: self.data.daily.stockLine;
         // if (hasNewSentimentData) {
         if (initial) {
           SentimentChart.init();
-          Toolbar.render(self.data.daily);
-          if(stockLine.length === 0) { $('#toolbar').remove(); }
+          self.tryRenderToolbar(self.data.indexError, self.data.daily);
         } else {
           SentimentChart.update(hasNewSentimentData);
         }
@@ -149,7 +159,7 @@ var ChartView = {
           RsiChart.init();
           MacdChart.init();
         }
-        Dashboard.render(self.data.info);
+        if(!self.data.indexError) Dashboard.render(self.data.info);
 
         // Refresh sticky columns and scroll position
         StickyColumns.start();
@@ -160,9 +170,11 @@ var ChartView = {
     zoomFactor = zoomFactor || 1;
     this.properties.zoomFactor = this.properties.zoomFactor * zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
     $('.zoomable-chart-container').css('width', '100%');
-    IndexChart.drawGraph(false);
-    RsiChart.drawGraph(false);
-    MacdChart.drawGraph(false);
+    if(!this.data.indexError){
+      IndexChart.drawGraph(false);
+      RsiChart.drawGraph(false);
+      MacdChart.drawGraph(false);
+    }
     $('#chart-container').scrollLeft(this.properties.scrollDistance);
 
   },
