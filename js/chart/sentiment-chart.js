@@ -967,8 +967,6 @@ var SentimentChart = {
       currentTime = (currentTime - currentTime%1000)/1000;
       currentTime = currentTime - (currentTime%60);
       if (!!lastData && currentTime - lastData.timestamp > 60) {
-        console.log(new Date(lastData.timestamp*1000));
-        console.log(new Date(currentTime*1000));
         drawDotted([lastData, {
           timestamp: currentTime,
           price: lastData.price
