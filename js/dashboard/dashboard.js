@@ -13,7 +13,13 @@ var Dashboard = {
 
     // Render dashboard
     if (self.firstLoad){
+      // model.moodindexInfo.change = '0';
+      // model.moodindexInfo.changeRatio = '0%';
       Helper.populateView('#dashboard','#dashboard-template', model);
+      this.prevData.latest = model.moodindexInfo.latest;
+      this.prevData.lastpx = model.stockIndexInfo.lastpx;
+      this.prevData.signal = model.tradingSign.signal;
+      self.firstLoad = false;
     } else {
       self.updateDashboard('#dashboard','#dashboard-template', model);
     }
@@ -99,6 +105,7 @@ var Dashboard = {
     var change = parseFloat(model.moodindexInfo.change);
 
     if(lastpx != this.prevData.lastpx){
+      console.log(lastpx, this.prevData.lastpx);
       var orgColor = (sign === '+'? rise : fall);
       var altColor = (sign === '+'? riseLight: fallLight);
       var targetId = '#dashboard-index';
@@ -108,6 +115,7 @@ var Dashboard = {
     }
 
     if(latest != this.prevData.latest){
+      console.log(latest, this.prevData.latest);
       var orgColor = (change > 0 ? rise: fall);
       var altColor = (change > 0 ? riseLight: fallLight);
       var targetId = '#dashboard-mood';
@@ -116,6 +124,7 @@ var Dashboard = {
     }
 
     if(signal != this.prevData.signal){
+      console.log(signal, this.prevData.signal);
       var orgColor;
       var altColor;
       var targetId = '#dashboard-signal';
@@ -132,7 +141,7 @@ var Dashboard = {
       this.prevData.signal = signal;
       this.glow(targetId, orgColor, altColor);
     }
-    if(!this.firstLoad && parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
+    if(parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
       $('#small-change').text(model.moodindexInfo.change);
       $('#changes').text(model.moodindexInfo.change);
       if(IE8){
@@ -144,7 +153,7 @@ var Dashboard = {
         $('#changes').animate({opacity: 1}, 500);
         setTimeout(function(){
           $('#changes').animate({opacity: 0}, 1500);
-        }, 8500); 
+        }, 2000); 
       }
       this.renderThermoLiquid(model);
       this.prevData.change = model.moodindexInfo.change;
