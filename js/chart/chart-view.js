@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 5000,
+    refreshFrequency: 60000,
     scrollDistance: 0
   },
   setProperties: function (options) {
