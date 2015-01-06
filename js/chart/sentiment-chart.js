@@ -110,7 +110,8 @@ var SentimentChart = {
     .attr('x2', chartWidth + margin.left)
     .attr('y1', margin.top)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     self.components.rightBorder
     .attr('class', 'yborder-right')
@@ -118,7 +119,8 @@ var SentimentChart = {
     .attr('x2', chartWidth + margin.left)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     self.components.bottomBorder
     .attr('class', 'xaxis')
@@ -126,7 +128,8 @@ var SentimentChart = {
     .attr('x2', containerWidth - margin.right)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', chartHeight - margin.bottom)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
     
     self.components.leftBorder
     .attr('class', 'yborder-left')
@@ -134,7 +137,8 @@ var SentimentChart = {
     .attr('x2', margin.left)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     if(!isEmpty) {
       self.components.y1Labels
@@ -146,6 +150,7 @@ var SentimentChart = {
       .attr('x', margin.left - 15)
       .attr('y', y1)
       .attr('text-anchor', 'middle')
+      .style('fill','rgb(129, 129, 129)')
       .text(String);
 
       self.components.y2Labels
@@ -158,6 +163,7 @@ var SentimentChart = {
       .attr('x', chartWidth + margin.left + 18)
       .attr('y', y2)
       .attr('text-anchor', 'middle')
+      .style('fill','rgb(129, 129, 129)')
       .text(String);
     }
   },

@@ -86,7 +86,7 @@ var IndexChart = {
     .attr('x2', margin.left + chartWidth) //shift to the left
     .attr('y1', height - margin.bottom + 4) //offseting the border width
     .attr('y2', height - margin.bottom + 4) //offseting the border width
-    .attr('stroke', '#464646')
+    .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
     chart_label.append('svg:line')
@@ -95,7 +95,7 @@ var IndexChart = {
     .attr('x2', margin.left)
     .attr('y1', height - margin.bottom + 4) //accounting border width
     .attr('y2', margin.top)
-    .attr('stroke', '#464646')
+    .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
     chart_label.append('svg:line')
@@ -104,7 +104,7 @@ var IndexChart = {
     .attr('x2', containerWidth - margin.right )
     .attr('y1', height - margin.bottom + 4) //accounting border width
     .attr('y2', margin.top)
-    .attr('stroke', '#464646')
+    .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
     //top border
@@ -114,7 +114,7 @@ var IndexChart = {
     .attr('x2', containerWidth - margin.right )
     .attr('y1', margin.top)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646')
+    .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
     // left y-axis labels
@@ -127,6 +127,7 @@ var IndexChart = {
     .attr('x', margin.left - 15)
     .attr('y', y1)
     .attr('text-anchor', 'middle')
+    .style('fill','rgb(129, 129, 129)')
     .text(String);
 
     // right y-axis labels
@@ -139,6 +140,7 @@ var IndexChart = {
     .attr('x', containerWidth-margin.right + 18)
     .attr('y', y2)
     .attr('text-anchor', 'middle')
+    .style('fill','rgb(129, 129, 129)')
     .text(String);
 
 
@@ -280,7 +282,7 @@ var IndexChart = {
         var closepx = d.closepx? d.closepx:d.preclosepx;
         return y2(min(d.openpx, closepx))-y2(max(d.openpx, closepx)); })
       .attr('width', function(d) { return 0.8 * (graphWidth)/data.daily.stockLine.length; })
-      .attr('fill', function(d) { return d.openpx > d.closepx ? '#e24439' : '#1ba767'; });
+      .attr('fill', function(d) { return d.openpx < d.closepx ? '#e24439' : '#1ba767'; });
 
       //verticle lines of the candlesticks graph
       glinestems
@@ -293,7 +295,7 @@ var IndexChart = {
       .attr('x2', function(d, i) { return x(i) - 2.8*zoomFactor + 0.4 * (graphWidth - margin.left - margin.right)/data.daily.stockLine.length; })
       .attr('y1', function(d) { return y2(d.highpx); })
       .attr('y2', function(d) { return y2(d.lowpx); })
-      .attr('stroke', function(d){ return d.openpx > d.closepx ? '#e24439' : '#1ba767'; });
+      .attr('stroke', function(d){ return d.openpx < d.closepx ? '#e24439' : '#1ba767'; });
 
       chart
       .on('mousemove', function(){
