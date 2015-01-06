@@ -442,15 +442,15 @@
         {{/ifEq}}
       </div>
 
-      {{#isGreater moodindexInfo.latest 0}}
+      {{#ifCond moodindexInfo.change '>' 0}}
          <div id="dashboard-mood" class="component-item-price thermo rise">
       {{else}}
-        {{#ifEq moodindexInfo.latest 0}}
+        {{#ifCond moodindexInfo.change '==' 0}}
         <div id="dashboard-mood" class="component-item-price thermo neutral">
         {{else}}
         <div id="dashboard-mood" class="component-item-price thermo fall">
-        {{/ifEq}}
-      {{/isGreater}}
+        {{/ifCond}}
+      {{/ifCond}}
         <div class="prediction prediction-mood">
           <div class="title">心情指数</div>
           {{#ifEq moodindexInfo.length 0}}
@@ -458,7 +458,7 @@
             <div class="value-sublabel ">无法下载数据</div>
           {{else}}
             <div class="value-label">{{moodindexInfo.latest}}</div>
-            <div class="value-sublabel ">{{formatNumber moodindexInfo.change 0}}({{moodindexInfo.changeRatio}})</div>
+            <div class="value-sublabel "><span id="small-change">{{moodindexInfo.change}}</span>({{moodindexInfo.changeRatio}})</div>
           {{/ifEq}}
         </div>
 
@@ -467,7 +467,7 @@
           <div class="background"></div>
           <div class="background-full"></div>
         </div>
-        <div id="changes" class="changes">{{toAbs moodindexInfo.before}}</div>
+        <div id="changes" class="changes">{{moodindexInfo.change}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
         <div id="prediction-wrapper" class="component-item-price ind rise">
