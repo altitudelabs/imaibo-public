@@ -11,6 +11,7 @@
 <script type="text/javascript" src="__PUBLIC__/bower_components/lodash/dist/lodash.min.js"></script>
 <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.slimscroll.min.js"></script>
 <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.leanModal.min.js"></script>
+<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.stickykit.min.js"></script>
 <!-- End new JS -->
 
 <!--[if lte IE 8]><script src="__PUBLIC__/bower_components/aight/aight.min.js" charset="utf-8"></script><![endif]-->
@@ -22,7 +23,8 @@
 <!--<![endif]-->
 <!-- End Sentiment JS -->
 
-<div class="outer">
+<div id="tooltip"></div>
+  <div class="outer">
     <!-- Right panel start -->
     <div id="right-panel">
       <div class="vertical-collapse"></div>
@@ -64,28 +66,36 @@
                           <td class="rise">9.89</td>
                           <td class="rise">0.46</td>
                           <td class="rise">12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                         <tr>
                           <td>股票名称</td>
                           <td class="fall">9.89</td>
                           <td class="fall">0.46</td>
                           <td class="fall">12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                         <tr>
                           <td>股票名称</td>
                           <td>9.89</td>
                           <td>0.46</td>
                           <td>12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                         <tr>
                           <td>股票名称</td>
                           <td>9.89</td>
                           <td>0.46</td>
                           <td>12.03%</td>
-                          <td><input type="checkbox"></td>
+                          <td>
+                            <input type="checkbox">
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -115,7 +125,7 @@
 
         <div class="wrapper center" id="stock-login">
           <div id="login-wrapper">
-            <div>登陆显示自选股</div>
+            <div>登录显示自选股</div>
             <button id="login">登 录</button>
           </div>
         </div>
@@ -202,7 +212,7 @@
         <div class="loader"></div>
         <div id="price" class="component">
           <div class="chart-header">
-            <div class="title">大盘走势</div>
+            <div class="title">上证K线 - 心情累积值</div>
             <ul class="legend" id="legend" ma="">
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
 
@@ -211,16 +221,29 @@
           <!-- Toolbar start -->
           <div id="toolbar">
             <ul class="toolbar">
-              <li><a class="noselect mb zoomout" id="zoomout"></a></li>
-              <li><a class="noselect mb zoomin" id="zoomin"></a></li>
+              <li class="zoom noselect"><a class="mb zoomout" id="zoomout"></a></li>
+              <li class="zoom noselect"><a class="mb zoomin" id="zoomin"></a></li>
               <li class="link-dropdown noselect" id="frequency" data-target="frequency">
                 <a class="mb period-button" id="frequency-icon"></a>
                 <div class="dropdown-menu" data-target="frequency">
                   <form>
                   <ul>
-                    <li><label><input type="radio" name="freq" id="minute-radio"> 分时</label></li>
-                    <li><label><input type="radio" name="freq" id="day-radio"> 1日</label></li>
-                    <li><label><input type="radio" name="freq" id="week-radio"> 1周</label></li>
+
+                    <li id="minute-radio-row">
+                      <input type="radio" name="freq" id="minute-radio">
+                      <label for="minute-radio"><span class="mb"></span>分时</label>
+                    </li>
+
+                    <li id="day-radio-row">
+                      <input type="radio" name="freq" id="day-radio">
+                      <label for="day-radio"><span class="mb"></span>1日</label>
+                    </li>
+
+                    <li id="week-radio-row">
+                      <input type="radio" name="freq" id="week-radio" checked>
+                      <label for="week-radio"><span class="mb"></span>1周</label>
+                    </li>
+
                   </ul>
                 </form>
                 </div>
@@ -233,8 +256,17 @@
                 <a class="mb annotations-button" id="rsi-icon"></a>
                 <div class="dropdown-menu" data-target="chart-toggle">
                   <ul>
-                    <li id="macd-checkbox-row"><input type="checkbox" id="macd-checkbox"><label> MACD</label></li>
-                    <li id="rsi-checkbox-row"><input type="checkbox" id="rsi-checkbox"><label> RSI</label></li>
+
+                    <li id="macd-checkbox-row">
+                      <input type="checkbox" id="macd-checkbox">
+                      <label><span class="mb"></span>MACD</label>
+                    </li>
+
+                    <li id="rsi-checkbox-row">
+                      <input type="checkbox" id="rsi-checkbox">
+                      <label><span class="mb"></span>RSI</label>
+                    </li>
+
                   </ul>
                </div>
               </li>
@@ -247,10 +279,6 @@
             <div id="chart"></div>
           </div>
           <div id="chart-x-label"></div>
-
-          <!-- Tooltip start -->
-          <div id="tooltip"></div>
-          <!-- Tooltip end -->
         </div>
         <div id="rsi" class="component">
           <div class="wrapper chart-header">
@@ -288,9 +316,9 @@
         </div>
         <div id="sentiment" class="component">
           <div class="chart-header">
-            <div class="title">心情指数 : 分时</div>
+            <div class="title">上证分时 - 心情变动值</div>
             <ul class="legend">
-              <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>大盘走势</span></li>
+              <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
             </ul>
           </div>
@@ -319,23 +347,43 @@
       <div id="dashboard-index" class="component-item-price fall">
     {{/ifEq}}
         <div class="title">上证指数</div>
-        <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
-        <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+        {{#ifEq stockIndexInfo.length 0}}
+          <div class="value-label">稍后再试</div>
+          <div class="value-sublabel ">无法下载数据</div>
+        {{else}}
+          <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
+          <div class="value-sublabel">
+          {{#ifCond stockIndexInfo.pxchg '>' 0}}
+            {{formatNumber stockIndexInfo.pxchg 2 1}}
+          {{else}}
+            {{#ifCond stockIndexInfo.pxchg '<' 0}}
+              {{formatNumber stockIndexInfo.pxchg 2 0}}
+            {{else}}
+              {{formatNumber stockIndexInfo.pxchg 2}}
+            {{/ifCond}}
+          {{/ifCond}}
+          ({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+        {{/ifEq}}
       </div>
 
-      {{#isGreater moodindexInfo.latest 0}}
+      {{#ifCond moodindexInfo.change '>' 0}}
          <div id="dashboard-mood" class="component-item-price thermo rise">
       {{else}}
-        {{#ifEq moodindexInfo.latest 0}}
+        {{#ifCond moodindexInfo.change '==' 0}}
         <div id="dashboard-mood" class="component-item-price thermo neutral">
         {{else}}
         <div id="dashboard-mood" class="component-item-price thermo fall">
-        {{/ifEq}}
-      {{/isGreater}}
+        {{/ifCond}}
+      {{/ifCond}}
         <div class="prediction prediction-mood">
           <div class="title">心情指数</div>
-          <div class="value-label">{{moodindexInfo.latest}}</div>
-          <div class="value-sublabel ">{{formatNumber moodindexInfo.change 0}}({{moodindexInfo.changeRatio}})</div>
+          {{#ifEq moodindexInfo.length 0}}
+            <div class="value-label">稍后再试</div>
+            <div class="value-sublabel ">无法下载数据</div>
+          {{else}}
+            <div class="value-label">{{moodindexInfo.latest}}</div>
+            <div class="value-sublabel">{{formatNumber moodindexInfo.change 2 1}} ({{formatNumber moodindexInfo.changeRatio 2 1}})</div>
+          {{/ifEq}}
         </div>
 
         <div class="thermo-wrapper">
@@ -343,7 +391,7 @@
           <div class="background"></div>
           <div class="background-full"></div>
         </div>
-        <div id="changes" class="changes">{{toAbs moodindexInfo.before}}</div>
+        <div id="changes" class="changes">{{moodindexInfo.change}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
         <div id="prediction-wrapper" class="component-item-price ind rise">
@@ -355,11 +403,20 @@
         {{/ifEq}}
       {{/ifEq}}
 
+      {{#ifEq tradingSign.prob undefined}}
+        <div id="dashboard-signal" class="prediction no-data">
+          <div class="title">短期预测</div>
+            <div class="value-label">稍后再试</div>
+            <div class="value-sublabel"></div>
+        {{else}}
         <div id="dashboard-signal" class="prediction">
           <div class="title">短期预测</div>
           <div class="value-label">{{#toPercentage tradingSign.prob}}{{/toPercentage}}</div>
           <div class="value-sublabel">
-
+        {{/ifEq}}
+        {{#ifEq tradingSign.prob undefined}}
+            无法下载数据
+        {{else}}
         {{#ifEq tradingSign.signal 1}}
           {{#isGreater tradingSign.prob 0.8}}
                强烈买入
@@ -377,6 +434,7 @@
             {{/isGreater}}
           {{/ifEq}}
         {{/ifEq}}
+        {{/ifEq}}
           </div>
         </div>
         {{#isGreater tradingSign.prob 0.8}}
@@ -387,8 +445,16 @@
       </div>
       <div id="indicator-tooltip"></div>
       <div class="btn-buy-sell-wrapper">
-        <div class="btn btn-sell">卖出</div>
-        <div class="btn btn-buy">买入</div>
+        <div class="btn btn-sell white">
+        <a href="javascript:;" onclick="getTrading(this)" cggs="sell">
+          卖出
+          </a>
+        </div>
+        <div class="btn btn-buy white">
+        <a href="javascript:;" onclick="getTrading(this)" cggs="buy">
+        买入
+        </a>
+        </div>
       </div>
   </script>
   <!-- Dashboard end -->
@@ -418,8 +484,12 @@
   <script id="ma-template" type="text/x-handlebars-template">
     <ul>
       {{#each data}}
-        <li class="{{ma_id}}"><input type="checkbox" id="{{ma_id}}" ><label id="{{ma_label_id}}"> {{ma_label}} </label></li>
+        <li class="{{maId}}">
+          <input type="checkbox" id="{{maId}}">
+          <label id="{{maLabelId}}"><span class="mb"></span>{{maLabel}}</label>
+        </li>
       {{/each}}
+
     </ul>
   </script>
   <!-- MA template end -->
@@ -491,6 +561,11 @@
 
   <!-- Experts template start -->
   <script id="experts-template" type="text/x-handlebars-template">
+  {{#ifEq list.length 0}}
+    <div class="experts-header disabled">
+      暂时无法下载数据，请稍后再试
+    </div>
+  {{else}}
     <div class="experts-header">
       <div class="name-and-date">
         <div class="name">今天解读</div>
@@ -525,6 +600,7 @@
       </div>
     </div>
     {{/each}}
+    {{/ifEq}}
   </script>
   <!-- Experts template end -->
 
