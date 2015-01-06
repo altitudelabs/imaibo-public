@@ -295,7 +295,7 @@ var SentimentChart = {
           previousTimeStamp = startTime - 3600; // x padding on the left
           timeStamps.push(previousTimeStamp);
         } else {
-          if (currentTimeStamp - previousTimeStamp >= 86400) {
+          if (currentTimeStamp - previousTimeStamp >= 18000) {
             var diff = currentTimeStamp - previousTimeStamp;
             var days = diff - (diff%86400);
             //plotting from 8am - 18pm
@@ -862,7 +862,7 @@ var SentimentChart = {
           previousTimeStamp = startTime - 3600; // x padding on the left
           timeStamps.push(previousTimeStamp);
         } else {
-          if (currentTimeStamp - previousTimeStamp >= 86400) {
+          if (currentTimeStamp - previousTimeStamp >= 18000) {
             var diff = currentTimeStamp - previousTimeStamp;
             var days = diff - (diff%86400);
             //plotting from 8am - 18pm
