@@ -73,7 +73,7 @@ var SentimentChart = {
     var minY2 = self.helpers.minIndex('price', self.data.indexList);
     var maxY2 = self.helpers.maxIndex('price', self.data.indexList);
 
-    var y1 = self.helpers.y(minY1 + (minY1%50) - 100, maxY1 - (maxY1%50) + 100);
+    var y1 = self.helpers.y(minY1 - 10, maxY1 + 10);
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
 
     self.components.chartLabel = self.components.chartLabel || d3.select('#sentiment-chart-label').append('svg:svg');
@@ -259,7 +259,7 @@ var SentimentChart = {
     var minY2 = self.helpers.minIndex('price', self.data.indexList);
     var maxY2 = self.helpers.maxIndex('price', self.data.indexList);
 
-    var y1 = self.helpers.y(minY1 + (minY1%50) - 100, maxY1 - (maxY1%50) + 100);
+    var y1 = self.helpers.y(minY1 - 10, maxY1 + 10);
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
     var x = self.helpers.x(chartWidth, ordinalTimeStamps);
 
@@ -692,7 +692,7 @@ var SentimentChart = {
     var minY2 = self.helpers.minIndex('price', indexList);
     var maxY2 = self.helpers.maxIndex('price', indexList);
 
-    var y1 = self.helpers.y(minY1 + (minY1%50) - 100, maxY1 - (maxY1%50) + 100);
+    var y1 = self.helpers.y(minY1 - 10, maxY1 + 10);
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
     var x = self.helpers.x(chartWidth, ordinalTimeStamps);
 
