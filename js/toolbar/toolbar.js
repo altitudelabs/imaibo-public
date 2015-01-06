@@ -64,16 +64,16 @@ var Toolbar = {
         $('#legend').attr('ma', legends.join(','));
 
         //sentimentLine always exist
-        $('#legend').prepend('<li id="sentiment-legend">'                                    +
+        $('#legend').prepend('<li id="sentiment-legend">'                                 +
                              '<div id="sentiment-legend-line" class="legend-line"></div>' +
-                             '<span>心情指数</span>'                                        +
+                             '<span>心情指数</span>'                                       +
                              '</li>');
 
         legends.forEach(function(ma) {
           if(!isNaN(ma)){
             $('#legend').prepend('<li id="ma' + ma + '-legend">'                                    +
-                                 '<div id="ma' + ma + '-legend-line" class="legend-line"></div>' +
-                                 '<span>MA' + ma + ': ' + temp['ma'+ma] + '</span>'                                     +
+                                    '<div id="ma' + ma + '-legend-line" class="legend-line"></div>' +
+                                    '<span>MA' + ma + ': ' + temp['ma'+ma] + '</span>'              +
                                  '</li>');
           }
         });
