@@ -298,7 +298,7 @@
         <div class="loader"></div>
         <div id="price" class="component">
           <div class="chart-header">
-            <div class="title">上证指数</div>
+            <div class="title">上证K线 - 心情累积值</div>
             <ul class="legend" id="legend" ma="">
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
 
@@ -402,7 +402,7 @@
         </div>
         <div id="sentiment" class="component">
           <div class="chart-header">
-            <div class="title">心情指数 : 分时</div>
+            <div class="title">上证分时 - 心情变动值</div>
             <ul class="legend">
               <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
@@ -438,19 +438,29 @@
           <div class="value-sublabel ">无法下载数据</div>
         {{else}}
           <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
-          <div class="value-sublabel">{{stockIndexInfo.pxchg}}({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
+          <div class="value-sublabel">
+          {{#ifCond stockIndexInfo.pxchg '>' 0}}
+            {{formatNumber stockIndexInfo.pxchg 2 1}}
+          {{else}}
+            {{#ifCond stockIndexInfo.pxchg '<' 0}}
+              {{formatNumber stockIndexInfo.pxchg 2 0}}
+            {{else}}
+              {{formatNumber stockIndexInfo.pxchg 2}}
+            {{/ifCond}}
+          {{/ifCond}}
+          ({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
         {{/ifEq}}
       </div>
 
-      {{#isGreater moodindexInfo.latest 0}}
+      {{#ifCond moodindexInfo.change '>' 0}}
          <div id="dashboard-mood" class="component-item-price thermo rise">
       {{else}}
-        {{#ifEq moodindexInfo.latest 0}}
+        {{#ifCond moodindexInfo.change '==' 0}}
         <div id="dashboard-mood" class="component-item-price thermo neutral">
         {{else}}
         <div id="dashboard-mood" class="component-item-price thermo fall">
-        {{/ifEq}}
-      {{/isGreater}}
+        {{/ifCond}}
+      {{/ifCond}}
         <div class="prediction prediction-mood">
           <div class="title">心情指数</div>
           {{#ifEq moodindexInfo.length 0}}
@@ -458,7 +468,7 @@
             <div class="value-sublabel ">无法下载数据</div>
           {{else}}
             <div class="value-label">{{moodindexInfo.latest}}</div>
-            <div class="value-sublabel ">{{formatNumber moodindexInfo.change 0}}({{moodindexInfo.changeRatio}})</div>
+            <div class="value-sublabel "><span id="small-change">{{moodindexInfo.change}}</span>({{moodindexInfo.changeRatio}})</div>
           {{/ifEq}}
         </div>
 
@@ -467,7 +477,7 @@
           <div class="background"></div>
           <div class="background-full"></div>
         </div>
-        <div id="changes" class="changes">{{toAbs moodindexInfo.before}}</div>
+        <div id="changes" class="changes">{{moodindexInfo.change}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
         <div id="prediction-wrapper" class="component-item-price ind rise">
