@@ -252,11 +252,11 @@ text.sentiment {
 }
 
 .prediction-mood {
-  width: 70px;
+  min-width: 80px;
 }
 
 .lt-ie9 .prediction-mood {
-  width: 65px;
+  min-width: 75px;
 }
 
 .component-item-price.ind {
@@ -307,12 +307,12 @@ text.sentiment {
   position: absolute;
   width: 100%;
   top: -1px;
-  left: -75px;
+  left: -80px;
 }
 
 .thermo-wrapper .background {
   position: absolute;
-  left: 25px;
+  left: 20px;
   width: 30%;
   height: 25%;
   bottom: -2px;
@@ -321,7 +321,7 @@ text.sentiment {
 .thermo-wrapper .background-full {
   position: absolute;
   background-color: #fff !important;
-  left: 25px;
+  left: 20px;
   width: 30%;
   height: 100%;
   bottom: 0;
