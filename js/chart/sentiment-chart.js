@@ -585,28 +585,30 @@ var SentimentChart = {
         }
       }
       drawLinear(data.slice(start, data.length-1)); //last bit of data
-
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      var currentTime = new Date().getTime();
-
-      currentTime = (currentTime - currentTime%1000)/1000;
-      currentTime = currentTime - (currentTime%60);
-      //only before 5 (last sentiment data)
-      if (new Date(currentTime).getHours() < 17) {
-        if (!!lastData && currentTime - lastData.timestamp > 60) {
+      if (lastData) {
+        var currentTime = new Date().getTime();
+        
+        currentTime = (currentTime - currentTime%1000)/1000;
+        currentTime = currentTime - (currentTime%60);
+        //only before 5 (last sentiment data)
+        if (new Date(currentTime).getHours() < 17) {
+          if (!!lastData && currentTime - lastData.timestamp > 60) {
+            drawDotted([lastData, {
+              timestamp: currentTime,
+              price: lastData.price
+            }]);
+          }
+        } else {
+          //draw dotted untill 17:00
+          currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
           drawDotted([lastData, {
             timestamp: currentTime,
             price: lastData.price
           }]);
         }
-      } else {
-        //draw dotted untill 17:00
-        currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
-        drawDotted([lastData, {
-          timestamp: currentTime,
-          price: lastData.price
-        }]);
+        
       }
 
 
@@ -1013,25 +1015,27 @@ var SentimentChart = {
       drawLinear(data.slice(start, data.length-1)); //last bit of data
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      var currentTime = new Date().getTime();
-
-      currentTime = (currentTime - currentTime%1000)/1000;
-      currentTime = currentTime - (currentTime%60);
-      //only before 5 (last sentiment data)
-      if (new Date(currentTime).getHours() < 17) {
-        if (!!lastData && currentTime - lastData.timestamp > 60) {
+      if (lastData) {
+        var currentTime = new Date().getTime();
+        
+        currentTime = (currentTime - currentTime%1000)/1000;
+        currentTime = currentTime - (currentTime%60);
+        //only before 5 (last sentiment data)
+        if (new Date(currentTime).getHours() < 17) {
+          if (!!lastData && currentTime - lastData.timestamp > 60) {
+            drawDotted([lastData, {
+              timestamp: currentTime,
+              price: lastData.price
+            }]);
+          }
+        } else {
+          //draw dotted untill 17:00
+          currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
           drawDotted([lastData, {
             timestamp: currentTime,
             price: lastData.price
           }]);
         }
-      } else {
-        //draw dotted untill 17:00
-        currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
-        drawDotted([lastData, {
-          timestamp: currentTime,
-          price: lastData.price
-        }]);
       }
 
       function drawLinear (data) {

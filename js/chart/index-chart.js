@@ -422,6 +422,7 @@ var IndexChart = {
           }
       }
 
+
     //tooltips
     tooltip
     // .attr('class', 'mouseover-overlay index')
