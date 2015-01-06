@@ -566,9 +566,12 @@ var SentimentChart = {
 
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      if (!!lastData && endTime - lastData.timestamp > 60) {
+      var currentTime = new Date().getTime();
+      currentTime = (currentTime - currentTime%1000)/1000;
+      currentTime = currentTime - (currentTime%60);
+      if (!!lastData && currentTime - lastData.timestamp > 60) {
         drawDotted([lastData, {
-          timestamp: (endTime - endTime%60),
+          timestamp: currentTime,
           price: lastData.price
         }]);
       }
@@ -958,12 +961,14 @@ var SentimentChart = {
         }
       }
       drawLinear(data.slice(start, data.length-1)); //last bit of data
-
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      if (!!lastData && endTime - lastData.timestamp > 60) {
+      var currentTime = new Date().getTime();
+      currentTime = (currentTime - currentTime%1000)/1000;
+      currentTime = currentTime - (currentTime%60);
+      if (!!lastData && currentTime - lastData.timestamp > 60) {
         drawDotted([lastData, {
-          timestamp: (endTime - endTime%60),
+          timestamp: currentTime,
           price: lastData.price
         }]);
       }
