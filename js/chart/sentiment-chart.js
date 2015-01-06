@@ -323,7 +323,7 @@ var SentimentChart = {
     function getXLabelTimeStampsArray (timeStampsArray) {
       var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
         var date = new Date(e * 1000);
-        if ((e + 7200) % 10800 === 0) {
+        if ((e + 7200) % 7200 === 3600) {
           return true;
         }
       });
@@ -479,6 +479,7 @@ var SentimentChart = {
         } else {
           var prevMood = self.components.scatterDots.data()[i-1].mood;
           moodDiff = d.mood - prevMood;
+          moodDiff = moodDiff.toFixed(2);
           if (moodDiff > 0) {
             moodDiff = '+' + moodDiff;
           }
@@ -581,16 +582,24 @@ var SentimentChart = {
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
       var currentTime = new Date().getTime();
-      //only before 3 (market open)
-      if (new Date(currentTime).getHours() < 15) {
-        currentTime = (currentTime - currentTime%1000)/1000;
-        currentTime = currentTime - (currentTime%60);
+      
+      currentTime = (currentTime - currentTime%1000)/1000;
+      currentTime = currentTime - (currentTime%60);
+      //only before 5 (last sentiment data)
+      if (new Date(currentTime).getHours() < 17) {
         if (!!lastData && currentTime - lastData.timestamp > 60) {
           drawDotted([lastData, {
             timestamp: currentTime,
             price: lastData.price
           }]);
         }
+      } else {
+        //draw dotted untill 17:00
+        currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
+        drawDotted([lastData, {
+          timestamp: currentTime,
+          price: lastData.price
+        }]);
       }
 
 
@@ -779,6 +788,7 @@ var SentimentChart = {
         } else {
           var prevMood = self.components.scatterDots.data()[i-1].mood;
           moodDiff = d.mood - prevMood;
+          moodDiff = moodDiff.toFixed(2);
           if (moodDiff > 0) {
             moodDiff = '+' + moodDiff;
           }
@@ -924,7 +934,7 @@ var SentimentChart = {
     function getXLabelTimeStampsArray (timeStampsArray) {
       var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
         var date = new Date(e * 1000);
-        if ((e + 7200) % 10800 === 0) {
+        if ((e + 7200) % 7200 === 3600) {
           return true;
         }
       });
@@ -996,16 +1006,24 @@ var SentimentChart = {
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
       var currentTime = new Date().getTime();
-      //only before 3 (market open)
-      if (new Date(currentTime).getHours() < 15) {
-        currentTime = (currentTime - currentTime%1000)/1000;
-        currentTime = currentTime - (currentTime%60);
+      
+      currentTime = (currentTime - currentTime%1000)/1000;
+      currentTime = currentTime - (currentTime%60);
+      //only before 5 (last sentiment data)
+      if (new Date(currentTime).getHours() < 17) {
         if (!!lastData && currentTime - lastData.timestamp > 60) {
           drawDotted([lastData, {
             timestamp: currentTime,
             price: lastData.price
           }]);
         }
+      } else {
+        //draw dotted untill 17:00
+        currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
+        drawDotted([lastData, {
+          timestamp: currentTime,
+          price: lastData.price
+        }]);
       }
 
       function drawLinear (data) {
