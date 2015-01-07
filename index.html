@@ -468,7 +468,7 @@
             <div class="value-sublabel ">无法下载数据</div>
           {{else}}
             <div class="value-label">{{moodindexInfo.latest}}</div>
-            <div class="value-sublabel">{{formatNumber moodindexInfo.change 2 1}} ({{formatNumber moodindexInfo.changeRatio 2 1}})</div>
+            <div class="value-sublabel">{{formatNumber moodindexInfo.change 2 1}} ({{moodindexInfo.changeRatio}})</div>
           {{/ifEq}}
         </div>
 

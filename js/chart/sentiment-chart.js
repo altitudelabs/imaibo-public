@@ -74,7 +74,7 @@ var SentimentChart = {
     var maxY2 = self.helpers.maxIndex('price', self.data.indexList);
 
     var y1 = self.helpers.y(minY1 - ((maxY1 - minY1)*0.5), maxY1 + ((maxY1 - minY1)*0.5));
-    
+
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
 
     self.components.chartLabel = self.components.chartLabel || d3.select('#sentiment-chart-label').append('svg:svg');
@@ -130,7 +130,7 @@ var SentimentChart = {
     .attr('y2', chartHeight - margin.bottom)
     .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
-    
+
     self.components.leftBorder
     .attr('class', 'yborder-left')
     .attr('x1', margin.left)
@@ -180,7 +180,7 @@ var SentimentChart = {
     .attr('width', containerWidth);
 
     $('#sentiment-chart-container').css('width', chartWidth.toString());
-    
+
     $('#sentiment > .slimScrollDiv')
     .css('position', 'absolute')
     .css('top', '39px')
@@ -240,12 +240,12 @@ var SentimentChart = {
     var combinedIndexList = moodindexList.concat(indexList);
 
     var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
-    
+
     var endTime = new Date().getTime();
     endTime = (endTime - endTime%1000)/1000;
     var endDate = new Date(endTime * 1000);
-    
-    var allTimeStampsArray = combinedIndexList.map(function (x) { 
+
+    var allTimeStampsArray = combinedIndexList.map(function (x) {
         return x.timestamp;
     }).sort();
 
@@ -289,7 +289,7 @@ var SentimentChart = {
     drawXLabels();
     drawSecurityLine(self.data.indexList);
     drawSentimentLine(); //drawing sentiment line last so it's on top
-    
+
 
     function getOrdinalTimeStampsArray (allTimeStamps) {
       var timeStamps = [];
@@ -371,7 +371,7 @@ var SentimentChart = {
       self.components.xLabels
       .exit()
       .remove();
-    } 
+    }
     function drawSentimentLine () {
       var sentimentLine = d3.svg.line()
       .x(function(d,i) { return x(d.timestamp); })
@@ -396,10 +396,10 @@ var SentimentChart = {
         .enter()
         .append('path')
         .attr('fill', function (d,i) {
-          return '#31BBED'; 
+          return '#31BBED';
         })
         .attr('d', function (d,i) {
-          if (d.newsCount) { 
+          if (d.newsCount) {
             return 'M29,17.375c0,6.1-3.877,11.125-6.5,11.125s-6.75-5.35-6.75-11.25c0-4.004,4.06-5.167,6.683-5.167  S29,13.371,29,17.375z';
           }
         });
@@ -441,7 +441,7 @@ var SentimentChart = {
       self.components.scatterDots
       .attr('cy', function (d) { return y1(d.mood); } ) // translate y value to a pixel
       .attr('cx', function (d,i) { return x(d.timestamp); } ); // translate x value
-     
+
       self.components.scatterDots
       .exit()
       .remove();
@@ -455,7 +455,7 @@ var SentimentChart = {
       .on('mouseover', function(d, i) {
         var xPos;
         var yPos;
-        
+
         if(IE8){
           xPos = event.clientX;
           yPos = event.clientY;
@@ -478,8 +478,8 @@ var SentimentChart = {
 
         var arrow = (d.newsSign === '+'? 'rise':'fall');
         var show_extra = (d.newsTitle.length < 12? 'hide':'show');
-        
-        
+
+
         var moodDiff;
         if (i === 0) {
           moodDiff = ' - ';
@@ -494,11 +494,11 @@ var SentimentChart = {
         self.components.tooltip.transition()
         .duration(200)
         .style(style, fadeIn);
-        self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' + 
+        self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
                         '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                         '<div class="wrapper">' +
                           '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
-                          '<div class="mood"> 相对之前： ' + moodDiff +             '</div>' +
+                          '<div class="mood"> 相对之前： ' + d.moodChg +             '</div>' +
                           // '<div>' +
                           //   '<div class="arrow ' + arrow + '">                     </div>' +
                           //   '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
@@ -541,7 +541,7 @@ var SentimentChart = {
         if (i === 0) {
           var timestamp = data.slice(i, 1)[0].timestamp - (data.slice(i, 1)[0].timestamp%86400);
 
-          // if data is array          
+          // if data is array
           // dottedArray = data.slice(i, 1).unshift({
           //   timestamp: timestamp+1,
           //   price: data.slice(i, 1)[0].price
@@ -560,7 +560,7 @@ var SentimentChart = {
           //linear graph
           linearArray = data.slice(start, i);
           drawLinear(linearArray);
-          
+
           //straight dotted line
           dottedArray = data.slice(i, i+1)
                             .concat([{
@@ -573,7 +573,7 @@ var SentimentChart = {
           //   {
           //     timestamp: data[i+1].timestamp,
           //     price: data[i].price
-          //   }, 
+          //   },
           //   {
           //     timestamp: data[i+1].timestamp,
           //     price: data[i+1].price
@@ -585,37 +585,39 @@ var SentimentChart = {
         }
       }
       drawLinear(data.slice(start, data.length-1)); //last bit of data
-
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      var currentTime = new Date().getTime();
-      
-      currentTime = (currentTime - currentTime%1000)/1000;
-      currentTime = currentTime - (currentTime%60);
-      //only before 5 (last sentiment data)
-      if (new Date(currentTime).getHours() < 17) {
-        if (!!lastData && currentTime - lastData.timestamp > 60) {
+      if (lastData) {
+        var currentTime = new Date().getTime();
+        
+        currentTime = (currentTime - currentTime%1000)/1000;
+        currentTime = currentTime - (currentTime%60);
+        //only before 5 (last sentiment data)
+        if (new Date(currentTime).getHours() < 17) {
+          if (!!lastData && currentTime - lastData.timestamp > 60) {
+            drawDotted([lastData, {
+              timestamp: currentTime,
+              price: lastData.price
+            }]);
+          }
+        } else {
+          //draw dotted untill 17:00
+          currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
           drawDotted([lastData, {
             timestamp: currentTime,
             price: lastData.price
           }]);
         }
-      } else {
-        //draw dotted untill 17:00
-        currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
-        drawDotted([lastData, {
-          timestamp: currentTime,
-          price: lastData.price
-        }]);
+        
       }
 
 
       function drawLinear (data) {
         var linearPath = chart.append('path')
         .datum(data);
-        
+
         self.components.securityLines.push(linearPath);
-        
+
         linearPath
         .attr('class','security')
         .attr('class','security-linear')
@@ -628,7 +630,7 @@ var SentimentChart = {
         var dottedPath = chart.append('path')
         .datum(data);
         self.components.securityLines.push(dottedPath);
-        
+
         dottedPath
         .attr('class','security')
         .attr('class','security-dotted')
@@ -669,7 +671,7 @@ var SentimentChart = {
 
     var combinedIndexList = moodindexList.concat(indexList);
 
-    var allTimeStampsArray = combinedIndexList.map(function (x) { 
+    var allTimeStampsArray = combinedIndexList.map(function (x) {
         return x.timestamp;
     }).sort();
 
@@ -700,7 +702,7 @@ var SentimentChart = {
     var maxY2 = self.helpers.maxIndex('price', indexList);
 
     var y1 = self.helpers.y(minY1 - ((maxY1 - minY1)*0.5), maxY1 + ((maxY1 - minY1)*0.5));
-    
+
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
     var x = self.helpers.x(chartWidth, ordinalTimeStamps);
 
@@ -717,10 +719,10 @@ var SentimentChart = {
         .enter()
         .append('path')
         .attr('fill', function (d,i) {
-          return '#31BBED'; 
+          return '#31BBED';
         })
         .attr('d', function (d,i) {
-          if (d.newsCount) { 
+          if (d.newsCount) {
             return 'M29,17.375c0,6.1-3.877,11.125-6.5,11.125s-6.75-5.35-6.75-11.25c0-4.004,4.06-5.167,6.683-5.167  S29,13.371,29,17.375z';
           }
         });
@@ -732,21 +734,21 @@ var SentimentChart = {
         .text(function(d, i){
           if (d.newsCount) { return d.newsCount; }
         });
-        
-        
+
+
 
       }
       self.components.xLabels = self.components.xLabels.data(getXLabelTimeStampsArray(ordinalTimeStamps));
       self.components.sentimentLine = self.components.sentimentLine.datum(moodindexList);
       self.components.scatterDots = self.components.scatterDots.data(moodindexList);
       self.components.scatterDotsHover = self.components.scatterDotsHover.data(moodindexList);
-      
+
       //redrawing securityLines. refactor later
       for (var i = 0; i < self.components.securityLines.length; i++) {
         self.components.securityLines[i].remove();
       }
       self.components.securityLines = [];
-      
+
 
       self.components.scatterDots
       .enter().append('svg:circle')  // create a new circle for each value
@@ -767,7 +769,7 @@ var SentimentChart = {
       .on('mouseover', function(d, i) {
         var xPos;
         var yPos;
-        
+
         if(IE8){
           xPos = event.clientX;
           yPos = event.clientY;
@@ -804,7 +806,7 @@ var SentimentChart = {
         self.components.tooltip.transition()
         .duration(200)
         .style(style, fadeIn);
-        self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' + 
+        self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
                         '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                         '<div class="wrapper">' +
                           '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
@@ -846,7 +848,7 @@ var SentimentChart = {
     .x(function(d,i) { return x(d.timestamp); })
     .y(function(d)   { return y2(+d.price); })
     .interpolate('basis');
-    
+
     for (var j = 0; j < self.components.securityLines.length; j++) {
       self.components.securityLines[j]
       .attr('d', securityLine);
@@ -863,12 +865,12 @@ var SentimentChart = {
     self.components.scatterDots
     .attr('cy', function (d) { return y1(d.mood); } ) // translate y value to a pixel
     .attr('cx', function (d,i) { return x(d.timestamp); } ); // translate x value
-     
+
     self.components.scatterDotsBubble
     .attr('transform', function (d, i) {
       return 'translate(' + (x(d.timestamp) - 23) + ',' + (y1(d.mood)-37) + ')';
     });
-    
+
     self.components.scatterDotsBubbleText
     .attr('y', function (d) { return y1(d.mood) - 13; } ) // translate y value to a pixel
     .attr('x', function (d,i) { return x(d.timestamp) - 4; } ); // translate x value
@@ -876,7 +878,7 @@ var SentimentChart = {
     self.components.scatterDotsHover
     .attr('cy', function (d) { return y1(d.mood); } ) // translate y value to a pixel
     .attr('cx', function (d,i) { return x(d.timestamp); } ); // translate x value
-    
+
     self.components.xLabels
     .attr('x', function (d, i) { return x(d); })
     .attr('y', chartHeight-margin.bottom-margin.top)
@@ -901,7 +903,7 @@ var SentimentChart = {
       }
       return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':00';
     });
-    
+
     function getOrdinalTimeStampsArray (allTimeStamps) {
       var timeStamps = [];
       var previousTimeStamp,
@@ -965,8 +967,8 @@ var SentimentChart = {
         //initial dotted line
         if (i === 0) {
           var timestamp = data.slice(i, 1)[0].timestamp - (data.slice(i, 1)[0].timestamp%86400);
-  
-          // if data is array          
+
+          // if data is array
           // dottedArray = data.slice(i, 1).unshift({
           //   timestamp: timestamp+1,
           //   price: data.slice(i, 1)[0].price
@@ -986,7 +988,7 @@ var SentimentChart = {
           //linear graph
           linearArray = data.slice(start, i);
           drawLinear(linearArray);
-          
+
           //straight dotted line
           dottedArray = data.slice(i, i+1)
                             .concat([{
@@ -999,7 +1001,7 @@ var SentimentChart = {
           //   {
           //     timestamp: data[i+1].timestamp,
           //     price: data[i].price
-          //   }, 
+          //   },
           //   {
           //     timestamp: data[i+1].timestamp,
           //     price: data[i+1].price
@@ -1013,33 +1015,35 @@ var SentimentChart = {
       drawLinear(data.slice(start, data.length-1)); //last bit of data
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
-      var currentTime = new Date().getTime();
-      
-      currentTime = (currentTime - currentTime%1000)/1000;
-      currentTime = currentTime - (currentTime%60);
-      //only before 5 (last sentiment data)
-      if (new Date(currentTime).getHours() < 17) {
-        if (!!lastData && currentTime - lastData.timestamp > 60) {
+      if (lastData) {
+        var currentTime = new Date().getTime();
+        
+        currentTime = (currentTime - currentTime%1000)/1000;
+        currentTime = currentTime - (currentTime%60);
+        //only before 5 (last sentiment data)
+        if (new Date(currentTime).getHours() < 17) {
+          if (!!lastData && currentTime - lastData.timestamp > 60) {
+            drawDotted([lastData, {
+              timestamp: currentTime,
+              price: lastData.price
+            }]);
+          }
+        } else {
+          //draw dotted untill 17:00
+          currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
           drawDotted([lastData, {
             timestamp: currentTime,
             price: lastData.price
           }]);
         }
-      } else {
-        //draw dotted untill 17:00
-        currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
-        drawDotted([lastData, {
-          timestamp: currentTime,
-          price: lastData.price
-        }]);
       }
 
       function drawLinear (data) {
         var linearPath = self.components.chart.append('path')
         .datum(data);
-        
+
         self.components.securityLines.push(linearPath);
-        
+
         linearPath
         .attr('class','security')
         .attr('class','security-linear')
@@ -1052,7 +1056,7 @@ var SentimentChart = {
         var dottedPath = self.components.chart.append('path')
         .datum(data);
         self.components.securityLines.push(dottedPath);
-        
+
         dottedPath
         .attr('class','security')
         .attr('class','security-dotted')
@@ -1070,7 +1074,7 @@ var SentimentChart = {
     var props = self.properties;
     return d3.scale.ordinal()
     .domain(data.map(function(x) { return x; }))
-    .rangeBands([0, width]); 
+    .rangeBands([0, width]);
     },
     y: function (min, max) {
       'use strict';

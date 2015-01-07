@@ -59,6 +59,7 @@ Handlebars.registerHelper('toAbs', function(num){
 });
 
 Handlebars.registerHelper('toPercentage', function(a){
+  if(a === '-') return '-';
   return (a*100).toFixed().toString() + '%';
 });
 
