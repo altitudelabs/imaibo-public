@@ -59,12 +59,19 @@ var Dashboard = {
       var hold    = remarks[6];
       var buy     = remarks[4];
       var sell    = remarks[2];
+      var c = '';
+      for(var i = 0; i < hold.length; i++){
+        if(!isNaN(parseInt(hold[i])) ||
+           hold[i] === '.'){
+            c += hold[i];
+        }
+      }
       var clock   = data.clock.substr(0, data.clock.length-3);
 
       var d = {
         date: data.date,
         clock: clock,
-        hold: hold,
+        hold: c,
         buy: buy,
         sell: sell
       };
