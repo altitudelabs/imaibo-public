@@ -298,7 +298,7 @@ var SentimentChart = {
         currentTimeStamp = allTimeStamps[j];
         previousTimeStamp = allTimeStamps[j-1];
         if (j === 0) {
-          previousTimeStamp = startTime - 3600; // x padding on the left
+          previousTimeStamp = startTime - 1020; // x padding on the left
           timeStamps.push(previousTimeStamp);
         } else {
           if (currentTimeStamp - previousTimeStamp >= 18000) {
@@ -316,7 +316,10 @@ var SentimentChart = {
             // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
             // currentTimeStamp += 9000;
             currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            currentTimeStamp += 57400;
+            console.log(new Date(currentTimeStamp*1000));
+
+            currentTimeStamp += 62400;
+            console.log(new Date(currentTimeStamp*1000));
           }
           endTime = currentTimeStamp;
         }
@@ -911,7 +914,7 @@ var SentimentChart = {
         currentTimeStamp = allTimeStamps[j];
         previousTimeStamp = allTimeStamps[j-1];
         if (j === 0) {
-          previousTimeStamp = startTime - 3600; // x padding on the left
+          previousTimeStamp = startTime - 1020; // x padding on the left
           timeStamps.push(previousTimeStamp);
         } else {
           if (currentTimeStamp - previousTimeStamp >= 18000) {
@@ -928,7 +931,7 @@ var SentimentChart = {
             currentTimeStamp += 3540;
           } else {
             currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            currentTimeStamp += 57400;
+            currentTimeStamp += 62400;
             // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
             // currentTimeStamp += 9000;
           }
