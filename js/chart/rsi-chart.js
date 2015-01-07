@@ -59,6 +59,8 @@ var RsiChart = {
     .attr('width', graphWidth)
     .select('svg')
     .attr('width', graphWidth);
+    $('#rsi-chart-container').css('width', chartWidth);
+
 
     if(isNew){
       xlabels = chart.append('g')
@@ -191,17 +193,16 @@ var RsiChart = {
     .attr('width', containerWidth + 120)
     .attr('height', chartHeight);
 
-    $('#rsi-chart-container').slimScroll({
-      height: height.toString() + 'px',
-      width: chartWidth.toString() + 'px',
-      color: '#ffcc00',
-    });
-    $('#rsi-chart-container').css('top', 0);
+    // $('#rsi-chart-container').slimScroll({
+    //   height: height.toString() + 'px',
+    //   width: chartWidth.toString() + 'px',
+    //   color: '#ffcc00',
+    // });
 
-    $('#rsi .slimScrollDiv').css('position', 'absolute')
-    .css('top', '40px')
-    .css('left', '45px')
-    .css('width', chartWidth.toString() + 'px');
+    // $('#rsi .slimScrollDiv').css('position', 'absolute')
+    // .css('top', '40px')
+    // .css('left', '45px')
+    // .css('width', chartWidth.toString() + 'px');
 
     //vertical aligning the lines in the middle
     this.properties.largestAbs = d3.max(data.daily.stockLine.map(function(x) {return max(max(Math.abs(+x.rsi6), Math.abs(+x.rsi12)), Math.abs(+x.rsi24)); }));

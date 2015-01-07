@@ -43,16 +43,16 @@ var IndexChart = {
     .attr('id', 'graph')
     .attr('height', height);
 
-    $('#chart-container').slimScroll({
-      height: (height+20).toString() + 'px',
-      width: chartWidth.toString() + 'px',
-      color: '#ffcc00',
-    });
+    // $('#chart-container').slimScroll({
+    //   height: (height+20).toString() + 'px',
+    //   width: chartWidth.toString() + 'px',
+    //   color: '#ffcc00',
+    // });
 
-    $('#price .slimScrollDiv').css('position', 'absolute')
-    .css('top', '9px')
-    .css('left', '45px')
-    .css('width', chartWidth.toString() + 'px');
+    // $('#price .slimScrollDiv').css('position', 'absolute')
+    // .css('top', '9px')
+    // .css('left', '45px')
+    // .css('width', chartWidth.toString() + 'px');
 
     var chart_label = d3.select('#chart-label')
     .append('svg:svg')
@@ -192,6 +192,8 @@ var IndexChart = {
     .select('svg')
     .attr('width', width);
     // .attr('height', height);
+
+    $('#chart-container').css('width', chartWidth.toString() + 'px');
 
 
     if(isNew){
