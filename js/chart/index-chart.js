@@ -245,7 +245,7 @@ var IndexChart = {
       .selectAll('svg > .line')
       .remove();
     }
-    
+
     if(!isEmpty){
       //x-axis labels
       var months = [];
@@ -297,7 +297,7 @@ var IndexChart = {
       .attr('y', function(d) {
         var closepx = d.closepx? d.closepx:d.preclosepx;
        return y2(max(d.openpx, closepx)); })
-      .attr('height', function(d) { 
+      .attr('height', function(d) {
         var closepx = d.closepx? d.closepx:d.preclosepx;
         return y2(min(d.openpx, closepx))-y2(max(d.openpx, closepx)); })
       .attr('width', function(d) { return 0.8 * (graphWidth)/data.daily.stockLine.length; })
@@ -355,11 +355,11 @@ var IndexChart = {
 
       horizontalBlock
       .attr('id','horizontal-block')
-      .attr("rx", 3)
-      .attr("ry", 3)
-      .attr('x', chartWidth+margin.left)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .attr('x', chartWidth+margin.left+1)
       .attr('y', yPos-10)
-      .attr('height', 24)
+      .attr('height', 20)
       .attr('width',  margin.right)
       .attr('fill', '#f65c4e')
       .style('fill-opacity', opacity);
@@ -406,7 +406,7 @@ var IndexChart = {
         .attr('stroke', color)
         .attr('fill', 'none')
         .attr('id', _id);
-      
+
         if(id != 'sentimentLine'){
           var checkbox = $('#' + id + '-checkbox');
           if(IE8){
@@ -468,9 +468,9 @@ var IndexChart = {
       return Tooltip.hide(); })
     .on('mousemove', function(){
       var xPos, yPos, mouseX, mouseY;
-    
+
       if(IE8) {
-        xPos = event.clientX; 
+        xPos = event.clientX;
         yPos = event.clientY;
         mouseX = xPos;
         mouseY = yPos;
@@ -481,7 +481,7 @@ var IndexChart = {
         mouseX = d3.event.pageX;
         mouseY = d3.event.pageY;
       }
-      
+
       var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
       var cursorPriceLevel = y2.invert((IE8?yPos-243:yPos));
       var d = data.daily.stockLine[j];
@@ -515,10 +515,10 @@ var IndexChart = {
       var opacity = (yPos > 10 && yPos < 226)? 100:0;
       horizontalText
       .attr('id', 'horizontal-text')
-      .attr('x', width - 20)
-      .attr('y', yPos + 5)
-      .attr('text-anchor', 'middle')
-      .text(cursorPriceLevel.toFixed(2))
+      .attr('x', width-37)
+      .attr('y', yPos+3)
+      .attr('text-anchor', 'left')
+      .text(cursorPriceLevel.toFixed(0))
       .style('fill-opacity', opacity)
       .style('fill', 'white');
         return Tooltip.render.index(model);
