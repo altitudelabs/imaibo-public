@@ -1822,9 +1822,10 @@ input[type="radio"]:checked + label {
   left: 50%;
   margin-left: -202px;
   top: 200px;
-  width: 420px;
+  width: 800px;
   z-index: 11000;
   left: 50%;
+  line-height: 150%;
 
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1848,6 +1849,7 @@ input[type="radio"]:checked + label {
 #experts-modal .content {
   padding: 20px 10px;
   font-size: 12px;
+  letter-spacing: 1.5px;
 }
 
 #experts-modal .modal-close {
