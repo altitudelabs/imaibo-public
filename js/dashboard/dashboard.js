@@ -15,6 +15,9 @@ var Dashboard = {
     if (self.firstLoad){
       // model.moodindexInfo.change = '0';
       // model.moodindexInfo.changeRatio = '0%';
+      if(model.moodindexInfo.changeRatio.slice(-1) != '%'){
+        model.moodindexInfo.changeRatio += '%';
+      }
       Helper.populateView('#dashboard','#dashboard-template', model);
       this.prevData.latest = model.moodindexInfo.latest;
       this.prevData.lastpx = model.stockIndexInfo.lastpx;

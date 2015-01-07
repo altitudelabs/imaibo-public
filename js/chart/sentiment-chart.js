@@ -84,12 +84,27 @@ var SentimentChart = {
     self.components.leftBorder = self.components.leftBorder || self.components.chartLabel.append('svg:line');
     self.components.y1Labels = self.components.y1Labels || self.components.chartLabel.append('g').selectAll('text.yrule').data(y1.ticks(5));
     self.components.y2Labels = self.components.y2Labels || self.components.chartLabel.append('g').selectAll('text.yrule').data(y2.ticks(5));
+    self.components.horizontalGridLines = self.components.chartLabel.append('g').selectAll('text.yrule').data(y1.ticks(5));
 
     self.components.chartLabel
     .attr('class', 'chart')
     .attr('width', containerWidth)
     .attr('height', chartHeight);
 
+    self.components.horizontalGridLines
+    .enter().append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "x1" : margin.left,
+            "x2" : chartWidth + margin.left,
+            "y1" : function(d){ return y1(d)- 10;},
+            "y2" : function(d){ return y1(d)- 10;},
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "rgb(50, 50, 50)", 
+            "stroke-width" : "1px"
+        });
     // $('#sentiment-chart-container').slimScroll({
     //   height: (chartHeight+20).toString() + 'px',
     //   width: chartWidth.toString() + 'px',
@@ -175,6 +190,10 @@ var SentimentChart = {
     var margin = this.properties.margin;
     var chartWidth = containerWidth - margin.left - margin.right;
 
+    self.components.horizontalGridLines
+    .attr('x2', chartWidth + margin.left);
+
+
     self.components.chartLabel
     .attr('width', containerWidth);
 
@@ -216,6 +235,7 @@ var SentimentChart = {
     var moodindexList = self.data.moodindexList;
     var indexList = self.data.indexList;
     var isEmpty = moodindexList.length == 0;
+
 
     if(isEmpty) {
       $('#sentiment-chart-container').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
@@ -260,6 +280,14 @@ var SentimentChart = {
       xLabelInterval = 6;
     }
 
+
+    var hour = d3.min(ordinalTimeStamps);
+    var hourly = [];
+
+    for(var i = hour; i < hour + 39600; i+= 3600){
+      hourly.push(i);
+    }
+
     var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
     var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
     var minY2 = self.helpers.minIndex('price', self.data.indexList);
@@ -268,6 +296,22 @@ var SentimentChart = {
     var y1 = self.helpers.y(minY1 - ((maxY1 - minY1)*0.5), maxY1 + ((maxY1 - minY1)*0.5));
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
     var x = self.helpers.x(chartWidth, ordinalTimeStamps);
+    self.components.verticalGridLines = self.components.verticalGridLines || self.components.chartLabel.append('g').selectAll('text.yrule').data(hourly);
+    self.components.verticalGridLines
+    .enter().append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "x1" : function(d){ return x(d) + margin.left; },
+            "x2" : function(d){ return x(d) + margin.left; },
+            "y1" : chartHeight - margin.bottom - 20,
+            "y2" : margin.top,
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "rgb(50, 50, 50)", 
+            "stroke-width" : "1px"
+        });
+
 
     self.components.chart = d3.select('#sentiment-chart').append('svg:svg');
     self.components.xLabels = self.components.chart.selectAll('text.xrule').data(getXLabelTimeStampsArray(ordinalTimeStamps));
@@ -708,6 +752,12 @@ var SentimentChart = {
     var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
     var x = self.helpers.x(chartWidth, ordinalTimeStamps);
 
+    self.components.verticalGridLines
+    .attr({
+      "x1" : function(d){ return x(d) + margin.left; },
+      "x2" : function(d){ return x(d) + margin.left; },
+    });
+
     self.components.chart
     .attr('width', chartWidth);
 
@@ -736,9 +786,6 @@ var SentimentChart = {
         .text(function(d, i){
           if (d.newsCount) { return d.newsCount; }
         });
-
-
-
       }
       self.components.xLabels = self.components.xLabels.data(getXLabelTimeStampsArray(ordinalTimeStamps));
       self.components.sentimentLine = self.components.sentimentLine.datum(moodindexList);
@@ -750,6 +797,7 @@ var SentimentChart = {
         self.components.securityLines[i].remove();
       }
       self.components.securityLines = [];
+
 
 
       self.components.scatterDots

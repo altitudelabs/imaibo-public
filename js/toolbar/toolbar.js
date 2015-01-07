@@ -26,6 +26,12 @@ var Toolbar = {
     toggleMA('20');
     toggleMA('60');
 
+    //2015 01 07. Problem 6. Requires 5, 10, 20 to be checked on default
+    $("#ma5-checkbox").click();
+    $("#ma10-checkbox").click();
+    $("#ma20-checkbox").click();
+
+
     //bind checkbox listeners to each MA line
     function toggleMA(val){
       var ma = 'ma' + val,
@@ -37,7 +43,6 @@ var Toolbar = {
         //if the click wasn't from the checkbox already, toggle it
         if(e.target != cb) cb.click();
       });
-
       $checkbox.change(function(e){
         /*
          * see http://jsperf.com/boolean-int-conversion/3 for ternary operators speed
@@ -77,11 +82,11 @@ var Toolbar = {
                                  '</li>');
           }
         });
-    if(IE8){
-      d3.select('#'+ ma + '-line').style('stroke-opacity', this.checked? '1':'0');
-    }else{
-      d3.select('#' + ma + '-line').style('opacity', this.checked? 1:0);
-    }
+        if(IE8){
+          d3.select('#'+ ma + '-line').style('stroke-opacity', this.checked? '1':'0');
+        }else{
+          d3.select('#' + ma + '-line').style('opacity', this.checked? 1:0);
+        }
         $('#' + ma + '-legend').css('opacity', this.checked? 1:0);
       });
     }
