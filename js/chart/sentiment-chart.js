@@ -593,7 +593,7 @@ var SentimentChart = {
         currentTime = (currentTime - currentTime%1000)/1000;
         currentTime = currentTime - (currentTime%60);
         //only before 5 (last sentiment data)
-        if (new Date(currentTime).getHours() < 17) {
+        if (new Date().getHours() < 17) {
           if (!!lastData && currentTime - lastData.timestamp > 60) {
             drawDotted([lastData, {
               timestamp: currentTime,
@@ -1021,7 +1021,7 @@ var SentimentChart = {
         currentTime = (currentTime - currentTime%1000)/1000;
         currentTime = currentTime - (currentTime%60);
         //only before 5 (last sentiment data)
-        if (new Date(currentTime).getHours() < 17) {
+        if (new Date().getHours() < 17) {
           if (!!lastData && currentTime - lastData.timestamp > 60) {
             drawDotted([lastData, {
               timestamp: currentTime,
