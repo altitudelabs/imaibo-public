@@ -73,6 +73,8 @@ var MacdChart = {
       .selectAll('svg > .line')
       .remove();
     }
+
+    $('#macd-chart-container').css('width', chartWidth);
     var y1Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.diff)); }));
     var y2Diff = d3.max(data.daily.stockLine.map(function(x) {return Math.abs((+x.macd)); }));
 
@@ -201,18 +203,16 @@ var MacdChart = {
     .attr('width', containerWidth + 120)
     .attr('height', chartHeight);
 
-    $('#macd-chart-container').slimScroll({
-      height: height.toString() + 'px',
-      width: chartWidth.toString() + 'px',
-      color: '#ffcc00'
-    });
+    // $('#macd-chart-container').slimScroll({
+    //   height: height.toString() + 'px',
+    //   width: chartWidth.toString() + 'px',
+    //   color: '#ffcc00'
+    // });
 
-    $('#macd-chart-container').css('top', 0);
-
-    $('#macd .slimScrollDiv').css('position', 'absolute')
-    .css('top', '33px')
-    .css('left', '45px')
-    .css('width', chartWidth.toString() + 'px');
+    // $('#macd .slimScrollDiv').css('position', 'absolute')
+    // .css('top', '33px')
+    // .css('left', '45px')
+    // .css('width', chartWidth.toString() + 'px');
 
     chartLabel.append('svg:line')
     .attr('class', 'xborder-top-thick')
