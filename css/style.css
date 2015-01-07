@@ -590,6 +590,9 @@ text.sentiment {
 
 .zoomable-chart-container{
   overflow: hidden;
+  top: 35px;
+  left: 45px;
+  width: 100%;
 }
 
 .zoomable-chart {

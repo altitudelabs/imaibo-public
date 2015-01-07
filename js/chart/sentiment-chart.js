@@ -90,19 +90,18 @@ var SentimentChart = {
     .attr('width', containerWidth)
     .attr('height', chartHeight);
 
-    $('#sentiment-chart-container').slimScroll({
-      height: (chartHeight+20).toString() + 'px',
-      width: chartWidth.toString() + 'px',
-      color: '#ffcc00'
-    });
+    // $('#sentiment-chart-container').slimScroll({
+    //   height: (chartHeight+20).toString() + 'px',
+    //   width: chartWidth.toString() + 'px',
+    //   color: '#ffcc00'
+    // });
 
-    $('#sentiment-chart-container').css('top', 0);
 
-    $('#sentiment > .slimScrollDiv')
-    .css('position', 'absolute')
-    .css('top', '39px')
-    .css('left', '45px')
-    .css('width', chartWidth.toString() + 'px');
+    // $('#sentiment > .slimScrollDiv')
+    // .css('position', 'absolute')
+    // .css('top', '39px')
+    // .css('left', '45px')
+    // .css('width', chartWidth.toString() + 'px');
 
     self.components.topBorder
     .attr('class', 'xborder-top-thick')
@@ -181,11 +180,11 @@ var SentimentChart = {
 
     $('#sentiment-chart-container').css('width', chartWidth.toString());
 
-    $('#sentiment > .slimScrollDiv')
-    .css('position', 'absolute')
-    .css('top', '39px')
-    .css('left', '45px')
-    .css('width', chartWidth.toString() + 'px');
+    // $('#sentiment > .slimScrollDiv')
+    // .css('position', 'absolute')
+    // .css('top', '39px')
+    // .css('left', '45px')
+    // .css('width', chartWidth.toString() + 'px');
 
     self.components.topBorder
     .attr('x2', chartWidth + margin.left);
