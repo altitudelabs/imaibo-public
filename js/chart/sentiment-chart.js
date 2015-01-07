@@ -283,8 +283,7 @@ var SentimentChart = {
 
     var hour = d3.min(ordinalTimeStamps);
     var hourly = [];
-
-    for(var i = hour; i < hour + 39600; i+= 3600){
+    for(var i = hour+1020; i < hour + 39600; i+= 3600){
       hourly.push(i);
     }
 
