@@ -177,7 +177,10 @@ var IndexChart = {
     gvolume,
     gcandlesticks,
     glinestems,
-    tooltip;
+    tooltip,
+    horizontal,
+    horizontalText,
+    horizontalBlock;
 
     var isEmpty = data.daily.stockLine.length == 0;
 
@@ -201,12 +204,26 @@ var IndexChart = {
       gvolume = chart.append('g').attr('class','volume');
       gcandlesticks = chart.append('g').attr('class','candlesticks');
       glinestems = chart.append('g').attr('class','linestems');
+      // vertical         = chart.append('svg:line');
+      horizontal       = chart_label.append('svg:line');
+      // vertical_block   = chart_label.append('svg:rect');
+      horizontalBlock = chart_label.append('svg:rect');
+      // vertical_text    = chart_label.append('text');
+      horizontalText  = chart_label.append('text');
 
     }else{
       xlabels = chart.selectAll('g.xlabels');
       gvolume = chart.selectAll('g.volume');
       gcandlesticks = chart.selectAll('g.candlesticks');
       glinestems =  chart.selectAll('g.linestems');
+
+
+     // vertical         = chart.selectAll('line.xlabelLine');
+      horizontal       = chart_label.selectAll('line.ylabelLine');
+      // vertical_block   = chart_label.select('g#vertical-block');
+      horizontalBlock = chart_label.select('#horizontal-block');
+      horizontalText  = chart_label.select('#horizontal-text');
+      // vertical_text    = chart_label.select('#vertical-text');
 
       chart.selectAll('g.xlabels')
       .selectAll('text.xrule')
@@ -301,8 +318,8 @@ var IndexChart = {
 
       chart
       .on('mousemove', function(){
-        // var xPos = d3.mouse(this)[0];
-        // var yPos = d3.mouse(this)[1];
+        var xPos = d3.mouse(this)[0];
+        var yPos = d3.mouse(this)[1];
 
         // vertical
         // .attr('class', 'xlabelLine')
@@ -321,26 +338,36 @@ var IndexChart = {
         // .attr('width',  50)
         // .attr('fill', '#f65c4e');
 
-        // yPos = yPos > 370? 370: yPos;
-        // yPos = yPos < 10? 10: yPos;
+      yPos = yPos > 230? 230: yPos;
+      yPos = yPos < 10? 10: yPos;
 
-        // horizontal
-        // .attr('class', 'ylabelLine')
-        // .attr('id', 'ylabelLine')
-        // .attr('x1', chartWidth)
-        // .attr('x2', 0)
-        // .attr('y1', yPos) //make it line up with the label
-        // .attr('y2', yPos)
-        // .attr('stroke', '#f65c4e');
+      var opacity = (yPos > 10 && yPos < 226)? 100:0;
 
-        // horizontal_block
-        // .attr('id','horizontal-block')
-        // .attr('x', xPos+25)
-        // .attr('y', chartHeight+10)
-        // .attr('height', 20)
-        // .attr('width',  50)
-        // .attr('fill', '#44b6ea');
+      horizontal
+      .attr('class', 'ylabelLine')
+      .attr('id', 'ylabelLine')
+      .attr('x1', chartWidth + margin.left)
+      .attr('x2', margin.left)
+      .attr('y1', yPos) //make it line up with the label
+      .attr('y2', yPos)
+      .attr('stroke', '#f65c4e')
+      .style('stroke-opacity', opacity);
 
+      horizontalBlock
+      .attr('id','horizontal-block')
+      .attr("rx", 3)
+      .attr("ry", 3)
+      .attr('x', chartWidth+margin.left)
+      .attr('y', yPos-10)
+      .attr('height', 24)
+      .attr('width',  margin.right)
+      .attr('fill', '#f65c4e')
+      .style('fill-opacity', opacity);
+
+      })
+      .on('mouseout', function(){
+        horizontal.style('stroke-opacity', 0);
+        horizontalBlock.style('fill-opacity', 0);
       });
 
       var line = d3.svg.line()
@@ -436,6 +463,8 @@ var IndexChart = {
     .on('mouseover', function(e){
       return Tooltip.show(); })
     .on('mouseout', function(){
+      horizontalText
+      .style('fill-opacity', 0);
       return Tooltip.hide(); })
     .on('mousemove', function(){
       var xPos, yPos, mouseX, mouseY;
@@ -483,8 +512,18 @@ var IndexChart = {
             change: d.moodindexchg
           }
         };
+      var opacity = (yPos > 10 && yPos < 226)? 100:0;
+      horizontalText
+      .attr('id', 'horizontal-text')
+      .attr('x', width - 20)
+      .attr('y', yPos + 5)
+      .attr('text-anchor', 'middle')
+      .text(cursorPriceLevel.toFixed(2))
+      .style('fill-opacity', opacity)
+      .style('fill', 'white');
         return Tooltip.render.index(model);
       });
+
     }
     if(isEmpty && $('#index-no-data').length == 0){
       $('#chart-container').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
