@@ -102,7 +102,7 @@ var SentimentChart = {
             "y2" : function(d){ return y1(d)- 10;},
             "fill" : "none",
             "shape-rendering" : "crispEdges",
-            "stroke" : "rgb(50, 50, 50)", 
+            "stroke" : "rgb(50, 50, 50)",
             "stroke-width" : "1px"
         });
     // $('#sentiment-chart-container').slimScroll({
@@ -280,13 +280,19 @@ var SentimentChart = {
       xLabelInterval = 6;
     }
 
+    // Create array of half hourly timestamps for vertical lines
+    var makeHourlyArray = function(){
+      var increments = 60*30;
+      var hour = d3.min(ordinalTimeStamps);
+      var hourly = [];
 
-    var hour = d3.min(ordinalTimeStamps);
-    var hourly = [];
-
-    for(var i = hour; i < hour + 39600; i+= 3600){
-      hourly.push(i);
+      for(var i = hour; i < hour+39600; i+=increments){
+        hourly.push(i);
+      }
+      return hourly;
     }
+
+    var hourly = makeHourlyArray();
 
     var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
     var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
@@ -299,19 +305,17 @@ var SentimentChart = {
     self.components.verticalGridLines = self.components.verticalGridLines || self.components.chartLabel.append('g').selectAll('text.yrule').data(hourly);
     self.components.verticalGridLines
     .enter().append("line")
-        .attr(
-        {
-            "class":"horizontalGrid",
-            "x1" : function(d){ return x(d) + margin.left; },
-            "x2" : function(d){ return x(d) + margin.left; },
-            "y1" : chartHeight - margin.bottom - 20,
-            "y2" : margin.top,
-            "fill" : "none",
-            "shape-rendering" : "crispEdges",
-            "stroke" : "rgb(50, 50, 50)", 
-            "stroke-width" : "1px"
-        });
-
+      .attr({
+        "class":"horizontalGrid",
+        "x1" : function(d){ return x(d) + margin.left; },
+        "x2" : function(d){ return x(d) + margin.left; },
+        "y1" : chartHeight - margin.bottom - 20,
+        "y2" : margin.top,
+        "fill" : "none",
+        "shape-rendering" : "crispEdges",
+        "stroke" : "rgb(50, 50, 50)",
+        "stroke-width" : "1px"
+      });
 
     self.components.chart = d3.select('#sentiment-chart').append('svg:svg');
     self.components.xLabels = self.components.chart.selectAll('text.xrule').data(getXLabelTimeStampsArray(ordinalTimeStamps));
@@ -332,7 +336,6 @@ var SentimentChart = {
     drawXLabels();
     drawSecurityLine(self.data.indexList);
     drawSentimentLine(); //drawing sentiment line last so it's on top
-
 
     function getOrdinalTimeStampsArray (allTimeStamps) {
       var timeStamps = [];
@@ -635,7 +638,7 @@ var SentimentChart = {
       var lastData = data[data.length-1];
       if (lastData) {
         var currentTime = new Date().getTime();
-        
+
         currentTime = (currentTime - currentTime%1000)/1000;
         currentTime = currentTime - (currentTime%60);
         //only before 5 (last sentiment data)
@@ -654,7 +657,7 @@ var SentimentChart = {
             price: lastData.price
           }]);
         }
-        
+
       }
 
 
@@ -1067,7 +1070,7 @@ var SentimentChart = {
       var lastData = data[data.length-1];
       if (lastData) {
         var currentTime = new Date().getTime();
-        
+
         currentTime = (currentTime - currentTime%1000)/1000;
         currentTime = currentTime - (currentTime%60);
         //only before 5 (last sentiment data)
