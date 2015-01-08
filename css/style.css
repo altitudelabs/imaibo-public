@@ -288,7 +288,7 @@ text.sentiment {
 }
 
 .component-item-price.thermo {
-  width: 210px;
+  width: 195px;
 }
 
 .prediction, .indicator {
@@ -566,7 +566,7 @@ text.sentiment {
 .btn-buy,
 .btn-sell {
   display: inline-block;
-  width: 190px;
+  width: 180px;
   border-radius: 2px;
 }
 
