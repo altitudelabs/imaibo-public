@@ -4,7 +4,8 @@ var RightPanelModel = {
   model: {
     experts: {},
     stock: {},
-    news: {}
+    news: {},
+    expertError: true,
   },
   getExpertDataAsync: function(){
     var self = this;
@@ -23,6 +24,28 @@ var RightPanelModel = {
     return $.Deferred(function(d){
       self.likeComment(weiboId, d.resolve, d.reject);
     }).promise();
+  },
+  log: function(code, message) {
+    if(PRODUCTION) return;
+    var now = new Date();
+
+    console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
+  },
+  expertErrorCheck: function(model) {
+    var api = '&act=weiboList';
+    if(model === undefined){
+      this.log(1, api + ' (Experts)' + 'data variable is undefined');
+    }else if(model.isLogin === undefined){
+      this.log(1, api + ' (Experts)' + 'data.isLogin variable is undefined');
+    }else if(model.list === undefined){
+      this.log(1, api + ' (Experts)' + 'data.list variable is undefined');
+    }else if(model.list.constructor !== Array){
+      this.log(1, api + ' (Experts)' + 'data.list is not an Array');
+    }else if(model.list.length === 0) {
+      this.log(1, api + ' (Experts)' + 'data.list array is empty');
+    }else {
+      this.model.expertError = false;
+    }
   },
   getExpertHeadline: function(successHandler, errorHandler){
     var self = this;
@@ -43,7 +66,7 @@ var RightPanelModel = {
         self.model.experts.list.map(function(res){
           res.time = self.getTimestampStr(res.time);
         });
-
+        self.expertErrorCheck(self.model.experts);
         successHandler(self.model.experts);
 	   });
   },

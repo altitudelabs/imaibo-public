@@ -28,4 +28,3 @@ $(function(){
   // Show contents only after DOM loads
   $('.outer').css('visibility', 'visible');
 });
-
