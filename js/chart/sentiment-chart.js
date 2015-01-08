@@ -491,7 +491,7 @@ var SentimentChart = {
         .duration(200)
         .style(style, fadeIn);
         self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
-                        '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
+                        '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                         '<div class="wrapper">' +
                           '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
                           '<div class="mood"> 相对之前： ' + d.moodChg +             '</div>' +
@@ -790,7 +790,7 @@ var SentimentChart = {
         .duration(200)
         .style(style, fadeIn);
         self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
-                        '<div class="tooltip-date"> 日期： &nbsp;' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
+                        '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                         '<div class="wrapper">' +
                           '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
                           '<div class="mood"> 相对之前： ' + d.moodDiff +             '</div>' +
