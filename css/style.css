@@ -26,16 +26,16 @@
   box-sizing: border-box;
 }
 html {
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 body {
-  background-color: rgb(15, 15, 15);
-  overflow-x: hidden;
-  overflow-y: scroll;
+  background-color: rgb(15, 15, 15) !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
 }
 
 body::-webkit-scrollbar {
-  width: 0em;
+  width: 0em !important;
 }
 
 .mb-nav:before, .mb-nav:after {

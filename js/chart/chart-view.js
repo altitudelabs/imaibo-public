@@ -152,8 +152,7 @@ var ChartView = {
         Dashboard.render(self.data.info);
 
         // Refresh sticky columns and scroll position
-        $('#right-panel, #content').trigger('sticky_kit:recalc');
-        $('.container').scrollLeft(self.properties.scrollDistance);
+        StickyColumns.start();
       });
     });
   },

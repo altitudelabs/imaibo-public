@@ -15,9 +15,6 @@ $(function(){
   // Sets up routing logic for right content panel
   RightPanel.init();
 
-  // Sets up sticky left and right columns
-  $('#right-panel, #content').stick_in_parent();
-
   // Hides certain features
   if(HIDE){
     $('#frequency').remove();
