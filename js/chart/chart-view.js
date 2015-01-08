@@ -201,10 +201,10 @@ var ChartView = {
     var scroll = baron(params);
 
     $('#price').hover(
-      function() { 
-        $('.scroller__bar').stop().fadeTo('slow', 0.5); 
-      }, 
-      function() { 
+      function() {
+        $('.scroller__bar').stop().fadeTo('slow', 0.5);
+      },
+      function() {
         $('.scroller__bar').stop().fadeTo('slow', 0);
     });
 

@@ -7,7 +7,7 @@ var SentimentChart = {
     var properties = {
       height: 244,
       interval: 40,
-      margin: { top: 6, right: 45, bottom: 36, left: 45 },
+      margin: { top: 6, right: 45, bottom: 36, left: 45 }
     };
     if (options) {
       for (var key in options) {
@@ -183,6 +183,29 @@ var SentimentChart = {
       .text(String);
     }
   },
+  // Returns array of ordinal timestamps for x-axis
+  getOrdinalTimestamps: function(startTime, endTime) {
+    var timeStamps = [];
+    for (var j = startTime; j <= endTime; j+=60){
+      timeStamps.push(j);
+    }
+    return timeStamps;
+  },
+  // Create array of half hourly timestamps for vertical lines
+  makeVerticalLines: function(startTime, endTime){
+    var interval = 60*30;
+    var arr = [];
+    for(var i = startTime; i < endTime; i+=interval){
+      arr.push(i);
+    }
+    return arr;
+  },
+  // Returns current timestamp in client format
+  getCurrentTimestamp: function(){
+    var t = new Date().getTime()/1000;
+    t = t - t % 1000;
+    return t;
+  },
   updateContainer: function (hasNewData) {
     'use strict';
 
@@ -223,50 +246,46 @@ var SentimentChart = {
     self.components.y2Labels
     .attr('x', chartWidth + margin.left + 18);
   },
-  drawGraph: function(){
-    'use strict';
-
-    var self = this;
-
-    var prop = ChartView.properties,
-    margin = prop.margin,
-    chartWidth  = prop.width - margin.left - margin.right,
-    height      = this.properties.height,
-    chartHeight = height - margin.top - margin.bottom;
-
-    var moodindexList = self.data.moodindexList;
-    var indexList = self.data.indexList;
-
-    //filtering out non trading days
-    moodindexList = moodindexList.filter(function (x) {
+  // Processing mood data filters out non-trading days
+  processMoodData: function(data){
+    return data.filter(function (x) {
       if (!!x.isTradingDay && !!x.timestamp) {
         return true;
       } else {
         return false;
       }
     });
-
-    indexList = indexList.filter(function (x) {
+  },
+  // Processing index data filters out non-trading days
+  processIndexData: function(data){
+    return data.filter(function (x) {
       if (!!x.timestamp) {
         return true;
       }
     });
+  },
+  drawGraph: function(){
+    'use strict';
+
+    var self = this;
+
+    var prop = ChartView.properties,
+        margin = prop.margin,
+        chartWidth  = prop.width - margin.left - margin.right,
+        height      = this.properties.height,
+        chartHeight = height - margin.top - margin.bottom;
+
+    var moodindexList = self.processMoodData(self.data.moodindexList);
+    var indexList = self.processIndexData(self.data.indexList);
 
     var combinedIndexList = moodindexList.concat(indexList);
 
-    var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
+    var dataDate = new Date(moodindexList[0].timestamp*1000);
+    var startTime = dataDate.setHours(8,30,0,0)/1000;
+    var endTime = dataDate.setHours(17,30,0,0)/1000;
 
-    var endTime = new Date().getTime();
-    endTime = (endTime - endTime%1000)/1000;
-    var endDate = new Date(endTime * 1000);
-
-    var allTimeStampsArray = combinedIndexList.map(function (x) {
-        return x.timestamp;
-    }).sort();
-
-
-    //timeStampsArray will only be used to draw ordinal x axis
-    var ordinalTimeStamps = getOrdinalTimeStampsArray(allTimeStampsArray);
+    // timeStampsArray will only be used to draw ordinal x axis
+    var ordinalTimeStamps = this.getOrdinalTimestamps(startTime, endTime);
     var xLabelInterval;
     if (chartWidth < 450) {
       xLabelInterval = 24; //hours
@@ -276,20 +295,7 @@ var SentimentChart = {
       xLabelInterval = 6;
     }
 
-    // Create array of half hourly timestamps for vertical lines
-    var makeHourlyArray = function(){
-      var increments = 60*30;
-      var fromTime = d3.min(ordinalTimeStamps);
-      var toTime = d3.max(ordinalTimeStamps);
-      var hourly = [];
-
-      for(var i = fromTime; i < toTime; i+=increments){
-        hourly.push(i);
-      }
-      return hourly;
-    }
-
-    var hourly = makeHourlyArray();
+    var hourly = self.makeVerticalLines(startTime, endTime);
 
     var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
     var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
@@ -334,43 +340,6 @@ var SentimentChart = {
     drawSecurityLine(self.data.indexList);
     drawSentimentLine(); //drawing sentiment line last so it's on top
 
-    function getOrdinalTimeStampsArray (allTimeStamps) {
-      var timeStamps = [];
-      var previousTimeStamp,
-          currentTimeStamp;
-      for (var j = 0; j < allTimeStamps.length; j++) {
-        currentTimeStamp = allTimeStamps[j];
-        previousTimeStamp = allTimeStamps[j-1];
-        if (j === 0) {
-          previousTimeStamp = startTime - 1020; // x padding on the left
-          timeStamps.push(previousTimeStamp);
-        } else {
-          if (currentTimeStamp - previousTimeStamp >= 18000) {
-            var diff = currentTimeStamp - previousTimeStamp;
-            var days = diff - (diff%86400);
-            //plotting from 8am - 18pm
-            previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600 + 28860;
-            timeStamps.push(previousTimeStamp);
-          }
-        }
-        if (j === allTimeStamps.length - 1) {
-          if (new Date(currentTimeStamp*1000).getHours() === 17) {
-            currentTimeStamp += 3540;
-          } else {
-            // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            // currentTimeStamp += 9000;
-            currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-
-            currentTimeStamp += 62400;
-          }
-          endTime = currentTimeStamp;
-        }
-        while (previousTimeStamp < currentTimeStamp) {
-          timeStamps.push(previousTimeStamp+=60);
-        }
-      }
-      return timeStamps;
-    }
     function getXLabelTimeStampsArray (timeStampsArray) {
       var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
         var date = new Date(e * 1000);
@@ -393,24 +362,7 @@ var SentimentChart = {
       .attr('y', chartHeight-margin.bottom-margin.top)
       .text(function (d, i) {
         var date = new Date(d * 1000);
-        if (xLabelInterval === 24) {
-          if ((d - 14400) % 86400 === 0) {
-            // return date.getMonth()+1 + '/' + (date.getDate()<10 ? '0' + date.getDate() : date.getDate());
-          }
-        } else if (xLabelInterval === 12) {
-          if ((d - 14400) % 43200 === 0) {
-            if (date.getHours() + date.getMinutes() === 0) {
-              // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
-            } else {
-              // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
-            }
-          }
-        } else if (xLabelInterval === 6) {
-          if ((d + 7200) % 21600 === 0) {
-            // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
-          }
-        }
-        return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':00';
+        return date.getHours() + ':00';
       });
       self.components.xLabels
       .exit()
@@ -569,7 +521,7 @@ var SentimentChart = {
       .attr('cy', function (d) { return y1(d.mood); } ) // translate y value to a pixel
       .attr('cx', function (d,i) { return x(d.timestamp); } ); // translate x value
     }
-    function drawSecurityLine (data) {
+    function drawSecurityLine(data) {
       var securityLine = d3.svg.line()
       .x(function(d,i) { return x(d.timestamp); })
       .y(function(d)   { return y2(+d.price); })
@@ -600,7 +552,8 @@ var SentimentChart = {
           drawDotted(dottedArray);
         }
 
-        if ( data[i+1].timestamp - data[i].timestamp > 3590) {
+        // Lunchtime dotted line
+        if (data[i+1].timestamp - data[i].timestamp > 3590) {
           //linear graph
           linearArray = data.slice(start, i);
           drawLinear(linearArray);
@@ -632,29 +585,16 @@ var SentimentChart = {
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
       if (lastData) {
-        var currentTime = new Date().getTime();
-
-        currentTime = (currentTime - currentTime%1000)/1000;
-        currentTime = currentTime - (currentTime%60);
-        //only before 5 (last sentiment data)
-        if (new Date().getHours() < 17) {
-          if (!!lastData && currentTime - lastData.timestamp > 60) {
-            drawDotted([lastData, {
-              timestamp: currentTime,
-              price: lastData.price
-            }]);
-          }
-        } else {
-          //draw dotted untill 17:00
-          currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
+        // if after 1500hrs, draw last dotted line
+        if (new Date().getHours() >= 15) {
+          //draw dotted until 17:30
+          var currentTime = self.getCurrentTimestamp();
           drawDotted([lastData, {
-            timestamp: currentTime,
+            timestamp: Math.min(currentTime, endTime),
             price: lastData.price
           }]);
         }
-
       }
-
 
       function drawLinear (data) {
         var linearPath = chart.append('path')
@@ -715,21 +655,16 @@ var SentimentChart = {
 
     var combinedIndexList = moodindexList.concat(indexList);
 
-    var allTimeStampsArray = combinedIndexList.map(function (x) {
-        return x.timestamp;
-    }).sort();
-
-    var startTime = d3.min(combinedIndexList.map(function(x) { return x.timestamp; }));
-    var endTime = new Date().getTime();
-    endTime = (endTime - endTime%1000)/1000;
-    var endDate = new Date(endTime * 1000);
+    var dataDate = new Date(moodindexList[0].timestamp*1000);
+    var startTime = dataDate.setHours(8,30,0,0)/1000;
+    var endTime = dataDate.setHours(17,30,0,0)/1000;
 
     //timeStampsArray will only be used to draw ordinal x axis
     var minMoodIndex = function (prop) { return d3.min(moodindexList.map(function(x) { return +x[prop]; })); },
     maxMoodIndex = function (prop) { return d3.max(moodindexList.map(function(x) { return +x[prop]; })); },
     minIndex = function (prop) { return d3.min(indexList.map(function(x) { return +x[prop]; })); },
     maxIndex = function (prop) { return d3.max(indexList.map(function(x) { return +x[prop]; })); };
-    var ordinalTimeStamps = getOrdinalTimeStampsArray(allTimeStampsArray);
+    var ordinalTimeStamps = this.getOrdinalTimestamps(startTime, endTime);
 
     var xLabelInterval;
 
@@ -949,46 +884,9 @@ var SentimentChart = {
           // return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':0' + date.getMinutes();
         }
       }
-      return date.getMonth()+1 + '/' + date.getDate() + ' ' + date.getHours() + ':00';
+      return date.getHours() + ':00';
     });
 
-    function getOrdinalTimeStampsArray (allTimeStamps) {
-      var timeStamps = [];
-      var previousTimeStamp,
-          currentTimeStamp;
-      for (var j = 0; j < allTimeStamps.length; j++) {
-        currentTimeStamp = allTimeStamps[j];
-        previousTimeStamp = allTimeStamps[j-1];
-        if (j === 0) {
-          previousTimeStamp = startTime - 1020; // x padding on the left
-          timeStamps.push(previousTimeStamp);
-        } else {
-          if (currentTimeStamp - previousTimeStamp >= 18000) {
-            var diff = currentTimeStamp - previousTimeStamp;
-            var days = diff - (diff%86400);
-            //plotting from 8am - 18pm
-            previousTimeStamp = previousTimeStamp + days - (previousTimeStamp%86400) + 57600 + 28860;
-
-            timeStamps.push(previousTimeStamp);
-          }
-        }
-        if (j === allTimeStamps.length - 1) {
-          if (new Date(currentTimeStamp*1000).getHours() === 17) {
-            currentTimeStamp += 3540;
-          } else {
-            currentTimeStamp = endTime - ((endDate.getHours()*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            currentTimeStamp += 62400;
-            // currentTimeStamp = endTime - ((endDate.getHours()%3*3600) + (endDate.getMinutes()*60) + (endDate.getSeconds())); // x padding on the right
-            // currentTimeStamp += 9000;
-          }
-          endTime = currentTimeStamp;
-        }
-        while (previousTimeStamp < currentTimeStamp) {
-          timeStamps.push(previousTimeStamp+=60);
-        }
-      }
-      return timeStamps;
-    }
     function getXLabelTimeStampsArray (timeStampsArray) {
       var xLabelTimeStampsArray = timeStampsArray.filter(function (e) {
         var date = new Date(e * 1000);
@@ -1029,10 +927,9 @@ var SentimentChart = {
           };
           dottedArray[1] = data.slice(i, 1)[0];
           drawDotted(dottedArray);
-
         }
 
-        if ( data[i+1].timestamp - data[i].timestamp > 3590) {
+        if (data[i+1].timestamp - data[i].timestamp > 3590) {
           //linear graph
           linearArray = data.slice(start, i);
           drawLinear(linearArray);
@@ -1061,26 +958,18 @@ var SentimentChart = {
         }
       }
       drawLinear(data.slice(start, data.length-1)); //last bit of data
+
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
       if (lastData) {
-        var currentTime = new Date().getTime();
+        var currentTime = self.getCurrentTimestamp();
 
-        currentTime = (currentTime - currentTime%1000)/1000;
-        currentTime = currentTime - (currentTime%60);
-        //only before 5 (last sentiment data)
-        if (new Date().getHours() < 17) {
-          if (!!lastData && currentTime - lastData.timestamp > 60) {
-            drawDotted([lastData, {
-              timestamp: currentTime,
-              price: lastData.price
-            }]);
-          }
-        } else {
-          //draw dotted untill 17:00
-          currentTime = currentTime - ((currentTime-14400)%86400) + 18000;
+        // if after 1500hrs, draw last dotted line
+        if (new Date().getHours() >= 15) {
+          //draw dotted until 17:30
+          var currentTime = self.getCurrentTimestamp();
           drawDotted([lastData, {
-            timestamp: currentTime,
+            timestamp: Math.min(currentTime, endTime),
             price: lastData.price
           }]);
         }
