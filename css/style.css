@@ -310,6 +310,9 @@ text.sentiment {
   left: -85px;
 }
 
+/* Override spritesheet for better image quality */
+.mb.thermometer-extended { background: url('../assets/chart/thermometer-extended.png') no-repeat top left; width: 144px; height: 63px; }
+
 .thermo-wrapper .background {
   position: absolute;
   left: 20px;
