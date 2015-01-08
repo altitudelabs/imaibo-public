@@ -213,7 +213,7 @@
         <div id="price" class="component">
           <div class="chart-header">
             <div class="title">上证K线 - 心情累积值</div>
-            <ul class="legend" id="legend" ma="">
+            <ul class="legend" id="legend" ma=" ">
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
 
             </ul>
@@ -276,7 +276,10 @@
           <div id="chart-label">
           </div>
           <div class='container zoomable-chart-container' id="chart-container" >
-            <div id="chart"></div>
+            <div class="scroller">
+              <div id="chart"></div>
+              <div class="scroller__bar"></div>
+            </div>
           </div>
           <div id="chart-x-label"></div>
         </div>
@@ -382,16 +385,16 @@
             <div class="value-sublabel ">无法下载数据</div>
           {{else}}
             <div class="value-label">{{moodindexInfo.latest}}</div>
-            <div class="value-sublabel">{{formatNumber moodindexInfo.change 2 1}} ({{formatNumber moodindexInfo.changeRatio 2 1}})</div>
+            <div class="value-sublabel">{{formatNumber moodindexInfo.change 2 1}} ({{moodindexInfo.changeRatio}})</div>
           {{/ifEq}}
         </div>
-
         <div class="thermo-wrapper">
           <div class="thermometer mb thermometer-extended"></div>
           <div class="background"></div>
           <div class="background-full"></div>
+          <div class="previous-sentiment-dotted-line"></div>
+          <div id="changes" class="changes">{{formatNumber moodindexInfo.change 2 1}}</div>
         </div>
-        <div id="changes" class="changes">{{moodindexInfo.change}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
         <div id="prediction-wrapper" class="component-item-price ind rise">
@@ -489,7 +492,6 @@
           <label id="{{maLabelId}}"><span class="mb"></span>{{maLabel}}</label>
         </li>
       {{/each}}
-
     </ul>
   </script>
   <!-- MA template end -->
@@ -504,7 +506,7 @@
       <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{formatNumber security.highpx 2}}</span></li>
       <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{formatNumber security.lowpx 2}}</span></li>
       <li class="tt-row"><span class="tt-label">收盘</span><span class="tt-value">{{formatNumber security.closepx 2}}</span></li>
-      <li class="tt-row"><span class="tt-label">成交量</span><span class="tt-value">{{formatWan security.volumn 2}}</span></li>
+      <li class="tt-row"><span class="tt-label">成交量</span><span class="tt-value">{{formatWan security.volumn 2}}股</span></li>
       <li class="tt-subtitle">心情指数</li>
       <li class="tt-row"><span class="tt-label">心情分值</span><span class="tt-value">{{formatNumber sentiment.price 0}}</span></li>
       <li class="tt-row"><span class="tt-label">相对之前</span><span class="tt-value">{{formatNumber sentiment.change 0 1}}</span></li>
@@ -617,6 +619,7 @@
 
   <!-- Start charting JS files -->
   <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/helpers.js"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/sticky-columns.js"></script>
   <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/toolbar/toolbar.js"></script>
   <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/tooltip/tooltip.js"></script>
   <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/chart-model.js"></script>
