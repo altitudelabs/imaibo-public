@@ -173,7 +173,7 @@ var ChartView = {
     RsiChart.init();
     MacdChart.init();
     SentimentChart.update();
-    this.redraw(true);
+    // this.redraw(true);
   },
   horizontalScroll: function () {
     'use strict';
