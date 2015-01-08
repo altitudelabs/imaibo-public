@@ -478,7 +478,8 @@
           <div class="thermometer mb thermometer-extended"></div>
           <div class="background"></div>
           <div class="background-full"></div>
-          <div id="changes" class="changes">{{moodindexInfo.change}}</div>
+          <div class="previous-sentiment-dotted-line"></div>
+          <div id="changes" class="changes">{{formatNumber moodindexInfo.change 2 1}}</div>
         </div>
       </div>
       {{#ifEq tradingSign.signal 1}}

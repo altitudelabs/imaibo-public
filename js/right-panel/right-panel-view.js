@@ -96,15 +96,17 @@ var RightPanel = {
     .done(function(headlineModel, model){
       var experts = self.states.expertsView;
 
-      var isEmpty = RightPanelModel.model.experts.list.length == 0;
+      var error = RightPanelModel.model.expertError;
 
       // Populate views
-      Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
-      Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
+      if(!error){
+        Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
+        Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
       // Init experts modal
-      if(!isEmpty){
         $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
+      }else{
+        $('#experts-view').append('<div class="empty-data" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
       }
 
       // Init like comments action

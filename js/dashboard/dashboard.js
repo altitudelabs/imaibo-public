@@ -8,8 +8,6 @@ var Dashboard = {
   render: function(model){
     var self = this;
 
-    model.moodindexInfo.change = parseFloat(model.moodindexInfo.change);
-
     // Render dashboard
     if (self.firstLoad){
       // model.moodindexInfo.change = '0';
@@ -82,7 +80,8 @@ var Dashboard = {
     }
   },
   renderThermoLiquid: function(model){
-    var selector = $('.thermo > .thermo-wrapper > .background');
+    var liquid = $('.thermo > .thermo-wrapper > .background');
+    var dottedLine = $('.thermo > .thermo-wrapper > .previous-sentiment-dotted-line');
     var before = parseFloat(model.moodindexInfo.before);
     var latest = parseFloat(model.moodindexInfo.latest);
 
@@ -91,8 +90,9 @@ var Dashboard = {
         h1 = Math.min(Math.abs(before)/100*(maxY-minY)+minY,100),
         h2 = Math.min(Math.abs(latest)/100*(maxY-minY)+minY,100);
 
-    selector.css('height', h1 + '%');
-    selector.animate({height: h2 + '%'}, 1000);
+    liquid.css('height', h1 + '%');
+    liquid.animate({height: h2 + '%'}, 1000);
+    dottedLine.css('height', h1 + '%');
   },
   glow: function(targetId, orgColor, altColor){
       $(targetId).animate({color: altColor}, 2000, function() {
@@ -111,7 +111,6 @@ var Dashboard = {
     var change = parseFloat(model.moodindexInfo.change);
 
     if(lastpx != this.prevData.lastpx){
-      console.log(lastpx, this.prevData.lastpx);
       var orgColor = (sign === '+'? rise : fall);
       var altColor = (sign === '+'? riseLight: fallLight);
       var targetId = '#dashboard-index';
@@ -121,7 +120,6 @@ var Dashboard = {
     }
 
     if(latest != this.prevData.latest){
-      console.log(latest, this.prevData.latest);
       var orgColor = (change > 0 ? rise: fall);
       var altColor = (change > 0 ? riseLight: fallLight);
       var targetId = '#dashboard-mood';
@@ -149,7 +147,6 @@ var Dashboard = {
     }
 
     if(parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
-      $('#small-change').text(model.moodindexInfo.change);
       $('#changes').text(model.moodindexInfo.change);
       if(IE8){
         $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"});

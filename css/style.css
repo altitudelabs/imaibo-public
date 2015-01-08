@@ -161,6 +161,20 @@ input[type="checkbox"]:checked + label span {
   bottom: 35%;
 }
 
+#sentiment-chart-label .empty-data {
+  top: 45%;
+}
+
+#index-no-data{
+  left: 37.2%;
+  top: 45%;
+}
+
+#right-panel-data {
+  width: 80%;
+  left: 20%;
+}
+
 /* =Dropdown menu
 -------------------------------------------------------------- */
 .link-dropdown {
@@ -333,14 +347,10 @@ text.sentiment {
   top: 0px;
 }
 
-/* Override spritesheet for better image quality */
-.mb.thermometer-extended { background: url('../assets/chart/thermometer-extended.png') no-repeat top left; width: 166px; height: 63px; }
-
 .thermo-wrapper .background {
   position: absolute;
   left: 105px;
   width: 50px;
-  height: 25%;
   bottom: -4px;
   z-index: -1;
 }
@@ -352,6 +362,14 @@ text.sentiment {
   height: 100%;
   bottom: -4px;
   z-index: -10;
+}
+.thermo-wrapper .previous-sentiment-dotted-line {
+  position: absolute;
+  border-top: 1px dotted rgb(90,90,90);
+  left: 120px;
+  width: 25px;
+  bottom: -4px;
+  z-index: 10;
 }
 .fall .thermo-wrapper .background {
   background-color: #3bbb57;
@@ -594,6 +612,9 @@ text.sentiment {
 #price.component, #macd.component, #rsi.component, #sentiment.component {
   padding-top: 0px;
   padding-bottom: 20px;
+}
+#sentiment.component {
+  padding-bottom: 0;
 }
 
 #chart {
