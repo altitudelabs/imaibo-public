@@ -393,7 +393,6 @@ var IndexChart = {
     })
     .on('mousemove', function() {
       var xPos, yPos, mouseX, mouseY;
-
       if(IE8) {
         xPos = event.clientX;
         yPos = event.clientY;
