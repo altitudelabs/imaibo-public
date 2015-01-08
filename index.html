@@ -79,7 +79,7 @@
   <script type="text/javascript" src="bower_components/modernizr/modernizr.js"></script>
   <script type="text/javascript" src="bower_components/handlebars/handlebars.min.js"></script>
   <script type="text/javascript" src="bower_components/lodash/dist/lodash.min.js"></script>
-  <script type="text/javascript" src="js/lib/jquery.slimscroll.min.js"></script>
+  <script type="text/javascript" src="js/lib/baron.min.js"></script>
   <script type="text/javascript" src="js/lib/jquery.leanModal.min.js"></script>
   <script type="text/javascript" src="js/lib/jquery.stickykit.min.js"></script>
   <!-- End new JS -->
@@ -362,7 +362,10 @@
           <div id="chart-label">
           </div>
           <div class='container zoomable-chart-container' id="chart-container" >
-            <div id="chart"></div>
+            <div class="scroller">
+              <div id="chart"></div>
+              <div class="scroller__bar"></div>
+            </div>
           </div>
           <div id="chart-x-label"></div>
         </div>
@@ -471,13 +474,12 @@
             <div class="value-sublabel">{{formatNumber moodindexInfo.change 2 1}} ({{moodindexInfo.changeRatio}})</div>
           {{/ifEq}}
         </div>
-
         <div class="thermo-wrapper">
           <div class="thermometer mb thermometer-extended"></div>
           <div class="background"></div>
           <div class="background-full"></div>
+          <div id="changes" class="changes">{{moodindexInfo.change}}</div>
         </div>
-        <div id="changes" class="changes">{{moodindexInfo.change}}</div>
       </div>
       {{#ifEq tradingSign.signal 1}}
         <div id="prediction-wrapper" class="component-item-price ind rise">
