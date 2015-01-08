@@ -32,9 +32,15 @@ var RightPanel = {
     }
   },
   collapseView: function(){
+    // Remove sticky columns
+    StickyColumns.stop();
+
+    // Collapse right panel
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
     $('#content').css('width', 'calc(100% - 55px)');
+
+    // Rebuild chart after animation
     setTimeout(function(){
       ChartView.rebuild();
     }, 400);
@@ -61,11 +67,13 @@ var RightPanel = {
       self.collapsed.el.removeClass('uncollapsed');
       self.el.removeClass('collapsed');
       self.collapsed.el.addClass('collapsed');
-    }, 500);
 
-    setTimeout(function(){
+      // Rebuild chart
       ChartView.rebuild();
-    }, 400);
+
+      // Start sticky columns
+      StickyColumns.start();
+    }, 500);
   },
   init: function(){
     this.initLinks();
@@ -77,7 +85,7 @@ var RightPanel = {
     var self = this;
     if (!HIDE) {
       RightPanelModel.getStockData(function(){
-        self.refreshStickyColumns();
+
       });
     }
   },
@@ -98,9 +106,6 @@ var RightPanel = {
       if(!isEmpty){
         $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
       }
-
-      // Refresh sticky columns positions
-      self.refreshStickyColumns();
 
       // Init like comments action
       $('.experts-like-action').click(function(e){
@@ -123,10 +128,6 @@ var RightPanel = {
       $('#experts-view').css('visibility', 'visible');
       $('.panel-loader').remove();
     });
-  },
-  refreshStickyColumns: function() {
-    $('#right-panel, #content').trigger('sticky_kit:recalc');
-    $('.container').scrollLeft(ChartView.properties.scrollDistance);
   },
   render: function(){
     if(HIDE){ //app.js
@@ -172,7 +173,9 @@ var RightPanel = {
       if(stateName === toState) {
         state.link.addClass('active');
         state.el.show();
-        self.refreshStickyColumns();
+
+        // Refresh sticky columns
+        StickyColumns.recalc();
       } else {
         state.link.removeClass('active');
         state.el.hide();
