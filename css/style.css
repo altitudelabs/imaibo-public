@@ -595,6 +595,9 @@ text.sentiment {
   padding-top: 0px;
   padding-bottom: 20px;
 }
+#sentiment.component {
+  padding-bottom: 0;
+}
 
 #chart {
   padding-bottom: 7px;
