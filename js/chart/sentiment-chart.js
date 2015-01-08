@@ -283,10 +283,11 @@ var SentimentChart = {
     // Create array of half hourly timestamps for vertical lines
     var makeHourlyArray = function(){
       var increments = 60*30;
-      var hour = d3.min(ordinalTimeStamps);
+      var fromTime = d3.min(ordinalTimeStamps);
+      var toTime = d3.max(ordinalTimeStamps);
       var hourly = [];
 
-      for(var i = hour; i < hour+39600; i+=increments){
+      for(var i = fromTime; i < toTime; i+=increments){
         hourly.push(i);
       }
       return hourly;
