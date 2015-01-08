@@ -119,23 +119,24 @@ var Helper = {
       return year + '-' + month + '-' + day;
     }
   },
-  populateView:
-    /*
-     * Populate HandlebarJS template.
-     * ==============================
-     * arguments:
-     *  - target_id: id/class of your div. i.e. '#expertsView'
-     *  - template_id: id template. i.e. '#experts-template'
-     *  - resource: the data you are passing in. e.g. {name: 'Ray'}
-     */
-    function (targetId, templateId, resource){
-      var targetSelector = $(targetId);
-      var templateSelector = $(templateId);
-      var template = Handlebars.compile(templateSelector.html());
-      if(resource.constructor === Array){
-        targetSelector.html(template({data: resource}));
-      }else{
-        targetSelector.html(template(resource));
-      }
+  /*
+   * Populate HandlebarJS template.
+   * ==============================
+   * arguments:
+   *  - target_id: id/class of your div. i.e. '#expertsView'
+   *  - template_id: id template. i.e. '#experts-template'
+   *  - resource: the data you are passing in. e.g. {name: 'Ray'}
+   */
+  populateView: function (targetId, templateId, resource){
+    var targetSelector = $(targetId);
+    var templateSelector = $(templateId);
+    var template = Handlebars.compile(templateSelector.html());
+    if(resource.constructor === Array){
+      targetSelector.html(template({data: resource}));
+    }else{
+      targetSelector.html(template(resource));
     }
+
+    StickyColumns.start();
+  }
 }
