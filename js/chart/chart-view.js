@@ -180,20 +180,38 @@ var ChartView = {
 
     var self = this;
 
-    //should optimize should not
-    // scrollDistance is stored to prevent bouncing back of zoomed chart during data update
-    $('#chart-container').on('mousewheel', function (event){
-      event.preventDefault();
-      var original = $('#chart-container').scrollLeft();
-      self.properties.scrollDistance = original;
-      $('#chart-container').scrollLeft(self.properties.scrollDistance - event.originalEvent.deltaY);
+    var params = {
+      scroller: '.scroller',
+      bar: '.scroller__bar',
+      barOnCls: 'baron',
+      direction: 'h',
+    };
+    var scroll = baron(params);
+
+    $('#price').hover(
+      function() { 
+        $('.scroller__bar').stop().fadeTo('slow', 0.5); 
+      }, 
+      function() { 
+        $('.scroller__bar').stop().fadeTo('slow', 0);
     });
 
-    $('#chart-container').on('DOMMouseScroll', function (event){
+    //should optimize should not
+    // scrollDistance is stored to prevent bouncing back of zoomed chart during data update
+    $('.scroller').on('mousewheel', function (event){
       event.preventDefault();
-      var original = $('#chart-container').scrollLeft();
+      var original = $('.scroller').scrollLeft();
       self.properties.scrollDistance = original;
-      $('#chart-container').scrollLeft(self.properties.scrollDistance - event.originalEvent.detail * 20);
+      if (!event.originalEvent.deltaY)
+        event.originalEvent.deltaY = -event.originalEvent.wheelDelta; // reverse scrolling direction for ie
+      $('.scroller').scrollLeft(self.properties.scrollDistance - event.originalEvent.deltaY);
+    });
+
+    $('.scroller').on('DOMMouseScroll', function (event){
+      event.preventDefault();
+      var original = $('.scroller').scrollLeft();
+      self.properties.scrollDistance = original;
+      $('.scroller').scrollLeft(self.properties.scrollDistance - event.originalEvent.detail * 20);
     });
   },
 };

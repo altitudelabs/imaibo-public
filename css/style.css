@@ -84,6 +84,29 @@ input[type="checkbox"]:checked + label span {
     margin: 0 0 0 0;
 }
 
+.scroller {
+    overflow: hidden;
+}
+
+.scroller::-webkit-scrollbar {
+    width: 0;
+}
+
+.scroller__bar {
+  display: none;
+}
+
+.baron .scroller__bar {
+  display: block;
+  position: absolute;
+  width: 10px;
+  background: #595959;
+  z-index: 1;
+  border-radius: 3px;
+  height: 7px;
+  bottom: 0px;
+}
+
 /* =Layout
 -------------------------------------------------------------- */
 .outer {
@@ -570,7 +593,11 @@ text.sentiment {
 
 #price.component, #macd.component, #rsi.component, #sentiment.component {
   padding-top: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 20px;
+}
+
+#chart {
+  padding-bottom: 7px;
 }
 
 .chart-header {
