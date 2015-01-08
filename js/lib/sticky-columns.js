@@ -1,6 +1,5 @@
 var StickyColumns = {
   start: function(){
-    console.log('Active', this.active);
     if (!this.active){
       this.active = true;
       $('#right-panel, #content').stick_in_parent();

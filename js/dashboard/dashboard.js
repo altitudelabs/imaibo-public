@@ -3,8 +3,7 @@ var Dashboard = {
   prevData: {
     lastpx: 0,
     before: -200,
-    signal: 0,
-    thermoH: 0
+    signal: 0
   },
   render: function(model){
     var self = this;
@@ -85,18 +84,15 @@ var Dashboard = {
   renderThermoLiquid: function(model){
     var selector = $('.thermo > .thermo-wrapper > .background');
     var before = parseFloat(model.moodindexInfo.before);
+    var latest = parseFloat(model.moodindexInfo.latest);
 
     var minY = 25,
-        maxY = 93,
-        h = Math.min(Math.abs(before)/100*(maxY-minY)+minY,100);
+        maxY = 95,
+        h1 = Math.min(Math.abs(before)/100*(maxY-minY)+minY,100),
+        h2 = Math.min(Math.abs(latest)/100*(maxY-minY)+minY,100);
 
-
-    if(this.prevData.thermoH !== h){
-      selector.animate({height: h + '%'}, 1000);
-      this.prevData.thermoH = h;
-    } else {
-      selector.css('height', h + '%');
-    }
+    selector.css('height', h1 + '%');
+    selector.animate({height: h2 + '%'}, 1000);
   },
   glow: function(targetId, orgColor, altColor){
       $(targetId).animate({color: altColor}, 2000, function() {
@@ -151,6 +147,7 @@ var Dashboard = {
       this.prevData.signal = signal;
       this.glow(targetId, orgColor, altColor);
     }
+
     if(parseFloat(model.moodindexInfo.change) !== parseFloat(this.prevData.change)){
       $('#small-change').text(model.moodindexInfo.change);
       $('#changes').text(model.moodindexInfo.change);
@@ -159,11 +156,11 @@ var Dashboard = {
         setTimeout(function(){
           $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"});
         }, 1000);
-      }else{
+      } else {
         $('#changes').animate({opacity: 1}, 500);
         setTimeout(function(){
           $('#changes').animate({opacity: 0}, 1500);
-        }, 2000); 
+        }, 2000);
       }
       this.renderThermoLiquid(model);
       this.prevData.change = model.moodindexInfo.change;
