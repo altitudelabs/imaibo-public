@@ -128,7 +128,6 @@ var Dashboard = {
     }
 
     if(signal != this.prevData.signal){
-      console.log(signal, this.prevData.signal);
       var orgColor;
       var altColor;
       var targetId = '#dashboard-signal';

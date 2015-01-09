@@ -31,8 +31,6 @@ var RightPanelModel = {
   log: function(code, message) {
     if(PRODUCTION) return;
     var now = new Date();
-
-    console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
   expertErrorCheck: function(model) {
     var api = '&act=weiboList';

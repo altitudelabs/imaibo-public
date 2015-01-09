@@ -35,7 +35,7 @@ var SentimentChart = {
     this.updateContainer();
     if(!ChartView.data.sentimentError) this.updateGraph(hasNewData);
   },
-  updateData: function () {
+  updateData: function() {
     'use strict';
     if(ChartView.data.sentimentError) return;
     var self = this;
