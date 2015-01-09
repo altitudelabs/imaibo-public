@@ -958,7 +958,7 @@ label.checkbox-label input[type=checkbox]{
 .vertical-collapse,
 .vertical-uncollapse{
   height: 60px;
-  position: absolute;
+  position: fixed;
   width: 15px;
   top: 200px;
 }

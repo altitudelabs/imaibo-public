@@ -67,7 +67,7 @@ var IndexChart = {
     data = ChartView.data.daily.stockLine;
 
     // var x = ChartView.x(data, 'rdate');
-    
+
 
     // chart_label.append('svg:line')
     // .attr('class', 'horizontal-line')
@@ -221,7 +221,7 @@ var IndexChart = {
       xlabels = chart.selectAll('g.xlabels');
       gvolume = chart.selectAll('g.volume');
       gcandlesticks = chart.selectAll('g.candlesticks');
-      glinestems =  chart.selectAll('g.linestems');
+      glinestems = chart.selectAll('g.linestems');
 
 
      // vertical         = chart.selectAll('line.xlabelLine');
