@@ -290,11 +290,11 @@ text.sentiment {
 }
 
 .prediction-mood {
-  width: 100px;
+  width: 130px;
 }
 
 .lt-ie9 .prediction-mood {
-  width: 95px;
+  width: 125px;
 }
 
 .component-item-price.ind {
