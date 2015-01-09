@@ -590,7 +590,6 @@ var SentimentChart = {
         var currentTime = self.getCurrentTimestamp();
         if (currentTime > endOfTradingDay) {
 
-          console.log(currentTime, endTime);
           //draw dotted until 17:30
           drawDotted([lastData, {
             timestamp: Math.min(currentTime, endTime),
