@@ -586,9 +586,10 @@ var SentimentChart = {
       var lastData = data[data.length-1];
       if (lastData) {
         // if after 1500hrs, draw last dotted line
-        if (new Date().getHours() >= 15) {
+        var endOfTradingDay = dataDate.setHours(15,0,0,0)/1000;
+        var currentTime = self.getCurrentTimestamp();
+        if (currentTime > endOfTradingDay) {
           //draw dotted until 17:30
-          var currentTime = self.getCurrentTimestamp();
           drawDotted([lastData, {
             timestamp: Math.min(currentTime, endTime),
             price: lastData.price
@@ -962,12 +963,10 @@ var SentimentChart = {
       // last dotted line if no real data for longer than a minute
       var lastData = data[data.length-1];
       if (lastData) {
+        var endOfTradingDay = dataDate.setHours(15,0,0,0)/1000;
         var currentTime = self.getCurrentTimestamp();
-
-        // if after 1500hrs, draw last dotted line
-        if (new Date().getHours() >= 15) {
+        if (currentTime > endOfTradingDay) {
           //draw dotted until 17:30
-          var currentTime = self.getCurrentTimestamp();
           drawDotted([lastData, {
             timestamp: Math.min(currentTime, endTime),
             price: lastData.price
