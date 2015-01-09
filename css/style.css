@@ -1318,7 +1318,7 @@ body::-webkit-scrollbar {
 
 .outer .loader {
   height: 500px;
-  background: url('../assets/chart/ajax-loader-small.gif') no-repeat center;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
   background-color: #262626;
   border: rgb(51, 51, 51) 1px solid;
   position: absolute;
@@ -1333,7 +1333,7 @@ body::-webkit-scrollbar {
   height: 500px;
   width: 300px;
   border: rgb(51, 51, 51) 1px solid;
-  background: url('../assets/chart/ajax-loader-small.gif') no-repeat center;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
 }
 
 .outer #loader-wrapper {
@@ -1344,7 +1344,7 @@ body::-webkit-scrollbar {
   width: 100%;
   min-height: 59px;
   background-color: #262626;
-  background: url('../assets/chart/ajax-loader-small.gif') no-repeat center;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
 }
 
 .outer #login-wrapper {
