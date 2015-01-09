@@ -1,5 +1,9 @@
 var IndexChart = {
-  properties: {},
+  properties: {
+    isDragging: false,
+    mouseXPosOnDrag: 0,
+    pixelDiff: 0,
+  },
   setProperties: function(options) {
     var properties = {
       height: 250,
@@ -20,6 +24,7 @@ var IndexChart = {
     }else if($('#index-no-data').length == 0){
       $('#chart-container').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
     }
+    this.setDragability();
   },
   drawContainer: function () {
     $('#chart').empty();
@@ -457,6 +462,21 @@ var IndexChart = {
           }
       }
 
+    $('#chart rect')
+    .bind('touchend touchmove', function() {
+      horizontalText
+      .style('fill-opacity', 0);
+      return Tooltip.hide();
+    })
+    .bind('touchstart', function() {
+      return Tooltip.show();
+    });
+    $('body')
+    .bind('touchmove', function() {
+      horizontalText
+      .style('fill-opacity', 0);
+      return Tooltip.hide();
+    });
 
     //tooltips
     tooltip
@@ -531,6 +551,23 @@ var IndexChart = {
       });
     }
   },
+  setDragability: function() {
+    var props = this.properties;
 
+    $('#chart').on('mousedown', function(event) {
+        props.isDragging = true;
+        props.mouseXPosOnDrag = event.clientX;
+    });
+
+    $('#chart').on('mousemove', function(event) {
+      if (props.isDragging) {
+        props.pixelDiff = event.clientX - props.mouseXPosOnDrag;
+      }
+    });
+
+    $('#chart').on('mouseup', function(event) {
+      props.isDragging = false;
+    });
+  }
 };
 
