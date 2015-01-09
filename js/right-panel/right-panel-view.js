@@ -50,15 +50,19 @@ var RightPanel = {
    * Populate HandlebarJS template.
    * ==============================
    * arguments:
-   *  - target_selector: DOM object of your target div. i.e. $('#expertsView')
-   *  - template_selector: DOM object of your template. i.e. $('#experts-template')
+   *  - targetSelector: DOM object of your target div. i.e. $('#expertsView')
+   *  - templateSelector: DOM object of your template. i.e. $('#experts-template')
    *  - resource: the data you are passing in. e.g. {name: 'Ray'}
+   *  - returnHtml: return HTML instead of replacing HTML in target selector
    */
-  populateView: function (target_selector, template_selector, resource){
-    var template = Handlebars.compile(template_selector.html());
-    target_selector.html(template(resource));
+  populateView: function (targetSelector, templateSelector, resource, returnHtml){
+    var template = Handlebars.compile(templateSelector.html());
+    if (returnHtml) {
+      return template(resource);
+    } else {
+      targetSelector.html(template(resource));
+    }
   },
-
   expandView: function(){
     var self = this;
     $('#content').css('width', 'calc(100% - 325px)');
@@ -81,14 +85,89 @@ var RightPanel = {
     this.initStockpickerModule();
     this.initExpertsModule();
   },
+  /* Stockpicker module */
   initStockpickerModule: function(){
-    var self = this;
     if (!HIDE) {
-      RightPanelModel.getStockData(function(){
-
-      });
+      this.renderStockpickerView(true);
     }
   },
+  renderStockpickerView: function(initial){
+    var self = this;
+    var stock = self.states.chooseStockView;
+
+    var successHandler = function(model){
+      if (initial){
+        self.updateStockpickerView(model);
+        if(model.stock.isLogin) self.hideStockpickerLoginPanel();
+        self.showStockpickerView();
+        self.refreshStockpickerView();
+      } else {
+        self.updateStockpickerView(model);
+      }
+    };
+
+    var errorHandler = function(model){
+      $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+    };
+
+    RightPanelModel.getStockData(successHandler, errorHandler);
+  },
+  hideStockpickerLoginPanel: function(){
+    $('#stock-login').remove();
+    $('#suggestion').remove();
+    $('#stockpicker-view > .wrapper:first-child').css('height', '0');
+  },
+  showStockpickerView: function(){
+    $('#stockpicker-view').css('opacity', '1');
+    $('.panel-loader').remove();
+  },
+  updateStockpickerView: function(model) {
+    var initialHtml = '<td><div class="indicator"></div></td> \
+                      <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td> \
+                      <td class="zxg-price">{{lastpx}}</td> \
+                      <td class="zxg-price-change-abs">{{pxchg}}</td> \
+                      <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
+
+    var table = d3.select('#stockpicker-table-body')
+      .selectAll('tr')
+      .data(model.stock.list);
+
+    // Enter loop
+    table.enter().append('tr')
+      .html(initialHtml);
+
+    // Exit loop
+    table.exit().remove();
+
+    // Update loop
+    table.attr('class', function(d){
+      if (d.sign === '+'){
+        return 'rise';
+      } else if (d.sign === '-') {
+        return 'fall';
+      } else {
+        return 'neutral';
+      }
+    });
+
+    table.select('.zxg-ticker').html(function(d){
+      return '<a href="' + d.stockUrl + '">' + d.stockName + '</a>';
+    });
+
+    table.select('.zxg-price').html(function(d){ return d.lastpx; });
+    table.select('.zxg-price-change-abs').html(function(d){ return d.pxchg; });
+    table.select('.zxg-price-change-rel').html(function(d){ return d.pxchgratio; });
+
+    StickyColumns.recalc();
+  },
+  refreshStockpickerView: function(){
+    var self = this;
+    var refreshRate = 5000;
+    setInterval(function(){
+      self.renderStockpickerView(false);
+    },refreshRate);
+  },
+  /* Experts module */
   initExpertsModule: function(){
     var self = this;
 

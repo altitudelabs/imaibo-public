@@ -1,6 +1,9 @@
 var RightPanelModel = {
   productionUrl: 'http://www.imaibo.net',
-  baseUrl: 'http://t3-www.imaibo.net',
+  stagingUrl: 'http://t3-www.imaibo.net',
+  baseUrl: function(){
+    return PRODUCTION ? this.productionUrl : this.stagingUrl;
+  },
   model: {
     experts: {},
     stock: {},
@@ -49,7 +52,7 @@ var RightPanelModel = {
   },
   getExpertHeadline: function(successHandler, errorHandler){
     var self = this;
-    $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res){
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res){
       if (res.code === 0){
         self.model.experts.headline = res.data;
         successHandler(res.data);
@@ -60,7 +63,7 @@ var RightPanelModel = {
   },
   getExpertData: function(successHandler){
     var self = this;
-    $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
         _.extend(self.model.experts, expertData.data);
 
         self.model.experts.list.map(function(res){
@@ -70,32 +73,22 @@ var RightPanelModel = {
         successHandler(self.model.experts);
 	   });
   },
-  getNewsData: function(successHandler){
+  getNewsData: function(successHandler, errorHandler){
   },
-  getStockData: function(successHandler){
+  getStockData: function(successHandler, errorHandler){
     var self = this;
-    $.getJSON((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData){
         self.model.stock = stockData.data;
-        var stock = RightPanel.states.chooseStockView;
         if(self.model.stock.list.length != 0 ){
-          RightPanel.populateView(stock.table, stock.template, self.model.stock.list);
+          successHandler(self.model);
         }else{
-          $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+          errorHandler(self.model);
         }
-        if(self.model.stock.isLogin){
-          $('#stock-login').remove();
-          $('#suggestion').remove();
-          $('#stockpicker-view > .wrapper:first-child').css('height', '0');
-        }
-        $('#stockpicker-view').css('opacity', '1');
-        $('.panel-loader').remove();
-
-        successHandler();
     });
   },
   // Experts tab: Handles user like action
   likeComment: function(weiboId, successHandler, errorHandler){
-    $.get((PRODUCTION? this.productionUrl : this.baseUrl) + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
+    $.get(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
     .done(function(res){
       if (res.code === 0){
         successHandler(res);
