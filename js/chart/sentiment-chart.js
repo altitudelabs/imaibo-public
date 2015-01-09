@@ -732,8 +732,6 @@ var SentimentChart = {
       }
       self.components.securityLines = [];
 
-
-
       self.components.scatterDots
       .enter().append('svg:circle')  // create a new circle for each value
       .attr('r', 4)
