@@ -364,6 +364,10 @@
       <!-- About index view end -->
     </div>
     <!-- Content panel end -->
+
+    <!-- Start experts modal dialog -->
+    <div id="experts-modal"></div>
+    <!-- End experts modal dialog -->
   </div>
 
   <!-- Dashboard start -->
@@ -472,16 +476,8 @@
       </div>
       <div id="indicator-tooltip"></div>
       <div class="btn-buy-sell-wrapper">
-        <div class="btn btn-sell white">
-        <a href="javascript:;" onclick="getTrading(this)" cggs="sell" skin="black">
-          卖出
-          </a>
-        </div>
-        <div class="btn btn-buy white">
-        <a href="javascript:;" onclick="getTrading(this)" cggs="buy" skin="black">
-        买入
-        </a>
-        </div>
+        <a class="btn btn-sell white" href="javascript:;" onclick="getTrading(this)" cggs="sell" skin="black">卖出</a>
+        <a class="btn btn-buy white" href="javascript:;" onclick="getTrading(this)" cggs="buy" skin="black">买入</a>
       </div>
   </script>
   <!-- Dashboard end -->
@@ -607,9 +603,6 @@
     {{/ifEq}}
   </script>
   <!-- Experts template end -->
-
-  <!-- Start experts modal dialog -->
-  <div id="experts-modal"></div>
 
   <script id="experts-modal-template" type="text/x-handlebars-template">
     <h1>{{headline.title}}</h1>
