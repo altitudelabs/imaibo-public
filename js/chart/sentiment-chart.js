@@ -202,8 +202,8 @@ var SentimentChart = {
   },
   // Returns current timestamp in client format
   getCurrentTimestamp: function(){
-    var t = new Date().getTime()/1000;
-    t = t - t % 1000;
+    var t = new Date();
+    var t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
     return t;
   },
   updateContainer: function (hasNewData) {
@@ -324,7 +324,7 @@ var SentimentChart = {
     self.components.xLabels = self.components.chart.selectAll('text.xrule').data(getXLabelTimeStampsArray(ordinalTimeStamps));
     self.components.sentimentLine = self.components.chart.append('path').datum(self.data.moodindexList);
     self.components.securityLines = [];
-    self.components.tooltip = d3.select('body').append('div');
+    self.components.tooltip = d3.select('.outer').append('div');
     self.components.scatterDots = self.components.chart.selectAll('scatter-dots').data(self.data.moodindexList);
     self.components.scatterDotsBubble = self.components.chart.selectAll('scatter-dots').data(self.data.moodindexList);
     self.components.scatterDotsBubbleText = self.components.chart.selectAll('scatter-dots').data(self.data.moodindexList);
@@ -589,6 +589,8 @@ var SentimentChart = {
         var endOfTradingDay = dataDate.setHours(15,0,0,0)/1000;
         var currentTime = self.getCurrentTimestamp();
         if (currentTime > endOfTradingDay) {
+
+          console.log(currentTime, endTime);
           //draw dotted until 17:30
           drawDotted([lastData, {
             timestamp: Math.min(currentTime, endTime),

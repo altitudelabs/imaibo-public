@@ -1,30 +1,34 @@
 <include file="__THEME__/common_v1/header"/>
 
 <!-- Start Sentiment CSS -->
-<link type="text/css" rel="stylesheet" href="__THEME__/common_v2/moodindex/css/sprites.css">
-<link type="text/css" rel="stylesheet" href="__THEME__/common_v2/moodindex/css/style.css">
+<link type="text/css" rel="stylesheet" href="__THEME__/common_v2/moodindex/css/sprites.css?v={:C('html_cache')}">
+<link type="text/css" rel="stylesheet" href="__THEME__/common_v2/moodindex/css/style.css?v={:C('html_cache')}">
 <!-- End Sentiment CSS -->
 
 <!-- Start new JS -->
-<script type="text/javascript" src="__PUBLIC__/bower_components/modernizr/modernizr.js"></script>
-<script type="text/javascript" src="__PUBLIC__/bower_components/handlebars/handlebars.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/bower_components/lodash/dist/lodash.min.js"></script>
-<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.slimscroll.min.js"></script>
-<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.leanModal.min.js"></script>
-<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.stickykit.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/bower_components/modernizr/modernizr.js?v={:C('html_cache')}"></script>
+<script type="text/javascript" src="__PUBLIC__/bower_components/handlebars/handlebars.min.js?v={:C('html_cache')}"></script>
+<script type="text/javascript" src="__PUBLIC__/bower_components/lodash/dist/lodash.min.js?v={:C('html_cache')}"></script>
+<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.slimscroll.min.js?v={:C('html_cache')}"></script>
+<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.leanModal.min.js?v={:C('html_cache')}"></script>
+<script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.stickykit.min.js?v={:C('html_cache')}"></script>
 <!-- End new JS -->
 
-<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/aight/aight.min.js" charset="utf-8"></script><![endif]-->
-<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/raphael/raphael-min.js" charset="utf-8"></script><![endif]-->
-<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/r2d3/r2d3.min.js" charset="utf-8"></script><![endif]-->
+<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/aight/aight.min.js?v={:C('html_cache')}" charset="utf-8"></script><![endif]-->
+<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/raphael/raphael-min.js?v={:C('html_cache')}" charset="utf-8"></script><![endif]-->
+<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/r2d3/r2d3.min.js?v={:C('html_cache')}" charset="utf-8"></script><![endif]-->
 
 <!--[if gte IE 9]><!-->
-<script type="text/javascript" src="__PUBLIC__/bower_components/d3/d3.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/bower_components/d3/d3.min.js?v={:C('html_cache')}"></script>
 <!--<![endif]-->
 <!-- End Sentiment JS -->
 
-<div id="tooltip"></div>
+  <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
+  <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
+  <!--[if (gt IE 9)|!(IE)]>-->
   <div class="outer">
+    <div id="tooltip"></div>
+  <!--<![endif]-->
     <!-- Right panel start -->
     <div id="right-panel">
       <div class="vertical-collapse"></div>
@@ -449,12 +453,12 @@
       <div id="indicator-tooltip"></div>
       <div class="btn-buy-sell-wrapper">
         <div class="btn btn-sell white">
-        <a href="javascript:;" onclick="getTrading(this)" cggs="sell">
+        <a href="javascript:;" onclick="getTrading(this)" cggs="sell" skin="black">
           卖出
           </a>
         </div>
         <div class="btn btn-buy white">
-        <a href="javascript:;" onclick="getTrading(this)" cggs="buy">
+        <a href="javascript:;" onclick="getTrading(this)" cggs="buy" skin="black">
         买入
         </a>
         </div>
@@ -539,28 +543,6 @@
   </script>
   <!-- RSI tooltip template end -->
 
-  <!-- Stockpicker template start -->
-  <script id="stockpicker-template" type="text/x-handlebars-template">
-    {{#each this}}
-      {{#ifEq sign '+'}}
-        <tr class="rise">
-      {{else}}
-        {{#ifEq sign '-'}}
-        <tr class="fall">
-          {{else}}
-        <tr class="neutral">
-          {{/ifEq}}
-      {{/ifEq}}
-        <td><div class="indicator"></div></td>
-        <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td>
-        <td class="zxg-price">{{lastpx}}</td>
-        <td class="zxg-price-change-abs">{{pxchg}}</td>
-        <td class="zxg-price-change-rel">{{pxchgratio}}</td>
-      </tr>
-    {{/each}}
-  </script>
-  <!-- Stockpicker template end -->
-
   <!-- Experts template start -->
   <script id="experts-template" type="text/x-handlebars-template">
   {{#ifEq list.length 0}}
@@ -618,21 +600,21 @@
   <!-- End experts modal dialog -->
 
   <!-- Start charting JS files -->
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/helpers.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/sticky-columns.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/toolbar/toolbar.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/tooltip/tooltip.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/chart-model.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/chart-view.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/index-chart.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/sentiment-chart.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/macd-chart.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/rsi-chart.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/right-panel/right-panel-model.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/right-panel/right-panel-view.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/content/content-view.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/dashboard/dashboard.js"></script>
-  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/app.js"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/helpers.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/sticky-columns.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/toolbar/toolbar.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/tooltip/tooltip.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/chart-model.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/chart-view.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/index-chart.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/sentiment-chart.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/macd-chart.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/chart/rsi-chart.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/right-panel/right-panel-model.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/right-panel/right-panel-view.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/content/content-view.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/dashboard/dashboard.js?v={:C('html_cache')}"></script>
+  <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/app.js?v={:C('html_cache')}"></script>
   <!-- End charting JS files -->
 
 <include file="__THEME__/common_v1/footer"/>

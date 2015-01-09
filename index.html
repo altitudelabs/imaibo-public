@@ -1,9 +1,4 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if IE 9]>         <html class="no-js ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
@@ -37,7 +32,6 @@
   <script type="text/javascript" src="js/lib/baron.min.js"></script>
   <script type="text/javascript" src="js/lib/jquery.leanModal.min.js"></script>
   <script type="text/javascript" src="js/lib/jquery.stickykit.min.js"></script>
-  <!-- End new JS -->
 
   <!--[if lte IE 8]><script src="bower_components/aight/aight.min.js" charset="utf-8"></script><![endif]-->
   <!--[if lte IE 8]><script src="bower_components/raphael/raphael-min.js" charset="utf-8"></script><![endif]-->
@@ -49,8 +43,12 @@
   <!-- End Sentiment JS -->
 </head>
 <body>
-  <div id="tooltip"></div>
+  <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
+  <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
+  <!--[if (gt IE 9)|!(IE)]>-->
   <div class="outer">
+    <div id="tooltip"></div>
+  <!--<![endif]-->
     <!-- Right panel start -->
     <div id="right-panel">
       <div class="vertical-collapse"></div>
@@ -475,12 +473,12 @@
       <div id="indicator-tooltip"></div>
       <div class="btn-buy-sell-wrapper">
         <div class="btn btn-sell white">
-        <a href="javascript:;" onclick="getTrading(this)" cggs="sell">
+        <a href="javascript:;" onclick="getTrading(this)" cggs="sell" skin="black">
           卖出
           </a>
         </div>
         <div class="btn btn-buy white">
-        <a href="javascript:;" onclick="getTrading(this)" cggs="buy">
+        <a href="javascript:;" onclick="getTrading(this)" cggs="buy" skin="black">
         买入
         </a>
         </div>
