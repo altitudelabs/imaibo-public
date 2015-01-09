@@ -109,10 +109,6 @@ var ChartView = {
     var self = this;
     $('.loader').css('width', this.properties.width);
     self.buildChartElements(true);
-    if(!PRODUCTION) {
-      console.log('%c Developer Mode Enabled. ', 'background: #222; color: #bada55;  font-size: 4em;');
-      console.log('%c 如看见这信息，请与我们的团队联络。If you see this message, please contact our technical team.', 'color: red;  font-size: 2em;');
-    }
 
     StickyColumns.start();
 

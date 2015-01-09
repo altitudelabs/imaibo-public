@@ -29,9 +29,9 @@ var ChartModel = {
   */
   getIndexData: function(date, initial, callback){
     var self = this;
-    var api  = (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.indexData  + '&dailyLineSdate=' + date; 
+    var api  = (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.indexData  + '&dailyLineSdate=' + date;
         api += (initial? self.api.daily: '');
-        api += self.api.latest + '&info=1&trading=1' 
+        api += self.api.latest + '&info=1&trading=1'
         api += self.api.jsonp;
     $.getJSON(api, function(dailyData) {
       // dailyData = { data: {indexList: [{yo: 1}]}};
@@ -40,13 +40,13 @@ var ChartModel = {
         self.model.info   = dailyData.data.info;
         self.model.minute = dailyData.data.minute;
 
-        if(initial){ 
+        if(initial){
           self.model.daily  = dailyData.data.daily;
         //API returns data in descending order
           if(self.model.daily.stockLine[0].timestamp != dailyData.data.latestPrice.timestamp) {
             self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
           }
-          self.model.daily.stockLine.reverse();       
+          self.model.daily.stockLine.reverse();
         }else{
           var latestPrice = dailyData.data.latestPrice;
           var lastData    = self.model.daily.stockLine.slice(-1).pop();
@@ -54,7 +54,7 @@ var ChartModel = {
           if(lastData && lastData.timestamp !== dailyData.data.latestPrice.timestamp){
             self.model.daily.stockLine.push(dailyData.data.latestPrice);
           }
-        } 
+        }
 
       }
       self.tryRemoveLoaders();
@@ -66,7 +66,7 @@ var ChartModel = {
   },
   getSentimentData: function(date, initial ,callback){
     'use strict';
-    
+
     var self = this;
     var api;
     // if (initial) {
@@ -79,7 +79,7 @@ var ChartModel = {
           self.model.sentiment = sentimentData.data;
 
           self.model.sentiment.moodindexList = self.model.sentiment.moodindexList;
-          
+
         }
         self.tryRemoveLoaders();
         callback(true);
@@ -206,8 +206,5 @@ var ChartModel = {
     } else {
       this.model.info.tradingSign.signal = 1;
     }
-
-    console.log('Mood', this.model.info.moodindexInfo.latest, this.model.info.moodindexInfo.change);
-    console.log('Trading Sign', this.model.info.tradingSign.prob, this.model.info.tradingSign.signal);
   }
 };
