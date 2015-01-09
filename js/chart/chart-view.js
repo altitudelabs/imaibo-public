@@ -108,14 +108,15 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
-    $('.loader').css('height', '441px');
     self.buildChartElements(true);
     if(!PRODUCTION) {
       console.log('%c Developer Mode Enabled. ', 'background: #222; color: #bada55;  font-size: 4em;');
       console.log('%c 如看见这信息，请与我们的团队联络。If you see this message, please contact our technical team.', 'color: red;  font-size: 2em;');
     }
 
-    //potential problem: initially empty data, display empty chart.
+    StickyColumns.start();
+
+    // potential problem: initially empty data, display empty chart.
     // fetches new data, not empty. what do
 
     if(!IE8){ //app.js
