@@ -91,6 +91,46 @@ var RightPanel = {
       this.renderStockpickerView(true);
     }
   },
+  initStockpickerSettingsPanel: function(){
+
+    // Dummy data
+    var s1 = { name: '最多持仓', stock: [{stockId: 1}, {stockId: 2}, {stockId: 3}, {stockId: 4}] };
+    var s2 = { name: '最多买入', stock: [{stockId: 1}, {stockId: 2}, {stockId: 3}, {stockId: 4}] };
+    var s3 = { name: '最多卖出', stock: [{stockId: 1}, {stockId: 2}, {stockId: 3}, {stockId: 4}] };
+    var s4 = { name: '重仓股', stock: [{stockId: 1}, {stockId: 2}, {stockId: 3}, {stockId: 4}] };
+
+    var model = {
+      category: [
+        { name: '上证', subcategory: [s1, s2, s3, s4] },
+        { name: '草根股神', subcategory: [s1, s2, s3, s4] },
+        { name: '热门股', subcategory: [s1, s2, s3, s4] },
+        { name: '行情股', subcategory: [s1, s2, s3, s4] }
+      ]
+    };
+
+    Helper.populateView('#stock-add-panel', '#stock-add-panel-template', model);
+
+    $('.add-security-row').click(function(e) {
+      var cb = $(this).find(':checkbox')[0];
+
+      if(!cb.checked){
+        var stockId = $(cb).data('id')
+        RightPanelModel.addStock(stockId, function(){
+          console.log('Add stock with id ', stockId);
+          cb.checked = true;
+        });
+      }else{
+        var stockId = $(cb).data('id')
+        RightPanelModel.deleteStock(stockId, function(){
+          console.log('Remove stock with id ', stockId);
+          cb.checked = false;
+        });
+      }
+    });
+  },
+  initStockpickerSearchAutocomplete: function(){
+
+  },
   renderStockpickerView: function(initial){
     var self = this;
     var stock = self.states.chooseStockView;
@@ -100,6 +140,12 @@ var RightPanel = {
         self.updateStockpickerView(model);
         if(model.stock.isLogin) self.hideStockpickerLoginPanel();
         self.showStockpickerView();
+
+        // When view is rendered, also render settings panel and autocomplete
+        self.initStockpickerSettingsPanel();
+        self.initStockpickerSearchAutocomplete();
+
+        // Makes stockpicker view refresh every x seconds
         self.refreshStockpickerView();
       } else {
         self.updateStockpickerView(model);
@@ -239,9 +285,9 @@ var RightPanel = {
     });
 
     $('#right-panel-option-container').hover(function() {
-      $('#stock').css('display', 'inline');
+      $('#stock-add-panel').css('display', 'inline');
     }, function() {
-      $('#stock').css('display', 'none');
+      $('#stock-add-panel').css('display', 'none');
     });
 
   },
