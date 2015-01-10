@@ -174,34 +174,33 @@ var RightPanel = {
     $.when(RightPanelModel.getExpertHeadlineAsync(), RightPanelModel.getExpertDataAsync())
     .done(function(headlineModel, model){
       var experts = self.states.expertsView;
+      var error = RightPanelModel.model.expertError || RightPanelModel.model.expertHeadlineError;
 
-      var error = RightPanelModel.model.expertError;
-
-      // Populate views
       if(!error){
+        // Populate views
         Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
         Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
-      // Init experts modal
+        // Init experts modal
         $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
-      }else{
-        $('#experts-view').append('<div class="empty-data" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
-      }
 
-      // Init like comments action
-      $('.experts-like-action').click(function(e){
-        e.preventDefault();
-        var weiboId = $(e.target).attr('name');
+        // Init like comments action
+        $('.experts-like-action').click(function(e){
+          e.preventDefault();
+          var weiboId = $(e.target).attr('name');
 
-        RightPanelModel.likeCommentAsync(weiboId)
-        .then(function(res){
-          var content = $(e.target).html();
-          var likes = parseInt(content.match(/[^()]+(?=\))/g));
-          likes++;
-          $(e.target).html('赞(' + likes + ')');
-        }, function(res) {
+          RightPanelModel.likeCommentAsync(weiboId)
+          .then(function(res){
+            var content = $(e.target).html();
+            var likes = parseInt(content.match(/[^()]+(?=\))/g));
+            likes++;
+            $(e.target).html('赞(' + likes + ')');
+          }, function(res) {
+          });
         });
-      });
+      } else {
+        $('#experts-view').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+      }
 
       // Remove loader
       $('#experts-view').css('visibility', 'visible');

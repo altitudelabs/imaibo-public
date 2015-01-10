@@ -9,6 +9,7 @@ var RightPanelModel = {
     stock: {},
     news: {},
     expertError: true,
+    expertHeadlineError: true,
   },
   getExpertDataAsync: function(){
     var self = this;
@@ -48,18 +49,19 @@ var RightPanelModel = {
       this.model.expertError = false;
     }
   },
-  getExpertHeadline: function(successHandler, errorHandler){
+  getExpertHeadline: function(handler){
     var self = this;
     $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res){
-      if (res.code === 0){
+      if (res.code !== 'undefined' && res.code === 0){
+        self.model.expertHeadlineError = false;
         self.model.experts.headline = res.data;
-        successHandler(res.data);
+        handler(res.data);
       } else {
-        errorHandler(res.data);
+        handler(res.data);
       }
     })
   },
-  getExpertData: function(successHandler){
+  getExpertData: function(handler){
     var self = this;
     $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
         _.extend(self.model.experts, expertData.data);
@@ -68,7 +70,7 @@ var RightPanelModel = {
           res.time = self.getTimestampStr(res.time);
         });
         self.expertErrorCheck(self.model.experts);
-        successHandler(self.model.experts);
+        handler(self.model.experts);
 	   });
   },
   getNewsData: function(successHandler, errorHandler){

@@ -108,59 +108,92 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
-    self.buildChartElements(true);
-
-    StickyColumns.start();
-
-    // potential problem: initially empty data, display empty chart.
-    // fetches new data, not empty. what do
+    self.buildChartElements();
 
     if(!IE8){ //app.js
       setInterval(function(){
-        self.buildChartElements(false);
+        self.updateChartElements();
       }, this.properties.refreshFrequency);
     }
   },
-  tryRenderToolbar: function(hasError, data) {
-    if(hasError){
-      $('#toolbar').remove();
-    }else{
-      Toolbar.render(data);
-    }
-  },
-  buildChartElements: function(initial) {
-    var self  = this;
-    var today = new Date();
-    var year = today.getFullYear().toString();
-    var month = (today.getMonth()+1).toString();
-        month = month.length<2? '0' + month: month;
-    var day = today.getDate().toString();
-        day = day.length < 2? '0'+day:day;
-        today = year + month + day;
+  /* Initial build of chart elements */
+  buildChartElements: function() {
+    var self = this,
+        d = new Date(),
+        today = d.yyyymmdd(),
+        initial = true;
 
-    ChartModel.getIndexData(today, initial, function() {
-      ChartModel.getSentimentData(today, initial, function(hasNewSentimentData){
-        self.data = ChartModel.model;
+    $.when(ChartModel.getIndexDataAsync(today, initial), ChartModel.getSentimentDataAsync())
+    .done(function(index, sentiment){
+      self.data = ChartModel.model;
 
-        var stockLine = self.data.indexError? 0: self.data.daily.stockLine;
-        // if (hasNewSentimentData) {
-        if (initial) {
-          SentimentChart.init();
-          self.tryRenderToolbar(self.data.indexError, self.data.daily);
-        } else {
-          SentimentChart.update(hasNewSentimentData);
+      // Draw index
+      if (!index.isError) {
+        IndexChart.init();
+        Toolbar.render(self.data.daily);
+        if(!HIDE) {
+          RsiChart.init();
+          MacdChart.init();
         }
+        Dashboard.render(self.data.info);
+      } else {
+        Dashboard.renderWithError();
+        IndexChart.initWithError();
+      }
 
+      // Draw sentiment
+      if (!sentiment.isError) {
+        SentimentChart.init();
+      } else {
+        SentimentChart.initWithError();
+      }
+
+      // Make charts visible
+      $('#price').css('visibility', 'visible');
+      $('#macd').css('visibility', 'visible');
+      $('#rsi').css('visibility', 'visible');
+      $('#sentiment').css('visibility', 'visible');
+
+      // Remove loaders
+      $('.loader').remove();
+      $('.dashboard-loader').remove();
+
+      // Refresh sticky columns and scroll position
+      StickyColumns.start();
+    });
+  },
+  /* Updates chart elements */
+  updateChartElements: function(){
+    var self = this,
+        d = new Date(),
+        today = d.yyyymmdd();
+
+    $.when(ChartModel.getIndexDataAsync(today, false), ChartModel.updateSentimentDataAsync(today))
+    .done(function(index, sentiment){
+      self.data = ChartModel.model;
+
+      // Update index
+      if (!index.isError) {
         IndexChart.init();
         if(!HIDE) {
           RsiChart.init();
           MacdChart.init();
         }
-        if(!self.data.indexError) Dashboard.render(self.data.info);
+        Dashboard.render(self.data.info);
+      } else {
+        Dashboard.renderWithError();
+        IndexChart.initWithError();
+      }
 
-        // Refresh sticky columns and scroll position
-        StickyColumns.start();
-      });
+      // Draw sentiment
+      if (!sentiment.isError) {
+        SentimentChart.update(true);
+      } else {
+        SentimentChart.initWithError();
+      }
+
+      // Refresh sticky columns and scroll position
+      StickyColumns.start();
     });
   },
   redraw: function (zoomFactor) {
@@ -173,7 +206,6 @@ var ChartView = {
       MacdChart.drawGraph(false);
     }
     $('#chart-container').scrollLeft(this.properties.scrollDistance);
-
   },
   rebuild: function() {
     this.setProperties();
