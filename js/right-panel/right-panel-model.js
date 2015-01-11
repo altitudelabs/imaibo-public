@@ -86,6 +86,24 @@ var RightPanelModel = {
         }
     });
   },
+  addStock: function(stockId, successHandler, errorHandler){
+    var self = this;
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=addFocusStock&stockId=' + stockId + '&callback=?', function(res){
+      console.log(res);
+      successHandler(res);
+    }).fail(function(){
+      errorHandler({ isError: true, msg: 'AJAX request failed' });
+    });
+  },
+  deleteStock: function(stockId, successHandler, errorHandler){
+    var self = this;
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=delFocusStock&stockId=' + stockId + '&callback=?', function(res){
+      console.log(res);
+      successHandler(res);
+    }).fail(function(){
+      errorHandler({ isError: true, msg: 'AJAX request failed' });
+    });
+  },
   // Experts tab: Handles user like action
   likeComment: function(weiboId, successHandler, errorHandler){
     $.get(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
