@@ -231,10 +231,26 @@ var ChartView = {
 
     $('#price').hover(
       function() {
-        $('.scroller__bar').stop().fadeTo('slow', 0.5);
+        $('#chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
       },
       function() {
-        $('.scroller__bar').stop().fadeTo('slow', 0);
+        $('#chart-container .scroller__bar').stop().fadeTo('slow', 0);
+    });
+
+    $('#rsi-chart').hover(
+      function() {
+        $('#rsi-chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
+      },
+      function() {
+        $('#rsi-chart-container .scroller__bar').stop().fadeTo('slow', 0);
+    });
+
+    $('#macd-chart').hover(
+      function() {
+        $('#macd-chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
+      },
+      function() {
+        $('#macd-chart-container .scroller__bar').stop().fadeTo('slow', 0);
     });
 
     //should optimize should not

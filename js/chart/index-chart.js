@@ -219,7 +219,7 @@ var IndexChart = {
       gcandlesticks = chart.append('g').attr('class','candlesticks');
       glinestems = chart.append('g').attr('class','linestems');
       // vertical         = chart.append('svg:line');
-      horizontal       = chart_label.append('svg:line');
+      horizontal       = chart.append('svg:line');
       // vertical_block   = chart_label.append('svg:rect');
       horizontalBlock = chart_label.append('svg:rect');
       // vertical_text    = chart_label.append('text');
@@ -233,7 +233,7 @@ var IndexChart = {
 
 
      // vertical         = chart.selectAll('line.xlabelLine');
-      horizontal       = chart_label.selectAll('line.ylabelLine');
+      horizontal       = chart.selectAll('line.ylabelLine');
       // vertical_block   = chart_label.select('g#vertical-block');
       horizontalBlock = chart_label.select('#horizontal-block');
       horizontalText  = chart_label.select('#horizontal-text');
@@ -360,8 +360,8 @@ var IndexChart = {
       horizontal
       .attr('class', 'ylabelLine')
       .attr('id', 'ylabelLine')
-      .attr('x1', chartWidth + margin.left)
-      .attr('x2', margin.left)
+      .attr('x1', 0)
+      .attr('x2', graphWidth)
       .attr('y1', yPos) //make it line up with the label
       .attr('y2', yPos)
       .attr('stroke', '#f65c4e')

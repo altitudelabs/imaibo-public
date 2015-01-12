@@ -118,6 +118,8 @@ var Toolbar = {
     });
   },
   initRsi: function(){
+    $('#rsi-checkbox').prop('checked', false); // fix button checks persists after refreshing in Firefox
+
     $('#rsi-checkbox-row').click(function(e) {
       var cb = $(this).find(':checkbox')[0];
       //if the click wasn't from the checkbox already, toggle it
@@ -139,6 +141,8 @@ var Toolbar = {
     });
   },
   initMacd: function() {
+    $('#macd-checkbox').prop('checked', false);
+
     $('#macd-checkbox-row').click(function(e) {
       var cb = $(this).find(':checkbox')[0];
       //if the click wasn't from the checkbox already, toggle it
