@@ -30,10 +30,30 @@ var ChartView = {
     var self = this;
     var props = self.properties;
     var graphWidth = (props.width - props.margin.left - props.margin.right)*props.zoomFactor;
+
     return d3.scale.ordinal()
     .domain(data.map(function(x) {
       return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
+
+  },
+
+  getXLabels: function(){
+    if (this.data.xlabels) {
+      return this.data.xlabels;
+    } else {
+      var months = [];
+      this.data.xlabels = this.data.daily.stockLine.filter(function (e, i) {
+        var month = new Date(e.timestamp*1000).getMonth();
+        if (!months.length){ months.push(month); }
+        if (months.indexOf(month) === -1) {
+          months.push(month);
+          return true;
+        }
+        return false;
+      });
+      return this.data.xlabels;
+    }
   },
 
   //data.daily.stockLine
@@ -202,8 +222,8 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
     if(!this.data.indexError){
       IndexChart.drawGraph(false);
-      RsiChart.drawGraph(false);
-      MacdChart.drawGraph(false);
+      RsiChart.drawGraph();
+      MacdChart.drawGraph();
     }
     $('#chart-container').scrollLeft(this.properties.scrollDistance);
   },
