@@ -229,15 +229,15 @@
             </ul>
           </div>
           <!-- Toolbar end -->
-          <div id="chart-label">
-          </div>
+          
+          <div id="chart-label"></div>
           <div class='container zoomable-chart-container' id="chart-container" >
             <div class="scroller">
               <div id="chart"></div>
               <div class="scroller__bar"></div>
             </div>
           </div>
-          <div id="chart-x-label"></div>
+
         </div>
         <div id="rsi" class="component">
           <div class="wrapper chart-header">
@@ -251,10 +251,15 @@
               <div class="close"></div>
             </div>
           </div>
+
           <div id="rsi-chart-label"></div>
           <div class='container zoomable-chart-container' id="rsi-chart-container" >
-            <div class="zoomable-chart" id="rsi-chart"></div>
+            <div class="scroller">
+              <div class="zoomable-chart" id="rsi-chart"></div>
+              <div class="scroller__bar"></div>
+            </div>
           </div>
+
         </div>
         <div id="macd" class="component">
           <div class="wrapper chart-header">
@@ -269,9 +274,13 @@
           </div>
 
           <div id="macd-chart-label"></div>
-          <div class='container zoomable-chart-container' id="macd-chart-container" >
-            <div class="zoomable-chart" id="macd-chart"></div>
+          <div class='container zoomable-chart-container' id="macd-chart-container">
+            <div class="scroller">
+              <div class="zoomable-chart" id="macd-chart"></div>
+              <div class="scroller__bar"></div>
+            </div>
           </div>
+
         </div>
         <div id="sentiment" class="component">
           <div class="chart-header">
