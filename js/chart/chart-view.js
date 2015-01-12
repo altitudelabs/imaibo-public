@@ -30,10 +30,30 @@ var ChartView = {
     var self = this;
     var props = self.properties;
     var graphWidth = (props.width - props.margin.left - props.margin.right)*props.zoomFactor;
+
     return d3.scale.ordinal()
     .domain(data.map(function(x) {
       return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
+
+  },
+
+  getXLabels: function(){
+    if (this.data.xlabels) {
+      return this.data.xlabels;
+    } else {
+      var months = [];
+      this.data.xlabels = this.data.daily.stockLine.filter(function (e, i) {
+        var month = new Date(e.timestamp*1000).getMonth();
+        if (!months.length){ months.push(month); }
+        if (months.indexOf(month) === -1) {
+          months.push(month);
+          return true;
+        }
+        return false;
+      });
+      return this.data.xlabels;
+    }
   },
 
   //data.daily.stockLine
@@ -108,59 +128,89 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
-    self.buildChartElements(true);
+    self.buildChartElements();
 
-    StickyColumns.start();
-
-    // potential problem: initially empty data, display empty chart.
-    // fetches new data, not empty. what do
-
-    if(!IE8){ //app.js
-      setInterval(function(){
-        self.buildChartElements(false);
-      }, this.properties.refreshFrequency);
-    }
+    if(!IE8) //app.js
+      setInterval(self.updateChartElements, this.properties.refreshFrequency);
   },
-  tryRenderToolbar: function(hasError, data) {
-    if(hasError){
-      $('#toolbar').remove();
-    }else{
-      Toolbar.render(data);
-    }
-  },
-  buildChartElements: function(initial) {
-    var self  = this;
-    var today = new Date();
-    var year = today.getFullYear().toString();
-    var month = (today.getMonth()+1).toString();
-        month = month.length<2? '0' + month: month;
-    var day = today.getDate().toString();
-        day = day.length < 2? '0'+day:day;
-        today = year + month + day;
+  /* Initial build of chart elements */
+  buildChartElements: function() {
+    var self = this,
+        d = new Date(),
+        today = d.yyyymmdd(),
+        initial = true;
 
-    ChartModel.getIndexData(today, initial, function() {
-      ChartModel.getSentimentData(today, initial, function(hasNewSentimentData){
-        self.data = ChartModel.model;
+    $.when(ChartModel.getIndexDataAsync(today, initial), ChartModel.getSentimentDataAsync())
+    .done(function(index, sentiment){
+      self.data = ChartModel.model;
 
-        var stockLine = self.data.indexError? 0: self.data.daily.stockLine;
-        // if (hasNewSentimentData) {
-        if (initial) {
-          SentimentChart.init();
-          self.tryRenderToolbar(self.data.indexError, self.data.daily);
-        } else {
-          SentimentChart.update(hasNewSentimentData);
-        }
-
+      // Draw index
+      if (!index.isError) {
         IndexChart.init();
+        Toolbar.render(self.data.daily);
         if(!HIDE) {
           RsiChart.init();
           MacdChart.init();
         }
-        if(!self.data.indexError) Dashboard.render(self.data.info);
+        Dashboard.render(self.data.info);
+      } else {
+        Dashboard.renderWithError();
+        IndexChart.initWithError();
+      }
 
-        // Refresh sticky columns and scroll position
-        StickyColumns.start();
-      });
+      // Draw sentiment
+      if (!sentiment.isError) {
+        SentimentChart.init();
+      } else {
+        SentimentChart.initWithError();
+      }
+
+      // Make charts visible
+      $('#price').css('visibility', 'visible');
+      $('#macd').css('visibility', 'visible');
+      $('#rsi').css('visibility', 'visible');
+      $('#sentiment').css('visibility', 'visible');
+
+      // Remove loaders
+      $('.loader').remove();
+      $('.dashboard-loader').remove();
+
+      // Refresh sticky columns and scroll position
+      StickyColumns.start();
+    });
+  },
+  /* Updates chart elements */
+  updateChartElements: function() {
+    var self = this,
+        d = new Date(),
+        today = d.yyyymmdd();
+
+    $.when(ChartModel.getIndexDataAsync(today, false), ChartModel.updateSentimentDataAsync(today))
+    .done(function(index, sentiment){
+      self.data = ChartModel.model;
+
+      // Update index
+      if (!index.isError) {
+        IndexChart.drawGraph(false);
+        if(!HIDE) {
+          RsiChart.init();
+          MacdChart.init();
+        }
+        Dashboard.render(self.data.info);
+      } else {
+        Dashboard.renderWithError();
+        IndexChart.initWithError();
+      }
+
+      // Draw sentiment
+      if (!sentiment.isError) {
+        SentimentChart.update(true);
+      } else {
+        SentimentChart.initWithError();
+      }
+
+      // Refresh sticky columns and scroll position
+      StickyColumns.start();
     });
   },
   redraw: function (zoomFactor) {
@@ -169,11 +219,10 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
     if(!this.data.indexError){
       IndexChart.drawGraph(false);
-      RsiChart.drawGraph(false);
-      MacdChart.drawGraph(false);
+      RsiChart.drawGraph();
+      MacdChart.drawGraph();
     }
     $('#chart-container').scrollLeft(this.properties.scrollDistance);
-
   },
   rebuild: function() {
     this.setProperties();
@@ -199,10 +248,26 @@ var ChartView = {
 
     $('#price').hover(
       function() {
-        $('.scroller__bar').stop().fadeTo('slow', 0.5);
+        $('#chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
       },
       function() {
-        $('.scroller__bar').stop().fadeTo('slow', 0);
+        $('#chart-container .scroller__bar').stop().fadeTo('slow', 0);
+    });
+
+    $('#rsi-chart').hover(
+      function() {
+        $('#rsi-chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
+      },
+      function() {
+        $('#rsi-chart-container .scroller__bar').stop().fadeTo('slow', 0);
+    });
+
+    $('#macd-chart').hover(
+      function() {
+        $('#macd-chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
+      },
+      function() {
+        $('#macd-chart-container .scroller__bar').stop().fadeTo('slow', 0);
     });
 
     //should optimize should not

@@ -1,3 +1,5 @@
+'use strict'
+
 var ChartModel = {
   model: {
     info:         {},
@@ -9,15 +11,38 @@ var ChartModel = {
     dataReceived: 0
   },
   api: {
-    production: 'http://www.imaibo.net',
-    staging: 'http://t3-www.imaibo.net',
-    base: '/index.php?app=moodindex&mod=IndexShow',
-    indexData:     '&act=main',
-    sentimentData: '&act=moodindexLine',
-    latest:        '&latest=1',
-    daily:         '&daily=1',
-    date:          '&reqDate=',
-    jsonp:         '&callback=?'
+    production:     'http://www.imaibo.net',
+    staging:        'http://t3-www.imaibo.net',
+    base:           '/index.php?app=moodindex&mod=IndexShow',
+    indexData:      '&act=main',
+    sentimentData:  '&act=moodindexLine',
+    latest:         '&latest=1',
+    daily:          '&daily=1',
+    minute:         '&minute=1',
+    weekly:         '&weekly=1',
+    date:           '&reqDate=',
+    jsonp:          '&callback=?'
+  },
+  baseUrl: function(){
+    return PRODUCTION ? this.api.production : this.api.staging;
+  },
+  getIndexDataAsync: function(date, initial){
+    var self = this;
+    return $.Deferred(function(d){
+      self.getIndexData(date, initial, d.resolve, d.reject);
+    }).promise();
+  },
+  getSentimentDataAsync: function(){
+    var self = this;
+    return $.Deferred(function(d){
+      self.getSentimentData(d.resolve, d.reject);
+    }).promise();
+  },
+  updateSentimentDataAsync: function(date){
+    var self = this;
+    return $.Deferred(function(d){
+      self.updateSentimentData(date, d.resolve, d.reject);
+    }).promise();
   },
   /*
    * func getIndexData()
@@ -25,81 +50,69 @@ var ChartModel = {
    * Arguments:
    * - date: date in yyyymmdd format
    * - initial: boolean, indicates if we are only fetching new data
-   * - callback: callback function
+   * - handler: callback function
   */
-  getIndexData: function(date, initial, callback){
+  getIndexData: function(date, initial, handler){
     var self = this;
-    var api  = (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.indexData  + '&dailyLineSdate=' + date;
-        api += (initial? self.api.daily: '');
+    var api  = self.baseUrl() + self.api.base + self.api.indexData  + '&dailyLineSdate=' + date;
+        api += initial ? self.api.daily : '';
         api += self.api.latest + '&info=1&trading=1'
         api += self.api.jsonp;
-    $.getJSON(api, function(dailyData) {
-      // dailyData = { data: {indexList: [{yo: 1}]}};
-      self.errorCheck(self.api.indexData, dailyData);
-      if(!self.model.indexError) {
-        self.model.info   = dailyData.data.info;
-        self.model.minute = dailyData.data.minute;
 
-        if(initial){
-          self.model.daily  = dailyData.data.daily;
-        //API returns data in descending order
-          if(self.model.daily.stockLine[0].timestamp != dailyData.data.latestPrice.timestamp) {
-            self.model.daily.stockLine.unshift(dailyData.data.latestPrice);
-          }
-          self.model.daily.stockLine.reverse();
-        }else{
-          var latestPrice = dailyData.data.latestPrice;
-          var lastData    = self.model.daily.stockLine.slice(-1).pop();
+    $.getJSON(api, function(res) {
+      self.errorCheck(self.api.indexData, res);
+      if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError) {
+        self.model.info   = res.data.info;
+        self.model.minute = res.data.minute;
 
-          if(lastData && lastData.timestamp !== dailyData.data.latestPrice.timestamp){
-            self.model.daily.stockLine.push(dailyData.data.latestPrice);
-          }
-        }
+        // Process data
+        self.processIndexData(res, initial);
 
+        handler({ isError: self.model.indexError });
+      } else {
+        handler({ isError: self.model.indexError });
       }
-      self.tryRemoveLoaders();
-
-      // self.randomize();
-
-      callback();
+    }).fail(function(){
+      handler({ isError: self.model.indexError });
     });
   },
-  getSentimentData: function(date, initial ,callback){
-    'use strict';
-
+  getSentimentData: function(handler){
     var self = this;
-    var api;
-    // if (initial) {
-    if (true) {
-      api =  (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.sentimentData + self.api.jsonp;
-      $.getJSON(api, function(sentimentData) {
-        // sentimentData = { data: {indexList: [{yo: 1}]}};
-        self.errorCheck(self.api.sentimentData, sentimentData);
-        if(!self.model.sentimentError) {
-          self.model.sentiment = sentimentData.data;
+    var api = self.baseUrl() + self.api.base + self.api.sentimentData + self.api.jsonp;
+    $.getJSON(api, function(res) {
+      self.errorCheck(self.api.sentimentData, res);
+      if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
+        self.model.sentiment = res.data;
+        handler({ isError: self.model.sentimentError });
+      } else {
+        handler({ isError: self.model.sentimentError });
+      }
+    }).fail(function(){
+      handler({ isError: self.model.sentimentError });
+    });
+  },
+  updateSentimentData: function(date, handler){
+    var self = this;
+    var api = self.baseUrl() + self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
+    $.getJSON(api, function(res) {
+      // Add new ticks to the existing array if no error
+      if (res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError){
+        var lastData = self.model.sentiment.indexList[self.model.sentiment.indexList.length-1],
+            lastTimestamp = lastData.timestamp;
 
-          self.model.sentiment.moodindexList = self.model.sentiment.moodindexList;
-
-        }
-        self.tryRemoveLoaders();
-        callback(true);
-      });
-    } else {
-      api = (PRODUCTION? self.api.production : self.api.staging) + self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
-      $.getJSON(api, function(updateSentimentData) {
-        var isNewData = true;
-
-        //very rough way of checking whether there is new data  =REFACTOR
-        if (updateSentimentData.data.indexList.length === self.model.sentiment.indexList.length) {
-          if (updateSentimentData.data.moodindexList.length === self.model.sentiment.moodindexList.length) {
-            isNewData = false;
+        _.each(res.data.indexList, function(tick){
+          if (tick.timestamp > lastTimestamp){
+            self.model.sentiment.indexList.push(tick);
           }
-        }
-        self.model.sentiment = updateSentimentData.data;
-        self.tryRemoveLoaders();
-        callback(isNewData);
-      });
-    }
+        });
+
+        self.model.sentiment.moodindexList = res.data.moodindexList;
+      }
+
+      handler({ isError: self.model.sentimentError });
+    }).fail(function(){
+      handler({ isError: self.model.sentimentError });
+    });
   },
   errorCheck: function(api, json) {
     function isObject(val) {
@@ -111,47 +124,65 @@ var ChartModel = {
       //cases such as empty string '' will be falsely accepted
       if(json.data === undefined){
         this.log(0, api + ' has no \'data\'');
-      }else if(!isObject(json.data)){
+      } else if (!isObject(json.data)){
         this.log(0, api + ' "data" variable is not an object');
-      }else if(json.data.indexList === undefined){
+      } else if (json.data.indexList === undefined){
         this.log(0, api + ' data.indexList does not exist');
-      }else if(json.data.indexList.constructor !== Array){
+      } else if (json.data.indexList.constructor !== Array){
         this.log(0, api + ' data.indexList is not an array');
-      }else if(json.data.indexList.length === 0){
+      } else if (json.data.indexList.length === 0){
         this.log(0, api + ' array data.indexList is empty');
-      }else if(json.data.indexList[0].price === undefined){
+      } else if (json.data.indexList[0].price === undefined){
         this.log(0, api + ' data.indexList does not have variable "price"');
-      }else if(json.data.indexList[0].volumn === undefined){
+      } else if (json.data.indexList[0].volumn === undefined){
         this.log(0, api + ' data.indexList does not have variable "volumn"');
-      }else if(json.data.indexList[0].timestamp === undefined){
+      } else if (json.data.indexList[0].timestamp === undefined){
         this.log(0, api + ' data.indexList does not have variable "timestamp"');
-      }else if(json.data.indexList[0].rdate === undefined){
+      } else if (json.data.indexList[0].rdate === undefined){
         this.log(0, api + ' data.indexList does not have variable "rdate"');
-      }else {
-        this.model.sentimentError = false;
-      }
-      if(json.data.moodindexList === undefined){
+      } else if (json.data.moodindexList === undefined){
         this.log(0, api + ' data.moodindexList does not exist');
+      } else {
+        this.model.sentimentError = false;
       }
     }
 
     if(api === this.api.indexData){
       if(json.data === undefined){
         this.log(0, api + ' has no \'data\'');
-      }else if(!isObject(json.data)){
+      } else if(!isObject(json.data)){
         this.log(0, api + ' "data" variable is not an object');
-      }else if(json.data.info === undefined){
+      } else if(json.data.info === undefined){
         this.log(0, api + ' data.info does not exist');
-      }else if(json.data.info.stockIndexInfo === undefined){
+      } else if(json.data.info.stockIndexInfo === undefined){
         this.log(0, api + ' data.info.stockIndexInfo does not exist');
-      }else if(json.data.info.moodindexInfo === undefined){
+      } else if(json.data.info.moodindexInfo === undefined){
         this.log(0, api + ' data.info.moodindexInfo does not exist');
-      }else if(json.data.info.tradingSign === undefined){
+      } else if(json.data.info.tradingSign === undefined){
         this.log(0, api + ' data.info.tradingSign does not exist');
-      }else if(json.data.daily === undefined){
+      } else if(json.data.daily === undefined){
         this.log(0, api + ' data.daily does not exist');
-      }else {
+      } else {
         this.model.indexError = false;
+      }
+    }
+  },
+  processIndexData: function(res, initial){
+    var self = this;
+    if(initial){
+      self.model.daily = res.data.daily;
+
+      // API returns data in descending order
+      if(self.model.daily.stockLine[0].timestamp != res.data.latestPrice.timestamp) {
+        self.model.daily.stockLine.unshift(res.data.latestPrice);
+      }
+      self.model.daily.stockLine.reverse();
+    } else {
+      var latestPrice = res.data.latestPrice;
+      var lastData    = self.model.daily.stockLine.slice(-1).pop();
+
+      if(lastData && lastData.timestamp !== res.data.latestPrice.timestamp){
+        self.model.daily.stockLine.push(res.data.latestPrice);
       }
     }
   },
@@ -160,25 +191,7 @@ var ChartModel = {
     var now = new Date();
     console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
-  showContent: function(){
-    $('#price').css('visibility', 'visible');
-    $('#macd').css('visibility', 'visible');
-    $('#rsi').css('visibility', 'visible');
-    $('#sentiment').css('visibility', 'visible');
-    $('#about-index-view').css('visibility', 'visible');
-  },
-  removeLoaders: function(){
-    $('.loader').fadeOut(500);
-    $('#loading').remove();
-  },
-  tryRemoveLoaders: function(){
-    this.model.dataReceived++;
-    if(this.model.dataReceived > 1){
-      this.removeLoaders();
-      this.showContent();
-      this.model.dataReceived = 0;
-    }
-  },
+  /* Helper method for randomizing API values for testing */
   randomize: function(){
     // Randomize stock price
     var stockIndexSign = Math.random() > 0.5;

@@ -21,11 +21,13 @@ var SentimentChart = {
     this.setProperties();
     this.updateData();
     this.drawContainer();
-    if(ChartView.data.sentimentError) {
-      $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
-    }else{
-      this.drawGraph();
-    }
+    this.drawGraph();
+  },
+  initWithError: function(){
+    this.setProperties();
+    this.drawContainer();
+    $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
+    $('#sentiment .legend').remove();
   },
   update: function (hasNewData) {
     'use strict';
