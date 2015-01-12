@@ -63,7 +63,6 @@ var RsiChart = {
     yLabels.enter().append('text').attr('class', 'yrule');
 
     yLabels.exit().remove();
-
     yLabels
       .attr('x', containerWidth - margin.right + 15)
       .attr('y', y2)
