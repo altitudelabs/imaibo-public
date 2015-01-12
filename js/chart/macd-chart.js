@@ -102,9 +102,8 @@ var MacdChart = {
     .attr('x', function(d, i) { return x(i); })
     .attr('y', function(d) {    return y1(max(+d.diff, 0)); })
     .attr('height', function(d) { return Math.abs(y1(+d.diff) - y1(0)); })
-    .attr('width',function(d) { return 0.8 * (chartWidth)/data.daily.stockLine.length; })
+    .attr('width',function(d) { return 0.8 * graphWidth/data.daily.stockLine.length; })
     .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
-
 
     //dea line
     plotMACD('dea', '#d7db74');
@@ -149,7 +148,7 @@ var MacdChart = {
       var xPos, mouseX, mouseY;
 
       if(IE8) {
-        /* TO BE FIXED: 
+        /* TO BE FIXED:
         xPos = eventX;
         leftOffset = eventX - 60;
         top = event.offsetY + ($('#rsi-checkbox').is(':checked')? 450:300);
@@ -220,7 +219,8 @@ var MacdChart = {
     .attr('x2', chartWidth + margin.left)
     .attr('y1', margin.top)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     chartLabel.append('svg:line')
     .attr('class', 'yborder-left')
@@ -228,7 +228,8 @@ var MacdChart = {
     .attr('x2', margin.left)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     chartLabel.append('svg:line')
     .attr('class', 'yborder-right')
@@ -236,7 +237,8 @@ var MacdChart = {
     .attr('x2', chartWidth + margin.left)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', margin.top)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     chartLabel.append('svg:line')
     .attr('class', 'xaxis')
@@ -244,7 +246,8 @@ var MacdChart = {
     .attr('x2', containerWidth - margin.right)
     .attr('y1', chartHeight - margin.bottom)
     .attr('y2', chartHeight - margin.bottom)
-    .attr('stroke', '#464646');
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     var data = ChartView.data;
     if(data.indexError) return;
