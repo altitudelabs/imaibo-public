@@ -92,7 +92,6 @@ var RightPanel = {
     }
   },
   initStockpickerSettingsPanel: function(){
-
     // Dummy data
     var s1 = { name: '最多持仓', stock: [{stockId: 1}, {stockId: 2}, {stockId: 3}, {stockId: 4}] };
     var s2 = { name: '最多买入', stock: [{stockId: 1}, {stockId: 2}, {stockId: 3}, {stockId: 4}] };
@@ -111,25 +110,29 @@ var RightPanel = {
     Helper.populateView('#stock-add-panel', '#stock-add-panel-template', model);
 
     $('.add-security-row').click(function(e) {
-      var cb = $(this).find(':checkbox')[0];
+      if (_MID_ == 0 || _MID_ == '') {
+        login_show();
+      } else {
+        var cb = $(this).find(':checkbox')[0];
 
-      if(!cb.checked){
-        var stockId = $(cb).data('id')
-        RightPanelModel.addStock(stockId, function(){
-          console.log('Add stock with id ', stockId);
-          cb.checked = true;
-        });
-      }else{
-        var stockId = $(cb).data('id')
-        RightPanelModel.deleteStock(stockId, function(){
-          console.log('Remove stock with id ', stockId);
-          cb.checked = false;
-        });
+        if(!cb.checked){
+          var stockId = $(cb).data('id')
+          RightPanelModel.addStock(stockId, function(){
+            console.log('Add stock with id ', stockId);
+            cb.checked = true;
+          });
+        } else {
+          var stockId = $(cb).data('id')
+          RightPanelModel.deleteStock(stockId, function(){
+            console.log('Remove stock with id ', stockId);
+            cb.checked = false;
+          });
+        }
       }
     });
   },
   initStockpickerSearchAutocomplete: function(){
-
+    // to be implemented
   },
   renderStockpickerView: function(initial){
     var self = this;
@@ -138,7 +141,15 @@ var RightPanel = {
     var successHandler = function(model){
       if (initial){
         self.updateStockpickerView(model);
-        if(model.stock.isLogin) self.hideStockpickerLoginPanel();
+        if(model.stock.isLogin) {
+          self.hideStockpickerLoginPanel();
+        } else {
+          $('#login').click(function(){
+            if (_MID_ == 0 || _MID_ == '') {
+              login_show();
+            }
+          });
+        }
         self.showStockpickerView();
 
         // When view is rendered, also render settings panel and autocomplete
@@ -168,11 +179,11 @@ var RightPanel = {
     $('.panel-loader').remove();
   },
   updateStockpickerView: function(model) {
-    var initialHtml = '<td><div class="indicator"></div></td> \
-                      <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td> \
-                      <td class="zxg-price">{{lastpx}}</td> \
-                      <td class="zxg-price-change-abs">{{pxchg}}</td> \
-                      <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
+    var template = '<td><div class="indicator"></div></td> \
+                    <td class="zxg-ticker white"><a href="{{stockUrl}}">{{stockName}}</a></td> \
+                    <td class="zxg-price">{{lastpx}}</td> \
+                    <td class="zxg-price-change-abs">{{pxchg}}</td> \
+                    <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
     var table = d3.select('#stockpicker-table-body')
       .selectAll('tr')
@@ -180,7 +191,7 @@ var RightPanel = {
 
     // Enter loop
     table.enter().append('tr')
-      .html(initialHtml);
+      .html(template);
 
     // Exit loop
     table.exit().remove();
@@ -235,14 +246,21 @@ var RightPanel = {
           e.preventDefault();
           var weiboId = $(e.target).attr('name');
 
-          RightPanelModel.likeCommentAsync(weiboId)
-          .then(function(res){
-            var content = $(e.target).html();
-            var likes = parseInt(content.match(/[^()]+(?=\))/g));
-            likes++;
-            $(e.target).html('赞(' + likes + ')');
-          }, function(res) {
-          });
+          // If user not logged in, show login panel
+          if (_MID_ == 0 || _MID_ == '') {
+            login_show();
+          } else {
+            // Otherwise, like comment
+            RightPanelModel.likeCommentAsync(weiboId)
+            .then(function(res){
+              var content = $(e.target).html();
+              var likes = parseInt(content.match(/[^()]+(?=\))/g));
+              likes++;
+              $(e.target).html('赞(' + likes + ')');
+            }, function(res) {
+              // handle error
+            });
+          }
         });
       } else {
         $('#experts-view').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
