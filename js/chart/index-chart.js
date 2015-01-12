@@ -261,17 +261,7 @@ var IndexChart = {
     }
 
     if(!isEmpty){
-      //x-axis labels
-      var months = [];
-      var xLabelData = data.daily.stockLine.filter(function (e, i) {
-        var month = new Date(e.timestamp*1000).getMonth();
-        if (!months.length){ months.push(month); }
-        if (months.indexOf(month) === -1) {
-          months.push(month);
-          return true;
-        }
-        return false;
-      });
+      var xLabelData = ChartView.getXLabels();
 
       xlabels
       .selectAll('text.xrule')
@@ -283,11 +273,12 @@ var IndexChart = {
       .attr('text-anchor', 'middle')
       .text(function(d,i){
         var today = new Date();
-       if(today.getDate() < 10 && i === xLabelData.length-1){
+        if(today.getDate() < 10 && i === xLabelData.length-1){
           return '';
-        }else{
-          return Helper.toDate(d.rdate, 'yyyy/mm');
-        } });
+        } else {
+        return Helper.toDate(d.rdate, 'yyyy/mm');
+        }
+      });
 
       //sentimetal rect bars
       gvolume
