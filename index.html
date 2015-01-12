@@ -68,75 +68,7 @@
         <div class="wrapper" id="stockpicker-wrapper">
           <ul id="right-panel-option-container">
             <li><div id="settings"></div></li>
-            <li> <ul id="stock">
-              <li>上证
-                <ul class="sub-stock">
-                  <li><div class="padding">最多持仓</div> <!-- .padding is for better UX. It wouldn't suddenly close up the ul because user's mouse didn't move quick enough -->
-                  <ul>
-                    <li>
-                    <table class="sub-stock-table">
-                      <thead>
-                        <tr>
-                          <th>股票名称</th>
-                          <th>现价</th>
-                          <th>涨跌额</th>
-                          <th>涨跌幅</th>
-                          <th>加自选</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>股票名称</td>
-                          <td class="rise">9.89</td>
-                          <td class="rise">0.46</td>
-                          <td class="rise">12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>股票名称</td>
-                          <td class="fall">9.89</td>
-                          <td class="fall">0.46</td>
-                          <td class="fall">12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>股票名称</td>
-                          <td>9.89</td>
-                          <td>0.46</td>
-                          <td>12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>股票名称</td>
-                          <td>9.89</td>
-                          <td>0.46</td>
-                          <td>12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    </li>
-                    <li><a href="#">查看更多</a></li>
-                  </ul>
-                  </li>
-                  <li><div class="padding">最多买入</div></li>
-                  <li><div class="padding">最多卖出</div></li>
-                  <li><div class="padding">重仓股</div></li>
-                </ul>
-              </li>
-              <li>草根股神</li>
-              <li>热门股</li>
-              <li>行情股</li>
-            </ul>
-            </li>
+            <li><ul id="stock-add-panel"></ul></li>
           </ul>
 
           <form id="stock-search-form" action="">
@@ -229,7 +161,7 @@
       <!-- Chart view start -->
       <div id="chart-view">
         <div id="snapshot" class="component">
-          <div id="loading"></div>
+          <div class="dashboard-loader"></div>
           <div class="component-wrapper" id="dashboard"></div>
         </div>
 
@@ -604,6 +536,7 @@
   </script>
   <!-- Experts template end -->
 
+  <!-- Start experts modal dialog -->
   <script id="experts-modal-template" type="text/x-handlebars-template">
     <h1>{{headline.title}}</h1>
     <h2>{{headline.uptime}}</h2>
@@ -611,6 +544,51 @@
     <a class="modal-close mb close-modal" href="#"></a>
   </script>
   <!-- End experts modal dialog -->
+
+  <!-- Start stockpicker add stock -->
+  <script id="stock-add-panel-template" type="text/x-handlebars-template">
+    {{#each category }}
+    <li>{{name}}
+      <ul class="sub-stock">
+        {{#each subcategory }}
+        <li><div class="padding">{{ name }}</div>
+        <ul>
+          <li>
+          <table class="sub-stock-table">
+            <thead>
+              <tr>
+                <th>股票名称</th>
+                <th>现价</th>
+                <th>涨跌额</th>
+                <th>涨跌幅</th>
+                <th>加自选</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each stock }}
+              <tr class="add-security-row">
+                <td>股票名称</td>
+                <td class="rise">9.89</td>
+                <td class="rise">0.46</td>
+                <td class="rise">12.03%</td>
+                <td>
+                  <input type="checkbox" data-id="{{stockId}}"></input>
+                  <label><span class="mb"></span></label>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          </li>
+          <li><a href="#">查看更多</a></li>
+        </ul>
+        </li>
+        {{/each}}
+      </ul>
+    </li>
+    {{/each}}
+  </script>
+  <!-- End stockpicker add stock -->
 
   <!-- Start charting JS files -->
   <script type="text/javascript" src="js/lib/helpers.js"></script>

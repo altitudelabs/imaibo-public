@@ -8,10 +8,7 @@ var Dashboard = {
   render: function(model){
     var self = this;
 
-    // Render dashboard
     if (self.firstLoad){
-      // model.moodindexInfo.change = '0';
-      // model.moodindexInfo.changeRatio = '0%';
       if(model.moodindexInfo.changeRatio.slice(-1) != '%'){
         model.moodindexInfo.changeRatio += '%';
       }
@@ -32,7 +29,9 @@ var Dashboard = {
       date: model.tradingSign.date,
       clock: model.tradingSign.clock
     });
-
+  },
+  renderWithError: function(){
+    $('#snapshot').append('<div class="empty-data" id="dashboard-no-data">暂时无法下载数据，请稍后再试</div>');
   },
   updateDashboard: function(targetId, templateId, resource){
     var targetSelector = $(targetId);
@@ -66,7 +65,7 @@ var Dashboard = {
             c += hold[i];
         }
       }
-      var clock   = data.clock.substr(0, data.clock.length-3);
+      var clock = data.clock.substr(0, data.clock.length-3);
 
       var d = {
         date: data.date,

@@ -144,7 +144,7 @@ var RsiChart = {
         mouseX = d3.event.pageX;
         mouseY = d3.event.pageY;
       }
-      
+
       var j = ChartView.xInverse((IE8?xPos-55:xPos), x);
       var d = data.daily.stockLine[j];
 
@@ -191,16 +191,41 @@ var RsiChart = {
     .attr('width', containerWidth + 120)
     .attr('height', chartHeight);
 
-    // $('#rsi-chart-container').slimScroll({
-    //   height: height.toString() + 'px',
-    //   width: chartWidth.toString() + 'px',
-    //   color: '#ffcc00',
-    // });
+    chartLabel.append('svg:line')
+    .attr('class', 'xborder-top-thick')
+    .attr('x1', margin.left)
+    .attr('x2', chartWidth + margin.left)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
-    // $('#rsi .slimScrollDiv').css('position', 'absolute')
-    // .css('top', '40px')
-    // .css('left', '45px')
-    // .css('width', chartWidth.toString() + 'px');
+    chartLabel.append('svg:line')
+    .attr('class', 'yborder-left')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', margin.top)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
+
+    chartLabel.append('svg:line')
+    .attr('class', 'yborder-right')
+    .attr('x1', chartWidth + margin.left)
+    .attr('x2', chartWidth + margin.left)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', margin.top)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
+
+    chartLabel.append('svg:line')
+    .attr('class', 'xaxis')
+    .attr('x1', margin.left)
+    .attr('x2', containerWidth - margin.right)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', chartHeight - margin.bottom)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
 
     if(ChartView.data.indexError) return;
 

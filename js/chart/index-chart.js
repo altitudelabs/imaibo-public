@@ -16,15 +16,18 @@ var IndexChart = {
     }
     this.properties = $.extend(true, {}, properties);
   },
-  init: function () {
+  init: function() {
     this.setProperties();
     this.drawContainer();
-    if(!ChartView.data.indexError){
-      this.drawGraph(true);
-    }else if($('#index-no-data').length == 0){
-      $('#chart-container').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
-    }
+    this.drawGraph(true);
     this.setDragability();
+  },
+  initWithError: function(){
+    this.setProperties();
+    this.drawContainer();
+    $('#price').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
+    $('#toolbar').remove();
+    $('#legend').remove();
   },
   drawContainer: function () {
     $('#chart').empty();
@@ -193,7 +196,7 @@ var IndexChart = {
     horizontalText,
     horizontalBlock;
 
-    var isEmpty = data.daily.stockLine.length == 0;
+    var isEmpty = data.daily.stockLine === 'undefined' || data.daily.stockLine.length === 0;
 
     var chart = d3.select('#chart')
     .attr('width', graphWidth)
