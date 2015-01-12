@@ -130,11 +130,8 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     self.buildChartElements();
 
-    if(!IE8){ //app.js
-      setInterval(function(){
-        self.updateChartElements();
-      }, this.properties.refreshFrequency);
-    }
+    if(!IE8) //app.js
+      setInterval(self.updateChartElements, this.properties.refreshFrequency);
   },
   /* Initial build of chart elements */
   buildChartElements: function() {
@@ -183,7 +180,7 @@ var ChartView = {
     });
   },
   /* Updates chart elements */
-  updateChartElements: function(){
+  updateChartElements: function() {
     var self = this,
         d = new Date(),
         today = d.yyyymmdd();
@@ -194,7 +191,7 @@ var ChartView = {
 
       // Update index
       if (!index.isError) {
-        IndexChart.init();
+        IndexChart.drawGraph(false);
         if(!HIDE) {
           RsiChart.init();
           MacdChart.init();
