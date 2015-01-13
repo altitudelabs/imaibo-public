@@ -46,7 +46,7 @@ var RsiChart = {
 
     var y2 = d3.scale.linear()
       .domain([0, 100])
-      .range([chartHeight - margin.bottom, margin.top]);
+      .range([chartHeight - margin.top - margin.bottom, margin.top + 5]);
 
     this.components.chart
       .attr('width', graphWidth)
@@ -80,7 +80,7 @@ var RsiChart = {
 
     xLabels
       .attr('x', function(d,i){ return x(d.rdate); })
-      .attr('y', chartHeight-margin.bottom+8)
+      .attr('y', chartHeight - margin.bottom + 15)
       .attr('text-anchor', 'middle')
       .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
 
@@ -111,7 +111,7 @@ var RsiChart = {
       .attr('x', 0)
       .attr('y', margin.top)
       .attr('width', graphWidth)
-      .attr('height', height-margin.top-margin.bottom)
+      .attr('height', height-margin.top-margin.bottom - 25)
       .on('mouseover', function(e){
         return Tooltip.show(); })
       .on('mouseout', function(){

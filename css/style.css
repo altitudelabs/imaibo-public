@@ -647,7 +647,7 @@ body::-webkit-scrollbar {
 
 .outer .zoomable-chart-container{
   overflow: hidden;
-  top: 35px;
+  top: 31px;
   left: 45px;
   width: 100%;
 }
@@ -655,6 +655,10 @@ body::-webkit-scrollbar {
 .outer .zoomable-chart {
   z-index: 1;
   top: 0;
+}
+
+#chart-container {
+  top: 31px;
 }
 
 .outer .mouseover-overlay {

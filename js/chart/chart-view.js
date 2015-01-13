@@ -4,7 +4,7 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 60000,
+    refreshFrequency: 1000000,
     scrollDistance: 0
   },
   setProperties: function (options) {
@@ -12,7 +12,7 @@ var ChartView = {
     //review
     var properties = {
       width: $('#content').width(), // width of left panel
-      margin: { top: 8, right: 45, bottom: 25, left: 45 }, // chart margins
+      margin: { top: 2, right: 45, bottom: 25, left: 45 }, // chart margins
       volumeHeight: 50,
       zoomFactor: self.properties.zoomFactor || 1,
     };
