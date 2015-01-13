@@ -57,21 +57,25 @@ var ChartView = {
 
   //data.daily.stockLine
   //return moodindex
-  y1: function(data, height, returnProp){
+  y1: function(data, height, returnProp, volumeHeight){
     var self = this;
     var props = self.properties;
+    var min = d3.min(data.map(function(x) { return +x[returnProp]; }));
+    var max = d3.max(data.map(function(x){return +x[returnProp]; }));
 
     return d3.scale.linear()
-    .domain([d3.min(data.map(function(x) { return +x[returnProp]; })), d3.max(data.map(function(x){return +x[returnProp]; }))])
+    .domain([min - ((max-min)/height)*volumeHeight, max])
     .range([height-props.margin.bottom, props.margin.top])
   },
   //return lowpx, highpx
-  y2: function(data, height, returnPropMax, returnPropMin){
+  y2: function(data, height, returnPropMax, returnPropMin, volumeHeight){
     var self = this;
     var props = self.properties;
+    var min = d3.min(data.map(function(x) { return +x[returnPropMin]; }));
+    var max = d3.max(data.map(function(x){return +x[returnPropMax]; }));
 
     return d3.scale.linear()
-    .domain([d3.min(data.map(function(x) { return +x[returnPropMin]; })), d3.max(data.map(function(x){return +x[returnPropMax]; }))])
+    .domain([min - ((max-min)/height)*volumeHeight, max])
     .range([height-props.margin.bottom, props.margin.top]);
   },
   //return .volumn
