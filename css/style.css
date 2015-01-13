@@ -667,30 +667,30 @@ body::-webkit-scrollbar {
 
 /* =Sentiment Chart
 ------------------------------------------------------------ */
-.outer .tooltip {
+#sentiment-tooltip {
   position: absolute;
-  width: 150px;
+  width: 250px;
   height: 60px;
   pointer-events: none;
   font-size: 11px;
 }
 
-.outer .sentiment-tooltip {
+.sentiment-tooltip {
   color: white;
-  width: 180px;
+  width: 250px;
 }
 
-.outer .sentiment-tooltip .mood {
+.sentiment-tooltip .mood {
   padding-left: 2px;
   height: 22px;
   line-height: 22px
 }
 
-.outer .sentiment-tooltip .content {
+.sentiment-tooltip .content {
   line-height: 22px
 }
 
-.outer .news-bubble {
+#sentiment-tooltip .news-bubble {
   width: 20px;
   height: 20px;
   background: black;
@@ -699,7 +699,7 @@ body::-webkit-scrollbar {
   left: 0;
 }
 
-.outer .tooltip .wrapper {
+#sentiment-tooltip .wrapper {
   background-color: #454545;
   padding: 2px;
   width: 100%;
@@ -707,11 +707,11 @@ body::-webkit-scrollbar {
   border: #666 solid 1px;
 }
 
-.outer .tooltip > .wrapper > div {
+#sentiment-tooltip > .wrapper > div {
   padding: 5px;
 }
 
-.outer .wrapper .arrow {
+#sentiment-tooltip .wrapper .arrow {
   width: 20px;
   height: 20px;
   background-repeat: no-repeat;
@@ -719,38 +719,38 @@ body::-webkit-scrollbar {
   vertical-align: top;
 }
 
-.outer .wrapper .arrow.rise {
+#sentiment-tooltip .wrapper .arrow.rise {
   background-image: url('../assets/chart/up-arrow.png');
 }
 
-.outer .wrapper .arrow.fall {
+#sentiment-tooltip .wrapper .arrow.fall {
   background-image: url('../assets/chart/down-arrow.png');
 }
 
-.outer .wrapper .arrow,
-.outer .wrapper .content,
-.outer .wrapper .extra {
+#sentiment-tooltip .wrapper .arrow,
+#sentiment-tooltip .wrapper .content,
+#sentiment-tooltip .wrapper .extra {
     display: inline-block;
 }
 
-.outer .wrapper .extra.hide {
+#sentiment-tooltip .wrapper .extra.hide {
   display: none;
 }
 
-.outer .tooltip-date {
+#sentiment-tooltip .tooltip-date {
   background-color: #666;
   padding: 5px 3px 5px 3px;
-  width: 180px;
+  width: 250px;
 }
 
-.outer .news-bubble {
+#sentiment-tooltip .news-bubble {
   position: absolute;
   width: 200px;
   height: 60px;
   pointer-events: none;
 }
 
-.outer .noselect {
+#sentiment-tooltip .noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
