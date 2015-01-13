@@ -16,7 +16,6 @@ var ChartView = {
       volumeHeight: 50,
       zoomFactor: self.properties.zoomFactor || 1,
     };
-
     if (options) {
       for (var key in options) {
         properties[key] = options[key];
@@ -130,8 +129,9 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     self.buildChartElements();
 
-    if(!IE8) //app.js
+    if(!IE8) {
       setInterval(self.updateChartElements, this.properties.refreshFrequency);
+    }
   },
   /* Initial build of chart elements */
   buildChartElements: function() {
@@ -204,7 +204,7 @@ var ChartView = {
 
       // Draw sentiment
       if (!sentiment.isError) {
-        SentimentChart.update(true);
+        SentimentChart.draw();
       } else {
         SentimentChart.initWithError();
       }
