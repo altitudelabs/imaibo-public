@@ -74,7 +74,6 @@ var SentimentChart = {
     self.componentsBuilder.xLabels.append();
     self.componentsBuilder.sentimentLine.append();
     self.componentsBuilder.securityLines.append();
-    self.componentsBuilder.tooltip.append();
     self.componentsBuilder.scatterDots.append();
     self.componentsBuilder.scatterDotsBubble.append();
     self.componentsBuilder.scatterDotsBubbleText.append();
@@ -84,6 +83,8 @@ var SentimentChart = {
 
     self.componentsBuilder.verticalGridLines.append();
     self.componentsBuilder.horizontalGridLines.append();
+    
+    self.componentsBuilder.tooltip.append();
   },
   draw: function(){
     'use strict';
@@ -657,8 +658,10 @@ var SentimentChart = {
         
         //linear
         var amLinearData = data.slice(0, 121);
+
         self.components.securityLines['amLinear'] = self.components.securityLines['amLinear'].datum(amLinearData);
-        var pmLinearData = data.slice(121);
+        var pmLinearData = data.slice(121, data.length);
+
         self.components.securityLines['pmLinear'] = self.components.securityLines['pmLinear'].datum(pmLinearData);
         
         //dotted
@@ -692,13 +695,13 @@ var SentimentChart = {
         }
         //market close
         if (currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 )) {
-          var closeDottedPrice = pmLinearData[150].price;
+          var closeDottedPrice = pmLinearData[120].price;
           var closeDottedData = [{
-                                  timestamp: amLinearData[150].timestamp+60,
+                                  timestamp: pmLinearData[120].timestamp+60,
                                   price: closeDottedPrice
                                 },
                                 {
-                                  timestamp: Math.min(currentTimeStamp, amLinearData[150].timestamp+7200),
+                                  timestamp: Math.min(currentTimeStamp, pmLinearData[120].timestamp+7200),
                                   price: closeDottedPrice
                                 }];
           self.components.securityLines['closeDotted'] = self.components.securityLines['closeDotted'].datum(closeDottedData);
@@ -874,6 +877,8 @@ var SentimentChart = {
         .attr('r', 8)
         .style('opacity', 0)
         .on('mouseover', function(d, i) {
+          var dot = this;
+          if (!d.newsList.length) { return; }
           if(IE8){
             sDH.xPos = event.clientX;
             sDH.yPos = event.clientY;
@@ -887,7 +892,6 @@ var SentimentChart = {
             sDH.fadeIn = 1;
             sDH.fadeOut = 0;
           }
-
           var target = d3.select('#sd-' + i);
           target.attr('fill', '#3bc1ef');
           target.attr('r', '4');
@@ -913,17 +917,27 @@ var SentimentChart = {
           self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
                           '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
                           '<div class="wrapper">' +
-                            '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
-                            '<div class="mood"> 相对之前： ' + d.moodChg +             '</div>' +
-                            // '<div>' +
-                            //   '<div class="arrow ' + arrow + '">                     </div>' +
-                            //   '<div class="content"> ' + d.newsTitle.slice(0, 12) + '</div>' +
-                            //   '<div class="extra ' + show_extra + '">...</div>' +
-                            // '</div>' +
+                            // '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
+                            // '<div class="mood"> 相对之前： ' + d.moodChg +             '</div>' +
+                            '<div>' +
+                              '<div class="content"> ' + d.newsList[0].newsTitle.slice(0, 12) + '</div>' +
+                              '<div class="arrow ' + arrow + '">                     </div>' +
+                              // '<div class="extra ' + show_extra + '">...</div>' +
+                            '</div>' +
+                            '<div class="mood"> 相对之前： ' + d.newsList[0].newsTitle +             '</div>' +
                           '</div>' +
                        '</div>')
+          // .style('left', function () {
+          //   console.log(d3.select(dot).attr("cx"));
+          //   return d3.select(dot).attr("cx") + 'px';
+          // })
+          // .style('top', function () {
+          //   console.log(d3.select(dot).attr("cx"));
+          //   return d3.select(dot).attr("cy") + 'px';
+          // });
           .style('left', sDH.xPos + 'px')
           .style('top', sDH.yPos + 'px');
+
         })
         .on('mouseout', function(d, i) {
           var target = d3.select('#sd-' + i);
@@ -932,9 +946,9 @@ var SentimentChart = {
           target.attr('stroke', '#25bcf1');
           target.attr('stroke-width', '1');
 
-          self.components.tooltip.transition()
-          .duration(500)
-          .style(sDH.style, sDH.fadeOut);
+          // self.components.tooltip.transition()
+          // .duration(500)
+          // .style(sDH.style, sDH.fadeOut);
         });
       },
       update: function () {
@@ -982,6 +996,7 @@ var SentimentChart = {
     },
     sentimentHover: {
       append: function () {
+
         var self = SentimentChart;
         self.components.sentimentHover = d3.select('#sentiment-chart').append('svg:svg');
       },
