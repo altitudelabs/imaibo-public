@@ -60,7 +60,7 @@ var ChartModel = {
         api += self.api.jsonp;
 
     $.getJSON(api, function(res) {
-      self.errorCheck(self.api.indexData, res);
+      self.errorCheckIndex(res, initial);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError) {
         self.model.info   = res.data.info;
         self.model.minute = res.data.minute;
@@ -80,7 +80,7 @@ var ChartModel = {
     var self = this;
     var api = self.baseUrl() + self.api.base + self.api.sentimentData + self.api.jsonp;
     $.getJSON(api, function(res) {
-      self.errorCheck(self.api.sentimentData, res);
+      self.errorCheckSentiment(res);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
         self.model.sentiment = res.data;
         handler({ isError: self.model.sentimentError });
@@ -114,58 +114,57 @@ var ChartModel = {
       handler({ isError: self.model.sentimentError });
     });
   },
-  errorCheck: function(api, json) {
-    function isObject(val) {
-      if (val === null) { return false;}
-      return typeof val === 'object';
+  /* Checks if variable is object */
+  isObject: function(val){
+    if (val === null) { return false; }
+    return typeof val === 'object';
+  },
+  /* Checks if variable is empty object */
+  isEmptyObject: function(obj) {
+    for (var prop in obj) {
+      if(obj.hasOwnProperty(prop)) return false;
     }
-    if(api === this.api.sentimentData) {
-      //do not use (!json.data)
-      //cases such as empty string '' will be falsely accepted
-      if(json.data === undefined){
-        this.log(0, api + ' has no \'data\'');
-      } else if (!isObject(json.data)){
-        this.log(0, api + ' "data" variable is not an object');
-      } else if (json.data.indexList === undefined){
-        this.log(0, api + ' data.indexList does not exist');
-      } else if (json.data.indexList.constructor !== Array){
-        this.log(0, api + ' data.indexList is not an array');
-      } else if (json.data.indexList.length === 0){
-        this.log(0, api + ' array data.indexList is empty');
-      } else if (json.data.indexList[0].price === undefined){
-        this.log(0, api + ' data.indexList does not have variable "price"');
-      } else if (json.data.indexList[0].volumn === undefined){
-        this.log(0, api + ' data.indexList does not have variable "volumn"');
-      } else if (json.data.indexList[0].timestamp === undefined){
-        this.log(0, api + ' data.indexList does not have variable "timestamp"');
-      } else if (json.data.indexList[0].rdate === undefined){
-        this.log(0, api + ' data.indexList does not have variable "rdate"');
-      } else if (json.data.moodindexList === undefined){
-        this.log(0, api + ' data.moodindexList does not exist');
+    return true;
+  },
+  errorCheckSentiment: function(res){
+    if(res.data === undefined){
+        this.log(0, 'Sentiment API has no \'data\'');
+      } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
+        this.log(0, 'Sentiment API "data" variable is not an object or is empty');
+      } else if (res.data.indexList === undefined || res.data.indexList.length === 0){
+        this.log(0, 'Sentiment API data.indexList does not exist');
+      } else if (res.data.indexList[0].price === undefined){
+        this.log(0, 'Sentiment API data.indexList does not have variable "price"');
+      } else if (res.data.indexList[0].volumn === undefined){
+        this.log(0, 'Sentiment API data.indexList does not have variable "volumn"');
+      } else if (res.data.indexList[0].timestamp === undefined){
+        this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
+      } else if (res.data.indexList[0].rdate === undefined){
+        this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
+      } else if (res.data.moodindexList === undefined || res.data.moodindexList.length === 0){
+        this.log(0, 'Sentiment API data.moodindexList does not exist');
       } else {
         this.model.sentimentError = false;
       }
-    }
-
-    if(api === this.api.indexData){
-      if(json.data === undefined){
-        this.log(0, api + ' has no \'data\'');
-      } else if(!isObject(json.data)){
-        this.log(0, api + ' "data" variable is not an object');
-      } else if(json.data.info === undefined){
-        this.log(0, api + ' data.info does not exist');
-      } else if(json.data.info.stockIndexInfo === undefined){
-        this.log(0, api + ' data.info.stockIndexInfo does not exist');
-      } else if(json.data.info.moodindexInfo === undefined){
-        this.log(0, api + ' data.info.moodindexInfo does not exist');
-      } else if(json.data.info.tradingSign === undefined){
-        this.log(0, api + ' data.info.tradingSign does not exist');
-      } else if(json.data.daily === undefined){
-        this.log(0, api + ' data.daily does not exist');
+  },
+  errorCheckIndex: function(res, initial){
+    if(res.data === undefined){
+        this.log(0, 'Index API has no \'data\'');
+      } else if(!this.isObject(res.data) || this.isEmptyObject(res.data)){
+        this.log(0, 'Index API "data" variable is not an object or is empty');
+      } else if(res.data.info === undefined || this.isEmptyObject(res.data.info)){
+        this.log(0, 'Index API data.info does not exist');
+      } else if(res.data.info.stockIndexInfo === undefined || this.isEmptyObject(res.data.info.stockIndexInfo)){
+        this.log(0, 'Index API data.info.stockIndexInfo does not exist');
+      } else if(res.data.info.moodindexInfo === undefined || this.isEmptyObject(res.data.info.moodindexInfo)){
+        this.log(0, 'Index API data.info.moodindexInfo does not exist');
+      } else if(res.data.info.tradingSign === undefined || this.isEmptyObject(res.data.info.tradingSign)){
+        this.log(0, 'Index API data.info.tradingSign does not exist');
+      } else if(initial && (res.data.daily === undefined || res.data.daily.length === 0)){
+        this.log(0, 'Index API data.daily does not exist');
       } else {
         this.model.indexError = false;
       }
-    }
   },
   processIndexData: function(res, initial){
     var self = this;
