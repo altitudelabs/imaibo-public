@@ -53,11 +53,11 @@ var MacdChart = {
 
     var y1 = d3.scale.linear()
       .domain([y1Diff*-1, y1Diff])
-      .range([chartHeight- margin.bottom, margin.top]);
+      .range([chartHeight - margin.top - margin.bottom, margin.top + 5]);
 
     var y2 = d3.scale.linear()
       .domain([y2Diff*-1, y2Diff])
-      .range([chartHeight-margin.bottom, margin.top]);
+      .range([chartHeight - margin.top - margin.bottom, margin.top + 5]);
 
     // Update y1 labels
     var y1Labels = this.components.chartLabel.select('g.y1labels')
@@ -100,7 +100,7 @@ var MacdChart = {
 
     xLabels
       .attr('x', function(d,i){ return x(d.rdate); })
-      .attr('y', chartHeight-margin.bottom+8)
+      .attr('y', chartHeight-margin.bottom+15)
       .attr('text-anchor', 'middle')
       .text(function(d,i){ return Helper.toDate(d.rdate, 'yyyy/mm'); });
 

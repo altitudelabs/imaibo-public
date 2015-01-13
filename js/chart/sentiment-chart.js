@@ -89,8 +89,98 @@ var SentimentChart = {
     'use strict';
     var self = this;
 
-    var props = self.properties;
+    var containerWidth = ChartView.properties.width;
+    var margin = this.properties.margin;
+    var chartWidth = containerWidth - margin.left - margin.right;
 
+    var height = this.properties.height;
+    var chartHeight = height - margin.top - margin.bottom;
+
+    var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
+    var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
+    var minY2 = self.helpers.minIndex('price', self.data.indexList);
+    var maxY2 = self.helpers.maxIndex('price', self.data.indexList);
+
+    var y1 = self.helpers.y(minY1 - ((maxY1 - minY1)*0.5), maxY1 + ((maxY1 - minY1)*0.5));
+
+    var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
+
+    self.components.chartLabel = self.components.chartLabel || d3.select('#sentiment-chart-label').append('svg:svg');
+    self.components.topBorder = self.components.topBorder || self.components.chartLabel.append('svg:line');
+    self.components.rightBorder = self.components.rightBorder || self.components.chartLabel.append('svg:line');
+    self.components.bottomBorder = self.components.bottomBorder || self.components.chartLabel.append('svg:line');
+    self.components.leftBorder = self.components.leftBorder || self.components.chartLabel.append('svg:line');
+    self.components.y1Labels = self.components.y1Labels || self.components.chartLabel.append('g').selectAll('text.yrule').data(y1.ticks(5));
+    self.components.y2Labels = self.components.y2Labels || self.components.chartLabel.append('g').selectAll('text.yrule').data(y2.ticks(5));
+    self.components.horizontalGridLines = self.components.chartLabel.append('g').selectAll('text.yrule').data(y1.ticks(5));
+
+    self.components.chartLabel
+    .attr('class', 'chart')
+    .attr('width', containerWidth)
+    .attr('height', chartHeight);
+
+    self.components.horizontalGridLines
+    .enter().append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "x1" : margin.left,
+            "x2" : chartWidth + margin.left,
+            "y1" : function(d){ return y1(d) - 5;},
+            "y2" : function(d){ return y1(d) - 5;},
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "rgb(50, 50, 50)",
+            "stroke-width" : "1px"
+        });
+    // $('#sentiment-chart-container').slimScroll({
+    //   height: (chartHeight+20).toString() + 'px',
+    //   width: chartWidth.toString() + 'px',
+    //   color: '#ffcc00'
+    // });
+
+
+    // $('#sentiment > .slimScrollDiv')
+    // .css('position', 'absolute')
+    // .css('top', '39px')
+    // .css('left', '45px')
+    // .css('width', chartWidth.toString() + 'px');
+
+    self.components.topBorder
+    .attr('class', 'xborder-top-thick')
+    .attr('x1', margin.left)
+    .attr('x2', chartWidth + margin.left)
+    .attr('y1', margin.top)
+    .attr('y2', margin.top)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
+
+    self.components.rightBorder
+    .attr('class', 'yborder-right')
+    .attr('x1', chartWidth + margin.left)
+    .attr('x2', chartWidth + margin.left)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', margin.top)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
+
+    self.components.bottomBorder
+    .attr('class', 'xaxis')
+    .attr('x1', margin.left)
+    .attr('x2', containerWidth - margin.right)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', chartHeight - margin.bottom)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
+
+    self.components.leftBorder
+    .attr('class', 'yborder-left')
+    .attr('x1', margin.left)
+    .attr('x2', margin.left)
+    .attr('y1', chartHeight - margin.bottom)
+    .attr('y2', margin.top)
+    .attr('stroke', 'rgb(77, 77, 77)')
+    .attr('stroke-width', '2px');
     //container
     self.componentsBuilder.chartLabel.update();
     self.componentsBuilder.topBorder.update();
@@ -289,6 +379,7 @@ var SentimentChart = {
             'shape-rendering' : 'crispEdges',
             'stroke' : 'rgb(50, 50, 50)',
             'stroke-width' : '1px'
+
         });
       },
       update: function () {
