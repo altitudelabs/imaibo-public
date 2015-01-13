@@ -111,26 +111,27 @@
 
       <!-- News view start -->
       <div id="news-view" class="component">
-        <div class="news-block">
-          <div class="calendar-and-date">
-            <div class="calendar"></div>
-            <div class="date">yyyy-mm-dd</div>
+
+        <ul id="news-tabs">
+          <li><a href="#press-by-time">时间划分</a></li>
+          <li><a href="#all-press">全展开</a></li>
+        </ul>
+
+        <div id="news-content">
+          
+          <div id="press-by-time" class="content"></div>
+
+          <div id="all-press" class="content">
+
+            <div class="calendar-and-date">
+              <span class="calendar"></span>
+              <span class="date"></span>
+            </div>
+
+            <div id='news-blocks'></div>
+
           </div>
 
-          <div class="content">
-            今年的指数高点来临了, 注意今年是2014年。
-          </div>
-
-          <div class="sentiment-news rise">
-            <span class="label">心情指数</span>
-            <span class="arrow rise"></span>
-            <span class="percentage">80%</span>
-          </div>
-
-          <div class="time-and-source">
-            <div class="time">10:15</div>
-            <div class="source">来自投资微博APP</div>
-          </div>
         </div>
 
       </div>
