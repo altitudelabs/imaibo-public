@@ -667,7 +667,7 @@ body::-webkit-scrollbar {
 }
 
 .outer .mouseover-overlay {
-  z-index: 999999;
+  z-index: 999;
 }
 
 /* =Sentiment Chart
@@ -675,9 +675,9 @@ body::-webkit-scrollbar {
 #sentiment-tooltip.tooltip {
   position: absolute;
   width: 250px;
-  pointer-events: none;
   font-size: 11px;
   border: #666 solid 1px;
+  z-index: 99999;
 }
 
 .sentiment-tooltip {
@@ -771,6 +771,22 @@ body::-webkit-scrollbar {
   user-select: none;
 }
 
+#sentiment-chart-legend {
+  color: rgb(160, 160, 160);
+
+  position: absolute;
+  top: 45px;
+  left: 50px;
+}
+
+#sentiment-chart-legend li {
+  padding-right: 5px;
+}
+
+#sentiment-chart-legend li,
+#sentiment-chart-legend li div{
+  display: inline-block;
+}
 /* =Nav
 -------------------------------------------------------------- */
 .outer .mb-nav {
