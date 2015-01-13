@@ -122,32 +122,26 @@ var IndexChart = {
     .attr('stroke', 'rgb(77, 77, 77)')
     .attr('stroke-width', '2px');
 
-    if(!ChartView.data.indexError) {
-      var y1 = ChartView.y1(data, height ,'moodindex');
-      var y2 = ChartView.y2(data, height, 'highpx', 'lowpx');
+    chartLabel.append('g').attr('class','y1labels');
+    chartLabel.append('g').attr('class', 'y2labels');
 
-      chartLabel.append('g').attr('class','y1labels');
-      chartLabel.append('g').attr('class', 'y2labels');
+    chart.append('g').attr('class', 'volumes');
+    chart.append('g').attr('class', 'candlesticks');
+    chart.append('g').attr('class', 'linestems');
+    chart.append('g').attr('class', 'xlabels');
+    chart.append('g').attr('class', 'horizontal-line')
 
-      chart.append('g').attr('class', 'volumes');
-      chart.append('g').attr('class', 'candlesticks');
-      chart.append('g').attr('class', 'linestems');
-      chart.append('g').attr('class', 'xlabels');
-      chart.append('g').attr('class', 'horizontal-line')
+    chart.append('path').attr('id', 'sentiment-line');
+    chart.append('path').attr('id', 'ma5-line');
+    chart.append('path').attr('id', 'ma10-line');
+    chart.append('path').attr('id', 'ma20-line');
+    chart.append('path').attr('id', 'ma60-line');
 
-      chart.append('path').attr('id', 'sentiment-line');
-      chart.append('path').attr('id', 'ma5-line');
-      chart.append('path').attr('id', 'ma10-line');
-      chart.append('path').attr('id', 'ma20-line');
-      chart.append('path').attr('id', 'ma60-line');
+    chartLabel.append('rect').attr('id', 'horizontal-block');
+    chart.append('line').attr('id', 'horizontal');
+    chartLabel.append('text').attr('class', 'horizontal-text');
 
-      chartLabel.append('rect').attr('id', 'horizontal-block');
-      chart.append('line').attr('id', 'horizontal');
-      chartLabel.append('text').attr('class', 'horizontal-text');
-
-      chart.append('rect').attr('class', 'mouseover-overlay');
-
-    }
+    chart.append('rect').attr('class', 'mouseover-overlay');
 
   },
   drawGraph: function(isNew) {
