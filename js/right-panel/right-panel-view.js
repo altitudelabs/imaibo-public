@@ -161,6 +161,9 @@ var RightPanel = {
       } else {
         self.updateStockpickerView(model);
       }
+
+      // Refresh sticky columns
+      StickyColumns.start();
     };
 
     var errorHandler = function(model){
@@ -215,7 +218,7 @@ var RightPanel = {
     table.select('.zxg-price-change-abs').html(function(d){ return d.pxchg; });
     table.select('.zxg-price-change-rel').html(function(d){ return d.pxchgratio; });
 
-    StickyColumns.recalc();
+    StickyColumns.start();
   },
   refreshStockpickerView: function(){
     var self = this;
@@ -237,6 +240,9 @@ var RightPanel = {
         // Populate views
         Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
         Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
+
+        // Refresh sticky columns
+        StickyColumns.start();
 
         // Init experts modal
         $('.experts-header').leanModal({ closeButton: '.modal-close', modalId: '#experts-modal' });
@@ -315,9 +321,6 @@ var RightPanel = {
       if(stateName === toState) {
         state.link.addClass('active');
         state.el.show();
-
-        // Refresh sticky columns
-        StickyColumns.recalc();
       } else {
         state.link.removeClass('active');
         state.el.hide();
