@@ -8,7 +8,8 @@ var SentimentChart = {
       height: 244,
       interval: 40,
       margin: { top: 6, right: 45, bottom: 36, left: 45 },
-      containerWidth: ChartView.properties.width
+      containerWidth: ChartView.properties.width,
+      absoluteHeight: 1038
     };
     properties.chartWidth = properties.containerWidth - properties.margin.left - properties.margin.right;
     properties.chartHeight = properties.height - properties.margin.top - properties.margin.bottom;
@@ -121,31 +122,19 @@ var SentimentChart = {
     .attr('height', chartHeight);
 
     self.components.horizontalGridLines
-    .enter().append("line")
+    .enter().append('line')
         .attr(
         {
-            "class":"horizontalGrid",
-            "x1" : margin.left,
-            "x2" : chartWidth + margin.left,
-            "y1" : function(d){ return y1(d) - 5;},
-            "y2" : function(d){ return y1(d) - 5;},
-            "fill" : "none",
-            "shape-rendering" : "crispEdges",
-            "stroke" : "rgb(50, 50, 50)",
-            "stroke-width" : "1px"
+            'class':'horizontalGrid',
+            'x1' : margin.left,
+            'x2' : chartWidth + margin.left,
+            'y1' : function(d){ return y1(d) - 5;},
+            'y2' : function(d){ return y1(d) - 5;},
+            'fill' : 'none',
+            'shape-rendering' : 'crispEdges',
+            'stroke' : 'rgb(50, 50, 50)',
+            'stroke-width' : '1px'
         });
-    // $('#sentiment-chart-container').slimScroll({
-    //   height: (chartHeight+20).toString() + 'px',
-    //   width: chartWidth.toString() + 'px',
-    //   color: '#ffcc00'
-    // });
-
-
-    // $('#sentiment > .slimScrollDiv')
-    // .css('position', 'absolute')
-    // .css('top', '39px')
-    // .css('left', '45px')
-    // .css('width', chartWidth.toString() + 'px');
 
     self.components.topBorder
     .attr('class', 'xborder-top-thick')
@@ -701,7 +690,7 @@ var SentimentChart = {
                                   price: closeDottedPrice
                                 },
                                 {
-                                  timestamp: Math.min(currentTimeStamp, pmLinearData[120].timestamp+7200),
+                                  timestamp: Math.min(currentTimeStamp, pmLinearData[120].timestamp+9000),
                                   price: closeDottedPrice
                                 }];
           self.components.securityLines['closeDotted'] = self.components.securityLines['closeDotted'].datum(closeDottedData);
@@ -748,6 +737,11 @@ var SentimentChart = {
         .attr('class', 'tooltip')
         .style('opacity', 0)
         .attr('id', 'sentiment-tooltip');
+        // .on('mouseout', function (d, i) {
+        //   self.components.tooltip.transition()
+        //   .duration(500)
+        //   .style('display', 'none');
+        // })
       }
     },
     scatterDots: {
@@ -911,33 +905,30 @@ var SentimentChart = {
               moodDiff = '+' + moodDiff;
             }
           }
+          var div = '<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
+                    '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
+                    '<div class="wrapper">';
+          for (var i = 0; i < d.newsList.length; i++) {
+            if (i === 3) {
+
+            }
+            div += '<div>' +
+                     '<div class="content"> ' + d.newsList[0].newsTitle.slice(0, 12) + '</div>' + ' &nbsp;&nbsp;&nbsp;' +
+                     '<div class="arrow-text">心情影响:</div>' +  ' &nbsp;' +
+                     '<div class="arrow ' + arrow + '"> </div>' + ' &nbsp;' +
+                     '<div class="arrow-number"> ' + d.newsList[0].newsMood + '</div>' +
+                   '</div>'
+          }
+          div += '</div>' +
+                    '</div>' +
+                 '</div>'
+          
           self.components.tooltip.transition()
           .duration(200)
           .style(sDH.style, sDH.fadeIn);
-          self.components.tooltip.html('<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
-                          '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
-                          '<div class="wrapper">' +
-                            // '<div class="mood"> 心情指数： ' + d.mood +             '</div>' +
-                            // '<div class="mood"> 相对之前： ' + d.moodChg +             '</div>' +
-                            '<div>' +
-                              '<div class="content"> ' + d.newsList[0].newsTitle.slice(0, 12) + '</div>' +
-                              '<div class="arrow ' + arrow + '">                     </div>' +
-                              // '<div class="extra ' + show_extra + '">...</div>' +
-                            '</div>' +
-                            '<div class="mood"> 相对之前： ' + d.newsList[0].newsTitle +             '</div>' +
-                          '</div>' +
-                       '</div>')
-          // .style('left', function () {
-          //   console.log(d3.select(dot).attr("cx"));
-          //   return d3.select(dot).attr("cx") + 'px';
-          // })
-          // .style('top', function () {
-          //   console.log(d3.select(dot).attr("cx"));
-          //   return d3.select(dot).attr("cy") + 'px';
-          // });
-          .style('left', sDH.xPos + 'px')
-          .style('top', sDH.yPos + 'px');
-
+          self.components.tooltip.html(div)
+          .style('left', self.data.x(d.timestamp)+55 + 'px')
+          .style('top', self.data.y1(d.mood)+1038+ 'px');
         })
         .on('mouseout', function(d, i) {
           var target = d3.select('#sd-' + i);
@@ -946,9 +937,9 @@ var SentimentChart = {
           target.attr('stroke', '#25bcf1');
           target.attr('stroke-width', '1');
 
-          // self.components.tooltip.transition()
-          // .duration(500)
-          // .style(sDH.style, sDH.fadeOut);
+          self.components.tooltip.transition()
+          .duration(500)
+          .style(sDH.style, sDH.fadeOut);
         });
       },
       update: function () {
@@ -980,7 +971,7 @@ var SentimentChart = {
         self.components.sentimentCover
         .style('position', 'absolute')
         .style('left', 3)
-        .style('top', 3)
+        .style('top', 7)
         .style('background-color', 'rgb(38, 38, 38)')
         .attr('width', props.chartWidth - 4)
         .attr('height', props.chartHeight - 44)
