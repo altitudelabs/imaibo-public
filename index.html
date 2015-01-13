@@ -241,6 +241,7 @@
         </div>
         <div id="rsi" class="component">
           <div class="wrapper chart-header">
+
             <div class="title">RSI</div>
             <div class="buttons">
               <ul>
@@ -280,11 +281,30 @@
               <div class="scroller__bar"></div>
             </div>
           </div>
-
         </div>
         <div id="sentiment" class="component">
           <div class="chart-header">
             <div class="title">上证分时 - 心情变动值<span id="sentiment-info-button" class="mb info-button"></span></div>
+            <ul id="sentiment-chart-legend">
+              <li>
+                <span>上证：</span>
+                <div class="security">
+                <span></span>
+                </div>
+              </li>
+              <li>
+                <span>心情：</span>
+                <div class="mood">
+                <span></span>
+                </div>
+              </li>
+              <li>
+                <span>心情变化：</span>
+                <div class="moodchange">
+                <span></span>
+                </div>
+              </li>
+            </ul>
             <ul class="legend">
               <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>

@@ -81,6 +81,7 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsHover.append();
     
     self.componentsBuilder.sentimentCover.append();
+    self.componentsBuilder.sentimentOverlay.append();
 
     self.componentsBuilder.verticalGridLines.append();
     self.componentsBuilder.horizontalGridLines.append();
@@ -91,86 +92,6 @@ var SentimentChart = {
     'use strict';
     var self = this;
 
-    var containerWidth = ChartView.properties.width;
-    var margin = this.properties.margin;
-    var chartWidth = containerWidth - margin.left - margin.right;
-
-    var height = this.properties.height;
-    var chartHeight = height - margin.top - margin.bottom;
-
-    var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
-    var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
-    var minY2 = self.helpers.minIndex('price', self.data.indexList);
-    var maxY2 = self.helpers.maxIndex('price', self.data.indexList);
-
-    var y1 = self.helpers.y(minY1 - ((maxY1 - minY1)*0.5), maxY1 + ((maxY1 - minY1)*0.5));
-
-    var y2 = self.helpers.y(minY2 + (minY2%50) - 50, maxY2 - (maxY2%50) + 50);
-
-    self.components.chartLabel = self.components.chartLabel || d3.select('#sentiment-chart-label').append('svg:svg');
-    self.components.topBorder = self.components.topBorder || self.components.chartLabel.append('svg:line');
-    self.components.rightBorder = self.components.rightBorder || self.components.chartLabel.append('svg:line');
-    self.components.bottomBorder = self.components.bottomBorder || self.components.chartLabel.append('svg:line');
-    self.components.leftBorder = self.components.leftBorder || self.components.chartLabel.append('svg:line');
-    self.components.y1Labels = self.components.y1Labels || self.components.chartLabel.append('g').selectAll('text.yrule').data(y1.ticks(5));
-    self.components.y2Labels = self.components.y2Labels || self.components.chartLabel.append('g').selectAll('text.yrule').data(y2.ticks(5));
-    self.components.horizontalGridLines = self.components.chartLabel.append('g').selectAll('text.yrule').data(y1.ticks(5));
-
-    self.components.chartLabel
-    .attr('class', 'chart')
-    .attr('width', containerWidth)
-    .attr('height', chartHeight);
-
-    self.components.horizontalGridLines
-    .enter().append('line')
-        .attr(
-        {
-            'class':'horizontalGrid',
-            'x1' : margin.left,
-            'x2' : chartWidth + margin.left,
-            'y1' : function(d){ return y1(d) - 5;},
-            'y2' : function(d){ return y1(d) - 5;},
-            'fill' : 'none',
-            'shape-rendering' : 'crispEdges',
-            'stroke' : 'rgb(50, 50, 50)',
-            'stroke-width' : '1px'
-        });
-
-    self.components.topBorder
-    .attr('class', 'xborder-top-thick')
-    .attr('x1', margin.left)
-    .attr('x2', chartWidth + margin.left)
-    .attr('y1', margin.top)
-    .attr('y2', margin.top)
-    .attr('stroke', 'rgb(77, 77, 77)')
-    .attr('stroke-width', '2px');
-
-    self.components.rightBorder
-    .attr('class', 'yborder-right')
-    .attr('x1', chartWidth + margin.left)
-    .attr('x2', chartWidth + margin.left)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', margin.top)
-    .attr('stroke', 'rgb(77, 77, 77)')
-    .attr('stroke-width', '2px');
-
-    self.components.bottomBorder
-    .attr('class', 'xaxis')
-    .attr('x1', margin.left)
-    .attr('x2', containerWidth - margin.right)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', chartHeight - margin.bottom)
-    .attr('stroke', 'rgb(77, 77, 77)')
-    .attr('stroke-width', '2px');
-
-    self.components.leftBorder
-    .attr('class', 'yborder-left')
-    .attr('x1', margin.left)
-    .attr('x2', margin.left)
-    .attr('y1', chartHeight - margin.bottom)
-    .attr('y2', margin.top)
-    .attr('stroke', 'rgb(77, 77, 77)')
-    .attr('stroke-width', '2px');
     //container
     self.componentsBuilder.chartLabel.update();
     self.componentsBuilder.topBorder.update();
@@ -219,6 +140,10 @@ var SentimentChart = {
     self.componentsBuilder.scatterDots.linkData();
     self.componentsBuilder.scatterDots.enter();
     self.componentsBuilder.scatterDots.update();
+
+    //sentiment hover overlay
+    self.componentsBuilder.sentimentOverlay.update();
+
 
     if (!HIDE) {
       self.componentsBuilder.scatterDotsBubble.linkData();
@@ -277,6 +202,9 @@ var SentimentChart = {
         } else {
           return false;
         }
+      })
+      .sort(function (a, b){
+        return a.timestamp - b.timestamp;
       });
     },
     // Processing index data filters out non-trading days
@@ -315,6 +243,17 @@ var SentimentChart = {
       var t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
       return t;
     },
+    getLastest: function (type, timestamp) {
+      'use strict';
+      var self = SentimentChart;
+      var closest;
+      for (var i = 0; i < self.data[type].length; i++) {
+        if (self.data[type][i].timestamp < timestamp) {
+          closest = self.data[type][i];
+        }
+      }
+      return closest;
+    }
   },
   componentsBuilder: {
     chart: {
@@ -644,7 +583,7 @@ var SentimentChart = {
       linkData: function () {
         var self = SentimentChart;
         var data = self.data.indexList;
-        
+
         //linear
         var amLinearData = data.slice(0, 121);
 
@@ -656,6 +595,9 @@ var SentimentChart = {
         //dotted
         var currentTimeStamp = self.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000);
+        var dataDate = new Date(data[0].timestamp*1000);
+
+        var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
 
         if (currentTimeStamp < self.data.startTime) { return; }
         
@@ -668,9 +610,8 @@ var SentimentChart = {
                                 price: openDottedPrice
                               }];
         self.components.securityLines['openDotted'] = self.components.securityLines['openDotted'].datum(openDottedData);
-
         //lunch
-        if (currentDate.getHours() > 12 || (currentDate.getHours() === 12 && currentDate.getMinutes() > 30 )) {
+        if (currentDate.getHours() > 12 || (currentDate.getHours() === 12 && currentDate.getMinutes() > 30 || notSameDay)) {
           var lunchDottedPrice = amLinearData[120].price;
           var lunchDottedData = [{
                                   timestamp: amLinearData[120].timestamp+60,
@@ -683,7 +624,7 @@ var SentimentChart = {
           self.components.securityLines['lunchDotted'] = self.components.securityLines['lunchDotted'].datum(lunchDottedData);
         }
         //market close
-        if (currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 )) {
+        if (currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 || notSameDay)) {
           var closeDottedPrice = pmLinearData[120].price;
           var closeDottedData = [{
                                   timestamp: pmLinearData[120].timestamp+60,
@@ -729,14 +670,14 @@ var SentimentChart = {
     tooltip: {
       append: function () {
         var self = SentimentChart;
-        self.components.tooltip = d3.select('body').append('div');
+        self.components.tooltip = d3.select('.outer').append('div');
       },
       update: function () {
         var self = SentimentChart;
         self.components.tooltip
         .attr('class', 'tooltip')
-        .style('opacity', 0)
-        .attr('id', 'sentiment-tooltip');
+        .attr('id', 'sentiment-tooltip')
+        .style('display', 'none')
         // .on('mouseout', function (d, i) {
         //   self.components.tooltip.transition()
         //   .duration(500)
@@ -839,7 +780,7 @@ var SentimentChart = {
         var self = SentimentChart;
         self.components.scatterDotsBubbleText
         .attr('y', function (d) { return self.data.y1(d.mood) - 13; } ) // translate y value to a pixel
-        .attr('x', function (d,i) { return self.data.x(d.timestamp) - 4 ; } ); // translate x value
+        .attr('x', function (d,i) { return self.data.x(d.timestamp) - 3 ; } ); // translate x value
       },
       exit: function () {
         var self = SentimentChart;
@@ -882,9 +823,9 @@ var SentimentChart = {
           }else{
             sDH.xPos = d3.event.pageX + 8;
             sDH.yPos = d3.event.pageY + 3;
-            sDH.style = 'opacity';
-            sDH.fadeIn = 1;
-            sDH.fadeOut = 0;
+            sDH.style = 'display';
+            sDH.fadeIn = 'inline-block';
+            sDH.fadeOut = 'none';
           }
           var target = d3.select('#sd-' + i);
           target.attr('fill', '#3bc1ef');
@@ -925,10 +866,18 @@ var SentimentChart = {
           
           self.components.tooltip.transition()
           .duration(200)
-          .style(sDH.style, sDH.fadeIn);
+          .style('display', 'inline-block');
+          
           self.components.tooltip.html(div)
-          .style('left', self.data.x(d.timestamp)+55 + 'px')
-          .style('top', self.data.y1(d.mood)+1038+ 'px');
+          .style('left', sDH.xPos - 15 + 'px')
+          .style('top', sDH.yPos - 8 + 'px')
+          .on('mouseout', function (d, i) {
+          self.components.tooltip.transition()
+          .duration(500)
+          .style('display', 'none');
+        })
+          // .style('left', self.data.x(d.timestamp)+55+ 'px')
+          // .style('top', self.data.y1(d.mood)+self.properties.absoluteHeight+ 'px');
         })
         .on('mouseout', function(d, i) {
           var target = d3.select('#sd-' + i);
@@ -937,9 +886,9 @@ var SentimentChart = {
           target.attr('stroke', '#25bcf1');
           target.attr('stroke-width', '1');
 
-          self.components.tooltip.transition()
-          .duration(500)
-          .style(sDH.style, sDH.fadeOut);
+          // self.components.tooltip.transition()
+          // .duration(500)
+          // .style(sDH.style, sDH.fadeOut);
         });
       },
       update: function () {
@@ -970,10 +919,10 @@ var SentimentChart = {
         var props = self.properties;
         self.components.sentimentCover
         .style('position', 'absolute')
-        .style('left', 3)
+        .style('left', 0)
         .style('top', 7)
         .style('background-color', 'rgb(38, 38, 38)')
-        .attr('width', props.chartWidth - 4)
+        .attr('width', props.chartWidth - 2)
         .attr('height', props.chartHeight - 44)
       },
       animate: function () {
@@ -981,26 +930,49 @@ var SentimentChart = {
         var props = self.properties;
         self.components.sentimentCover
         .transition().duration(1000)
-          .style('left', props.chartWidth - 4)
+          .style('left', props.chartWidth - 2)
           .attr('width', 0)
       }
     },
-    sentimentHover: {
+    sentimentOverlay: {
       append: function () {
-
         var self = SentimentChart;
-        self.components.sentimentHover = d3.select('#sentiment-chart').append('svg:svg');
+        self.components.sentimentOverlay = self.components.chart.append('svg:rect');
       },
       update: function () {
         var self = SentimentChart;
         var props = self.properties;
-        self.components.sentimentHover
+        self.components.sentimentOverlay
         .style('position', 'absolute')
-        .style('left', 0)
-        .style('top', 0)
-        .style('opacity', '0')
-        .attr('width', props.chartWidth)
-        .attr('height', props.chartHeight)
+        .style('left', props.margin.left)
+        .attr('y', 6)
+        .attr('opacity', 0)
+        .attr('width', props.chartWidth - 2)
+        .attr('height', props.chartHeight - 44)
+        .on('mousemove', function () {
+          var xPos, yPos, mouseX, mouseY;
+          if(IE8) {
+            xPos = event.clientX;
+            yPos = event.clientY;
+            mouseX = xPos;
+            mouseY = yPos;
+          }
+          else {
+            xPos = d3.mouse(this)[0];
+            yPos = d3.mouse(this)[1];
+            mouseX = d3.event.pageX;
+            mouseY = d3.event.pageY;
+          }
+          var j = ChartView.xInverse((IE8?xPos-55:xPos), self.data.x);
+          var timestamp = self.data.ordinalTimeStamps[j];
+          var indexData = self.helpers.getLastest('indexList', timestamp);
+          var moodindexData = self.helpers.getLastest('moodindexList', timestamp);
+          //index before 9:30 --   - > latest
+          $('#sentiment-chart-legend .security').text(indexData ? indexData.price : '--');
+          $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : '--');
+          $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : '--');
+
+        })
       },
     }
   }
