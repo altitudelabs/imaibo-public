@@ -110,6 +110,11 @@ body::-webkit-scrollbar {
 /* =Layout
 -------------------------------------------------------------- */
 
+.outer .info-button {
+  position: absolute;
+  top: 3px;
+  margin-left: 3px;
+}
 .outer .rise { color: #d74e37; }
 .outer .fall { color: #3bbb57; }
 .outer .neutral { color: rgb(107, 107, 107); }
@@ -1881,7 +1886,7 @@ body::-webkit-scrollbar {
 
 /* =Modal
 -------------------------------------------------------------- */
-.outer #experts-modal {
+.outer .modal {
   display: none;
   position: fixed;
   opacity: 0;
@@ -1902,13 +1907,13 @@ body::-webkit-scrollbar {
   border-radius: 3px;
 }
 
-.outer #experts-modal h1 {
+.outer .modal h1 {
   padding-top: 11px;
   text-align: center;
   font-size: 20px;
 }
 
-.outer #experts-modal h2 {
+.outer .modal h2 {
   text-align: center;
   padding: 10px 10px;
   border-bottom: 1px dotted rgb(51, 51, 51);
@@ -1916,13 +1921,13 @@ body::-webkit-scrollbar {
   color: rgb(107, 107, 107);
 }
 
-.outer #experts-modal .content {
+.outer .modal .content {
   padding: 20px 10px;
   font-size: 12px;
   letter-spacing: 1.5px;
 }
 
-.outer #experts-modal .modal-close {
+.outer .modal .modal-close {
   position: absolute;
   right: 8px;
   top: 8px;

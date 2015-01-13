@@ -34,7 +34,6 @@ var ChartView = {
     .domain(data.map(function(x) {
       return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
-
   },
 
   getXLabels: function(){
@@ -114,6 +113,7 @@ var ChartView = {
     // set up toolbar
     this.horizontalScroll();
     Toolbar.init();
+    this.initInfoButtons();
     this.setProperties();
     var self = this;
     self.build();
@@ -127,6 +127,10 @@ var ChartView = {
         self.rebuild();
       });
     }
+  },
+  initInfoButtons: function(){
+    $('#index-info-button').leanModal({ closeButton: '.modal-close', modalId: '#index-info-modal' });
+    $('#sentiment-info-button').leanModal({ closeButton: '.modal-close', modalId: '#sentiment-info-modal' });
   },
   build: function(){
     var self = this;

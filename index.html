@@ -168,7 +168,7 @@
         <div class="loader"></div>
         <div id="price" class="component">
           <div class="chart-header">
-            <div class="title">上证K线 - 心情累积值</div>
+            <div class="title">上证K线 - 心情累积值<span id="index-info-button" class="mb info-button"></span></div>
             <ul class="legend" id="legend" ma=" ">
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
 
@@ -284,7 +284,7 @@
         </div>
         <div id="sentiment" class="component">
           <div class="chart-header">
-            <div class="title">上证分时 - 心情变动值</div>
+            <div class="title">上证分时 - 心情变动值<span id="sentiment-info-button" class="mb info-button"></span></div>
             <ul class="legend">
               <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
@@ -306,9 +306,20 @@
     </div>
     <!-- Content panel end -->
 
-    <!-- Start experts modal dialog -->
-    <div id="experts-modal"></div>
-    <!-- End experts modal dialog -->
+    <!-- Start modal dialogs -->
+    <div id="experts-modal" class="modal"></div>
+    <div id="index-info-modal" class="modal">
+      <h1>上证K线 - 心情累积值是什么?</h1>
+      <div class="content">内容</div>
+      <a class="modal-close mb close-modal" href="#"></a>
+    </div>
+    <div id="sentiment-info-modal" class="modal">
+      <h1>上证分时 - 心情变动值是什么?</h1>
+      <div class="content">内容</div>
+      <a class="modal-close mb close-modal" href="#"></a>
+    </div>
+    <div id="lean_overlay"></div>
+    <!-- End modal dialogs -->
   </div>
 
   <!-- Dashboard start -->
