@@ -33,7 +33,6 @@ var ChartView = {
 
     return d3.scale.ordinal()
     .domain(data.map(function(x) {
-      console.log(x[returnProp]);
       return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
   },
@@ -216,7 +215,7 @@ var ChartView = {
 
       // Update index
       if (!index.isError) {
-        IndexChart.drawGraph(false);
+        IndexChart.draw(false);
         if(!HIDE) {
           RsiChart.init();
           MacdChart.init();
@@ -246,7 +245,6 @@ var ChartView = {
 
       //calc earliest date 
       self.earliestDate = self.earliestDate || self.data.daily.stockLine[0].rdate;
-      console.log(self.earliestDate);
       // self.earliestDate -= 15768000000; //6 months in ms
 
       // var date = new Date(self.earliestDate).yyyymmdd();
@@ -254,10 +252,9 @@ var ChartView = {
         self.data.daily.stockLine = ChartModel.model.daily.stockLine;
 
          self.earliestDate = self.data.daily.stockLine[0].rdate;
-            console.log(self.earliestDate);
 
 
-        IndexChart.drawGraph();
+        IndexChart.draw();
       });
       
     }
@@ -269,7 +266,7 @@ var ChartView = {
     this.properties.zoomFactor = this.properties.zoomFactor * zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
     if(zoomFactor === 1) return;
     $('.zoomable-chart-container').css('width', '100%');
-    IndexChart.drawGraph();
+    IndexChart.draw();
     RsiChart.drawGraph();
     MacdChart.drawGraph();
     $('.scroller').scrollLeft(this.properties.scrollDistance);
@@ -289,9 +286,10 @@ var ChartView = {
   rebuild: function() {
     this.setProperties();
     $('.zoomable-chart-container').css('width', '100%');
-    IndexChart.init();
     RsiChart.init();
     MacdChart.init();
+    
+    IndexChart.update();
     SentimentChart.update();
     SentimentChart.update();
     // this.redraw(true);
