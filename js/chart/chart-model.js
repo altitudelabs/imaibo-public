@@ -85,13 +85,17 @@ var ChartModel = {
    * - handler: callback function
    * - updateByDragging: boolean, indicates if we are updating by dragging index chart
   */
-  getIndexData: function(date, initial, handler, updateByDragging){
+  getIndexData: function(date, initial, handler, updateByDragging, callback){
     var self = this;
     var api  = this.apiBuilder('index', initial, updateByDragging, date);
 
     $.getJSON(api, function(res) {
       self.errorCheckIndex(res, initial);
       self.setIndexData(res, handler, initial, updateByDragging);
+      if(callback){
+        callback();
+        console.log(ChartModel.model.daily.stockLine.length);
+      }
     }).fail(function(){
       handler({ isError: self.model.indexError });
     });
@@ -200,6 +204,7 @@ var ChartModel = {
     } else if(updateByDragging){
       var stockLine = res.data.daily.stockLine;
       var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
+
       this.currEarliestTime  = this.currEarliestTime 
                                 || daily.stockLine[0].timestamp;
      
@@ -208,13 +213,16 @@ var ChartModel = {
                             || stockLine
                                 .map(function(e) { return e.moodindex === 0; })
                                 .reduce(function(prev, curr, i, arr) { return prev || curr });
+
       if(this.currEarliestTime < returnedLatestTime) return;
+
       if(this.endOfSentiment) return;
 
       //api returned in descending order
+      console.log('running!');
       stockLine.reverse();
-
       daily.stockLine = stockLine.concat(daily.stockLine);
+
 
     } else {
       var latestPrice = res.data.latestPrice;

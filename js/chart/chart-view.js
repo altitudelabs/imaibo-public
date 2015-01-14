@@ -33,26 +33,35 @@ var ChartView = {
 
     return d3.scale.ordinal()
     .domain(data.map(function(x) {
+      console.log(x[returnProp]);
       return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
   },
 
   getXLabels: function(){
-    if (this.data.xlabels) {
-      return this.data.xlabels;
-    } else {
-      var months = [];
+    // if the data has not changed, return old. if there is new data, recalculate
+    
+    // if (this.data.xlabels) {
+    //   return this.data.xlabels;
+    // } else {
+      var timeObjArray = {};
       this.data.xlabels = this.data.daily.stockLine.filter(function (e, i) {
-        var month = new Date(e.timestamp*1000).getMonth();
-        if (!months.length){ months.push(month); }
-        if (months.indexOf(month) === -1) {
-          months.push(month);
+        var date = new Date(e.timestamp*1000);
+        var month = date.getMonth();
+        var year = date.getYear();
+
+        var yearsArray = Object.keys(timeObjArray);
+        if (yearsArray === undefined || timeObjArray[year] === undefined) {
+          timeObjArray[year] = [];
+        }
+        if (timeObjArray[year].indexOf(month) === -1) {
+          timeObjArray[year].push(month);
           return true;
         }
         return false;
       });
       return this.data.xlabels;
-    }
+    // }
   },
 
   //data.daily.stockLine
@@ -233,15 +242,24 @@ var ChartView = {
   updateIndexByDrag: function(){
     if(!IndexChart.isDrawing){
       IndexChart.dragBackAnimation();
+      var self = this;
 
       //calc earliest date 
-      this.earliestDate = this.earliestDate || new Date().getTime();
-      this.earliestDate -= 15768000000; //6 months in ms
+      self.earliestDate = self.earliestDate || self.data.daily.stockLine[0].rdate;
+      console.log(self.earliestDate);
+      // self.earliestDate -= 15768000000; //6 months in ms
 
-      var date = new Date(this.earliestDate).yyyymmdd();
-      ChartModel.getIndexData(date, false, null, true);
-      this.data.daily.stockLine = ChartModel.model.daily.stockLine;
-      IndexChart.drawGraph();
+      // var date = new Date(self.earliestDate).yyyymmdd();
+      ChartModel.getIndexData(self.earliestDate, false, null, true, function() {
+        self.data.daily.stockLine = ChartModel.model.daily.stockLine;
+
+         self.earliestDate = self.data.daily.stockLine[0].rdate;
+            console.log(self.earliestDate);
+
+
+        IndexChart.drawGraph();
+      });
+      
     }
 
   },

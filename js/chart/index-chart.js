@@ -165,7 +165,7 @@ var IndexChart = {
 
     function getLine(type) {
       return d3.svg.line()
-             .x(function(d, i) { return x(i); })
+             .x(function(d, i) { return x(i-1); })
              .y(function(d)    { 
               return type === 'sentiment'? y1(d.moodindex):y2(d[type]); })
              .interpolate('linear');
@@ -175,7 +175,7 @@ var IndexChart = {
     function setLineAttr(id, line, color) {
       self.components.chart
         .select('path#' + id)
-        .datum(stockLine)
+        .datum(ChartView.data.daily.stockLine)
         .attr('d', line)
         .attr('stroke', color)
         .attr('fill', 'none')
@@ -218,7 +218,7 @@ var IndexChart = {
     volumeHeight= ChartView.properties.volumeHeight,
     y1          = ChartView.y1(stockLine, this.properties.height, 'moodindex', volumeHeight),
     y2          = ChartView.y2(stockLine, this.properties.height, 'highpx', 'lowpx', volumeHeight),
-    xlabels,
+    xLabelData  = ChartView.getXLabels(),
     gvolume,
     gcandlesticks,
     glinestems,
@@ -241,8 +241,6 @@ var IndexChart = {
     $('#chart-container').css('width', chartWidth.toString() + 'px');
 
     //DATA SECTION ======================================================
-    var stockLine = stockLine;
-
     var y1Labels = this.components.chartLabel
                     .select('g.y1labels')
                     .selectAll('text.yrule')
@@ -272,7 +270,7 @@ var IndexChart = {
     var xLabels = this.components.chart
                   .select('g.xlabels')
                   .selectAll('text.labels')
-                  .data(ChartView.getXLabels());
+                  .data(xLabelData);
 
     var tooltip = this.components.chart
                     .select('rect.mouseover-overlay')
@@ -292,7 +290,7 @@ var IndexChart = {
 
     y1Labels.enter().append('text').attr('class', 'yrule');
     y2Labels.enter().append('text').attr('class', 'yrule');
-    volume.enter().append('rect').attr('class', 'bars');
+    volume.enter().append('rect').attr('class', 'bars').transition().duration(1000).attr('fill', 'red').transition().duration(1000).attr('fill', 'rgb(107, 107, 107)');
     candlesticks.enter().append('rect').attr('class', 'bars');
     linestems.enter().append('line').attr('class', 'lines');
     xLabels.enter().append('text').attr('class', 'labels');
@@ -322,9 +320,7 @@ var IndexChart = {
       .attr('y', y2)
       .attr('text-anchor', 'middle')
       .style('fill','rgb(129, 129, 129)')
-      .text(function(d, i) {
-        return i === 8? '': d;
-      });
+      .text(String);
 
       //shifts the graph to the left but a slight margin
       var xOffset = 10*zoomFactor;
@@ -366,7 +362,6 @@ var IndexChart = {
         .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
-
           if(today.getDate() < 10 && i === xLabelData.length-1)
             return '';
           else
@@ -473,28 +468,29 @@ var IndexChart = {
         this.isDrawing = false;
   },
   setDragability: function() {
-    var props = this.properties;
+    // var props = this.properties;
 
-    $('#chart').on('mousedown', function(event) {
-        props.isDragging = true;
-        props.mouseXPosOnDrag = event.pageX;
-    });
+    // $('#chart').on('mousedown', function(event) {
+    //     props.isDragging = true;
+    //     props.mouseXPosOnDrag = event.pageX;
+    // });
 
-    $('#chart').on('mousemove', function(event) {
-      if (props.isDragging) {
-        var el = $('.scroller'), scrolled = el.scrollLeft();
-        props.pixelDiff = event.clientX - props.mouseXPosOnDrag;
-        el.scrollLeft(scrolled + (props.mouseXPosOnDrag - event.pageX));
-        if(el.scrollLeft() === 0) {
-          ChartView.updateIndexByDrag();
-          setTimeout(function(){}, 1000);
-        }
-      }
-    });
+    // $('#chart').on('mousemove', function(event) {
+    //   if (props.isDragging) {
+    //     var el = $('.scroller'), scrolled = el.scrollLeft();
+    //     props.pixelDiff = event.clientX - props.mouseXPosOnDrag;
+    //     el.scrollLeft(scrolled + (props.mouseXPosOnDrag - event.pageX));
 
-    $('#chart').on('mouseup', function(event) {
-      props.isDragging = false;
-    });
+    //     if(el.scrollLeft() === 0) {
+    //       ChartView.updateIndexByDrag();
+    //       setTimeout(function(){}, 1000);
+    //     }
+    //   }
+    // });
+
+    // $('#chart').on('mouseup', function(event) {
+    //   props.isDragging = false;
+    // });
   },
   dragBackAnimation: function(){
     $('#graph').animate({'margin-left': '20'}, 500, 'swing', function(){
