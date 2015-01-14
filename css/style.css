@@ -634,6 +634,10 @@ body::-webkit-scrollbar {
   user-select: none;
 }
 
+.outer #chart:hover {
+  cursor: pointer;
+}
+
 .outer .chart-header {
   padding: 8px 13px;
 }
