@@ -380,6 +380,7 @@ var IndexChart = {
       var yOffset = 2; //for pixel perfect. set tooltip.attr('fill-opacity', 100) to see.
       tooltip
         .attr('x', 0)
+        .attr('id', 'abc')
         .attr('y', margin.top + yOffset)
         .attr('width', graphWidth)
         .attr('height', chartHeight + margin.top);

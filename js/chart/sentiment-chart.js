@@ -62,7 +62,7 @@ var SentimentChart = {
     'use strict';
     var self = this;
 
-    //order here determines the z-index of the element
+    //ordering here is important! do not use for-loop
     self.componentsBuilder.chartLabel.append();
     self.componentsBuilder.topBorder.append();
     self.componentsBuilder.rightBorder.append();
@@ -70,7 +70,6 @@ var SentimentChart = {
     self.componentsBuilder.leftBorder.append();
     self.componentsBuilder.y1Labels.append();
     self.componentsBuilder.y2Labels.append();
-    
     self.componentsBuilder.chart.append();
     self.componentsBuilder.xLabels.append();
     self.componentsBuilder.sentimentLine.append();
@@ -79,90 +78,63 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsBubble.append();
     self.componentsBuilder.scatterDotsBubbleText.append();
     self.componentsBuilder.scatterDotsHover.append();
-    
     self.componentsBuilder.sentimentCover.append();
     self.componentsBuilder.sentimentOverlay.append();
-
     self.componentsBuilder.verticalGridLines.append();
     self.componentsBuilder.horizontalGridLines.append();
-    
     self.componentsBuilder.tooltip.append();
   },
   draw: function(){
     'use strict';
     var self = this;
 
-    //container
-    self.componentsBuilder.chartLabel.update();
-    self.componentsBuilder.topBorder.update();
-    self.componentsBuilder.rightBorder.update();
-    self.componentsBuilder.bottomBorder.update();
-    self.componentsBuilder.leftBorder.update();
-    
+    //if data is successfully fetched, link new data and run enter loop
     if(!ChartView.data.sentimentError) {
-      //labels
       self.componentsBuilder.y1Labels.linkData();
       self.componentsBuilder.y1Labels.enter();
-      self.componentsBuilder.y1Labels.update();
 
       self.componentsBuilder.y2Labels.linkData();
       self.componentsBuilder.y2Labels.enter();
-      self.componentsBuilder.y2Labels.update();
 
       self.componentsBuilder.xLabels.linkData();
       self.componentsBuilder.xLabels.enter();
-      self.componentsBuilder.xLabels.update();
-      
-      //GridLines
+
       self.componentsBuilder.verticalGridLines.linkData();
       self.componentsBuilder.verticalGridLines.enter();
-      self.componentsBuilder.verticalGridLines.update();
       
       self.componentsBuilder.horizontalGridLines.linkData();
       self.componentsBuilder.horizontalGridLines.enter();
-      self.componentsBuilder.horizontalGridLines.update();
+     
+      self.componentsBuilder.scatterDots.linkData();
+      self.componentsBuilder.scatterDots.enter();
+
+      self.componentsBuilder.scatterDotsHover.linkData();
+      self.componentsBuilder.scatterDotsHover.enter();
+  
+      //lines dont have enter loop      
+      self.componentsBuilder.sentimentLine.linkData();
+      self.componentsBuilder.securityLines.linkData();
     }
-
-    //chart
-    self.componentsBuilder.chart.update();
-
-    //sentiment line
-    self.componentsBuilder.sentimentLine.linkData();
-    self.componentsBuilder.sentimentLine.update();
-    //security line
-    self.componentsBuilder.securityLines.linkData();
-    self.componentsBuilder.securityLines.update();
-
-    //tooltip
-    self.componentsBuilder.tooltip.update();
     
-    //scatterDots
-    self.componentsBuilder.scatterDots.linkData();
-    self.componentsBuilder.scatterDots.enter();
-    self.componentsBuilder.scatterDots.update();
-
-    //sentiment hover overlay
-    self.componentsBuilder.sentimentOverlay.update();
-
-
     if (!HIDE) {
       self.componentsBuilder.scatterDotsBubble.linkData();
       self.componentsBuilder.scatterDotsBubble.enter();
-      self.componentsBuilder.scatterDotsBubble.update();
 
       self.componentsBuilder.scatterDotsBubbleText.linkData();
       self.componentsBuilder.scatterDotsBubbleText.enter();
-      self.componentsBuilder.scatterDotsBubbleText.update();
     }
 
-    self.componentsBuilder.scatterDotsHover.linkData();
-    self.componentsBuilder.scatterDotsHover.enter();
-    self.componentsBuilder.scatterDotsHover.update();
+    //update everything
+    for (var key in self.componentsBuilder) {
+      self.componentsBuilder[key].update();
+    } 
+
+    //default text to legend values
+    self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
   },
   animate: function () {
     var self = this;
     //sentimentCover (animation)
-    self.componentsBuilder.sentimentCover.update();
     self.componentsBuilder.sentimentCover.animate();
   },
   helpers: {
@@ -253,6 +225,24 @@ var SentimentChart = {
         }
       }
       return closest;
+    },
+    updateLegends: function (indexData, moodindexData) {
+      $('#sentiment-chart-legend .security').text(indexData ? indexData.price : '--');
+      $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : '--');
+      $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : '--');
+    },
+    getMousePosition: function (context) {
+      'use strict';
+      var xPos, yPos;
+      if(IE8) {
+        xPos = event.clientX;
+        yPos = event.clientY;
+      }
+      else {
+        xPos = d3.mouse(context)[0];
+        yPos = d3.mouse(context)[1];
+      }
+      return [xPos, yPos];
     }
   },
   componentsBuilder: {
@@ -340,17 +330,17 @@ var SentimentChart = {
 
         self.components.verticalGridLines
         .enter().append('line')
-          .attr({
-            'class':'horizontalGrid',
-            'x1' : function(d){ return self.data.x(d) + props.margin.left; },
-            'x2' : function(d){ return self.data.x(d) + props.margin.left; },
-            'y1' : props.chartHeight - props.margin.bottom,
-            'y2' : props.margin.top,
-            'fill' : 'none',
-            'shape-rendering' : 'crispEdges',
-            'stroke' : 'rgb(50, 50, 50)',
-            'stroke-width' : '1px'
-          });
+        .attr({
+          'class':'horizontalGrid',
+          'x1' : function(d){ return self.data.x(d) + props.margin.left; },
+          'x2' : function(d){ return self.data.x(d) + props.margin.left; },
+          'y1' : props.chartHeight - props.margin.bottom,
+          'y2' : props.margin.top,
+          'fill' : 'none',
+          'shape-rendering' : 'crispEdges',
+          'stroke' : 'rgb(50, 50, 50)',
+          'stroke-width' : '1px'
+        });
       },
       update: function () {
         var self = SentimentChart;
@@ -670,19 +660,14 @@ var SentimentChart = {
     tooltip: {
       append: function () {
         var self = SentimentChart;
-        self.components.tooltip = d3.select('.outer').append('div');
+        self.components.tooltip = d3.select('#sentiment-chart').append('div')
+        .attr('id', 'sentiment-tooltip')
+        .attr('class', 'tooltip');
       },
       update: function () {
         var self = SentimentChart;
         self.components.tooltip
-        .attr('class', 'tooltip')
-        .attr('id', 'sentiment-tooltip')
-        .style('display', 'none')
-        // .on('mouseout', function (d, i) {
-        //   self.components.tooltip.transition()
-        //   .duration(500)
-        //   .style('display', 'none');
-        // })
+        .style('display', 'none');
       }
     },
     scatterDots: {
@@ -698,9 +683,7 @@ var SentimentChart = {
         var self = SentimentChart;
         self.components.scatterDots
         .enter().append('svg:circle')  // create a new circle for each value
-        .attr('r', 4)
-        .attr('stroke', '#25bcf1')
-        .attr('stroke-width', '1')
+        .attr('fill', '#25bcf1')
         .style('opacity', 1)
         .attr('id', function (d, i) {
           return 'sd-' + i;
@@ -709,6 +692,7 @@ var SentimentChart = {
       update: function () {
         var self = SentimentChart;
         self.components.scatterDots
+        .attr('r', 4)
         .attr('cy', function (d) { return self.data.y1(d.mood); } ) // translate y value to a pixel
         .attr('cx', function (d,i) { return self.data.x(d.timestamp); } ); // translate x value
 
@@ -806,35 +790,28 @@ var SentimentChart = {
       },
       enter: function () {
         var self = SentimentChart;
-        var sDH = this;
         self.components.scatterDotsHover
         .enter().append('svg:circle')  // create a new circle for each value
         .attr('r', 8)
         .style('opacity', 0)
         .on('mouseover', function(d, i) {
           var dot = this;
+          var shouldRenderLeft = true;
+          var shouldRenderBottom = true;
+
           if (!d.newsList.length) { return; }
-          if(IE8){
-            sDH.xPos = event.clientX;
-            sDH.yPos = event.clientY;
-            sDH.style = 'display';
-            sDH.fadeIn = 'inline-block';
-            sDH.fadeOut = 'none';
-          }else{
-            sDH.xPos = d3.event.pageX + 8;
-            sDH.yPos = d3.event.pageY + 3;
-            sDH.style = 'display';
-            sDH.fadeIn = 'inline-block';
-            sDH.fadeOut = 'none';
+
+
+          if (self.helpers.getMousePosition(dot)[0] < self.properties.chartWidth/2) {
+            shouldRenderLeft = false;
+          }
+          if (self.helpers.getMousePosition(dot)[1] > self.properties.chartHeight/2) {
+            shouldRenderBottom = false;
           }
           var target = d3.select('#sd-' + i);
-          target.attr('fill', '#3bc1ef');
-          target.attr('r', '4');
-          target.attr('stroke', '#fff');
-          target.attr('stroke-width', '1.5');
+          target.attr('r', 6);
 
           var arrow = (d.newsSign === '+'? 'rise':'fall');
-          // var show_extra = (d.newsTitle.length < 12? 'hide':'show');
           var moodDiff;
           if (i === 0) {
             moodDiff = ' - ';
@@ -846,49 +823,69 @@ var SentimentChart = {
               moodDiff = '+' + moodDiff;
             }
           }
-          var div = '<div class="sentiment-self.components.tooltip sentiment-tooltip">' +
-                    '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' &nbsp;&nbsp;&nbsp;' + d.clock.slice(0, -3) + '</div>' +
-                    '<div class="wrapper">';
+          var tooltipHeight = 59;
+          var news;
+          var title;
+          var div = '<div class="sentiment-tooltip">\
+                       <div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '</div>\
+                       <div class="wrapper">';
+
           for (var i = 0; i < d.newsList.length; i++) {
-            if (i === 3) {
-
-            }
-            div += '<div>' +
-                     '<div class="content"> ' + d.newsList[0].newsTitle.slice(0, 12) + '</div>' + ' &nbsp;&nbsp;&nbsp;' +
-                     '<div class="arrow-text">心情影响:</div>' +  ' &nbsp;' +
-                     '<div class="arrow ' + arrow + '"> </div>' + ' &nbsp;' +
-                     '<div class="arrow-number"> ' + d.newsList[0].newsMood + '</div>' +
-                   '</div>'
+            if (i === 3) { break; }
+            news = d.newsList[i]
+            title = news.newsTitle.length > 11 ? news.newsTitle.slice(i, 11) + '...' : news.newsTitle.slice(i, 13);
+            div +=    '<div>&nbsp;&#183;\
+                         <a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;\
+                         <div class="arrow-text">心情影响: </div>\
+                         <div class="arrow ' + arrow + '"></div>\
+                         <div class="arrow-number"> ' + news.newsMood + '</div>\
+                       </div>'
+            tooltipHeight += 22;
           }
-          div += '</div>' +
-                    '</div>' +
-                 '</div>'
-          
-          self.components.tooltip.transition()
-          .duration(200)
-          .style('display', 'inline-block');
-          
-          self.components.tooltip.html(div)
-          .style('left', sDH.xPos - 15 + 'px')
-          .style('top', sDH.yPos - 8 + 'px')
-          .on('mouseout', function (d, i) {
-          self.components.tooltip.transition()
-          .duration(500)
-          .style('display', 'none');
-        })
-          // .style('left', self.data.x(d.timestamp)+55+ 'px')
-          // .style('top', self.data.y1(d.mood)+self.properties.absoluteHeight+ 'px');
-        })
-        .on('mouseout', function(d, i) {
-          var target = d3.select('#sd-' + i);
-          target.attr('fill','#000');
-          target.attr('r', '4');
-          target.attr('stroke', '#25bcf1');
-          target.attr('stroke-width', '1');
 
-          // self.components.tooltip.transition()
-          // .duration(500)
-          // .style(sDH.style, sDH.fadeOut);
+          div +=     '</div>\
+                    </div>\
+                  </div>';
+
+
+          var dotPosition = [d3.select(this).attr('cx'), d3.select(this).attr('cy')];
+
+          
+          var tooltipHeight;
+          self.components.tooltip
+          .html(div)
+          .style('left', shouldRenderLeft ? dotPosition[0] - 15 - 250 + 'px' : dotPosition[0] - 15 + 'px')
+          .style('top', shouldRenderBottom ? dotPosition[1] - 15 + 'px' : dotPosition[1] - tooltipHeight + 15 + 'px')
+          .on('mouseout', function () {
+            var mousePosition = self.helpers.getMousePosition(dot);
+            var dotPosition = [parseInt(d3.select(dot).attr('cx')), parseInt(d3.select(dot).attr('cy'))];
+            var outOfLeft;
+            var outOfRight;
+            var outOfTop;
+            var outOfBottom;
+            if (shouldRenderLeft) {
+              outOfLeft = mousePosition[0] < dotPosition[0] - 265;
+              outOfRight = mousePosition[0] > dotPosition[0] + 15;
+            } else {
+              outOfLeft = mousePosition[0] < dotPosition[0] - 15;
+              outOfRight = mousePosition[0] > dotPosition[0] + 265;
+            }
+            if (shouldRenderBottom) {
+              outOfTop = mousePosition[1] < dotPosition[1] - 15;
+              outOfBottom = mousePosition[1] > dotPosition[1] + tooltipHeight - 15;
+            } else {
+              outOfTop = mousePosition[1] < dotPosition[1] - tooltipHeight + 15;
+              outOfBottom = mousePosition[1] > dotPosition[1] + 15;
+            }
+            if (outOfLeft || outOfRight || outOfTop || outOfBottom) {
+              self.componentsBuilder.tooltip.update()
+              self.componentsBuilder.scatterDots.update()
+            }
+          })
+          .transition()
+          .duration(200)
+          .style('display', 'inline-block')
+
         });
       },
       update: function () {
@@ -906,8 +903,8 @@ var SentimentChart = {
       style: '',
       fadeIn: '',
       fadeOut: '',
-      xPos: '',
-      yPos: ''
+      mousePosition: []
+      
     },
     sentimentCover: {
       append: function () {
@@ -929,7 +926,7 @@ var SentimentChart = {
         var self = SentimentChart;
         var props = self.properties;
         self.components.sentimentCover
-        .transition().duration(1000)
+        // .transition().duration(1000)
           .style('left', props.chartWidth - 2)
           .attr('width', 0)
       }
@@ -950,28 +947,15 @@ var SentimentChart = {
         .attr('width', props.chartWidth - 2)
         .attr('height', props.chartHeight - 44)
         .on('mousemove', function () {
-          var xPos, yPos, mouseX, mouseY;
-          if(IE8) {
-            xPos = event.clientX;
-            yPos = event.clientY;
-            mouseX = xPos;
-            mouseY = yPos;
-          }
-          else {
-            xPos = d3.mouse(this)[0];
-            yPos = d3.mouse(this)[1];
-            mouseX = d3.event.pageX;
-            mouseY = d3.event.pageY;
-          }
-          var j = ChartView.xInverse((IE8?xPos-55:xPos), self.data.x);
+
+          var mousePosition = self.helpers.getMousePosition(this);
+
+          var j = ChartView.xInverse((IE8?mousePosition[0]-55:mousePosition[0]), self.data.x);
           var timestamp = self.data.ordinalTimeStamps[j];
           var indexData = self.helpers.getLastest('indexList', timestamp);
           var moodindexData = self.helpers.getLastest('moodindexList', timestamp);
           //index before 9:30 --   - > latest
-          $('#sentiment-chart-legend .security').text(indexData ? indexData.price : '--');
-          $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : '--');
-          $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : '--');
-
+          self.helpers.updateLegends(indexData, moodindexData);
         })
       },
     }

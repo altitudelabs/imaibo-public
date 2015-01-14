@@ -672,15 +672,15 @@ body::-webkit-scrollbar {
 
 /* =Sentiment Chart
 ------------------------------------------------------------ */
-#sentiment-tooltip.tooltip {
+#sentiment-tooltip {
   position: absolute;
-  width: 250px;
+  width: 280px;
   font-size: 11px;
-  border: #666 solid 1px;
-  z-index: 99999;
+  padding: 15px;
 }
 
 .sentiment-tooltip {
+  border: #666 solid 1px;
   color: white;
 }
 
@@ -693,6 +693,11 @@ body::-webkit-scrollbar {
 .sentiment-tooltip .content {
   line-height: 22px
 }
+.sentiment-tooltip a {
+  color: white;
+  text-decoration: none;
+}
+
 
 #sentiment-tooltip .news-bubble {
   width: 20px;
@@ -706,7 +711,7 @@ body::-webkit-scrollbar {
 #sentiment-tooltip .wrapper {
   background-color: #454545;
   padding: 2px;
-  width: 246px;
+  width: 248px;
   height: 100%;
 }
 
@@ -752,7 +757,7 @@ body::-webkit-scrollbar {
   background-color: #2a2a2a;
   color: rgb(107, 107, 107);
   padding: 5px 3px 5px 3px;
-  width: 244px;
+  width: 248px;
 }
 
 #sentiment-tooltip .news-bubble {
