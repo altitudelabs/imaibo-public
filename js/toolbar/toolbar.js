@@ -110,8 +110,8 @@ var Toolbar = {
     });
 
     zoomOut.click(function(){
-      // ChartView.redraw(1/1.2);
-      ChartView.updateIndexByDrag();
+      ChartView.redraw(1/1.2);
+      // ChartView.updateIndexByDrag();
 
       // IndexChart.redraw(1/1.2);
       // RsiChart.redraw(1/1.2);

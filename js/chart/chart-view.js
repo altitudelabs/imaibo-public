@@ -8,6 +8,25 @@ var ChartView = {
     scrollDistance: 0
   },
   earliestDate: 0,
+  setLastIndexOnViewPort:function(index){
+    //get scorllleft + chartWidth, use xInverse to get the stockLine index.
+    var prevScrollLeft = $('.scroller').scrollLeft();
+    var endOfViewPort = prevScrollLeft + this.getChartWidth();
+    this.properties.lastIndexOnViewPort = index || this.xInverse(endOfViewPort, this.x(this.data.daily.stockLine, 'rdate'));
+  },
+  repositionIndexChart: function(){
+    var scrollLeft = this.getLastIndexOnViewPort();
+    var stockLine  = this.getStockLine();
+    var rightMost  = this.x(stockLine, 'rdate')(stockLine[scrollLeft].rdate);
+    var leftValue  = rightMost - this.getChartWidth();
+    console.log(Math.floor(leftValue));
+
+    $('.scroller').scrollLeft(Math.floor(leftValue));
+
+    console.log($('.scroller').scrollLeft());
+
+    return $('.scroller').scrollLeft();
+  },
   setProperties: function (options) {
     var self = this;
     //review
@@ -17,6 +36,7 @@ var ChartView = {
       volumeHeight: 50,
       zoomFactor: self.properties.zoomFactor || 1,
     };
+    properties.chartWidth = properties.width - properties.margin.right - properties.margin.left;
     if (options) {
       for (var key in options) {
         properties[key] = options[key];
@@ -57,31 +77,34 @@ var ChartView = {
         }
         return false;
       });
+
       return this.data.xlabels;
     // }
   },
-
   //data.daily.stockLine
   //return moodindex
   y1: function(data, height, returnProp, volumeHeight){
-    var self = this;
-    var props = self.properties;
     var min = d3.min(data.map(function(x) { return +x[returnProp]; }));
-    var max = d3.max(data.map(function(x){return +x[returnProp]; }));
+    var max = d3.max(data.map(function(x) { return +x[returnProp]; }));
 
-    return d3.scale.linear()
-    .domain([min - ((max-min)/height)*volumeHeight, max])
-    .range([height-props.margin.bottom, props.margin.top])
+    min = min - ((max-min)/height)*volumeHeight;
+
+    return this.buildY(min, max, height);
   },
   //return lowpx, highpx
   y2: function(data, height, returnPropMax, returnPropMin, volumeHeight){
-    var self = this;
-    var props = self.properties;
     var min = d3.min(data.map(function(x) { return +x[returnPropMin]; }));
-    var max = d3.max(data.map(function(x){return +x[returnPropMax]; }));
+    var max = d3.max(data.map(function(x) { return +x[returnPropMax]; }));
+
+    min = min - ((max-min)/height)*volumeHeight;
+
+    return this.buildY(min, max, height);
+  },
+  buildY: function(min, max, height) {
+    var props = this.properties;
 
     return d3.scale.linear()
-    .domain([min - ((max-min)/height)*volumeHeight, max])
+    .domain([min, max])
     .range([height-props.margin.bottom, props.margin.top]);
   },
   //return .volumn
@@ -114,7 +137,7 @@ var ChartView = {
     //if mouse is in the last column,
 
     for (j = 0; xPos > (leftEdges[j] + width); j++) {}
-      return j;
+    return j;
   },
   init: function(){
     // set up toolbar
@@ -150,6 +173,7 @@ var ChartView = {
     var self = this;
     $('.loader').css('width', this.properties.width);
     self.buildChartElements();
+
 
     if(!IE8) {
       setInterval(self.updateChartElements, this.properties.refreshFrequency);
@@ -204,11 +228,13 @@ var ChartView = {
 
     $.when(ChartModel.getIndexDataAsync(today, false), ChartModel.updateSentimentDataAsync(today))
     .done(function(index, sentiment){
+
       self.data = ChartModel.model;
+
 
       // Update index
       if (!index.isError) {
-        IndexChart.draw(false);
+        IndexChart.update(false);
         if(!HIDE) {
           RsiChart.init();
           MacdChart.init();
@@ -231,48 +257,29 @@ var ChartView = {
       StickyColumns.start();
     });
   },
-  updateIndexByDrag: function(){
-    if(!IndexChart.isDrawing){
-      IndexChart.dragBackAnimation();
-      var self = this;
-
-      //calc earliest date 
-      self.earliestDate = self.earliestDate || self.data.daily.stockLine[0].rdate;
-      // self.earliestDate -= 15768000000; //6 months in ms
-
-      // var date = new Date(self.earliestDate).yyyymmdd();
-      ChartModel.getIndexData(self.earliestDate, false, null, true, function() {
-        self.data.daily.stockLine = ChartModel.model.daily.stockLine;
-
-         self.earliestDate = self.data.daily.stockLine[0].rdate;
-
-
-        IndexChart.draw();
+  updateIndexChartElements: function() {
+    $.when(ChartModel.getIndexDataAsync(today, false))
+      .done(function(index){
       });
-      
-    }
+  },
+  calcZoom: function(zoomFactor) {
+    zoomFactor = zoomFactor || 1;
+    this.properties.zoomFactor = this.properties.zoomFactor * zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
 
+    //make our zoom level dependent on the length of data.
+    var zoomRatio = this.data.daily.stockLine.length /100;
+    if(this.properties.zoomFactor > zoomRatio) {
+      this.properties.zoomFactor = zoomRatio;
+    }
   },
   redraw: function (zoomFactor) {
-    zoomFactor = zoomFactor || 1;
-    
-    this.properties.zoomFactor = this.properties.zoomFactor * zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
-    if(zoomFactor === 1) return;
+    ChartView.calcZoom(zoomFactor);
+    // if(zoomFactor === 1) return;
     $('.zoomable-chart-container').css('width', '100%');
     IndexChart.update();
     RsiChart.drawGraph();
     MacdChart.drawGraph();
-    $('.scroller').scrollLeft(this.properties.scrollDistance);
-    var graphWidth = this.properties.width *zoomFactor;
-    this.scrollLeft(graphWidth, zoomFactor);
-  },
-  scrollLeft: function(graphWidth, zoomFactor) {
-    var el = $('.scroller');
-    // var d = graphWidth - $('#chart-container').width() - el.scrollLeft()*zoomFactor;
-    var left = graphWidth - $('#chart-container').width() - el.scrollLeft();
-
-    el.scrollLeft(left);
-
+    this.repositionIndexChart();
   },
   rebuild: function() {
     this.setProperties();
@@ -282,6 +289,7 @@ var ChartView = {
     IndexChart.update();
     SentimentChart.update();
     SentimentChart.update();
+    this.repositionIndexChart();
   },
   horizontalScroll: function () {
     'use strict';
@@ -328,7 +336,12 @@ var ChartView = {
       self.properties.scrollDistance = original;
       if (!event.originalEvent.deltaY)
         event.originalEvent.deltaY = -event.originalEvent.wheelDelta; // reverse scrolling direction for ie
-      $('.scroller').scrollLeft(self.properties.scrollDistance - event.originalEvent.deltaY);
+      var val = self.properties.scrollDistance - event.originalEvent.deltaY;
+      var diff = (event.originalEvent.deltaY > 0? Math.ceil(val):Math.floor(val));
+      $('.scroller').scrollLeft(diff);
+
+      ChartView.leftValue = $('.scroller').scrollLeft();
+      self.setLastIndexOnViewPort();
     });
 
     $('.scroller').on('DOMMouseScroll', function (event){
@@ -336,7 +349,48 @@ var ChartView = {
       var original = $('.scroller').scrollLeft();
       self.properties.scrollDistance = original;
       $('.scroller').scrollLeft(self.properties.scrollDistance - event.originalEvent.detail * 20);
+      self.setLastIndexOnViewPort();
     });
+  },
+  // ============= PUBLIC GETTERS/SETTERS ======================
+  getLastIndexOnViewPort: function() {
+    return this.properties.lastIndexOnViewPort;
+  },
+  getStockLine: function() {
+    return this.data.daily.stockLine;
+  },
+  setChartWidth: function(chartWidth) {
+    this.properties.chartWidth = chartWidth;
+  },
+  getChartWidth: function() {
+    return this.properties.chartWidth;
+  },
+  getContainerWidth: function() {
+    return this.properties.width;
+  },
+  getMargin: function() {
+    return this.properties.margin;
+  },
+  getLeftMargin: function() {
+    return this.properties.margin.left;
+  },
+  getRightMargin: function() {
+    return this.properties.margin.right;
+  },
+  getTopMargin: function() {
+    return this.properties.margin.top;
+  },
+  getBottomMargin: function() {
+    return this.properties.margin.bottom;
+  },
+  getZoomFactor: function() {
+    return this.properties.zoomFactor;
+  },
+  getGraphWidth: function() {
+    return this.getChartWidth() * this.getZoomFactor();
+  },
+  getVolumeHeight: function() {
+    return this.properties.volumeHeight;
   },
 };
 

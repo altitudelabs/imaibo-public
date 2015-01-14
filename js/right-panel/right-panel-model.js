@@ -147,6 +147,7 @@ var RightPanelModel = {
 
     $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData) {
         self.model.stock = stockData.data;
+        console.log(self.model.stock.list[0].lastpx+=1);
         if(self.model.stock.list.length != 0 ) {
           successHandler(self.model);
         }

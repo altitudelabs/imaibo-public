@@ -94,7 +94,6 @@ var ChartModel = {
       self.setIndexData(res, handler, initial, updateByDragging);
       if(callback){
         callback();
-        console.log(ChartModel.model.daily.stockLine.length);
       }
     }).fail(function(){
       handler({ isError: self.model.indexError });
@@ -201,7 +200,8 @@ var ChartModel = {
         self.model.daily.stockLine.unshift(res.data.latestPrice);
       }
       self.model.daily.stockLine.reverse();
-    } else if(updateByDragging){
+    } 
+    else if(updateByDragging){
       var stockLine = res.data.daily.stockLine;
       var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
 
@@ -219,11 +219,10 @@ var ChartModel = {
       if(this.endOfSentiment) return;
 
       //api returned in descending order
-      console.log('running!');
       stockLine.reverse();
+      var orgLength = daily.stockLine.length;
       daily.stockLine = stockLine.concat(daily.stockLine);
-
-
+      ChartModel.model.stockLineLengthDiff = daily.stockLine.length - orgLength;
     } else {
       var latestPrice = res.data.latestPrice;
       var lastData    = self.model.daily.stockLine.slice(-1).pop();
