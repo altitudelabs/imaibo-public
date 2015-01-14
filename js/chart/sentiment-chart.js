@@ -21,7 +21,6 @@ var SentimentChart = {
     this.updateData(true);
     this.appendComponents();
     this.draw();
-    this.animate();
   },
   initWithError: function(){
     this.setProperties();
@@ -131,6 +130,7 @@ var SentimentChart = {
 
     //default text to legend values
     self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
+    this.animate();
   },
   animate: function () {
     var self = this;
@@ -836,9 +836,11 @@ var SentimentChart = {
             title = news.newsTitle.length > 11 ? news.newsTitle.slice(i, 11) + '...' : news.newsTitle.slice(i, 13);
             div +=    '<div>&nbsp;&#183;\
                          <a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;\
-                         <div class="arrow-text">心情影响: </div>\
-                         <div class="arrow ' + arrow + '"></div>\
-                         <div class="arrow-number"> ' + news.newsMood + '</div>\
+                         <div class="arrow-wrapper">\
+                           <div class="arrow-text">心情影响: </div>\
+                           <div class="arrow ' + arrow + '"></div>\
+                           <div class="arrow-number"> ' + news.newsMood + '</div>\
+                         </div>\
                        </div>'
             tooltipHeight += 22;
           }
@@ -850,12 +852,12 @@ var SentimentChart = {
 
           var dotPosition = [d3.select(this).attr('cx'), d3.select(this).attr('cy')];
 
-          
+          var padding = 15;          
           var tooltipHeight;
           self.components.tooltip
           .html(div)
-          .style('left', shouldRenderLeft ? dotPosition[0] - 15 - 250 + 'px' : dotPosition[0] - 15 + 'px')
-          .style('top', shouldRenderBottom ? dotPosition[1] - 15 + 'px' : dotPosition[1] - tooltipHeight + 15 + 'px')
+          .style('left', shouldRenderLeft ? dotPosition[0] - padding - 250 + 'px' : dotPosition[0] - padding + 'px')
+          .style('top', shouldRenderBottom ? dotPosition[1] - padding + 'px' : dotPosition[1] - tooltipHeight + padding + 'px')
           .on('mouseout', function () {
             var mousePosition = self.helpers.getMousePosition(dot);
             var dotPosition = [parseInt(d3.select(dot).attr('cx')), parseInt(d3.select(dot).attr('cy'))];
@@ -864,29 +866,31 @@ var SentimentChart = {
             var outOfTop;
             var outOfBottom;
             if (shouldRenderLeft) {
-              outOfLeft = mousePosition[0] < dotPosition[0] - 265;
-              outOfRight = mousePosition[0] > dotPosition[0] + 15;
+              outOfLeft = mousePosition[0] < dotPosition[0] - 250 - padding;
+              outOfRight = mousePosition[0] > dotPosition[0] + padding;
             } else {
-              outOfLeft = mousePosition[0] < dotPosition[0] - 15;
-              outOfRight = mousePosition[0] > dotPosition[0] + 265;
+              outOfLeft = mousePosition[0] < dotPosition[0] - padding;
+              outOfRight = mousePosition[0] > dotPosition[0] + 250 + padding;
             }
             if (shouldRenderBottom) {
-              outOfTop = mousePosition[1] < dotPosition[1] - 15;
-              outOfBottom = mousePosition[1] > dotPosition[1] + tooltipHeight - 15;
+              outOfTop = mousePosition[1] < dotPosition[1] - padding;
+              outOfBottom = mousePosition[1] > dotPosition[1] + tooltipHeight - padding;
             } else {
-              outOfTop = mousePosition[1] < dotPosition[1] - tooltipHeight + 15;
-              outOfBottom = mousePosition[1] > dotPosition[1] + 15;
+              outOfTop = mousePosition[1] < dotPosition[1] - tooltipHeight + padding;
+              outOfBottom = mousePosition[1] > dotPosition[1] + padding;
             }
+            
             if (outOfLeft || outOfRight || outOfTop || outOfBottom) {
+              console.log('remove');
               self.componentsBuilder.tooltip.update()
               self.componentsBuilder.scatterDots.update()
             }
           })
           .transition()
-          .duration(200)
           .style('display', 'inline-block')
-
-        });
+        })
+        .on('mouseout', function (d, i) {
+        })
       },
       update: function () {
         var self = SentimentChart;

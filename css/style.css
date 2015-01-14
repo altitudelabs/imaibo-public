@@ -743,6 +743,13 @@ body::-webkit-scrollbar {
     display: inline-block;
 }
 
+#sentiment-tooltip .wrapper .arrow-wrapper {
+  display: inline-block;
+  line-height: 22px;
+  float:right;
+  padding-right: 5px;
+}
+
 #sentiment-tooltip .wrapper .arrow-text {
   color: rgb(170, 170, 170);
 }
