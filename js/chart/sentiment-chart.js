@@ -861,26 +861,49 @@ var SentimentChart = {
           .on('mouseout', function () {
             var mousePosition = self.helpers.getMousePosition(dot);
             var dotPosition = [parseInt(d3.select(dot).attr('cx')), parseInt(d3.select(dot).attr('cy'))];
-            var outOfLeft;
-            var outOfRight;
-            var outOfTop;
-            var outOfBottom;
+            // var outOfLeft;
+            // var outOfRight;
+            // var outOfTop;
+            // var outOfBottom;
+            // if (shouldRenderLeft) {
+            //   outOfLeft = mousePosition[0] < dotPosition[0] - 250 - padding;
+            //   outOfRight = mousePosition[0] > dotPosition[0] + padding;
+            // } else {
+            //   outOfLeft = mousePosition[0] < dotPosition[0] - padding;
+            //   outOfRight = mousePosition[0] > dotPosition[0] + 250 + padding;
+            // }
+            // if (shouldRenderBottom) {
+            //   outOfTop = mousePosition[1] < dotPosition[1] - padding;
+            //   outOfBottom = mousePosition[1] > dotPosition[1] + tooltipHeight - padding;
+            // } else {
+            //   outOfTop = mousePosition[1] < dotPosition[1] - tooltipHeight + padding;
+            //   outOfBottom = mousePosition[1] > dotPosition[1] + padding;
+            // }
+            
+            // if (outOfLeft || outOfRight || outOfTop || outOfBottom) {
+            //   console.log('remove');
+            //   self.componentsBuilder.tooltip.update()
+            //   self.componentsBuilder.scatterDots.update()
+            // }
+            var inLeft;
+            var inRight;
+            var inTop;
+            var inBottom;
             if (shouldRenderLeft) {
-              outOfLeft = mousePosition[0] < dotPosition[0] - 250 - padding;
-              outOfRight = mousePosition[0] > dotPosition[0] + padding;
+              inLeft = mousePosition[0] > dotPosition[0] - 250 - padding;
+              inRight = mousePosition[0] < dotPosition[0] + padding;
             } else {
-              outOfLeft = mousePosition[0] < dotPosition[0] - padding;
-              outOfRight = mousePosition[0] > dotPosition[0] + 250 + padding;
+              inLeft = mousePosition[0] > dotPosition[0] - padding;
+              inRight = mousePosition[0] < dotPosition[0] + 250 + padding;
             }
             if (shouldRenderBottom) {
-              outOfTop = mousePosition[1] < dotPosition[1] - padding;
-              outOfBottom = mousePosition[1] > dotPosition[1] + tooltipHeight - padding;
+              inTop = mousePosition[1] > dotPosition[1] - padding;
+              inBottom = mousePosition[1] < dotPosition[1] + tooltipHeight - padding;
             } else {
-              outOfTop = mousePosition[1] < dotPosition[1] - tooltipHeight + padding;
-              outOfBottom = mousePosition[1] > dotPosition[1] + padding;
+              inTop = mousePosition[1] > dotPosition[1] - tooltipHeight + padding;
+              inBottom = mousePosition[1] < dotPosition[1] + padding;
             }
-            
-            if (outOfLeft || outOfRight || outOfTop || outOfBottom) {
+            if (!(inLeft && inRight && inTop && inBottom)) {
               console.log('remove');
               self.componentsBuilder.tooltip.update()
               self.componentsBuilder.scatterDots.update()
@@ -960,6 +983,11 @@ var SentimentChart = {
           var moodindexData = self.helpers.getLastest('moodindexList', timestamp);
           //index before 9:30 --   - > latest
           self.helpers.updateLegends(indexData, moodindexData);
+          
+          if (d3.select(self.components.tooltip.style('display') !== 'none')) {
+            self.componentsBuilder.tooltip.update();
+            self.componentsBuilder.scatterDots.update();
+          }
         })
       },
     }
