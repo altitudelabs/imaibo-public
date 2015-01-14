@@ -118,13 +118,11 @@ var RightPanel = {
         if(!cb.checked){
           var stockId = $(cb).data('id')
           RightPanelModel.addStock(stockId, function(){
-            console.log('Add stock with id ', stockId);
             cb.checked = true;
           });
         } else {
           var stockId = $(cb).data('id')
           RightPanelModel.deleteStock(stockId, function(){
-            console.log('Remove stock with id ', stockId);
             cb.checked = false;
           });
         }

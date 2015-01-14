@@ -21,15 +21,18 @@ var ChartModel = {
     minute:         '&minute=1',
     weekly:         '&weekly=1',
     date:           '&reqDate=',
-    jsonp:          '&callback=?'
+    dailyLineSdate: '&dailyLineSdate=',
+    jsonp:          '&callback=?',
   },
+  currEarliestTime: 0,
+  endOfSentiment: false,
   baseUrl: function(){
     return PRODUCTION ? this.api.production : this.api.staging;
   },
   getIndexDataAsync: function(date, initial){
     var self = this;
     return $.Deferred(function(d){
-      self.getIndexData(date, initial, d.resolve, d.reject);
+      self.getIndexData(date, initial, d.resolve, false);
     }).promise();
   },
   getSentimentDataAsync: function(){
@@ -44,6 +47,35 @@ var ChartModel = {
       self.updateSentimentData(date, d.resolve, d.reject);
     }).promise();
   },
+  apiBuilder: function(requestChart, initial, updateByDragging, date) {
+    var api = this.baseUrl() + this.api.base;
+
+    if(requestChart === 'index') {
+      api += this.api.indexData;
+      api += (initial || updateByDragging ? this.api.daily : '');
+      api += (updateByDragging? this.api.dailyLineSdate + date: '');
+      api += (!updateByDragging? this.api.latest: '');
+      api += '&info=1&trading=1';
+    }else{
+      api += this.api.sentimentData;
+      api += (initial? this.api.date + date: '');
+    }
+    api += this.api.jsonp;
+
+    return api;
+  },
+  setIndexData: function(res, handler, initial, updateByDragging) {
+    if(res.code !== 'undefined' && res.code === 0 && !this.model.indexError) {
+      this.model.info   = res.data.info;
+      this.model.minute = res.data.minute;
+      // Process data
+      this.processIndexData(res, initial, updateByDragging);
+
+      if(handler) handler({ isError: this.model.indexError });
+    } else {
+      handler({ isError: this.model.indexError });
+    }
+  },
   /*
    * func getIndexData()
    * ===================
@@ -51,34 +83,22 @@ var ChartModel = {
    * - date: date in yyyymmdd format
    * - initial: boolean, indicates if we are only fetching new data
    * - handler: callback function
+   * - updateByDragging: boolean, indicates if we are updating by dragging index chart
   */
-  getIndexData: function(date, initial, handler){
+  getIndexData: function(date, initial, handler, updateByDragging){
     var self = this;
-    var api  = self.baseUrl() + self.api.base + self.api.indexData  + '&dailyLineSdate=' + date;
-        api += initial ? self.api.daily : '';
-        api += self.api.latest + '&info=1&trading=1'
-        api += self.api.jsonp;
+    var api  = this.apiBuilder('index', initial, updateByDragging, date);
 
     $.getJSON(api, function(res) {
       self.errorCheckIndex(res, initial);
-      if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError) {
-        self.model.info   = res.data.info;
-        self.model.minute = res.data.minute;
-
-        // Process data
-        self.processIndexData(res, initial);
-
-        handler({ isError: self.model.indexError });
-      } else {
-        handler({ isError: self.model.indexError });
-      }
+      self.setIndexData(res, handler, initial, updateByDragging);
     }).fail(function(){
       handler({ isError: self.model.indexError });
     });
   },
   getSentimentData: function(handler){
     var self = this;
-    var api = self.baseUrl() + self.api.base + self.api.sentimentData + self.api.jsonp;
+    var api = this.apiBuilder();
     $.getJSON(api, function(res) {
       self.errorCheckSentiment(res);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
@@ -93,7 +113,7 @@ var ChartModel = {
   },
   updateSentimentData: function(date, handler){
     var self = this;
-    var api = self.baseUrl() + self.api.base + self.api.sentimentData + self.api.date + date + self.api.jsonp;
+    var api = this.apiBuilder('sentiment', false, false, date);
     $.getJSON(api, function(res) {
       // Add new ticks to the existing array if no error
       if (res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError){
@@ -166,8 +186,9 @@ var ChartModel = {
         this.model.indexError = false;
       }
   },
-  processIndexData: function(res, initial){
+  processIndexData: function(res, initial, updateByDragging){
     var self = this;
+    var daily = self.model.daily;
     if(initial){
       self.model.daily = res.data.daily;
 
@@ -176,6 +197,25 @@ var ChartModel = {
         self.model.daily.stockLine.unshift(res.data.latestPrice);
       }
       self.model.daily.stockLine.reverse();
+    } else if(updateByDragging){
+      var stockLine = res.data.daily.stockLine;
+      var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
+      this.currEarliestTime  = this.currEarliestTime 
+                                || daily.stockLine[0].timestamp;
+     
+     //mark if no more sentiment data is returned. i.e assuming when it returns 0
+      this.endOfSentiment = this.endOfSentiment 
+                            || stockLine
+                                .map(function(e) { return e.moodindex === 0; })
+                                .reduce(function(prev, curr, i, arr) { return prev || curr });
+      if(this.currEarliestTime < returnedLatestTime) return;
+      if(this.endOfSentiment) return;
+
+      //api returned in descending order
+      stockLine.reverse();
+
+      daily.stockLine = stockLine.concat(daily.stockLine);
+
     } else {
       var latestPrice = res.data.latestPrice;
       var lastData    = self.model.daily.stockLine.slice(-1).pop();

@@ -4,6 +4,7 @@ var IndexChart = {
     mouseXPosOnDrag: 0,
     pixelDiff: 0,
   },
+  isDrawing: false,
   setProperties: function(options) {
     var properties = {
       height: 250,
@@ -19,7 +20,7 @@ var IndexChart = {
   init: function() {
     this.setProperties();
     this.drawContainer();
-    this.drawGraph(true);
+    this.drawGraph();
     this.setDragability();
   },
   initWithError: function(){
@@ -145,6 +146,7 @@ var IndexChart = {
 
   },
   drawGraph: function(isNew) {
+    this.isDrawing = true;
     //////////////////////PRIVATE HELPER FUNCTIONS BELOW//////////////////////
     /*
      * args:
@@ -249,7 +251,7 @@ var IndexChart = {
     var y2Labels = this.components.chartLabel
                     .select('g.y2labels')
                     .selectAll('text.yrule')
-                    .data(y2.ticks(5));
+                    .data(y2.ticks(8));
 
 
     var volume = this.components.chart
@@ -320,7 +322,9 @@ var IndexChart = {
       .attr('y', y2)
       .attr('text-anchor', 'middle')
       .style('fill','rgb(129, 129, 129)')
-      .text(String);
+      .text(function(d, i) {
+        return i === 8? '': d;
+      });
 
       //shifts the graph to the left but a slight margin
       var xOffset = 10*zoomFactor;
@@ -466,24 +470,36 @@ var IndexChart = {
 
             return Tooltip.render.index(model);
         });
+        this.isDrawing = false;
   },
   setDragability: function() {
     var props = this.properties;
 
     $('#chart').on('mousedown', function(event) {
         props.isDragging = true;
-        props.mouseXPosOnDrag = event.clientX;
+        props.mouseXPosOnDrag = event.pageX;
     });
 
     $('#chart').on('mousemove', function(event) {
       if (props.isDragging) {
+        var el = $('.scroller'), scrolled = el.scrollLeft();
         props.pixelDiff = event.clientX - props.mouseXPosOnDrag;
+        el.scrollLeft(scrolled + (props.mouseXPosOnDrag - event.pageX));
+        if(el.scrollLeft() === 0) {
+          ChartView.updateIndexByDrag();
+          setTimeout(function(){}, 1000);
+        }
       }
     });
 
     $('#chart').on('mouseup', function(event) {
       props.isDragging = false;
     });
-  }
+  },
+  dragBackAnimation: function(){
+    $('#graph').animate({'margin-left': '20'}, 500, 'swing', function(){
+      $(this).animate({'margin-left': '0'}, 500);
+    });
+  },
 };
 

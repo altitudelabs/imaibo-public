@@ -4,9 +4,10 @@ var ChartView = {
     sentiment: {}
   },
   properties: {
-    refreshFrequency: 1000000,
+    refreshFrequency: 60000,
     scrollDistance: 0
   },
+  earliestDate: 0,
   setProperties: function (options) {
     var self = this;
     //review
@@ -219,6 +220,7 @@ var ChartView = {
 
       // Draw sentiment
       if (!sentiment.isError) {
+        // SentimentChart.setProperties();
         SentimentChart.draw();
       } else {
         SentimentChart.initWithError();
@@ -228,16 +230,43 @@ var ChartView = {
       StickyColumns.start();
     });
   },
+  updateIndexByDrag: function(){
+    if(!IndexChart.isDrawing){
+      IndexChart.dragBackAnimation();
+
+      //calc earliest date 
+      this.earliestDate = this.earliestDate || new Date().getTime();
+      this.earliestDate -= 15768000000; //6 months in ms
+
+      var date = new Date(this.earliestDate).yyyymmdd();
+      ChartModel.getIndexData(date, false, null, true);
+      this.data.daily.stockLine = ChartModel.model.daily.stockLine;
+      IndexChart.drawGraph();
+    }
+
+  },
   redraw: function (zoomFactor) {
     zoomFactor = zoomFactor || 1;
+    
     this.properties.zoomFactor = this.properties.zoomFactor * zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
+    if(zoomFactor === 1) return;
     $('.zoomable-chart-container').css('width', '100%');
-    if(!this.data.indexError){
-      IndexChart.drawGraph(false);
-      RsiChart.drawGraph();
-      MacdChart.drawGraph();
-    }
-    $('#chart-container').scrollLeft(this.properties.scrollDistance);
+    IndexChart.drawGraph();
+    RsiChart.drawGraph();
+    MacdChart.drawGraph();
+    $('.scroller').scrollLeft(this.properties.scrollDistance);
+    var graphWidth = this.properties.width *zoomFactor;
+    this.scrollLeft(graphWidth, zoomFactor);
+  },
+  scrollLeft: function(graphWidth, zoomFactor) {
+    var el = $('.scroller');
+    // var d = graphWidth - $('#chart-container').width() - el.scrollLeft()*zoomFactor;
+    var left = graphWidth - $('#chart-container').width() - el.scrollLeft();
+
+
+    el.scrollLeft(left);
+
+    // console.log(graphWidth - zoomFactor*d);
   },
   rebuild: function() {
     this.setProperties();
