@@ -59,7 +59,6 @@ var SentimentChart = {
     if (serverDate.getDate() - dataDate.getDate() > 0) {
       self.data.isPastData = true;
     }
-
     self.data.startTime = dataDate.setHours(8,30,0,0)/1000;
     self.data.endTime = dataDate.setHours(17,30,0,0)/1000;
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
