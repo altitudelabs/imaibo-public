@@ -266,7 +266,7 @@ var ChartView = {
     this.properties.zoomFactor = this.properties.zoomFactor * zoomFactor < 1 ? 1 : this.properties.zoomFactor * zoomFactor;
     if(zoomFactor === 1) return;
     $('.zoomable-chart-container').css('width', '100%');
-    IndexChart.draw();
+    IndexChart.update();
     RsiChart.drawGraph();
     MacdChart.drawGraph();
     $('.scroller').scrollLeft(this.properties.scrollDistance);
@@ -278,21 +278,17 @@ var ChartView = {
     // var d = graphWidth - $('#chart-container').width() - el.scrollLeft()*zoomFactor;
     var left = graphWidth - $('#chart-container').width() - el.scrollLeft();
 
-
     el.scrollLeft(left);
 
-    // console.log(graphWidth - zoomFactor*d);
   },
   rebuild: function() {
     this.setProperties();
     $('.zoomable-chart-container').css('width', '100%');
     RsiChart.init();
     MacdChart.init();
-    
     IndexChart.update();
     SentimentChart.update();
     SentimentChart.update();
-    // this.redraw(true);
   },
   horizontalScroll: function () {
     'use strict';
