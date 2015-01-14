@@ -910,7 +910,8 @@ var SentimentChart = {
           var moodindexData = SentimentChart.helpers.getLastest('moodindexList', timestamp);
           //index before 9:30 --   - > latest
           
-          if (d3.select(SentimentChart.components.tooltip.style('display') !== 'none')) {
+          if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
+            console.log('remove');
             SentimentChart.componentsBuilder.tooltip.update();
             SentimentChart.componentsBuilder.scatterDots.update();
           }
