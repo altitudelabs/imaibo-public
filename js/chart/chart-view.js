@@ -118,13 +118,20 @@ var ChartView = {
     var self = this;
     self.build();
 
+    var resizeEnd;
     if(!IE8){ //app.js
       $(window).on('resize', function() {
-        self.rebuild();
+        clearTimeout(resizeEnd);
+        resizeEnd = setTimeout(function() {
+          self.rebuild();
+        }, 500);
       });
 
       $('#chart-view').on('resize', function(){
-        self.rebuild();
+        clearTimeout(resizeEnd);
+        resizeEnd = setTimeout(function() {
+          self.rebuild();
+        }, 500);
       });
     }
   },
@@ -238,6 +245,7 @@ var ChartView = {
     IndexChart.init();
     RsiChart.init();
     MacdChart.init();
+    SentimentChart.update();
     SentimentChart.update();
     // this.redraw(true);
   },
