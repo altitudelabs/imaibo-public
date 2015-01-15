@@ -103,14 +103,16 @@ var SentimentChart = {
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
     //ordering here is important! do not use for-loop
+    self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
+    self.componentsBuilder.verticalGridLines.append();
+    self.componentsBuilder.horizontalGridLines.append();
     self.componentsBuilder.topBorder.append();
     self.componentsBuilder.rightBorder.append();
     self.componentsBuilder.bottomBorder.append();
     self.componentsBuilder.leftBorder.append();
     self.componentsBuilder.y1Labels.append();
     self.componentsBuilder.y2Labels.append();
-    self.componentsBuilder.chart.append();
     self.componentsBuilder.xLabels.append();
     self.componentsBuilder.sentimentLine.append();
     self.componentsBuilder.securityLines.append();
@@ -120,8 +122,6 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsHover.append();
     self.componentsBuilder.sentimentCover.append();
     self.componentsBuilder.sentimentOverlay.append();
-    self.componentsBuilder.verticalGridLines.append();
-    self.componentsBuilder.horizontalGridLines.append();
     self.componentsBuilder.tooltip.append();
   },
   animate: function () {
