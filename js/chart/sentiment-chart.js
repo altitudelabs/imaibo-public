@@ -622,10 +622,24 @@ var SentimentChart = {
       enter: function () {
         SentimentChart.components.scatterDots
         .enter().append('svg:circle')  // create a new circle for each value
-        .attr('fill', '#25bcf1')
         .style('opacity', 1)
         .attr('id', function (d, i) {
           return 'sd-' + i;
+        })
+        .attr('stroke', function (d, i) {
+          if (!d.isRealTime) {
+            return '#25bcf1';
+          }
+        })
+        .attr('stroke-width', function (d, i) {
+          if (!d.isRealTime) {
+            return '1';
+          }
+        })
+        .attr('fill', function (d, i) {
+          if (d.isRealTime) {
+            return '#25bcf1';
+          }
         });
       },
       update: function () {
