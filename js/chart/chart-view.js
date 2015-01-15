@@ -222,14 +222,14 @@ var ChartView = {
         }
         Dashboard.render(self.data.info);
       } else {
+
         Dashboard.renderWithError();
         IndexChart.initWithError();
       }
-
       // Draw sentiment
       if (!sentiment.isError) {
         // SentimentChart.setProperties();
-        SentimentChart.draw();
+        SentimentChart.update();
       } else {
         SentimentChart.initWithError();
       }

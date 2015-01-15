@@ -771,6 +771,12 @@ body::-webkit-scrollbar {
   padding: 5px 3px 5px 3px;
   width: 248px;
 }
+#sentiment-tooltip .tooltip-date div {
+  float: right;
+  padding-right: 5px;
+  display: inline-block;
+}
+
 
 #sentiment-tooltip .news-bubble {
   position: absolute;
