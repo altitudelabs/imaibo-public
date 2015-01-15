@@ -765,7 +765,7 @@ var SentimentChart = {
           var news;
           var title;
           var div = '<div class="sentiment-tooltip">\
-                       <div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '<div><a href="/">更多</a></div></div>\
+                       <div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '<div class="more-news" style="cursor:pointer;">更多</div></div>\
                        <div class="wrapper">';
 
           for (var i = 0; i < d.newsList.length; i++) {
@@ -847,7 +847,27 @@ var SentimentChart = {
               SentimentChart.componentsBuilder.scatterDots.update()
             }
           })
-          .style('display', 'inline-block')
+          .style('display', 'inline-block');
+
+          $('.more-news').
+          click(function() {
+            // Display News Views
+            RightPanel.goTo('newsView');
+
+            // Display Press by Time
+            $('ul#news-tabs li.active').removeClass('active');
+            $('ul#news-tabs li').eq(0).addClass('active');
+            $('#press-by-time').show();
+            $('#press-by-time').siblings().hide();
+
+            // Hide All Press by Time
+            $('#press-by-time .time-block .news-blocks').hide();
+
+            // Display the Required Press
+            var idString = '#time' + d.rdate + d.clock.slice(0, 5).replace(/:+/g, '') + ' .news-blocks';
+            $(idString).show();
+          });
+
         })
         .on('mouseout', function (d, i) {
         })
