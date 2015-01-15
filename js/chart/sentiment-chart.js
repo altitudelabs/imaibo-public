@@ -833,7 +833,6 @@ var SentimentChart = {
               SentimentChart.componentsBuilder.scatterDots.update()
             }
           })
-          .transition(500)
           .style('display', 'inline-block')
         })
         .on('mouseout', function (d, i) {
