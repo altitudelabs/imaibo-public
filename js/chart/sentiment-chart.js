@@ -15,13 +15,13 @@ var SentimentChart = {
     properties.chartHeight = properties.height - properties.margin.top - properties.margin.bottom;
     this.properties = $.extend(true, {}, properties);
   },
-  init: function(){
+  init: function () {
     'use strict';
     this.setProperties();
-    this.updateData(true);
+    this.updateData();
     this.draw();
   },
-  initWithError: function(){
+  initWithError: function () {
     this.setProperties();
     this.draw(true);
     $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
@@ -34,7 +34,9 @@ var SentimentChart = {
   },
   updateData: function () {
     'use strict';
+
     if(ChartView.data.sentimentError) { return; }
+
     var self = this;
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
     self.data.indexList = self.helpers.processIndexData(ChartView.data.sentiment.indexList);
@@ -59,7 +61,7 @@ var SentimentChart = {
     var self = this;
     self.appendComponents();
     if (error) { return; }
-
+    
     // LINK DATA ===================================================================
     self.componentsBuilder.y1Labels.linkData();
     self.componentsBuilder.y2Labels.linkData();

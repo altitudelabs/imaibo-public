@@ -24,7 +24,6 @@ var ChartView = {
     }
     this.properties = $.extend(true, this.properties, properties);
   },
-
   //data.daily.stockLine
   x: function(data, returnProp){
     var self = this;
@@ -36,7 +35,6 @@ var ChartView = {
       return x[returnProp]; }))
     .rangeBands([0, graphWidth]); //inversed the x axis because api came in descending order
   },
-
   getXLabels: function(){
     // if the data has not changed, return old. if there is new data, recalculate
     
@@ -167,6 +165,8 @@ var ChartView = {
     $.when(ChartModel.getIndexDataAsync(today, initial), ChartModel.getSentimentDataAsync())
     .done(function(index, sentiment){
       self.data = ChartModel.model;
+      
+      try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
       // Draw index
       if (!index.isError) {
@@ -180,13 +180,6 @@ var ChartView = {
       } else {
         Dashboard.renderWithError();
         IndexChart.initWithError();
-      }
-
-      // Draw sentiment
-      if (!sentiment.isError) {
-        SentimentChart.init();
-      } else {
-        SentimentChart.initWithError();
       }
 
       // Make charts visible
