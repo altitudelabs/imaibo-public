@@ -50,7 +50,16 @@ var SentimentChart = {
     self.data.y1 = self.helpers.y(y1Range[0], y1Range[1]);
     self.data.y2 = self.helpers.y(y2Range[0], y2Range[1]);
 
-    var dataDate = new Date(ChartView.data.sentiment.timestamp*1000);
+    var serverTime = ChartView.data.sentiment.timestamp;
+    var serverDate = new Date(serverTime*1000);
+    
+    var dataTime = self.data.moodindexList[0].timestamp;
+    var dataDate = new Date(dataTime*1000);
+
+    if (serverDate.getDate() - dataDate.getDate() > 0) {
+      self.data.isPastData = true;
+    }
+
     self.data.startTime = dataDate.setHours(8,30,0,0)/1000;
     self.data.endTime = dataDate.setHours(17,30,0,0)/1000;
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
@@ -536,7 +545,7 @@ var SentimentChart = {
 
         var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
 
-        if (currentTimeStamp < SentimentChart.data.startTime) { return; }
+        if (!SentimentChart.data.isPastData && currentTimeStamp < SentimentChart.data.startTime) { return; }
         
         //start - market open
         var openDottedPrice = currentDate.getHours() < 9 ? SentimentChart.data.closePrice : data[0].price;
@@ -548,7 +557,7 @@ var SentimentChart = {
                               }];
         SentimentChart.components.securityLines['openDotted'] = SentimentChart.components.securityLines['openDotted'].datum(openDottedData);
         //lunch
-        if (currentDate.getHours() > 12 || (currentDate.getHours() === 12 && currentDate.getMinutes() > 30 || notSameDay)) {
+        if (!SentimentChart.data.isPastData && currentDate.getHours() > 12 || (currentDate.getHours() === 12 && currentDate.getMinutes() > 30 || notSameDay)) {
           var lunchDottedPrice = amLinearData[120].price;
           var lunchDottedData = [{
                                   timestamp: amLinearData[120].timestamp+60,
@@ -561,7 +570,7 @@ var SentimentChart = {
           SentimentChart.components.securityLines['lunchDotted'] = SentimentChart.components.securityLines['lunchDotted'].datum(lunchDottedData);
         }
         //market close
-        if (currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 || notSameDay)) {
+        if (!SentimentChart.data.isPastData && currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 || notSameDay)) {
           var closeDottedPrice = pmLinearData[120].price;
           var closeDottedData = [{
                                   timestamp: pmLinearData[120].timestamp+60,

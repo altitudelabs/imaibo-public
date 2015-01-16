@@ -9,13 +9,10 @@ var IndexChart = {
   prevLeft: -1,
   currLeft: 0,
   y2Max: undefined,
-
   setProperties: function(options) {
     var properties = {
       height: 250,
-      interval: 30,
     };
-    properties.xOffset = 10*ChartView.getZoomFactor();
     properties.verticalOffset = 5;
     properties.yOffset = 2;
     if (options) {
@@ -41,13 +38,12 @@ var IndexChart = {
   updateData: function () {
     var self  = this;
     var props = self.properties;
-
-    self.data.stockLine  = ChartView.getStockLine();
-    self.data.y1         = ChartView.y1(ChartView.getStockLine(), props.height, 'moodindex', ChartView.getVolumeHeight());
-    self.data.y2         = ChartView.y2(ChartView.getStockLine(), props.height, 'highpx', 'lowpx', ChartView.getVolumeHeight());
-    self.data.xLabelData = ChartView.getXLabels();
-    self.data.v          = ChartView.v(ChartView.getStockLine(), 'volumn');
-    self.data.x          = ChartView.x(ChartView.getStockLine(), 'rdate');
+    self.data.stockLine      = ChartView.data.visibleStockLine;
+    self.data.xLabelData     = ChartView.getXLabels();
+    self.data.y1             = ChartView.y1(props.height, 'moodindex', ChartView.getVolumeHeight());
+    self.data.y2             = ChartView.y2(props.height, 'highpx', 'lowpx', ChartView.getVolumeHeight());
+    self.data.v              = ChartView.v('volumn');
+    self.data.x              = ChartView.x('rdate');
   },
   update: function (options) {
     this.setProperties(options);
@@ -58,7 +54,6 @@ var IndexChart = {
     var self = this;
     $('#chart').empty();
     $('#chart-label').empty();
-
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
     self.componentsBuilder.topBorder.append();
@@ -150,7 +145,6 @@ var IndexChart = {
     self.componentsBuilder.xLabels.linkData();
 
     //ENTER LOOP ================================================================
-
     self.componentsBuilder.y1Labels.enter();
     self.componentsBuilder.y2Labels.enter();
     self.componentsBuilder.volumes.enter();
@@ -159,7 +153,6 @@ var IndexChart = {
     self.componentsBuilder.xLabels.enter();
 
     //EXIT LOOP =================================================================
-
     self.components.y1Labels.exit().remove();
     self.components.y2Labels.exit().remove();
     self.components.volumes.exit().remove();
@@ -172,7 +165,6 @@ var IndexChart = {
     self.componentsBuilder.y2Labels.update();
     self.componentsBuilder.volumes.update();
     self.componentsBuilder.candleSticks.update();
-    
     self.componentsBuilder.lineStems.update();
     self.componentsBuilder.xLabels.update();
 
@@ -215,27 +207,9 @@ var IndexChart = {
   },
   updateIndexByDrag: function(){
     if(!IndexChart.isDrawing){
-
       //calc earliest date 
-      IndexChart.earliestDate = IndexChart.earliestDate-1 || ChartView.getStockLine()[0].rdate-1;
       ChartView.updateChartElements();
-
-      ChartModel.getIndexData(IndexChart.earliestDate, false, null, true, function() {
-
-        // ChartView.getStockLine() = ChartModel.model.daily.stockLine;
-
-        IndexChart.earliestDate = ChartView.getStockLine()[0].rdate;
-        ChartView.calcZoom(2);
-        IndexChart.update();
-        var leftIndex = ChartModel.model.stockLineLengthDiff + ChartView.getLastIndexOnViewPort() - 10;
-        ChartView.setLastIndexOnViewPort(leftIndex);
-        ChartView.repositionIndexChart();
-
-        $('.scroller').scrollLeft();
-
-        // IndexChart.draw();
-      });
-      
+      ChartView.getPastData();  
     }
   },
   componentsBuilder: {
@@ -248,7 +222,6 @@ var IndexChart = {
       update: function () {
         var props = IndexChart.properties;
         var width = ChartView.getChartWidth() * ChartView.getZoomFactor();
-
         IndexChart.components.chart
         .attr('height', props.height)
         .attr('width', width)
@@ -463,11 +436,10 @@ var IndexChart = {
       },
       enter: function () {
         IndexChart.components.xLabels.enter().append('text').attr('class', 'labels');
-
       },
       update: function () {
         var props = IndexChart.properties;
-        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*ChartView.getZoomFactor() - props.xOffset;
+        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*ChartView.getZoomFactor();
         IndexChart.components.xLabels
         .attr('x', function(d,i){ return IndexChart.data.x(d.rdate) + offset; })
         .attr('y', props.height - ChartView.getBottomMargin() + 20)
@@ -538,8 +510,13 @@ var IndexChart = {
         .attr('height', props.height - ChartView.getBottomMargin());
 
         IndexChart.components.mouseOverlay
-          .on('mouseover', function(e) { return Tooltip.show(); })
+          .on('mouseover', function(e) { 
+            $('html').css('overflow', 'hidden');
+            return Tooltip.show();
+          })
           .on('mouseout', function()   { 
+            $('html').css('overflow', 'visible');
+
             IndexChart.components.horizontalText.style('fill-opacity', 0);
             IndexChart.components.horizontalLine.style('stroke-opacity', 0);
             IndexChart.components.horizontalBlock.style('fill-opacity', 0);

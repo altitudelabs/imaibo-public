@@ -226,9 +226,8 @@ var RightPanel = {
     var self = this;
     var refreshRate = 5000;
     setInterval(function(){
-      console.log('%c Refreshing', 'background: black; color: white;');
       self.renderStockpickerView(false);
-      ChartView.repositionIndexChart();
+      // ChartView.repositionIndexChart();
       // StickyColumns.recalc();
     },refreshRate);
   },

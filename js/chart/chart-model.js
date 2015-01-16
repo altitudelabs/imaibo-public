@@ -190,6 +190,7 @@ var ChartModel = {
       }
   },
   processIndexData: function(res, initial, updateByDragging){
+
     var self = this;
     var daily = self.model.daily;
     if(initial){
