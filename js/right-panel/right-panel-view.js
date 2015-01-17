@@ -323,7 +323,7 @@ var RightPanel = {
   },
   updatePressByTime: function(model) {
     var newsBlockTemplate = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="arrow"></span><span class="percentage">{{newsMood}}%</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
-    var timeBlockTemplate = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var timeBlockTemplate = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
 
     // CREATE TIME BLOCKS
     var timeBlock = d3.select('#press-by-time')

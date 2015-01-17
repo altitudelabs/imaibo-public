@@ -1552,8 +1552,27 @@ body::-webkit-scrollbar {
 
 .outer .calendar-and-date {
   width: 100%;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 17px 10px 20px;
+  cursor: pointer;
+}
+
+.outer #all-press .calendar-and-date {
   margin: 10px 0px 10px 0px;
+}
+
+.outer #press-by-time .calendar-and-date {
+  background: url('../assets/mb-spritesheet.png') no-repeat top left;
+  background-position: 0px -1819px; 
+  width: 298px; 
+  height: 37px;
+}
+
+.outer #press-by-time .arrow-sign {
+  background: url('../assets/mb-spritesheet.png') no-repeat top left;
+  background-position: 0px -1866px; 
+  width: 20px; 
+  height: 20px;
+  padding-left: 3px;
 }
 
 .outer #news-view {
@@ -1565,12 +1584,18 @@ body::-webkit-scrollbar {
 
 .outer .calendar,
 .outer .date,
-.outer .number-of-msg {
+.outer .number-of-msg,
+.outer .arrow-sign {
   display: inline-block;
 }
 .outer #news-view .calendar,
 .outer #news-view .date {
   float: left;
+}
+
+.outer .number-of-msg,
+.outer .arrow-sign {
+  float: right;
 }
 
 .outer .calendar {
@@ -1588,7 +1613,6 @@ body::-webkit-scrollbar {
 }
 
 .outer .number-of-msg {
-  float: right;
   color: rgb(107, 107, 107);
   margin-top: 3px;
 }
