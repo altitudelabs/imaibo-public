@@ -103,15 +103,15 @@ var Toolbar = {
     var zoomIn = $('#zoomin');
     var zoomOut = $('#zoomout');
     zoomIn.click(function(){
-      ChartView.redraw(1.2);
+      ChartView.zoom(1.2);
       // IndexChart.redraw(1.2);
       // RsiChart.redraw(1.2);
       // MacdChart.redraw(1.2);
     });
 
     zoomOut.click(function(){
-      // ChartView.redraw(1/1.2);
-      ChartView.updateIndexByDrag();
+      ChartView.zoom(1/1.2);
+      // ChartView.updateIndexByDrag();
 
       // IndexChart.redraw(1/1.2);
       // RsiChart.redraw(1/1.2);
@@ -139,6 +139,7 @@ var Toolbar = {
       }else{
        $('#rsi').css('display', 'none');
       }
+      StickyColumns.recalc();
     });
   },
   initMacd: function() {
@@ -162,6 +163,7 @@ var Toolbar = {
       }else{
        $('#macd').css('display', 'none');
       }
+      StickyColumns.recalc();
     });
   },
   initFreq: function() {

@@ -6,19 +6,13 @@ var IndexChart = {
   },
   components: {},
   data: {},
-  isDrawing: false,
+  prevLeft: -1,
+  currLeft: 0,
+  y2Max: undefined,
   setProperties: function(options) {
     var properties = {
       height: 250,
-      interval: 30,
-      containerWidth: ChartView.properties.width,
-      margin: ChartView.properties.margin,
-      zoomFactor: ChartView.properties.zoomFactor,
-      volumeHeight: ChartView.properties.volumeHeight,
     };
-    properties.chartWidth = properties.containerWidth - properties.margin.left - properties.margin.right;
-    properties.graphWidth = properties.chartWidth * properties.zoomFactor;
-    properties.xOffset = 10*properties.zoomFactor;
     properties.verticalOffset = 5;
     properties.yOffset = 2;
     if (options) {
@@ -42,17 +36,17 @@ var IndexChart = {
     $('#legend').remove();
   },
   updateData: function () {
-    var self = this;
+    var self  = this;
     var props = self.properties;
-    self.data.stockLine = ChartView.data.daily.stockLine;
-    self.data.y1 = ChartView.y1(self.data.stockLine, props.height, 'moodindex', props.volumeHeight);
-    self.data.y2 = ChartView.y2(self.data.stockLine, props.height, 'highpx', 'lowpx', props.volumeHeight);
-    self.data.xLabelData = ChartView.getXLabels();
-    self.data.v = ChartView.v(self.data.stockLine, 'volumn');
-    self.data.x = ChartView.x(self.data.stockLine, 'rdate');
+    self.data.stockLine      = ChartView.data.visibleStockLine;
+    self.data.xLabelData     = ChartView.getXLabels();
+    self.data.y1             = ChartView.y1(props.height, 'moodindex', ChartView.getVolumeHeight());
+    self.data.y2             = ChartView.y2(props.height, 'highpx', 'lowpx', ChartView.getVolumeHeight());
+    self.data.v              = ChartView.v('volumn');
+    self.data.x              = ChartView.x('rdate');
   },
-  update: function () {
-    this.setProperties();
+  update: function (options) {
+    this.setProperties(options);
     this.updateData();
     this.draw();
   },
@@ -60,7 +54,6 @@ var IndexChart = {
     var self = this;
     $('#chart').empty();
     $('#chart-label').empty();
-
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
     self.componentsBuilder.topBorder.append();
@@ -88,10 +81,10 @@ var IndexChart = {
     self.componentsBuilder.mouseOverlay.append();
   },
   draw: function() {
-    this.isDrawing = true;
     var self = this;
 
     self.appendComponents();
+
     //////////////////////PRIVATE HELPER FUNCTIONS BELOW//////////////////////
     /*
      * args:
@@ -110,7 +103,8 @@ var IndexChart = {
 
     function getLine(type) {
       return d3.svg.line()
-             .x(function(d, i) { return self.data.x(i-1); })
+             .x(function(d, i) {
+              return self.data.x(i); })
              .y(function(d)    { 
               return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]); })
              .interpolate('linear');
@@ -119,7 +113,7 @@ var IndexChart = {
     function setLineAttr(id, line, color) {
       self.components.chart
         .select('path#' + id)
-        .datum(ChartView.data.daily.stockLine)
+        .datum(ChartView.getStockLine())
         .attr('d', line)
         .attr('stroke', color)
         .attr('fill', 'none')
@@ -138,7 +132,8 @@ var IndexChart = {
     self.componentsBuilder.chart.update();
     self.componentsBuilder.chartLabel.update();
 
-    var chartWidth  = self.properties.containerWidth - self.properties.margin.left - self.properties.margin.right;
+    var chartWidth  = ChartView.getContainerWidth() - ChartView.getLeftMargin() - ChartView.getRightMargin();
+
     $('#chart-container').css('width', chartWidth.toString() + 'px');
 
     //DATA SECTION ======================================================
@@ -150,7 +145,6 @@ var IndexChart = {
     self.componentsBuilder.xLabels.linkData();
 
     //ENTER LOOP ================================================================
-
     self.componentsBuilder.y1Labels.enter();
     self.componentsBuilder.y2Labels.enter();
     self.componentsBuilder.volumes.enter();
@@ -159,7 +153,6 @@ var IndexChart = {
     self.componentsBuilder.xLabels.enter();
 
     //EXIT LOOP =================================================================
-
     self.components.y1Labels.exit().remove();
     self.components.y2Labels.exit().remove();
     self.components.volumes.exit().remove();
@@ -172,7 +165,6 @@ var IndexChart = {
     self.componentsBuilder.y2Labels.update();
     self.componentsBuilder.volumes.update();
     self.componentsBuilder.candleSticks.update();
-    
     self.componentsBuilder.lineStems.update();
     self.componentsBuilder.xLabels.update();
 
@@ -184,38 +176,41 @@ var IndexChart = {
     plotLines('ma60', '#36973a');
 
     // TOOLTIP =====================================================================
-    self.componentsBuilder.mouseOverlay.update();
-    
+    self.componentsBuilder.mouseOverlay.update();    
   },
   setDragability: function() {
-    // var props = this.properties;
+    var props = this.properties;
 
-    // $('#chart').on('mousedown', function(event) {
-    //     props.isDragging = true;
-    //     props.mouseXPosOnDrag = event.pageX;
-    // });
-
-    // $('#chart').on('mousemove', function(event) {
-    //   if (props.isDragging) {
-    //     var el = $('.scroller'), scrolled = el.scrollLeft();
-    //     props.pixelDiff = event.clientX - props.mouseXPosOnDrag;
-    //     el.scrollLeft(scrolled + (props.mouseXPosOnDrag - event.pageX));
-
-    //     if(el.scrollLeft() === 0) {
-    //       ChartView.updateIndexByDrag();
-    //       setTimeout(function(){}, 1000);
-    //     }
-    //   }
-    // });
-
-    // $('#chart').on('mouseup', function(event) {
-    //   props.isDragging = false;
-    // });
-  },
-  dragBackAnimation: function(){
-    $('#graph').animate({'margin-left': '20'}, 500, 'swing', function(){
-      $(this).animate({'margin-left': '0'}, 500);
+    $('#chart').on('mousedown', function(event) {
+        props.isDragging = true;
+        props.mouseXPosOnDrag = event.pageX;
     });
+
+    $('#chart').on('mousemove', function(event) {
+      if (props.isDragging) {
+        var el = $('.scroller'), scrolled = el.scrollLeft();
+        IndexChart.currLeft = scrolled;
+        props.pixelDiff     = event.clientX - props.mouseXPosOnDrag;
+        el.scrollLeft(scrolled + (props.mouseXPosOnDrag - event.pageX));
+
+        //Prevents user firing more than 1 request at a time.
+        if(el.scrollLeft() === 0 && IndexChart.currLeft != IndexChart.prevLeft) {
+          IndexChart.updateIndexByDrag();
+          IndexChart.prevLeft = IndexChart.currLeft;
+        }
+      }
+    });
+
+    $('#chart').on('mouseup', function(event) {
+      props.isDragging = false;
+    });
+  },
+  updateIndexByDrag: function(){
+    if(!IndexChart.isDrawing){
+      //calc earliest date 
+      ChartView.updateChartElements();
+      ChartView.getPastData();  
+    }
   },
   componentsBuilder: {
     chart: {
@@ -226,25 +221,24 @@ var IndexChart = {
       },
       update: function () {
         var props = IndexChart.properties;
-
+        var width = ChartView.getChartWidth() * ChartView.getZoomFactor();
         IndexChart.components.chart
         .attr('height', props.height)
-        .attr('width', props.chartWidth * props.zoomFactor)
-        .select('svg').attr('width', props.chartWidth * props.zoomFactor);
+        .attr('width', width)
+        .select('svg').attr('width', width);
       }
     },
     chartLabel: {
       append: function () {
-        var props = IndexChart.properties;
         IndexChart.components.chartLabel = d3.select('#chart-label').append('svg:svg');
       },
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.chartLabel
         .attr('class', 'chart')
-        .attr('width', props.containerWidth)
+        .attr('width', ChartView.getContainerWidth())
         .attr('height', props.height)
-        .select('svg').attr('width', props.containerWidth);
+        .select('svg').attr('width', ChartView.getContainerWidth());
       }
     },
     topBorder: {
@@ -255,10 +249,10 @@ var IndexChart = {
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.rightBorder
-        .attr('x1', props.margin.left)
-        .attr('x2', props.containerWidth - props.margin.right )
-        .attr('y1', props.margin.top)
-        .attr('y2', props.margin.top)
+        .attr('x1', ChartView.getLeftMargin())
+        .attr('x2', ChartView.getContainerWidth() - ChartView.getRightMargin())
+        .attr('y1', ChartView.getTopMargin())
+        .attr('y2', ChartView.getTopMargin())
         .attr('stroke', 'rgb(77, 77, 77)')
         .attr('stroke-width', '2px');
       }
@@ -271,11 +265,13 @@ var IndexChart = {
       },
       update: function () {
         var props = IndexChart.properties;
+        var x = ChartView.getContainerWidth() - ChartView.getRightMargin();
+
         IndexChart.components.rightBorder
-        .attr('x1', props.containerWidth - props.margin.right )
-        .attr('x2', props.containerWidth - props.margin.right )
-        .attr('y1', props.height - props.margin.bottom + 4) //accounting border width
-        .attr('y2', props.margin.top)
+        .attr('x1', x)
+        .attr('x2', x)
+        .attr('y1', props.height - ChartView.getBottomMargin() + 4) //accounting border width
+        .attr('y2', ChartView.getTopMargin())
         .attr('stroke', 'rgb(77, 77, 77)')
         .attr('stroke-width', '2px');
       }
@@ -288,10 +284,10 @@ var IndexChart = {
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.topBorder
-        .attr('x1', props.margin.left)
-        .attr('x2', props.margin.left + props.chartWidth) //shift to the left
-        .attr('y1', props.height - props.margin.bottom + 4) //offseting the border width
-        .attr('y2', props.height - props.margin.bottom + 4) //offseting the border width
+        .attr('x1', ChartView.getLeftMargin())
+        .attr('x2', ChartView.getLeftMargin() + ChartView.getChartWidth()) //shift to the left
+        .attr('y1', props.height - ChartView.getBottomMargin() + 4) //offseting the border width
+        .attr('y2', props.height - ChartView.getBottomMargin() + 4) //offseting the border width
         .attr('stroke', 'rgb(77, 77, 77)')
         .attr('stroke-width', '2px');
       }
@@ -304,10 +300,10 @@ var IndexChart = {
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.topBorder
-        .attr('x1', props.margin.left)
-        .attr('x2', props.margin.left)
-        .attr('y1', props.height - props.margin.bottom + 4) //accounting border width
-        .attr('y2', props.margin.top)
+        .attr('x1', ChartView.getLeftMargin())
+        .attr('x2', ChartView.getLeftMargin())
+        .attr('y1', props.height - ChartView.getBottomMargin() + 4) //accounting border width
+        .attr('y2', ChartView.getTopMargin())
         .attr('stroke', 'rgb(77, 77, 77)')
         .attr('stroke-width', '2px');
       }
@@ -326,7 +322,7 @@ var IndexChart = {
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.y1Labels
-        .attr('x', props.margin.left - 15)
+        .attr('x', ChartView.getLeftMargin() - 15)
         .attr('y', IndexChart.data.y1)
         .attr('text-anchor', 'middle')
         .style('fill','rgb(129, 129, 129)')
@@ -347,11 +343,17 @@ var IndexChart = {
         var props = IndexChart.properties;
         IndexChart.components.y2Labels
         .attr('class', 'yrule')
-        .attr('x', props.containerWidth-props.margin.right + 18)
+        .attr('x', ChartView.getContainerWidth()-ChartView.getRightMargin() + 18)
         .attr('y', IndexChart.data.y2)
         .attr('text-anchor', 'middle')
         .style('fill','rgb(129, 129, 129)')
-        .text(String);
+        .text(function(d, i) {
+          //to avoid y2 clipping its labels
+          //takes the max then round it to nearest hundreds
+           IndexChart.y2Max = IndexChart.y2Max 
+                      || 100*Math.round(d3.max(IndexChart.data.stockLine.map(function(x) { return +x['highpx']; }))/100);
+           return (IndexChart.y2Max !== d?d:'');
+        });
       }
     },
     volumes: {
@@ -359,22 +361,19 @@ var IndexChart = {
         IndexChart.components.volumes = IndexChart.components.chart.append('g').attr('class', 'volumes').selectAll('rect.bars');
       },
       linkData: function () {
-        IndexChart.components.volumes = IndexChart.components.volumes.data(IndexChart.data.stockLine);
-    
+        IndexChart.components.volumes = IndexChart.components.volumes.data(ChartView.getStockLine());
       },
       enter: function () {
         IndexChart.components.volumes.enter().append('rect').attr('class', 'bars').transition().duration(1000).attr('fill', 'red').transition().duration(1000).attr('fill', 'rgb(107, 107, 107)');
-    
       },
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.volumes
-        .attr('x', function(d,i)    { return IndexChart.data.x(i) - props.xOffset; })
-        .attr('y', function(d)      { return props.height - props.margin.bottom + props.verticalOffset - IndexChart.data.v(d.volumn); })
+        .attr('x', function(d,i)    { return IndexChart.data.x(i) - ChartView.getZoomFactor(); })
+        .attr('y', function(d)      { return props.height - ChartView.getBottomMargin() + props.verticalOffset - IndexChart.data.v(d.volumn); })
         .attr('height', function(d) { return IndexChart.data.v(d.volumn); })
-        .attr('width', function(d)  { return 0.8 * props.graphWidth/IndexChart.data.stockLine.length; })
+        .attr('width', function(d)  { return 0.8 * ChartView.getGraphWidth()/ChartView.getStockLine().length; })
         .attr('fill', '#595959');
-
       }
     },
     candleSticks: {
@@ -382,7 +381,7 @@ var IndexChart = {
         IndexChart.components.candleSticks = IndexChart.components.chart.append('g').attr('class', 'candleSticks');
       },
       linkData: function () {
-        IndexChart.components.candleSticks = IndexChart.components.candleSticks.selectAll('rect.bars').data(IndexChart.data.stockLine);
+        IndexChart.components.candleSticks = IndexChart.components.candleSticks.selectAll('rect.bars').data(ChartView.getStockLine());
       },
       enter: function () {
         IndexChart.components.candleSticks.enter().append('rect').attr('class', 'bars');
@@ -391,7 +390,8 @@ var IndexChart = {
         var props = IndexChart.properties;
 
         IndexChart.components.candleSticks
-        .attr('x', function(d, i) { return IndexChart.data.x(i) - props.xOffset; })
+        .attr('x', function(d, i) {
+         return IndexChart.data.x(i) - 2*ChartView.getZoomFactor(); })
         .attr('y', function(d) {
           var closepx = d.closepx? d.closepx:d.preclosepx;
           return IndexChart.data.y2(max(d.openpx, closepx)); 
@@ -400,7 +400,7 @@ var IndexChart = {
           var closepx = d.closepx? d.closepx:d.preclosepx;
           return IndexChart.data.y2(min(d.openpx, closepx))-IndexChart.data.y2(max(d.openpx, closepx)); 
         })
-        .attr('width', function(d) { return 0.8 * (props.graphWidth)/IndexChart.data.stockLine.length; })
+        .attr('width', function(d) { return 0.8 * (ChartView.getGraphWidth())/ChartView.getStockLine().length; })
         .attr('fill', function(d) { return d.openpx < d.closepx ? '#e24439' : '#1ba767'; });
       }
     },
@@ -409,7 +409,7 @@ var IndexChart = {
         IndexChart.components.lineStems = IndexChart.components.chart.append('g').attr('class', 'lineStems');
       },
       linkData: function () {
-        IndexChart.components.lineStems = IndexChart.components.lineStems.selectAll('line.lines').data(IndexChart.data.stockLine);
+        IndexChart.components.lineStems = IndexChart.components.lineStems.selectAll('line.lines').data(ChartView.getStockLine());
       },
       enter: function () {
         IndexChart.components.lineStems.enter().append('line').attr('class', 'lines');
@@ -417,7 +417,7 @@ var IndexChart = {
       },
       update: function () {
         var props = IndexChart.properties;
-        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*props.zoomFactor - props.xOffset;
+        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*ChartView.getZoomFactor() - 2*ChartView.getZoomFactor();
 
         IndexChart.components.lineStems
         .attr('x1', function(d, i) { return IndexChart.data.x(i) + offset; })
@@ -436,18 +436,17 @@ var IndexChart = {
       },
       enter: function () {
         IndexChart.components.xLabels.enter().append('text').attr('class', 'labels');
-
       },
       update: function () {
         var props = IndexChart.properties;
-        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*props.zoomFactor - props.xOffset;
+        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*ChartView.getZoomFactor();
         IndexChart.components.xLabels
         .attr('x', function(d,i){ return IndexChart.data.x(d.rdate) + offset; })
-        .attr('y', props.height - props.margin.bottom + 20)
+        .attr('y', props.height - ChartView.getBottomMargin() + 20)
         .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
-          if(today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1)
+          if(i === 0 || today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1)
             return '';
           else
             return Helper.toDate(d.rdate, 'yyyy/mm');
@@ -506,13 +505,18 @@ var IndexChart = {
         IndexChart.components.mouseOverlay
         .attr('x', 0)
         .attr('id', 'abc')
-        .attr('y', props.margin.top + props.yOffset)
-        .attr('width', props.graphWidth)
-        .attr('height', props.height - props.margin.bottom);
+        .attr('y', ChartView.getTopMargin() + props.yOffset)
+        .attr('width', ChartView.getGraphWidth())
+        .attr('height', props.height - ChartView.getBottomMargin());
 
         IndexChart.components.mouseOverlay
-          .on('mouseover', function(e) { return Tooltip.show(); })
+          .on('mouseover', function(e) { 
+            $('html').css('overflow', 'hidden');
+            return Tooltip.show();
+          })
           .on('mouseout', function()   { 
+            $('html').css('overflow', 'visible');
+
             IndexChart.components.horizontalText.style('fill-opacity', 0);
             IndexChart.components.horizontalLine.style('stroke-opacity', 0);
             IndexChart.components.horizontalBlock.style('fill-opacity', 0);
@@ -537,21 +541,21 @@ var IndexChart = {
 
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
-              var d = IndexChart.data.stockLine[j];
+              var d = ChartView.getStockLine()[j];
 
               IndexChart.helpers.updateMAValue('5', d.ma5);
               IndexChart.helpers.updateMAValue('10', d.ma10);
               IndexChart.helpers.updateMAValue('20', d.ma20);
               IndexChart.helpers.updateMAValue('60', d.ma60);
 
-              var length = IndexChart.data.stockLine.length;
+              var length = ChartView.getStockLine().length;
               d.closepx = d.closepx? d.closepx : d.preclosepx;
-              d.moodindexchg = d.moodindexchg? d.moodindexchg : stockLine[j].moodindex - self.data.stockLine[j-1].moodindex;
+              d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getStockLine()[j].moodindex - ChartView.getStockLine()[j-1].moodindex;
 
               var model = {
                   top: mouseY + 10,
                   // 10 = horizontal distance from mouse cursor
-                  left: props.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
+                  left: ChartView.getChartWidth() - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
                   // if the right edge touches the right y axis
                   // 180 = width of tooltip, 10 = vertical distance from cursor
                   date: d.rdate,
@@ -563,7 +567,7 @@ var IndexChart = {
                   }
               };
               IndexChart.components.horizontalText
-              .attr('x', props.containerWidth - 37)
+              .attr('x', ChartView.getContainerWidth() - 37)
               .attr('y', yPos + 3)
               .attr('text-anchor', 'left')
               .text(cursorPriceLevel.toFixed(0))
@@ -572,7 +576,7 @@ var IndexChart = {
 
               IndexChart.components.horizontalLine
               .attr('x1', 0)
-              .attr('x2', props.graphWidth)
+              .attr('x2', ChartView.getGraphWidth())
               .attr('y1', yPos) //make it line up with the label
               .attr('y2', yPos)
               .attr('stroke', '#f65c4e')
@@ -581,10 +585,10 @@ var IndexChart = {
               IndexChart.components.horizontalBlock
               .attr('rx', 4)
               .attr('ry', 4)
-              .attr('x', props.chartWidth+props.margin.left+1)
+              .attr('x', ChartView.getChartWidth()+ChartView.getLeftMargin()+1)
               .attr('y', yPos-10)
               .attr('height', 20)
-              .attr('width',  props.margin.right)
+              .attr('width',  ChartView.getRightMargin())
               .attr('fill', '#f65c4e')
               .style('fill-opacity', 100);
 
@@ -595,7 +599,6 @@ var IndexChart = {
         }
   },
   helpers: {
-
     updateMAValue: function (ma, data) {
       var toggled = $('#ma' + ma + '-checkbox').is(':checked');
       if(toggled)

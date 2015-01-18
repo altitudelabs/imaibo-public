@@ -155,18 +155,17 @@ var RightPanel = {
         }
 
         self.showStockpickerView();
-        // When view is rendered, also render settings panel and autocomplete
+        // // When view is rendered, also render settings panel and autocomplete
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        // Makes stockpicker view refresh every x seconds
+        // // Makes stockpicker view refresh every x seconds
         self.refreshStockpickerView();
+        // Refresh sticky columns
+        StickyColumns.start();
       } 
       else {
         self.updateStockpickerView(model);
       }
-
-      // Refresh sticky columns
-      StickyColumns.start();
     };
 
     var errorHandler = function(model) {
@@ -222,14 +221,14 @@ var RightPanel = {
     table.select('.zxg-price').html(function(d){ return d.lastpx; });
     table.select('.zxg-price-change-abs').html(function(d){ return d.pxchg; });
     table.select('.zxg-price-change-rel').html(function(d){ return d.pxchgratio; });
-
-    StickyColumns.start();
   },
   refreshStockpickerView: function() {
     var self = this;
     var refreshRate = 5000;
     setInterval(function(){
       self.renderStockpickerView(false);
+      // ChartView.repositionIndexChart();
+      // StickyColumns.recalc();
     },refreshRate);
   },
   /* Experts module */
