@@ -428,7 +428,6 @@ var RsiChart = {
       for (var i = 0; i < 3; i++) {
         labels.push(min + (i*diff));
       }
-      // console.log(labels);
       return labels;
     }
   }
