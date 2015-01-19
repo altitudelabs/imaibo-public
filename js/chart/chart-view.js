@@ -265,7 +265,7 @@ var ChartView = {
     var self = this;
     // ChartView.calcZoom(zoomFactor);
     var newLength = Math.floor(self.data.dataSetLength / zoomFactor);
-    if (newLength < 50) { return; }
+    if (newLength < 20) { return; }
     if (newLength > 250) { return; }
     if (newLength > self.data.daily.stockLine.length) { 
       newLength = self.data.daily.stockLine.length;
@@ -278,7 +278,7 @@ var ChartView = {
   },
   moveToRight: function () {
     var self = this;
-    var speed = Math.ceil(self.data.visibleStockLine.length * 0.05);
+    var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
     if(self.data.lastDataIndex + speed > self.data.daily.stockLine.length) { return ;}
     self.data.lastDataIndex+=speed;
     self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
@@ -286,7 +286,7 @@ var ChartView = {
   },
   moveToLeft: function () {
     var self = this;
-    var speed = Math.ceil(self.data.visibleStockLine.length * 0.05);
+    var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
     if(self.data.lastDataIndex  - self.data.visibleStockLine.length - speed < 0) { return ;}
     self.data.lastDataIndex-=speed;
     self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
