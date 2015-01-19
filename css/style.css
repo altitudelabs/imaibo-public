@@ -11,6 +11,8 @@
   =Right Panel
   =Experts
   =Stockpicker
+  =Stockpicker Autocomplete
+  =Stockpicker Add Panel
   =News
   =News Tabs
   =Tooltip
@@ -141,6 +143,18 @@ body::-webkit-scrollbar {
 .bar:hover {
   cursor: pointer;
 }*/
+
+#alert-box {
+  position: fixed;
+  display: none;
+  left: 40%;
+  top: 25%;
+  padding: 15px 20px 15px 20px;
+  border-radius: 5px;
+  background-color: #D7D7CD;
+  color: rgb(47, 184, 244);
+  z-index: 999;
+}
 
 /* =Layout
 -------------------------------------------------------------- */
@@ -1160,49 +1174,6 @@ body::-webkit-scrollbar {
   color: rgb(107, 107, 107);
 }
 
-.outer #right-panel-option-container {
-  width: 15%;
-  float: left;
-}
-
-.outer #right-panel-option-container ul {
-  display: none;
-  position: absolute;
-  left: -200px;
-  z-index: 10;
-  top: 0;
-}
-
-.outer #right-panel-option-container li:hover > ul{
-  display: block;
-}
-
-.outer #stock-search-form {
-  width: 85%;
-  float: right;
-}
-
-.outer #stock-add-panel {
-  right: 45px;
-  width: 200px;
-  background-color: #373737;
-  font-size: 15px;
-  box-shadow: 0px 0px 10px #222;
-}
-
-.outer #stock-add-panel li {
-  padding: 30px;
-  border-bottom: rgb(51, 51, 51) solid 1px;
-}
-
-.outer #stock-add-panel li:last-child {
-  border-bottom: none;
-}
-
-.outer #stock-add-panel li:hover {
-  background-color: #262626;
-}
-
 /* =Experts
 ---------------------------------------------------------------*/
 .outer #experts-view {
@@ -1355,48 +1326,6 @@ body::-webkit-scrollbar {
   color: rgb(107, 107, 107);
 }
 
-.outer #settings {
-  background-color: black;
-  width: 100%;
-  height: 40px;
-  border-right: rgb(51, 51, 51) solid 1px;
-  border-bottom: rgb(51, 51, 51) solid 1px;
-  float: left;
-  background: url('../assets/chart/settings.png') no-repeat center;
-}
-
-.outer #settings:hover {
-  background-image: url('../assets/chart/settings-hover.png');
-  cursor: pointer;
-}
-
-.outer #stock-search {
-  width: 100%;
-  height: 40px;
-  background-color: #1f1f1f;
-  border-bottom: rgb(51, 51, 51) solid 1px;
-  padding: 5px 15px;
-  font-size: 13px;
-  color: #808080;
-}
-
-.outer #stock-search:focus {
-  outline: none;
-}
-
-.outer #searchBar{
-  width: 85%;
-  height: 40px;
-  float: right;
-}
-
-.outer #search{
-  float: right;
-  width: 15%;
-  height: 40px;
-  border-bottom: rgb(51, 51, 51) solid 1px;
-}
-
 .outer #suggestion {
   height: 40px;
   width: 100%;
@@ -1418,6 +1347,8 @@ body::-webkit-scrollbar {
 }
 
 .outer .panel-loader-wrapper {
+  position: absolute;
+  z-index: 999;
   background-color: rgb(38, 38, 38);
 }
 
@@ -1466,19 +1397,6 @@ body::-webkit-scrollbar {
 .outer #login:hover {
   cursor: pointer;
   background-color: #565656;
-}
-
-.outer #search-button {
-  background: url('../assets/chart/search.png') no-repeat center;
-  background-color: #1f1f1f;
-  width: 100%;
-  height: 40px;
-  border-bottom: rgb(51, 51, 51) solid 1px;
-  cursor: pointer;
-}
-
-.outer #search-button:focus {
-  outline: none;
 }
 
 .outer .stock-table-container {
@@ -1545,28 +1463,292 @@ body::-webkit-scrollbar {
   background: url('../assets/chart/down-arrow.png') no-repeat center;
 }
 
-.outer .sub-stock {
+/* =Stockpicker Autocomplete
+---------------------------------------------------------------*/
+.outer #search-wrapper {
+  display: inline-block;
+  width: 85%;
+}
+
+.outer #stock-search {
+  display: inline-block;
+  float: right;
+  width: 85%;
+  height: 40px;
+  background-color: #1f1f1f;
+  border-bottom: rgb(51, 51, 51) solid 1px;
+  padding: 5px 15px;
+  font-size: 13px;
+  color: #808080;
+}
+
+.outer #stock-search:focus {
+  outline: none;
+}
+
+.outer #search-button {
+  display: inline-block;
+  background: url('../assets/chart/search.png') no-repeat center;
+  background-color: #1f1f1f;
+  width: 15%;
+  height: 40px;
+  border-bottom: rgb(51, 51, 51) solid 1px;
+  cursor: pointer;
+  float: right;
+}
+
+.outer #search-button:focus {
+  outline: none;
+}
+
+.outer #search-result {
+  position: absolute;
+  background-color: #3c3c3c;
+  top: 53px;
+  width: 90%;
+  left: 5%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  z-index: 10;
+  display: none;
+  border-radius: 3px
+}
+
+.outer #search-result:before {
+    content: ' ';
+    position: absolute;
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 12px solid #3c3c3c;
+
+    top: -8px;
+    left: 43%;
+    z-index: 3;
+}
+
+.outer .search-block .stock-name a {
+  color: #FFFFFF;
+}
+
+.outer .search-block .ticker {
+  color: #808080;
+  padding-left: 5px;
+}
+
+.outer .search-block:hover .ticker, 
+.outer .search-block:hover .stock-name a {
+  color: rgb(47, 184, 244);
+}
+
+.outer .search-block {
+  padding: 10px;
+  background-color: #3c3c3c;
+  border-bottom: 1px solid rgb(107, 107, 107);
+}
+
+.outer .search-block:last-child {
+  border-bottom: transparent solid 1px;
+}
+
+.outer .search-block:hover {
+  background-color: #666666;
+}
+
+.outer .search-empty {
+  padding: 10px;
+  background-color: #3c3c3c;
+}
+
+.outer .search-add-stock-button {
+  display: inline-block;
+  float: right;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  margin-top: 3px;
+}
+
+.outer .search-add-stock-button.not-selected {
+  background: url('../assets/chart/plus-button.png') no-repeat center;
+}
+
+.outer .search-add-stock-button.selected {
+  background: url('../assets/chart/tick-button.png') no-repeat center;
+}
+
+/* =Stockpicker Add Panel
+---------------------------------------------------------------*/
+.outer #right-panel-option-container {
+  width: 15%;
+  float: left;
+}
+
+.outer #right-panel-option-container ul {
+  display: none;
+  position: absolute;
+  z-index: 100;
+  top: 0;
+}
+
+.outer #right-panel-option-container li:hover > ul {
+  display: block;
+}
+
+.outer #settings {
+  background-color: black;
+  width: 100%;
+  height: 40px;
+  border-right: rgb(51, 51, 51) solid 1px;
+  border-bottom: rgb(51, 51, 51) solid 1px;
+  float: left;
+  background: url('../assets/chart/settings.png') no-repeat center;
+  cursor: pointer;
+}
+
+.outer #settings:hover {
+  background-image: url('../assets/chart/settings-hover.png');
+}
+
+.outer #stock-add-panel {
+  width: 220px;
+  left: -221px;
+  background-color: #373737;
+  font-size: 14px;
+  box-shadow: 0px 0px 10px #222;
+}
+
+.outer .add-panel-item {
+  padding: 33px 30px 33px 30px;
+  border-top: #5a5a5a solid 1px;
+  border-left: #5a5a5a solid 1px;
+  border-right: #5a5a5a solid 1px;
+}
+
+.outer .add-panel-item div {
+  cursor: pointer;
+}
+
+
+.outer .add-panel-item:last-child {
+  border-bottom: #5a5a5a solid 1px;
+}
+
+.outer .add-panel-item:hover {
   background-color: #262626;
-  width: 150px;
+}
+
+.outer .add-panel-item-content {
+  background-color: #262626;
+  width: 160px;
+  left: -160px;
   height: 100%;
-  left: -150px !important;
-  border: rgb(51, 51, 51) solid 1px;
+  border: #5a5a5a solid 1px;
   font-size: 12px;
+  padding: 10px 0px 10px 0px;
 }
 
-.outer .sub-stock > li {
-  padding: 8px !important;
-  border: none !important;
+.outer .add-panel-sub-item > div {
+  padding: 10px;
+  margin: 5px 10px 5px 10px;
 }
 
-.outer .sub-stock > li > div {
+.outer .add-panel-sub-item:hover > div {
   border-radius: 3px;
-  padding: 15px;
+  background-color: #373737;
+  color: #40a3dc;
 }
 
-.outer .sub-stock > li:hover > div {
-  background-color: #373737 !important;
-  color: #40a3dc;
+.outer #right-panel-option-container .add-stock-table {
+  background-color: #262626;
+  top: -1px;
+  left: -353px;
+  width: 353px;
+  border: #5a5a5a solid 1px;
+  font-size: 12px;
+  padding: 5px 0px 0px 0px;
+}
+
+.outer #right-panel-option-container .add-stock-table.first-add-panel-item {
+  top: 0px;
+  left: -300px;
+  width: 300px;
+}
+
+.outer .add-stock-table th {
+  padding: 22px 15px 22px 15px;
+}
+
+.outer .add-stock-table td {
+  padding: 22px 15px 22px 15px;
+}
+
+.outer .add-stock-table tr {
+  border-bottom: 1px solid #373737;
+}
+
+.outer .add-panel-more {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0px 10px 0px;
+}
+
+.outer .add-panel-more a {
+  color: rgb(107, 107, 107);
+}
+
+.outer .add-stock-table .add-stock-name {
+  width: 84px;
+}
+
+.outer .add-stock-table .add-stock-price {
+  width: 66.5px;
+}
+
+.outer .add-stock-table .add-stock-change {
+  width: 66.5px;
+}
+
+.outer .add-stock-table .add-stock-change-ratio {
+  width: 70px;
+}
+
+.outer .add-stock-table .add-stock-button {
+  width: 66px; /*84 + 66.5 + 66.5 + 70 + 66 = 353*/
+}
+
+.outer #stocktable1 .add-stock-name {
+  width: 82.5px; /*27.5% of 300px (in .outer .add-stock-table.first-add-panel-item)*/
+}
+
+.outer #stocktable1 .add-stock-price {
+  width: 82.5px; /*27.5% of 300px*/
+}
+
+.outer #stocktable1 .add-stock-change {
+  width: 67.5px; /*22.5% of 300px*/
+}
+
+.outer #stocktable1 .add-stock-change-ratio {
+  width: 67.5px; /*22.5% of 300px*/
+}
+
+.outer .add-stock-button span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  padding-left: 28px; /*(66 - 10) / 2*/
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.outer .add-stock-button span.not-selected {
+  background: url('../assets/chart/plus-button.png') no-repeat center;
+}
+
+.outer .add-stock-button span.selected {
+  background: url('../assets/chart/tick-button.png') no-repeat center;
 }
 
 /* =News
@@ -1586,19 +1768,14 @@ body::-webkit-scrollbar {
 
 .outer .calendar-and-date {
   width: 100%;
+  height: 37px;
   padding: 10px 17px 10px 20px;
   cursor: pointer;
 }
 
-.outer #all-press .calendar-and-date {
-  margin: 10px 0px 10px 0px;
-}
-
 .outer #press-by-time .calendar-and-date {
-  background: url('../assets/mb-spritesheet.png') no-repeat top left;
-  background-position: 0px -1819px; 
-  width: 298px; 
-  height: 37px;
+  background: url('../assets/chart/news-background.png') repeat-x top left;
+  width: 300px; 
 }
 
 .outer #press-by-time .arrow-sign {
@@ -1724,8 +1901,8 @@ body::-webkit-scrollbar {
 ---------------------------------------------------------------*/
 .outer #news-tabs {
   width: 100%;
-  height: 20px;
-  padding: 20px 20px 10px 20px;
+  height: 65px;
+  padding: 20px 20px 20px 20px;
 }
 
 .outer #news-tabs li {
