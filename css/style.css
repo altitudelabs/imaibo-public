@@ -683,7 +683,9 @@ body::-webkit-scrollbar {
   user-select: none;
 }
 
-.outer #chart:hover {
+.outer #chart:hover,
+.outer #macd:hover,
+.outer #rsi:hover {
   cursor: pointer;
 }
 

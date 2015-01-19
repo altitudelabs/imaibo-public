@@ -28,7 +28,6 @@ var RsiChart = {
   update: function () {
     this.setProperties();
     this.updateData();
-    this.appendComponents();
     this.draw();
   },
   updateData: function () {
@@ -59,6 +58,7 @@ var RsiChart = {
     var self = this;
     $('#rsi-chart').empty();
     $('#rsi-chart-label').empty();
+
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
     self.componentsBuilder.topBorder.append();
@@ -81,34 +81,24 @@ var RsiChart = {
     var self = this;
     $('#rsi-chart-container').css('width', ChartView.properties.chartWidth);
 
-    //DATA SECTION ======================================================
     for (var key in self.components) {
+    //DATA SECTION ======================================================
       if (self.componentsBuilder[key].linkData) {
         self.componentsBuilder[key].linkData();
       }
-    }
-
     //ENTER LOOP ======================================================
-    for (var key in self.components) {
       if (self.componentsBuilder[key].enter) {
         self.componentsBuilder[key].enter();
       }
-    }
-    
     //UPDATE LOOP ===============================================================
-    for (var key in self.components) {
       if (self.componentsBuilder[key].update) {
         self.componentsBuilder[key].update();
       }
-    }
-    
     //EXIT LOOP ===============================================================
-    for (var key in self.components) {
       if (self.componentsBuilder[key].enter) {
         self.components[key].exit().remove();
       }
-    }
-    
+    }    
     // Draw RSI lines
     function plotRSI(rsi, color){
       var line = d3.svg.line()
@@ -329,6 +319,7 @@ var RsiChart = {
             }else{
               ChartView.moveToLeft(index);
             }
+            ChartView.showAllScrollbars();
           });
         //because d3 drag requires data/datum to be valid
         RsiChart.components.scrollBar = RsiChart.components.chart.append('rect')
@@ -369,16 +360,18 @@ var RsiChart = {
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
         .attr('width', RsiChart.properties.graphWidth)
-        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom - 25)
-        .call(ChartView.zoomBehavior());
+        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10)
+        .call(ChartView.zoomBehavior())
+        .datum([])   //because d3 drag requires data/datum to be valid
+        .call(ChartView.chartDragBehavior());;
       },
       update: function () {
         RsiChart.components.mouseOverlay
         .on('mouseover', function(e){
-          $('html').css('overflow', 'hidden');
+          ChartView.mouseOverMouseOverlay();
           return Tooltip.show(); })
         .on('mouseout', function(){
-          $('html').css('overflow', 'visible');
+          ChartView.mouseOutMouseOverlay();
           return Tooltip.hide(); })
         .on('mousemove', function(){
           var xPos, mouseX, mouseY;
