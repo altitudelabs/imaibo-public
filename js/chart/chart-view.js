@@ -446,123 +446,12 @@ var ChartView = {
   },
   mouseOutMouseOverlay: function(){
     var mOver = ChartView.properties.mouseOverScrollbar;
-    console.log(mOver);
     ChartView.properties.mouseOverChart = false;
     if(!mOver){
       ChartView.hideAllScrollbars();
       $('html').css('overflow', 'visible');
     }
   },
-  // horizontalScroll: function () {
-  //   'use strict';
-
-  //   var self = this;
-
-  //   var params = {
-  //     scroller: '.scroller',
-  //     bar: '.scroller__bar',
-  //     barOnCls: 'baron',
-  //     direction: 'h',
-  //   };
-  //   var scroll = baron(params);
-
-  //   $('#price').hover(
-  //     function() {
-  //       $('#chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
-  //     },
-  //     function() {
-  //       $('#chart-container .scroller__bar').stop().fadeTo('slow', 0);
-  //   });
-
-  //   $('#rsi-chart').hover(
-  //     function() {
-  //       $('#rsi-chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
-  //     },
-  //     function() {
-  //       $('#rsi-chart-container .scroller__bar').stop().fadeTo('slow', 0);
-  //   });
-
-  //   $('#macd-chart').hover(
-  //     function() {
-  //       $('#macd-chart-container .scroller__bar').stop().fadeTo('slow', 0.5);
-  //     },
-  //     function() {
-  //       $('#macd-chart-container .scroller__bar').stop().fadeTo('slow', 0);
-  //   });
-
-  //   //should optimize should not
-  //   // scrollDistance is stored to prevent bouncing back of zoomed chart during data update
-  //   $('.scroller').on('mousewheel', function (event){
-  //     event.preventDefault();
-  //     var original = $('.scroller').scrollLeft();
-  //     self.properties.scrollDistance = original;
-  //     if (!event.originalEvent.deltaY)
-  //       event.originalEvent.deltaY = -event.originalEvent.wheelDelta; // reverse scrolling direction for ie
-  //     var val = self.properties.scrollDistance - event.originalEvent.deltaY;
-  //     var diff = (event.originalEvent.deltaY > 0? Math.ceil(val):Math.floor(val));
-  //     $('.scroller').scrollLeft(diff);
-
-  //     if (event.originalEvent.deltaY > 0 ) {
-  //       self.moveToRight();
-  //     } else if (event.originalEvent.deltaY < 0) {
-  //       self.moveToLeft();
-  //     }
-
-  //     ChartView.leftValue = $('.scroller').scrollLeft();
-  //     // self.setLastIndexOnViewPort();
-  //   });
-
-  //   $('.scroller').on('DOMMouseScroll', function (event){
-  //     event.preventDefault();
-  //     var original = $('.scroller').scrollLeft();
-  //     self.properties.scrollDistance = original;
-  //     $('.scroller').scrollLeft(self.properties.scrollDistance - event.originalEvent.detail * 20);
-  //     // self.setLastIndexOnViewPort();
-  //   });
-  // },
-  // scrollbarAnimation: function(){
-  //   $('.scroll-bar, .scroller').on('mouseenter', function(){
-  //     $('.handle').fadeIn(500);
-  //   });
-  //   $('.scroll-bar, .scroller').on('mouseout', function(){
-  //     $('.handle').hide();
-  //   });
-  // },
-  // updateScrollbar: function(){
-  //   var ratio  = ChartView.data.visibleStockLine.length/ChartView.data.daily.stockLine.length;
-  //   var length = ratio * ChartView.getChartWidth();
-  //   var diff   = ChartView.data.lastDataIndex - ChartView.data.dataSetLength;
-  //   var leftRatio = diff/ChartView.data.daily.stockLine.length;
-  //   var left = leftRatio * ChartView.getChartWidth();
-  //   $('.handle').css('width', length + 'px');
-  //   $('.handle').css('left', left + 'px');
-  // },
-  // dragScrollbar: function() {
-  //   var props = this.properties;
-  //   $('.handle').on('mousedown', function(event) {
-  //       props.isDragging = true;
-  //       props.mouseXPosOnDrag = event.pageX;
-  //       $('.handle').on('mousemove', function(event) {
-  //       if (props.isDragging) {
-  //         var el = $('.scroller'), scrolled = el.scrollLeft();
-  //         IndexChart.currLeft = scrolled;
-  //         props.pixelDiff     = event.clientX - props.mouseXPosOnDrag;
-  //         var left = scrolled + (props.mouseXPosOnDrag - event.pageX);
-  //         $('.handle').css('left', -left + 'px');
-  //       }
-  //     });
-  //   });
-
-
-  //   $('.handle').on('mouseup', function(event) {
-  //     props.isDragging = false;
-  //     $('.handle').unbind('mousemove');
-  //   });
-  //   $('.handle').on('mouseout', function(event) {
-  //     props.isDragging = false;
-  //     $('.handle').unbind('mousemove');
-  //   });
-  // },
   // ============= PUBLIC GETTERS/SETTERS ======================
   getLastIndexOnViewPort: function() {
     return this.properties.lastIndexOnViewPort;

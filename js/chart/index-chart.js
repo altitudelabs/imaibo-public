@@ -541,7 +541,6 @@ var IndexChart = {
             ChartView.mouseOverMouseOverlay();
             return Tooltip.show(); })
           .on('mouseout', function() { 
-            console.log('yo')
             ChartView.mouseOutMouseOverlay();
 
             IndexChart.components.horizontalText.style('fill-opacity', 0);
