@@ -25,6 +25,7 @@ var IndexChart = {
   init: function() {
     this.setProperties();
     this.updateData();
+    this.appendComponents();
     this.draw();
     this.hideScrollbar();
   },
@@ -58,8 +59,6 @@ var IndexChart = {
   },
   appendComponents: function () {
     var self = this;
-    $('#chart').empty();
-    $('#chart-label').empty();
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
     self.componentsBuilder.topBorder.append();
@@ -90,7 +89,6 @@ var IndexChart = {
   draw: function() {
     var self = this;
 
-    self.appendComponents();
 
     //////////////////////PRIVATE HELPER FUNCTIONS BELOW//////////////////////
     /*
@@ -159,7 +157,7 @@ var IndexChart = {
     self.componentsBuilder.lineStems.enter();
     self.componentsBuilder.xLabels.enter();
 
-    //EXIT LOOP =================================================================
+    // //EXIT LOOP =================================================================
     self.components.y1Labels.exit().remove();
     self.components.y2Labels.exit().remove();
     self.components.volumes.exit().remove();
@@ -167,7 +165,7 @@ var IndexChart = {
     self.components.lineStems.exit().remove();
     self.components.xLabels.exit().remove();
 
-    //UPDATE LOOP ===============================================================
+    // //UPDATE LOOP ===============================================================
     self.componentsBuilder.y1Labels.update();
     self.componentsBuilder.y2Labels.update();
     self.componentsBuilder.volumes.update();
@@ -359,10 +357,10 @@ var IndexChart = {
     },
     candleSticks: {
       append: function () {
-        IndexChart.components.candleSticks = IndexChart.components.chart.append('g').attr('class', 'candleSticks');
+        IndexChart.components.candleSticks = IndexChart.components.chart.append('g').attr('class', 'candleSticks').selectAll('rect.bars');
       },
       linkData: function () {
-        IndexChart.components.candleSticks = IndexChart.components.candleSticks.selectAll('rect.bars').data(ChartView.getVisibleStockLine());
+        IndexChart.components.candleSticks = IndexChart.components.candleSticks.data(ChartView.getVisibleStockLine());
       },
       enter: function () {
         IndexChart.components.candleSticks.enter().append('rect').attr('class', 'bars');
@@ -387,10 +385,10 @@ var IndexChart = {
     },
     lineStems: {
       append: function () {
-        IndexChart.components.lineStems = IndexChart.components.chart.append('g').attr('class', 'lineStems');
+        IndexChart.components.lineStems = IndexChart.components.chart.append('g').attr('class', 'lineStems').selectAll('line.lines');
       },
       linkData: function () {
-        IndexChart.components.lineStems = IndexChart.components.lineStems.selectAll('line.lines').data(ChartView.getVisibleStockLine());
+        IndexChart.components.lineStems = IndexChart.components.lineStems.data(ChartView.getVisibleStockLine());
       },
       enter: function () {
         IndexChart.components.lineStems.enter().append('line').attr('class', 'lines');
@@ -410,10 +408,10 @@ var IndexChart = {
     },
     xLabels: {
       append: function () {
-        IndexChart.components.xLabels = IndexChart.components.chart.append('g').attr('class', 'xlabels');
+        IndexChart.components.xLabels = IndexChart.components.chart.append('g').attr('class', 'xlabels').selectAll('text.labels');
       },
       linkData: function () {
-        IndexChart.components.xLabels = IndexChart.components.xLabels.selectAll('text.labels').data(IndexChart.data.xLabelData);
+        IndexChart.components.xLabels = IndexChart.components.xLabels.data(IndexChart.data.xLabelData);
       },
       enter: function () {
         IndexChart.components.xLabels.enter().append('text').attr('class', 'labels');
@@ -476,71 +474,39 @@ var IndexChart = {
     },
     scrollBar: {
       append: function () {
-        //because d3 drag requires data/datum to be valid
         IndexChart.components.scrollBar = IndexChart.components.chart.append('rect')
                                             .attr('class', 'scrollbar')
                                             .datum([])
                                             .attr('height', 7)
-                                            // .attr('width', ChartView.getScrollbarWidth())
+                                            .attr('y', IndexChart.properties.height)
+                                            .attr('x', ChartView.getChartWidth() - ChartView.getScrollbarWidth())
                                             .attr('rx', 4)
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
-                                            .style('fill-opacity', 50);
+                                            .on('mouseenter', function(e) {
+                                              IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()? 50:0);
+                                              ChartView.properties.mouseOverScrollbar = true;
+                                            })
+                                            .on('mouseleave', function(e) {
+                                               var mChart = ChartView.properties.mouseOverChart;
+                                               IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', !mChart? 0: 50);
+                                               ChartView.properties.mouseOverScrollbar = false;
+                                            })
+                                            .call(ChartView.scrollbarDragBehavior());
         ChartView.properties.mouseOverScrollbar = false;
         ChartView.properties.mouseOverChart     = false;
       },
       update: function() {
-        var drag = d3.behavior.drag()
-          .origin(function(d) { return d; })
-          .on('drag', function(d){
-            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
-            if(xPos < 0 ) xPos = 0;
-            if(xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) xPos = ChartView.getChartWidth()-ChartView.getScrollbarWidth();
-            ChartView.setScrollbarPos(xPos);
-            // console.log(xPos);
-            d3.select(this).attr('x', xPos);
+        console.log('width', ChartView.getScrollbarWidth());
 
-            if(d3.event.dx > 0){
-              ChartView.moveToRight();
-            }else{
-              ChartView.moveToLeft();
-            }
-          });
         IndexChart.components.scrollBar
         .attr('x', ChartView.getScrollbarPos())
-        .attr('y', IndexChart.properties.height)
         .attr('width', ChartView.getScrollbarWidth())
-        .call(drag)
-        .on('mouseenter', function(e) {
-            IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()? 50:0);
-            ChartView.properties.mouseOverScrollbar = true;
-        })
-        .on('mouseleave', function(e) {
-           var mChart = ChartView.properties.mouseOverChart;
-           console.log('leave');
-           IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', !mChart? 0: 50);
-           ChartView.properties.mouseOverScrollbar = false;
-        });
+        .style('fill-opacity', 50);
       }
     },  
     mouseOverlay: {
       append: function () {
-       var dragEnd;
-       var drag = d3.behavior.drag()
-          .origin(function(d) { return d; })
-          .on("drag", function(d){
-            if(d3.event.dx < 0){
-              ChartView.moveToRight();
-            }else{
-              ChartView.moveToLeft();
-            }
-            clearTimeout(dragEnd);
-            dragEnd = setTimeout(function(){
-              if(ChartView.isChartAtLeftMost()){
-                IndexChart.updateIndexByDrag()
-              }
-            } ,100);
-          });
         var props = IndexChart.properties;
         var mousedown = false
         IndexChart.components.mouseOverlay = IndexChart.components.chart.append('rect')
@@ -552,12 +518,11 @@ var IndexChart = {
                                              .attr('y', ChartView.getTopMargin() + props.yOffset)
                                              .attr('height', props.height + 20)
                                              .call(ChartView.zoomBehavior())
-                                             .datum([{x: 0, y: 0}])
-                                             .call(drag);
+                                             .datum([])   //because d3 drag requires data/datum to be valid
+                                             .call(ChartView.chartDragBehavior());
                                              // .on("touchstart.zoom", null)
                                              // .on("touchmove.zoom", null)
                                              // .on("touchend.zoom", null);
-
       },
       update: function () {
         IndexChart.components.mouseOverlay
