@@ -409,6 +409,7 @@ var ChartView = {
     ChartView.updateVisibleStockLine();
     $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();
+    ChartView.setScrollbarPos();
 
     IndexChart.update();
 
@@ -417,11 +418,13 @@ var ChartView = {
   },
   rebuild: function() {
     ChartView.setProperties();
+    ChartView.updateVisibleStockLine();
+    ChartView.setScrollbarWidth();
+    ChartView.setScrollbarPos();
     $('.zoomable-chart-container').css('width', '100%');
     RsiChart.init();
     MacdChart.init();
     IndexChart.update();
-    SentimentChart.update();
     SentimentChart.update();
   },
   showAllScrollbars: function(){

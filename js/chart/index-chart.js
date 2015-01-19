@@ -174,6 +174,12 @@ var IndexChart = {
     self.componentsBuilder.xLabels.update();
     self.componentsBuilder.scrollBar.update();
 
+    self.componentsBuilder.topBorder.update();
+    self.componentsBuilder.rightBorder.update();
+    self.componentsBuilder.bottomBorder.update();
+    self.componentsBuilder.leftBorder.update();
+
+
     // PLOT LINES ===================================================================
     plotLines('sentiment', '#25bcf1');
     plotLines('ma5', '#fff');
@@ -222,12 +228,12 @@ var IndexChart = {
     },
     topBorder: {
       append: function () {
-        IndexChart.components.rightBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.topBorder = IndexChart.components.chartLabel.append('svg:line')
         .attr('class', 'border-top');
       },
       update: function () {
         var props = IndexChart.properties;
-        IndexChart.components.rightBorder
+        IndexChart.components.topBorder
         .attr('x1', ChartView.getLeftMargin())
         .attr('x2', ChartView.getContainerWidth() - ChartView.getRightMargin())
         .attr('y1', ChartView.getTopMargin())
@@ -257,12 +263,12 @@ var IndexChart = {
     },
     bottomBorder: {
       append: function () {
-        IndexChart.components.topBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.bottomBorder = IndexChart.components.chartLabel.append('svg:line')
         .attr('class', 'border-bottom');
       },
       update: function () {
         var props = IndexChart.properties;
-        IndexChart.components.topBorder
+        IndexChart.components.bottomBorder
         .attr('x1', ChartView.getLeftMargin())
         .attr('x2', ChartView.getLeftMargin() + ChartView.getChartWidth()) //shift to the left
         .attr('y1', props.height - ChartView.getBottomMargin() + 4) //offseting the border width
@@ -273,12 +279,12 @@ var IndexChart = {
     },
     leftBorder: {
       append: function () {
-        IndexChart.components.topBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.leftBorder = IndexChart.components.chartLabel.append('svg:line')
         .attr('class', 'border-left');
       },
       update: function () {
         var props = IndexChart.properties;
-        IndexChart.components.topBorder
+        IndexChart.components.leftBorder
         .attr('x1', ChartView.getLeftMargin())
         .attr('x2', ChartView.getLeftMargin())
         .attr('y1', props.height - ChartView.getBottomMargin() + 4) //accounting border width
