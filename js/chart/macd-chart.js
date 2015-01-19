@@ -443,7 +443,6 @@ var MacdChart = {
       for (var i = 0; i < 3; i++) {
         labels.push(Math.floor(min + (i*diff)));
       }
-      console.log(labels);
       return labels;
     }
   }
