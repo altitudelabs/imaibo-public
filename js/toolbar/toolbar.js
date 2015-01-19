@@ -103,14 +103,15 @@ var Toolbar = {
     var zoomIn = $('#zoomin');
     var zoomOut = $('#zoomout');
     zoomIn.click(function(){
-      ChartView.redraw(1.2);
+      ChartView.zoom(1.2);
       // IndexChart.redraw(1.2);
       // RsiChart.redraw(1.2);
       // MacdChart.redraw(1.2);
     });
 
     zoomOut.click(function(){
-      ChartView.redraw(1/1.2);
+      ChartView.zoom(1/1.2);
+      // ChartView.updateIndexByDrag();
 
       // IndexChart.redraw(1/1.2);
       // RsiChart.redraw(1/1.2);
@@ -118,6 +119,8 @@ var Toolbar = {
     });
   },
   initRsi: function(){
+    $('#rsi-checkbox').prop('checked', false); // fix button checks persists after refreshing in Firefox
+
     $('#rsi-checkbox-row').click(function(e) {
       var cb = $(this).find(':checkbox')[0];
       //if the click wasn't from the checkbox already, toggle it
@@ -130,15 +133,18 @@ var Toolbar = {
        $('#rsi').css('display', 'none');
     }
 
-    $('#rsi-checkbox').change(function(){
+    $('#rsi-checkbox').change(function(e){
       if(this.checked){
        $('#rsi').css('display', 'block');
       }else{
        $('#rsi').css('display', 'none');
       }
+      StickyColumns.recalc();
     });
   },
   initMacd: function() {
+    $('#macd-checkbox').prop('checked', false);
+
     $('#macd-checkbox-row').click(function(e) {
       var cb = $(this).find(':checkbox')[0];
       //if the click wasn't from the checkbox already, toggle it
@@ -157,6 +163,7 @@ var Toolbar = {
       }else{
        $('#macd').css('display', 'none');
       }
+      StickyColumns.recalc();
     });
   },
   initFreq: function() {

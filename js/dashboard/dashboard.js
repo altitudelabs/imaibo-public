@@ -8,10 +8,7 @@ var Dashboard = {
   render: function(model){
     var self = this;
 
-    // Render dashboard
     if (self.firstLoad){
-      // model.moodindexInfo.change = '0';
-      // model.moodindexInfo.changeRatio = '0%';
       if(model.moodindexInfo.changeRatio.slice(-1) != '%'){
         model.moodindexInfo.changeRatio += '%';
       }
@@ -25,14 +22,15 @@ var Dashboard = {
     }
 
     self.updateData(model);
-    self.renderThermoLiquid(model);
 
     this.renderIndicatorTooltip({
       remarks: model.tradingSign.remarks,
       date: model.tradingSign.date,
       clock: model.tradingSign.clock
     });
-
+  },
+  renderWithError: function(){
+    $('#snapshot').append('<div class="empty-data" id="dashboard-no-data">暂时无法下载数据，请稍后再试</div>');
   },
   updateDashboard: function(targetId, templateId, resource){
     var targetSelector = $(targetId);
@@ -66,7 +64,7 @@ var Dashboard = {
             c += hold[i];
         }
       }
-      var clock   = data.clock.substr(0, data.clock.length-3);
+      var clock = data.clock.substr(0, data.clock.length-3);
 
       var d = {
         date: data.date,
@@ -79,7 +77,7 @@ var Dashboard = {
       Helper.populateView('#indicator-tooltip', '#indicator-template', d);
     }
   },
-  renderThermoLiquid: function(model){
+  renderThermoLiquid: function(model, animate){
     var liquid = $('.thermo > .thermo-wrapper > .background');
     var dottedLine = $('.thermo > .thermo-wrapper > .previous-sentiment-dotted-line');
     var before = parseFloat(model.moodindexInfo.before);
@@ -90,9 +88,14 @@ var Dashboard = {
         h1 = Math.min(Math.abs(before)/100*(maxY-minY)+minY,100),
         h2 = Math.min(Math.abs(latest)/100*(maxY-minY)+minY,100);
 
-    liquid.css('height', h1 + '%');
-    liquid.animate({height: h2 + '%'}, 1000);
-    dottedLine.css('height', h1 + '%');
+    if (animate){
+      liquid.css('height', h1 + '%');
+      liquid.animate({height: h2 + '%'}, 1000);
+      dottedLine.css('height', h1 + '%');
+    } else {
+      liquid.css('height', h2 + '%');
+      dottedLine.css('height', h1 + '%');
+    }
   },
   glow: function(targetId, orgColor, altColor){
       $(targetId).animate({color: altColor}, 2000, function() {
@@ -158,9 +161,10 @@ var Dashboard = {
           $('#changes').animate({opacity: 0}, 1500);
         }, 2000);
       }
-      this.renderThermoLiquid(model);
+      this.renderThermoLiquid(model, true);
       this.prevData.change = model.moodindexInfo.change;
     } else {
+      this.renderThermoLiquid(model, false);
       this.firstLoad = false;
       this.prevData.change = model.moodindexInfo.change;
       this.prevData.before = model.moodindexInfo.before;

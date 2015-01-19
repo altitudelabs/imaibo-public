@@ -1,3 +1,10 @@
+Date.prototype.yyyymmdd = function() {
+  var yyyy = this.getFullYear().toString();
+  var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+  var dd  = this.getDate().toString();
+  return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+};
+
 String.prototype.format = function() {
   var formatted = this;
   for (var i = 0; i < arguments.length; i++) {
@@ -131,9 +138,10 @@ var Helper = {
     var targetSelector = $(targetId);
     var templateSelector = $(templateId);
     var template = Handlebars.compile(templateSelector.html());
-    if(resource.constructor === Array){
+    if(resource.constructor === Array) {
       targetSelector.html(template({data: resource}));
-    }else{
+    }
+    else {
       targetSelector.html(template(resource));
     }
 

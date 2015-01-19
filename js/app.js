@@ -1,7 +1,8 @@
 var PRODUCTION = false;
 // Hide Phase II features
-var HIDE = true;
+var HIDE = false;
 var IE8 = !!$('.lt-ie9').length;
+// var _MID_ = 1;
 
 $(function(){
   'use strict';
