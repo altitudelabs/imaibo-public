@@ -28,6 +28,7 @@
   <!--[if (gt IE 9)|!(IE)]>-->
   <div class="outer">
     <div id="tooltip"></div>
+    <div id="alert-box"></div>
   <!--<![endif]-->
     <!-- Right panel start -->
     <div id="right-panel">
@@ -45,86 +46,386 @@
 
       <!-- Stockpicker view start -->
       <div id="stockpicker-view" class="component">
+
         <div class="wrapper" id="stockpicker-wrapper">
+
           <ul id="right-panel-option-container">
-            <li><div id="settings"></div></li>
-            <li> <ul id="stock">
-              <li>上证
-                <ul class="sub-stock">
-                  <li><div class="padding">最多持仓</div> <!-- .padding is for better UX. It wouldn't suddenly close up the ul because user's mouse didn't move quick enough -->
-                  <ul>
-                    <li>
-                    <table class="sub-stock-table">
-                      <thead>
-                        <tr>
-                          <th>股票名称</th>
-                          <th>现价</th>
-                          <th>涨跌额</th>
-                          <th>涨跌幅</th>
-                          <th>加自选</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>股票名称</td>
-                          <td class="rise">9.89</td>
-                          <td class="rise">0.46</td>
-                          <td class="rise">12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>股票名称</td>
-                          <td class="fall">9.89</td>
-                          <td class="fall">0.46</td>
-                          <td class="fall">12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>股票名称</td>
-                          <td>9.89</td>
-                          <td>0.46</td>
-                          <td>12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>股票名称</td>
-                          <td>9.89</td>
-                          <td>0.46</td>
-                          <td>12.03%</td>
-                          <td>
-                            <input type="checkbox">
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    </li>
-                    <li><a href="#">查看更多</a></li>
-                  </ul>
-                  </li>
-                  <li><div class="padding">最多买入</div></li>
-                  <li><div class="padding">最多卖出</div></li>
-                  <li><div class="padding">重仓股</div></li>
-                </ul>
-              </li>
-              <li>草根股神</li>
-              <li>热门股</li>
-              <li>行情股</li>
-            </ul>
+
+            <li>
+              <div id="settings"></div>
             </li>
+
+            <li>
+              <ul id="stock-add-panel">
+
+                <li class="add-panel-item">
+                  <div>指数</div>
+
+                  <ul class="add-stock-table first-add-panel-item">
+                    <li>
+                      <table id="stocktable1">
+
+                        <thead>
+                          <tr>
+                            <th>股票名称</th>
+                            <th>现价</th>
+                            <th>涨跌额</th>
+                            <th>涨跌幅</th>
+                          </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                      </table>
+                    </li>
+
+                    <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                  </ul>
+                </li>
+
+                <li class="add-panel-item">
+                  <div>草根股神</div>
+
+                  <ul class="add-panel-item-content">
+                    <li class="add-panel-sub-item">
+                      <div>最多持仓</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable2">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>最多买入</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable3">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>最多卖出</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable4">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>重仓股</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable5">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+
+                <li class="add-panel-item">
+                  <div>热度排行</div>
+
+                  <ul class="add-panel-item-content">
+                    <li class="add-panel-sub-item">
+                      <div>热搜股票</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable6">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>最多关注股票</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable7">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>热股讨论股票(一天)</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable8">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>热股讨论股票(一周)</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable9">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+
+                <li class="add-panel-item">
+                  <div>行情股</div>
+
+                  <ul class="add-panel-item-content">
+                    <li class="add-panel-sub-item">
+                      <div>涨幅榜</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable10">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>跌幅榜</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable11">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>股票趋势</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable12">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="add-panel-sub-item">
+                      <div>成交突破</div>
+                      <ul class="add-stock-table">
+
+                        <li>
+                          <table id="stocktable13">
+
+                            <thead>
+                              <tr>
+                                <th>股票名称</th>
+                                <th>现价</th>
+                                <th>涨跌额</th>
+                                <th>涨跌幅</th>
+                                <th>加自选</th>
+                              </tr>
+                            </thead>
+
+                            <tbody></tbody>
+
+                          </table>
+                        </li>
+
+                        <li class="add-panel-more"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+
+              </ul>
+            </li>
+
           </ul>
 
-          <form id="stock-search-form" action="">
-            <div id="search"><button id="search-button"></button></div>
-            <div id="searchBar">
-              <input type="text" id="stock-search" placeholder="输入股票名称/代码">
-            </div>
-          </form>
+          <div id="search-wrapper">
+
+              <div id="search-button"></div>
+              <input type="text" id="stock-search" autocomplete="off" placeholder="输入股票名称/代码">
+              <div id="search-result"></div>
+
+          </div>
+
         </div>
 
         <div class="wrapper center" id="stock-login">
@@ -159,26 +460,27 @@
 
       <!-- News view start -->
       <div id="news-view" class="component">
-        <div class="news-block">
-          <div class="calendar-and-date">
-            <div class="calendar"></div>
-            <div class="date">yyyy-mm-dd</div>
+
+        <ul id="news-tabs">
+          <li><a href="#press-by-time">时间划分</a></li>
+          <li><a href="#all-press">全展开</a></li>
+        </ul>
+
+        <div id="news-content">
+
+          <div id="press-by-time" class="content"></div>
+
+          <div id="all-press" class="content">
+
+            <div class="calendar-and-date">
+              <span class="calendar"></span>
+              <span class="date"></span>
+            </div>
+
+            <div id='news-blocks'></div>
+
           </div>
 
-          <div class="content">
-            今年的指数高点来临了, 注意今年是2014年。
-          </div>
-
-          <div class="sentiment-news rise">
-            <span class="label">心情指数</span>
-            <span class="arrow rise"></span>
-            <span class="percentage">80%</span>
-          </div>
-
-          <div class="time-and-source">
-            <div class="time">10:15</div>
-            <div class="source">来自投资微博APP</div>
-          </div>
         </div>
 
       </div>
@@ -209,14 +511,14 @@
       <!-- Chart view start -->
       <div id="chart-view">
         <div id="snapshot" class="component">
-          <div id="loading"></div>
+          <div class="dashboard-loader"></div>
           <div class="component-wrapper" id="dashboard"></div>
         </div>
 
         <div class="loader"></div>
         <div id="price" class="component">
           <div class="chart-header">
-            <div class="title">上证K线 - 心情累积值</div>
+            <div class="title">上证K线 - 心情累积值<span id="index-info-button" class="mb info-button"></span></div>
             <ul class="legend" id="legend" ma=" ">
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
 
@@ -232,19 +534,13 @@
                 <div class="dropdown-menu" data-target="frequency">
                   <form>
                   <ul>
-
-                    <li id="minute-radio-row">
-                      <input type="radio" name="freq" id="minute-radio">
-                      <label for="minute-radio"><span class="mb"></span>分时</label>
-                    </li>
-
                     <li id="day-radio-row">
-                      <input type="radio" name="freq" id="day-radio">
+                      <input type="radio" name="freq" id="day-radio" checked>
                       <label for="day-radio"><span class="mb"></span>1日</label>
                     </li>
 
                     <li id="week-radio-row">
-                      <input type="radio" name="freq" id="week-radio" checked>
+                      <input type="radio" name="freq" id="week-radio">
                       <label for="week-radio"><span class="mb"></span>1周</label>
                     </li>
 
@@ -277,18 +573,16 @@
             </ul>
           </div>
           <!-- Toolbar end -->
-          <div id="chart-label">
+
+          <div id="chart-label"></div>
+          <div class='container zoomable-chart-container' id="chart-container">
+          <div id="chart" class="scroller"></div>
           </div>
-          <div class='container zoomable-chart-container' id="chart-container" >
-            <div class="scroller">
-              <div id="chart"></div>
-              <div class="scroller__bar"></div>
-            </div>
-          </div>
-          <div id="chart-x-label"></div>
+
         </div>
         <div id="rsi" class="component">
           <div class="wrapper chart-header">
+
             <div class="title">RSI</div>
             <div class="buttons">
               <ul>
@@ -299,10 +593,15 @@
               <div class="close"></div>
             </div>
           </div>
+
           <div id="rsi-chart-label"></div>
           <div class='container zoomable-chart-container' id="rsi-chart-container" >
-            <div class="zoomable-chart" id="rsi-chart"></div>
+            <div class="scroller">
+              <div class="zoomable-chart" id="rsi-chart"></div>
+              <div class="scroller__bar"></div>
+            </div>
           </div>
+
         </div>
         <div id="macd" class="component">
           <div class="wrapper chart-header">
@@ -317,13 +616,36 @@
           </div>
 
           <div id="macd-chart-label"></div>
-          <div class='container zoomable-chart-container' id="macd-chart-container" >
-            <div class="zoomable-chart" id="macd-chart"></div>
+          <div class='container zoomable-chart-container' id="macd-chart-container">
+            <div class="scroller">
+              <div class="zoomable-chart" id="macd-chart"></div>
+              <div class="scroller__bar"></div>
+            </div>
           </div>
         </div>
         <div id="sentiment" class="component">
           <div class="chart-header">
-            <div class="title">上证分时 - 心情变动值</div>
+            <div class="title">上证分时 - 心情变动值<span id="sentiment-info-button" class="mb info-button"></span></div>
+            <ul id="sentiment-chart-legend">
+              <li>
+                <span>上证：</span>
+                <div class="security">
+                <span></span>
+                </div>
+              </li>
+              <li>
+                <span>心情：</span>
+                <div class="mood">
+                <span></span>
+                </div>
+              </li>
+              <li>
+                <span>心情变化：</span>
+                <div class="moodchange">
+                <span></span>
+                </div>
+              </li>
+            </ul>
             <ul class="legend">
               <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
               <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
@@ -345,9 +667,20 @@
     </div>
     <!-- Content panel end -->
 
-    <!-- Start experts modal dialog -->
-    <div id="experts-modal"></div>
-    <!-- End experts modal dialog -->
+    <!-- Start modal dialogs -->
+    <div id="experts-modal" class="modal"></div>
+    <div id="index-info-modal" class="modal">
+      <h1>上证K线 - 心情累积值是什么?</h1>
+      <div class="content">内容</div>
+      <a class="modal-close mb close-modal" href="#"></a>
+    </div>
+    <div id="sentiment-info-modal" class="modal">
+      <h1>上证分时 - 心情变动值是什么?</h1>
+      <div class="content">内容</div>
+      <a class="modal-close mb close-modal" href="#"></a>
+    </div>
+    <div id="lean_overlay"></div>
+    <!-- End modal dialogs -->
   </div>
 
   <!-- Dashboard start -->
@@ -501,7 +834,6 @@
     <ul>
       <li class="tt-title">{{dateStr date}}</li>
       <li class="tt-subtitle">上证指数</li>
-      <li class="tt-row"><span class="tt-label">价格</span><span class="tt-value">{{formatNumber price 2}}</span></li>
       <li class="tt-row"><span class="tt-label">开盘</span><span class="tt-value">{{formatNumber security.openpx 2}}</span></li>
       <li class="tt-row"><span class="tt-label">最高</span><span class="tt-value">{{formatNumber security.highpx 2}}</span></li>
       <li class="tt-row"><span class="tt-label">最低</span><span class="tt-value">{{formatNumber security.lowpx 2}}</span></li>
@@ -584,6 +916,7 @@
   </script>
   <!-- Experts template end -->
 
+  <!-- Start experts modal dialog -->
   <script id="experts-modal-template" type="text/x-handlebars-template">
     <h1>{{headline.title}}</h1>
     <h2>{{headline.uptime}}</h2>
