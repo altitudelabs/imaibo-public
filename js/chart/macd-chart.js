@@ -64,6 +64,7 @@ var MacdChart = {
     self.componentsBuilder.y2Labels.append();
     self.componentsBuilder.xLabels.append();
     self.componentsBuilder.bars.append();
+    self.componentsBuilder.scrollBar.append();
     
     // DEA line
     this.components.chart.append('path')
@@ -152,7 +153,7 @@ var MacdChart = {
         var props = MacdChart.properties;
         var width = ChartView.getChartWidth() * ChartView.getZoomFactor();
         MacdChart.components.chart
-        .attr('height', props.height-27)
+        .attr('height', props.height)
         .attr('width', width)
         .select('svg')
         .attr('width', width);
@@ -316,7 +317,58 @@ var MacdChart = {
         .attr('width',function(d) { return 0.8 * MacdChart.properties.graphWidth/MacdChart.data.stockLine.length; })
         .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
       }
-    },
+    }, 
+    scrollBar: {
+      append: function () {
+        var drag = d3.behavior.drag()
+          .origin(function(d) { return d; })
+          .on('drag', function(d){
+            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
+            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
+              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
+            if(xPos < 0)
+              xPos = 0;
+
+            ChartView.properties.scrollbarPos = xPos;
+            d3.select(this).attr('x', ChartView.properties.scrollbarPos);
+            var index = d3.event.dx / ChartView.getChartWidth() * ChartView.getStockLine().length;
+
+            if(d3.event.dx > 0){
+              ChartView.moveToRight(index);
+            }else{
+              ChartView.moveToLeft(index);
+            }
+          });
+        //because d3 drag requires data/datum to be valid
+        MacdChart.components.scrollBar = MacdChart.components.chart.append('rect')
+                                            .attr('class', 'scrollbar')
+                                            .datum([])
+                                            .attr('height', 7)
+                                            .attr('rx', 4)
+                                            .attr('ry', 4)
+                                            .style('fill', 'rgb(107, 107, 107)')
+                                            .style('fill-opacity', 50)
+                                            .call(drag);
+        ChartView.properties.mouseOverScrollbar = false;
+        ChartView.properties.mouseOverChart     = false;
+      },
+      update: function() {
+        MacdChart.components.scrollBar
+        .attr('x', ChartView.getScrollbarPos())
+        .attr('y', MacdChart.properties.height - 30)
+        .attr('width', ChartView.getScrollbarWidth())
+        .on('mouseenter', function(e) {
+            IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()? 50:0);
+            ChartView.properties.mouseOverScrollbar = true;
+        })
+        .on('mouseleave', function(e) {
+           var mChart = ChartView.properties.mouseOverChart;
+           MacdChart.components.scrollBar.transition().duration(1000).style('fill-opacity', !mChart? 0: 50);
+           ChartView.properties.mouseOverScrollbar = false;
+        });
+      }
+    },  
     mouseOverlay: {
       append: function () {
         MacdChart.components.mouseOverlay = MacdChart.components.chart.append('rect')
@@ -324,9 +376,9 @@ var MacdChart = {
         .attr('fill', 'transparent')
         .attr('fill-opacity', 1)
         .attr('x', 0)
-        .attr('y', ChartView.properties.margin.top)
+        .attr('y', 0)
         .attr('width', MacdChart.properties.graphWidth)
-        .attr('height', MacdChart.properties.chartHeight)
+        .attr('height', MacdChart.properties.chartHeight - 25)
         .call(ChartView.zoomBehavior());
       },
       update: function () {

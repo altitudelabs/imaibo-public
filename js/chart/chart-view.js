@@ -182,10 +182,12 @@ var ChartView = {
   getPastData: function () {
     var self = this;
     var earliestDate = self.data.daily.stockLine[0].rdate;
+    console.log('yow');
     ChartModel.getIndexData(earliestDate-1, false, null, true, function () {
+      var leftIndex = ChartModel.model.stockLineLengthDiff + self.data.lastDataIndex - 10;
+      self.data.lastDataIndex = leftIndex;
       self.updateData();
       self.redraw();
-      var leftIndex = ChartModel.model.stockLineLengthDiff + ChartView.getLastIndexOnViewPort() - 10;
     });
   },
   updateData: function (indexError, sentimentError) {
@@ -198,6 +200,8 @@ var ChartView = {
     self.data.lastDataIndex = self.data.lastDataIndex || self.data.daily.stockLine.length;
     self.data.dataSetLength = self.data.dataSetLength || self.data.daily.stockLine.length;
     self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.setScrollbarWidth();
+    //self.setScrollbarXPos();
   },
   /* Initial build of chart elements */
   buildChartElements: function() {
@@ -265,7 +269,7 @@ var ChartView = {
     // ChartView.calcZoom(zoomFactor);
     var newLength = Math.floor(self.data.dataSetLength / zoomFactor);
     if (newLength < 20) { return; }
-    if (newLength > 250) { return; }
+    // if (newLength > 250) { return; }
     if (newLength > self.data.daily.stockLine.length) { 
       newLength = self.data.daily.stockLine.length;
     }
@@ -274,16 +278,22 @@ var ChartView = {
       ChartView.setLastDataIndex(index);
     }
     ChartView.setDataSetLength(newLength);
-    // ChartView.updateVisibleStockLine();
+    ChartView.updateVisibleStockLine();
     // ChartView.setScrollbarWidth();
-    ChartView.redraw();
+    // ChartView.redraw();
 
     if(ChartView.isZoomed()){
        IndexChart.components.scrollBar.style('fill-opacity', 50);
+       RsiChart  .components.scrollBar.style('fill-opacity', 50);
+       MacdChart .components.scrollBar.style('fill-opacity', 50);
     }else{
        IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
+       RsiChart  .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
+       MacdChart .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
     }
     self.data.dataSetLength = newLength;
+    self.setScrollbarWidth();
+    self.setScrollbarPos();
     self.redraw();
   },
   zoomBehavior: function() {
@@ -292,27 +302,97 @@ var ChartView = {
                       var deltaY = d3.event.sourceEvent.deltaY;
                       if(deltaY > 0){
                         ChartView.moveToLeft();
+                        // ChartView.moveScrollbarToLeft();
                       }else if(deltaY < 0){
                         ChartView.moveToRight();
+                        // ChartView.moveScrollbarToRight();
                       }
                     });
   },
-  moveToRight: function () {
+  scrollbarDragBehavior: function(){
+    return d3.behavior.drag()
+          .origin(function(d) { return d; })
+          .on('drag', function(d){
+            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
+            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
+              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
+            if(xPos < 0)
+              xPos = 0;
+
+            ChartView.properties.scrollbarPos = xPos;
+            d3.select(this).attr('x', ChartView.properties.scrollbarPos);
+            var index = d3.event.dx / ChartView.getChartWidth() * ChartView.getStockLine().length;
+
+            if(d3.event.dx > 0){
+              ChartView.moveToRight(index);
+            }else{
+              ChartView.moveToLeft(index);
+            }
+          });
+  },
+  chartDragBehavior: function(){
+    var dragEnd;
+    return d3.behavior.drag()
+    .origin(function(d) { return d; })
+    .on("drag", function(d){
+      clearTimeout(dragEnd);
+      dragEnd = setTimeout(function(){
+        if(ChartView.isChartAtLeftMost()){
+          IndexChart.updateIndexByDrag()
+        }
+      } ,100);
+
+      if(d3.event.dx < 0){
+        ChartView.moveToRight();
+        ChartView.moveScrollbarToRight();
+      }else{
+        ChartView.moveToLeft();
+        ChartView.moveScrollbarToLeft();
+      }
+    });
+  },
+  moveToRight: function (delta) {
     var self = this;
-    var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
+    var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
+        speed = Math.abs(speed);
+
     if(self.data.lastDataIndex + speed > self.data.daily.stockLine.length) { return ;}
-    self.data.lastDataIndex+=speed;
+    self.data.lastDataIndex += speed;
     self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.setScrollbarPos();
     self.redraw();
+    // self.properties.scrollbarPos += speed; 
   }, 
-  moveToLeft: function () {
+  moveToLeft: function (delta) {
     var self = this;
-    var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
-    if(self.data.lastDataIndex  - self.data.visibleStockLine.length - speed < 0) { return ;}
-    self.data.lastDataIndex-=speed;
+    var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
+    speed = Math.abs(speed);
+    if(self.data.lastDataIndex - speed < self.data.visibleStockLine.length) { return ;}
+    self.data.lastDataIndex -= speed;
     self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.setScrollbarPos();
     self.redraw();
   },
+  // moveScrollbarToRight: function(){
+  //   var self = this;
+  //   var speed = Math.ceil(self.data.visibleStockLine.length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
+  //   var nextXPos = ChartView.getScrollbarPos() + speed;
+  //   if(nextXPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
+  //     nextXPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
+
+  //   IndexChart.components.scrollBar
+  //   .attr('x', ChartView.properties.scrollbarPos = nextXPos);
+  // },
+  // moveScrollbarToLeft: function(){
+  //   var self = this;
+  //   var speed = Math.ceil(self.data.visibleStockLine.length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
+  //   var nextXPos = ChartView.getScrollbarPos() - speed;
+  //   if(nextXPos < 0) nextXPos = 0;
+
+  //   IndexChart.components.scrollBar
+  //   .attr('x', ChartView.properties.scrollbarPos = nextXPos);
+  // },
   redraw: function () {
     ChartView.updateVisibleStockLine();
     $('.zoomable-chart-container').css('width', '100%');
@@ -519,10 +599,10 @@ var ChartView = {
   },
   isChartAtLeftMost: function(){
     var next = ChartView.getLastDataIndex() - ChartView.getScrollSpeed();
-    return next < ChartView.getVisibleStockLine().length;
+    return ChartView.getLastDataIndex() - ChartView.getVisibleStockLine().length <= 0;
   },
   getScrollbarWidth: function() {
-    return ChartView.properties.scrollBarWidth || ChartView.getChartWidth();
+    return ChartView.properties.scrollBarWidth;
   },
   setScrollbarWidth: function(){
     ChartView.properties.scrollBarWidth = ChartView.getVisibleStockLine().length/ChartView.getStockLine().length*ChartView.getChartWidth();
@@ -530,8 +610,10 @@ var ChartView = {
   getScrollbarPos: function(){
     return ChartView.properties.scrollbarPos;
   }, 
-  setScrollbarPos: function(x){
+  setScrollbarPos: function(){
+    var x =  (ChartView.getLastDataIndex() - ChartView.getVisibleStockLine().length)/ChartView.getStockLine().length * ChartView.getChartWidth();
     ChartView.properties.scrollbarPos = x;
+    console.log(ChartView.getLastDataIndex(), ChartView.getVisibleStockLine().length, ChartView.getStockLine().length);
   } 
 };
 
