@@ -227,9 +227,7 @@ var RightPanel = {
     var refreshRate = 5000;
     setInterval(function(){
       self.renderStockpickerView(false);
-      // ChartView.repositionIndexChart();
-      // StickyColumns.recalc();
-    },refreshRate);
+    },refreshRate); 
   },
   /* Experts module */
   initExpertsModule: function() {

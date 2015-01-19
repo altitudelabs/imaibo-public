@@ -203,6 +203,8 @@ var ChartModel = {
       self.model.daily.stockLine.reverse();
     } 
     else if(updateByDragging){
+      ChartModel.errorCheckIndex(res, false);
+      if(ChartModel.model.indexError) return;
       var stockLine = res.data.daily.stockLine;
       var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
 
@@ -216,14 +218,15 @@ var ChartModel = {
                                 .reduce(function(prev, curr, i, arr) { return prev || curr });
 
       if(this.currEarliestTime < returnedLatestTime) return;
-
       if(this.endOfSentiment) return;
+
 
       //api returned in descending order
       stockLine.reverse();
       var orgLength = daily.stockLine.length;
       daily.stockLine = stockLine.concat(daily.stockLine);
-      ChartModel.model.stockLineLengthDiff = daily.stockLine.length - orgLength;
+      ChartModel.model.stockLineLengthDiff = daily.stockLine.length - orgLength- 10;
+      this.currEarliestTime = daily.stockLine[0].timestamp;
     } else {
       var latestPrice = res.data.latestPrice;
       var lastData    = self.model.daily.stockLine.slice(-1).pop();
