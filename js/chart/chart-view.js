@@ -181,6 +181,10 @@ var ChartView = {
   },
   getPastData: function () {
     var self = this;
+    if (self.updating) {
+      return;
+    }
+    self.updating = true;
     var earliestDate = self.data.daily.stockLine[0].rdate;
     var oldLength = self.data.daily.stockLine.length;
     ChartModel.getIndexData(earliestDate-1, false, null, true, function () {
@@ -189,6 +193,7 @@ var ChartView = {
       self.data.lastDataIndex += diff;
       self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
       self.moveToLeft();
+      self.updating = false;
     });
   },
   updateData: function (indexError, sentimentError) {
