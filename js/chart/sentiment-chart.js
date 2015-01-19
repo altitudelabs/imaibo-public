@@ -156,13 +156,13 @@ var SentimentChart = {
       .range([props.height - props.margin.top - props.margin.bottom - props.margin.bottom, props.margin.top+20]);
     },
     minIndex: function (prop, data) {
-      if(data && data.length != 0){
+      if(data && data.length !== 0){
         return d3.min(data.map(function(x) { return +x[prop]; }));
       }
       return 0;
     },
     maxIndex: function (prop, data) {
-      if(data && data.length != 0) {
+      if(data && data.length !== 0) {
         return d3.max(data.map(function(x) { return +x[prop]; }));
       }
       return 0;
@@ -211,7 +211,7 @@ var SentimentChart = {
     // Returns current timestamp in client format
     getCurrentTimestamp: function(){
       var t = new Date();
-      var t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
+      t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
       return t;
     },
     getLastest: function (type, timestamp) {
@@ -600,7 +600,7 @@ var SentimentChart = {
             .attr('d', d3.svg.line()
                  .x(function(d,i) { return SentimentChart.data.x(d.timestamp); })
                  .y(function(d)   { return SentimentChart.data.y2(d.price); })
-                 .interpolate('basis'))
+                 .interpolate('basis'));
           }
           //style specific
           if (id.substr(id.length - 6) === 'Dotted') {
@@ -775,32 +775,32 @@ var SentimentChart = {
           var tooltipHeight = 59;
           var news;
           var title;
-          var div = '<div class="sentiment-tooltip">\
-                       <div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '<div class="more-news" style="cursor:pointer;">更多</div></div>\
-                       <div class="wrapper">';
+          var div = '<div class="sentiment-tooltip">' +
+                       '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '<div class="more-news" style="cursor:pointer;">更多</div></div>' +
+                       '<div class="wrapper">';
 
-          for (var i = 0; i < d.newsList.length; i++) {
-            if (i === 3) { break; }
-            news = d.newsList[i]
-            title = news.newsTitle.length > 11 ? news.newsTitle.slice(i, 11) + '...' : news.newsTitle.slice(i, 13);
-            div +=    '<div>&nbsp;&#183;\
-                         <a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;\
-                         <div class="arrow-wrapper">\
-                           <div class="arrow-text">心情影响: </div>\
-                           <div class="arrow ' + arrow + '"></div>\
-                           <div class="arrow-number"> ' + news.newsMood + '</div>\
-                         </div>\
-                       </div>'
+          for (var j = 0; j < d.newsList.length; j++) {
+            if (j === 3) { break; }
+            news = d.newsList[j];
+            title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
+            div +=    '<div>&nbsp;&#183;' +
+                         '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;' +
+                         '<div class="arrow-wrapper">' +
+                           '<div class="arrow-text">心情影响: </div>' +
+                           '<div class="arrow ' + arrow + '"></div>' +
+                           '<div class="arrow-number"> ' + news.newsMood + '</div>' +
+                         '</div>' +
+                       '</div>';
             tooltipHeight += 22;
           }
 
-          div +=     '</div>\
-                    </div>\
-                  </div>';
+          div +=     '</div>' +
+                    '</div>'  +
+                  '</div>';
 
           var dotPosition = [d3.select(this).attr('cx'), d3.select(this).attr('cy')];
           var padding = 15;          
-          var tooltipHeight;
+          // var tooltipHeight;
           SentimentChart.components.tooltip
           .html(div)
           .style('left', shouldRenderLeft ? dotPosition[0] - padding - 250 + 'px' : dotPosition[0] - padding + 'px')
@@ -854,8 +854,8 @@ var SentimentChart = {
               inBottom = mousePosition[1] < dotPosition[1] + padding;
             }
             if (!(inLeft && inRight && inTop && inBottom)) {
-              SentimentChart.componentsBuilder.tooltip.update()
-              SentimentChart.componentsBuilder.scatterDots.update()
+              SentimentChart.componentsBuilder.tooltip.update();
+              SentimentChart.componentsBuilder.scatterDots.update();
             }
           })
           .style('display', 'inline-block');
@@ -881,7 +881,7 @@ var SentimentChart = {
 
         })
         .on('mouseout', function (d, i) {
-        })
+        });
       },
       update: function () {
         SentimentChart.components.scatterDotsHover
@@ -911,13 +911,13 @@ var SentimentChart = {
         .style('top', 7)
         .style('background-color', 'rgb(38, 38, 38)')
         .attr('width', props.chartWidth - 2)
-        .attr('height', props.chartHeight - 44)
+        .attr('height', props.chartHeight - 44);
       },
       animate: function () {
         var props = SentimentChart.properties;
         SentimentChart.components.sentimentCover
         .style('left', props.chartWidth - 2)
-        .attr('width', 0)
+        .attr('width', 0);
       }
     },
     sentimentOverlay: {
@@ -948,7 +948,7 @@ var SentimentChart = {
           }
 
           SentimentChart.helpers.updateLegends(indexData, moodindexData);
-        })
+        });
       },
     }
   }

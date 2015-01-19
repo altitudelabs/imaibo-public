@@ -1,5 +1,3 @@
-'use strict'
-
 var ChartModel = {
   model: {
     info:         {},
@@ -208,14 +206,12 @@ var ChartModel = {
       var stockLine = res.data.daily.stockLine;
       var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
 
-      this.currEarliestTime  = this.currEarliestTime 
-                                || daily.stockLine[0].timestamp;
+      this.currEarliestTime  = this.currEarliestTime || daily.stockLine[0].timestamp;
      
      //mark if no more sentiment data is returned. i.e assuming when it returns 0
-      this.endOfSentiment = this.endOfSentiment 
-                            || stockLine
-                                .map(function(e) { return e.moodindex === 0; })
-                                .reduce(function(prev, curr, i, arr) { return prev || curr });
+      this.endOfSentiment = this.endOfSentiment || stockLine
+                                                    .map(function(e) { return e.moodindex === 0; })
+                                                    .reduce(function(prev, curr, i, arr) { return prev || curr; });
 
       if(this.currEarliestTime < returnedLatestTime) return;
       if(this.endOfSentiment) return;

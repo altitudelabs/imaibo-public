@@ -70,7 +70,7 @@ var ChartView = {
     var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x[returnProp]; }));
 
     min = min - ((max-min)/height)*volumeHeight;
-    max = max + ((max - min)*0.1)
+    max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
   //return lowpx, highpx
@@ -80,7 +80,7 @@ var ChartView = {
     var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMax]; }));
 
     min = min - ((max-min)/height)*volumeHeight;
-    max = max + ((max - min)*0.1)
+    max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
   
@@ -364,11 +364,11 @@ var ChartView = {
     // self.properties.scrollbarPos += speed; 
   }, 
   moveToLeft: function (delta) {
-    var self = this;
+    var self  = this;
     var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
     speed = Math.ceil(speed);
-    var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
-    if(self.data.lastDataIndex  - self.data.visibleStockLine.length - speed < 0) { 
+    speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
+    if(self.data.lastDataIndex - self.data.visibleStockLine.length - speed < 0) { 
       self.data.lastDataIndex = self.data.visibleStockLine.length;
     } else {
       self.data.lastDataIndex -= speed;
@@ -517,7 +517,7 @@ var ChartView = {
     this.data.dataSetLength = length;
   },
   updateVisibleStockLine: function() {
-    var vsl = ChartView.getStockLine().slice(ChartView.getLastDataIndex() - ChartView.getDataSetLength(), ChartView.getLastDataIndex())
+    var vsl = ChartView.getStockLine().slice(ChartView.getLastDataIndex() - ChartView.getDataSetLength(), ChartView.getLastDataIndex());
     ChartView.setVisibleStockLine(vsl);
   },
   getScrollSpeed: function(){

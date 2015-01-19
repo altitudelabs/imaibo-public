@@ -363,7 +363,7 @@ var RsiChart = {
         .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10)
         .call(ChartView.zoomBehavior())
         .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());;
+        .call(ChartView.chartDragBehavior());
       },
       update: function () {
         RsiChart.components.mouseOverlay

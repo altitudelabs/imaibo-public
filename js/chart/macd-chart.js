@@ -382,7 +382,7 @@ var MacdChart = {
         .attr('height', MacdChart.properties.chartHeight - 5)
         .call(ChartView.zoomBehavior())
         .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());;;
+        .call(ChartView.chartDragBehavior());
       },
       update: function () {
         MacdChart.components.mouseOverlay

@@ -518,7 +518,7 @@ var IndexChart = {
     mouseOverlay: {
       append: function () {
         var props = IndexChart.properties;
-        var mousedown = false
+        var mousedown = false;
         IndexChart.components.mouseOverlay = IndexChart.components.chart.append('rect')
                                              .attr('class', 'mouseover-overlay')
                                              .attr('fill-opacity', 0)
