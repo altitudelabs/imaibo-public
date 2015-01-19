@@ -341,8 +341,10 @@ var ChartView = {
     .on("drag", function(d){
       if(d3.event.dx < 0){
         ChartView.moveToRight();
+        // ChartView.moveScrollbarToRight();
       }else{
         ChartView.moveToLeft();
+        // ChartView.moveScrollbarToLeft();
       }
     });
   },
@@ -421,6 +423,32 @@ var ChartView = {
     IndexChart.update();
     SentimentChart.update();
     SentimentChart.update();
+  },
+  showAllScrollbars: function(){
+      RsiChart.components.scrollBar.style('fill-opacity', 100);
+      IndexChart.components.scrollBar.style('fill-opacity', 100);
+      MacdChart.components.scrollBar.style('fill-opacity', 100);
+  },
+  hideAllScrollbars: function(){
+      RsiChart.components.scrollBar.style('fill-opacity', 0);
+      IndexChart.components.scrollBar.style('fill-opacity', 0);
+      MacdChart.components.scrollBar.style('fill-opacity', 0);
+  },
+  mouseOverMouseOverlay: function(){
+    ChartView.properties.mouseOverChart = true;
+    if(ChartView.isZoomed()){ 
+    $('html').css('overflow', 'hidden');
+      ChartView.showAllScrollbars();
+    }
+  },
+  mouseOutMouseOverlay: function(){
+    var mOver = ChartView.properties.mouseOverScrollbar;
+    console.log(mOver);
+    ChartView.properties.mouseOverChart = false;
+    if(!mOver){
+      ChartView.hideAllScrollbars();
+      $('html').css('overflow', 'visible');
+    }
   },
   // horizontalScroll: function () {
   //   'use strict';

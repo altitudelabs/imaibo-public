@@ -395,7 +395,6 @@ var IndexChart = {
       },
       enter: function () {
         IndexChart.components.lineStems.enter().append('line').attr('class', 'lines');
-   
       },
       update: function () {
         var props = IndexChart.properties;
@@ -487,12 +486,16 @@ var IndexChart = {
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
                                             .on('mouseenter', function(e) {
-                                              IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()? 50:0);
+                                              if(ChartView.isZoomed()){
+                                                ChartView.showAllScrollbars();
+                                              }
                                               ChartView.properties.mouseOverScrollbar = true;
                                             })
                                             .on('mouseleave', function(e) {
                                                var mChart = ChartView.properties.mouseOverChart;
-                                               IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', !mChart? 0: 50);
+                                               if(!mChart){
+                                                ChartView.hideAllScrollbars();
+                                               }
                                                ChartView.properties.mouseOverScrollbar = false;
                                             })
                                             .call(ChartView.scrollbarDragBehavior());
@@ -514,10 +517,7 @@ var IndexChart = {
                                              .attr('class', 'mouseover-overlay')
                                              .attr('fill-opacity', 0)
                                              .attr('x', 0)
-                                             .attr('width', ChartView.getGraphWidth())
                                              .attr('id', 'abc')
-                                             .attr('y', ChartView.getTopMargin() + props.yOffset)
-                                             .attr('height', props.height + 20)
                                              .call(ChartView.zoomBehavior())
                                              .datum([])   //because d3 drag requires data/datum to be valid
                                              .call(ChartView.chartDragBehavior());
@@ -526,16 +526,17 @@ var IndexChart = {
                                              // .on("touchend.zoom", null);
       },
       update: function () {
+        var props = IndexChart.properties;
         IndexChart.components.mouseOverlay
+          .attr('width', ChartView.getGraphWidth())
+          .attr('y', ChartView.getTopMargin() + props.yOffset)
+          .attr('height', props.height-4)
           .on('mouseover', function(e) { 
-            $('html').css('overflow', 'hidden');
-            IndexChart.components.scrollBar.attr('fill-opacity', ChartView.isZoomed()? 50:0);
+            ChartView.mouseOverMouseOverlay();
             return Tooltip.show(); })
           .on('mouseout', function() { 
-            var mOver = ChartView.properties.mouseOverScrollbar;
-            IndexChart.components.scrollBar.transition().duration(200).style('fill-opacity', mOver? 50:0);
-            ChartView.properties.mouseOverChart = false;
-            $('html').css('overflow', 'visible');
+            console.log('yo')
+            ChartView.mouseOutMouseOverlay();
 
             IndexChart.components.horizontalText.style('fill-opacity', 0);
             IndexChart.components.horizontalLine.style('stroke-opacity', 0);
