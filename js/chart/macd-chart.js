@@ -320,16 +320,17 @@ var MacdChart = {
     mouseOverlay: {
       append: function () {
         MacdChart.components.mouseOverlay = MacdChart.components.chart.append('rect')
-        .attr('class','mouseover-overlay');
-      },
-      update: function () {
-        MacdChart.components.mouseOverlay
+        .attr('class','mouseover-overlay')
         .attr('fill', 'transparent')
         .attr('fill-opacity', 1)
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
         .attr('width', MacdChart.properties.graphWidth)
         .attr('height', MacdChart.properties.chartHeight)
+        .call(ChartView.zoomBehavior());
+      },
+      update: function () {
+        MacdChart.components.mouseOverlay
         .on('mouseover', function(e){
           $('html').css('overflow', 'hidden');
           return Tooltip.show(); })

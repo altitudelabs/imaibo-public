@@ -133,7 +133,7 @@ var Toolbar = {
        $('#rsi').css('display', 'none');
     }
 
-    $('#rsi-checkbox').change(function(){
+    $('#rsi-checkbox').change(function(e){
       if(this.checked){
        $('#rsi').css('display', 'block');
       }else{

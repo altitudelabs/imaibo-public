@@ -286,6 +286,17 @@ var ChartView = {
     self.data.dataSetLength = newLength;
     self.redraw();
   },
+  zoomBehavior: function() {
+    return d3.behavior.zoom()
+                    .on("zoom", function(){
+                      var deltaY = d3.event.sourceEvent.deltaY;
+                      if(deltaY > 0){
+                        ChartView.moveToLeft();
+                      }else if(deltaY < 0){
+                        ChartView.moveToRight();
+                      }
+                    });
+  },
   moveToRight: function () {
     var self = this;
     var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
