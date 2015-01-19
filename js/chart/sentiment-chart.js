@@ -26,6 +26,7 @@ var SentimentChart = {
     this.draw(true);
     $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
     $('#sentiment .legend').remove();
+    $('#sentiment-chart-legend').remove();
   },
   update: function () {
     this.setProperties();
