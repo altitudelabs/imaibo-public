@@ -74,6 +74,7 @@ var RsiChart = {
     this.components.chart.append('path').attr('class', 'rsi12');
     this.components.chart.append('path').attr('class', 'rsi24');
 
+    self.componentsBuilder.mouseOverlay.append();
   },
   draw: function() {
     var self = this;
@@ -312,14 +313,15 @@ var RsiChart = {
         RsiChart.components.mouseOverlay = RsiChart.components.chart.append('rect')
         .attr('class','mouseover-overlay')
         .attr('fill', 'transparent')
-        .attr('fill-opacity', 0);
+        .attr('fill-opacity', 0)
+        .attr('x', 0)
+        .attr('y', ChartView.properties.margin.top)
+        .attr('width', RsiChart.properties.graphWidth)
+        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom - 25)
+        .call(ChartView.zoomBehavior());
       },
       update: function () {
         RsiChart.components.mouseOverlay
-        .attr('x', 0)
-        .attr('y', Chartview.properties.margin.top)
-        .attr('width', RsiChart.properties.graphWidth)
-        .attr('height', RsiChart.properties.height-Chartview.properties.margin.top-Chartview.properties.margin.bottom - 25)
         .on('mouseover', function(e){
           $('html').css('overflow', 'hidden');
           return Tooltip.show(); })

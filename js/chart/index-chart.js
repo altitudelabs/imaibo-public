@@ -525,15 +525,6 @@ var IndexChart = {
     },  
     mouseOverlay: {
       append: function () {
-        var zoom = d3.behavior.zoom()
-                    .on("zoom", function(){
-                      var deltaY = d3.event.sourceEvent.deltaY;
-                      if(deltaY > 0){
-                        ChartView.moveToLeft();
-                      }else if(deltaY < 0){
-                        ChartView.moveToRight();
-                      }
-                    });
        var dragEnd;
        var drag = d3.behavior.drag()
           .origin(function(d) { return d; })
@@ -560,7 +551,7 @@ var IndexChart = {
                                              .attr('id', 'abc')
                                              .attr('y', ChartView.getTopMargin() + props.yOffset)
                                              .attr('height', props.height + 20)
-                                             .call(zoom)
+                                             .call(ChartView.zoomBehavior())
                                              .datum([{x: 0, y: 0}])
                                              .call(drag);
                                              // .on("touchstart.zoom", null)
