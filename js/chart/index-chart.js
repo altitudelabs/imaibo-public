@@ -184,13 +184,13 @@ var IndexChart = {
     // TOOLTIP =====================================================================
     self.componentsBuilder.mouseOverlay.update();    
   },
-  updateIndexByDrag: function(){
-    if(!IndexChart.isDrawing){
-      //calc earliest date 
-      ChartView.updateChartElements();
-      ChartView.getPastData();  
-    }
-  },
+  // updateIndexByDrag: function(){
+  //   if(!IndexChart.isDrawing){
+  //     //calc earliest date 
+  //     ChartView.updateChartElements();
+  //     ChartView.getPastData();  
+  //   }
+  // },
   componentsBuilder: {
     chart: {
       append: function () {
@@ -292,7 +292,8 @@ var IndexChart = {
         IndexChart.components.y1Labels = IndexChart.components.chartLabel.append('g').attr('class','y1labels').selectAll('text.yrule');
       },
       linkData: function () {
-        IndexChart.components.y1Labels = IndexChart.components.y1Labels.data(IndexChart.data.y1.ticks(5));
+        var data = ChartView.getVisibleStockLine().map(function(x) { return +x.moodindex; });
+        IndexChart.components.y1Labels = IndexChart.components.y1Labels.data(IndexChart.helpers.getYLabelsData(data));
       },
       enter: function () {
         IndexChart.components.y1Labels.enter().append('text').attr('class', 'yrule');
@@ -305,7 +306,9 @@ var IndexChart = {
         .attr('y', IndexChart.data.y1)
         .attr('text-anchor', 'middle')
         .style('fill','rgb(129, 129, 129)')
-        .text(String);
+        .text(function (x) {
+          return Math.floor(x);
+        });
       }
     },
     y2Labels: {
@@ -313,7 +316,11 @@ var IndexChart = {
         IndexChart.components.y2Labels = IndexChart.components.chartLabel.append('g').attr('class','y2labels').selectAll('text.yrule');
       },
       linkData: function () {
-        IndexChart.components.y2Labels = IndexChart.components.y2Labels.data(IndexChart.data.y2.ticks(8));
+        var data = ChartView.getVisibleStockLine().map(function(x) { return +x.price; });
+        var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x.lowpx; }));
+        var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x.highpx; }));
+
+        IndexChart.components.y2Labels = IndexChart.components.y2Labels.data(IndexChart.helpers.getYLabelsData([min, max]));
       },
       enter: function () {
         IndexChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -326,12 +333,8 @@ var IndexChart = {
         .attr('y', IndexChart.data.y2)
         .attr('text-anchor', 'middle')
         .style('fill','rgb(129, 129, 129)')
-        .text(function(d, i) {
-          //to avoid y2 clipping its labels
-          //takes the max then round it to nearest hundreds
-           IndexChart.y2Max = IndexChart.y2Max 
-                      || 100*Math.round(d3.max(IndexChart.data.stockLine.map(function(x) { return +x['highpx']; }))/100);
-           return (IndexChart.y2Max !== d?d:'');
+        .text(function (x) {
+          return Math.floor(x);
         });
       }
     },
@@ -497,8 +500,6 @@ var IndexChart = {
         ChartView.properties.mouseOverChart     = false;
       },
       update: function() {
-        console.log('width', ChartView.getScrollbarWidth());
-
         IndexChart.components.scrollBar
         .attr('x', ChartView.getScrollbarPos())
         .attr('width', ChartView.getScrollbarWidth())
@@ -627,6 +628,18 @@ var IndexChart = {
       var toggled = $('#ma' + ma + '-checkbox').is(':checked');
       if(toggled)
         $('#ma' + ma + '-legend span').text('MA' + ma + ': ' + data);
+    },
+    getYLabelsData: function (data) {
+      var self = IndexChart;
+      var max = d3.max(data);
+      var min = d3.min(data);
+      var labels = [];
+      var diff = (max - min)/6;
+      min -= diff;
+      for (var i = 0; i < 8; i++) {
+        labels.push(min + (i*diff));
+      }
+      return labels;
     }
   }
 };

@@ -43,7 +43,7 @@ var RsiChart = {
       allDataArray.push(parseInt(self.data.stockLine[i].rsi12));
       allDataArray.push(parseInt(self.data.stockLine[i].rsi24));
     }
-    var y2Range = self.helpers.getRangeWithBuffer(d3.min(allDataArray), d3.max(allDataArray));
+    var y2Range = [0, 120];
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
@@ -269,7 +269,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data(RsiChart.data.y2.ticks(3));
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data(RsiChart.helpers.getYLabelsData([0, 100]));
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -418,6 +418,18 @@ var RsiChart = {
   helpers: {
     getRangeWithBuffer: function (min, max) {
       return [min - ((max - min)*0.5), max + ((max - min)*0.5)];
+    },
+    getYLabelsData: function (data) {
+      var self = IndexChart;
+      var max = d3.max(data);
+      var min = d3.min(data);
+      var labels = [];
+      var diff = (max - min)/2;
+      for (var i = 0; i < 3; i++) {
+        labels.push(min + (i*diff));
+      }
+      // console.log(labels);
+      return labels;
     }
   }
 };

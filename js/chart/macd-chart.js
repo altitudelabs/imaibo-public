@@ -241,7 +241,10 @@ var MacdChart = {
                                                  .attr('class','y1labels').selectAll('text.y1rule');
       },
       linkData: function () {
-        MacdChart.components.y1Labels = MacdChart.components.y1Labels.data(MacdChart.data.y1.ticks(3));
+        var data = ChartView.data.visibleStockLine.map(function(x) {return Math.abs((+x.diff));});
+        var min = d3.max(data)*-1;
+        var max = d3.max(data);
+        MacdChart.components.y1Labels = MacdChart.components.y1Labels.data(MacdChart.helpers.getYLabelsData([max, min]));
       },
       enter: function () {
         MacdChart.components.y1Labels.enter().append('text').attr('class', 'y1rule');
@@ -260,7 +263,10 @@ var MacdChart = {
                                                  .attr('class','y2labels').selectAll('text.y2rule');
       },
       linkData: function () {
-        MacdChart.components.y2Labels = MacdChart.components.y2Labels.data(MacdChart.data.y2.ticks(3));
+        var data = ChartView.data.visibleStockLine.map(function(x) {return Math.abs((+x.macd));});
+        var min = d3.max(data)*-1;
+        var max = d3.max(data);
+        MacdChart.components.y2Labels = MacdChart.components.y2Labels.data(MacdChart.helpers.getYLabelsData([max, min]));
       },
       enter: function () {
         MacdChart.components.y2Labels.enter().append('text').attr('class', 'y2rule');
@@ -427,6 +433,18 @@ var MacdChart = {
   helpers: {
     getRangeWithBuffer: function (min, max) {
       return [min - ((max - min)*0.5), max + ((max - min)*0.5)];
+    },
+    getYLabelsData: function (data) {
+      var self = IndexChart;
+      var max = d3.max(data);
+      var min = d3.min(data);
+      var labels = [];
+      var diff = (max - min)/2;
+      for (var i = 0; i < 3; i++) {
+        labels.push(Math.floor(min + (i*diff)));
+      }
+      console.log(labels);
+      return labels;
     }
   }
 };
