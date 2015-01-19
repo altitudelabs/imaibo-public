@@ -2212,7 +2212,6 @@ body::-webkit-scrollbar {
 .outer .modal .content {
   padding: 20px 10px;
   font-size: 12px;
-  letter-spacing: 1.5px;
 }
 
 .outer .modal .modal-close {
