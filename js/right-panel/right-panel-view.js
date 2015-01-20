@@ -33,8 +33,6 @@ var RightPanel = {
   },
   noStocks: false,
   collapseView: function(){
-    // Remove sticky columns
-    StickyColumns.stop();
 
     // Collapse right panel
     this.el.addClass('collapsed');
@@ -174,6 +172,11 @@ var RightPanel = {
             spanObjects.classed("selected", true);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已添加自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           var DeleteSuccessHandler = function() {
@@ -181,6 +184,11 @@ var RightPanel = {
             spanObjects.classed("selected", false);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已移除自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           if (thisSpanObject.classed("selected"))
@@ -262,6 +270,11 @@ var RightPanel = {
             thisSpanObject.classed("selected", true);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已添加自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           var DeleteSuccessHandler = function() {
@@ -272,6 +285,11 @@ var RightPanel = {
             thisSpanObject.classed("not-selected", true);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已移除自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           if (thisSpanObject.classed("selected"))
@@ -523,11 +541,15 @@ var RightPanel = {
           else {
             // Otherwise, like comment
             RightPanelModel.likeCommentAsync(weiboId)
-            .then(function(res) {
-              var content = $(e.target).html();
-              var likes = parseInt(content.match(/[^()]+(?=\))/g));
-              likes++;
-              $(e.target).html('赞(' + likes + ')');
+            .then(function(code) {
+              // code = 0, successfull; = others, liked once, not login or other errors
+              // only if not liked before, increase the count by one
+              if (code === 0) {
+                var content = $(e.target).html();
+                var likes = parseInt(content.match(/[^()]+(?=\))/g));
+                likes++;
+                $(e.target).html('赞(' + likes + ')');
+              }
             }, function(res) {
               // handle error
             });

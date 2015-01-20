@@ -57,16 +57,14 @@ var RightPanelModel = {
      });
   },
   // Experts tab: Handles user like action
-  likeComment: function(weiboId, successHandler, errorHandler){
-    $.get(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
-    .done(function(res){
-      if (res.code === 0){
-        successHandler(res);
-      } else {
-        errorHandler(res);
-      }
-    }).fail(function(res){
-      errorHandler(res);
+  likeComment: function(weiboId, successHandler, errorHandler) {
+    var self = this;
+
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId + '&callback=?', function(res) {
+      if (res.code === 0)
+        successHandler(res.data.code);
+      else
+        errorHandler(res.data.code);
     });
   },
   likeCommentAsync: function(weiboId) {
