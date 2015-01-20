@@ -1,10 +1,12 @@
 var StickyColumns = {
+  active: false,
   start: function(){
-    if (!this.active){
+    if (!this.active) {
       this.active = true;
       $('#right-panel, #content').stick_in_parent();
-      $('.container').scrollLeft(ChartView.properties.scrollDistance);
-    } else {
+      // $('.container').scrollLeft(ChartView.properties.scrollDistance);
+    } 
+    else {
       this.recalc();
     }
   },
@@ -14,6 +16,6 @@ var StickyColumns = {
   },
   recalc: function(){
     $('#right-panel, #content').trigger('sticky_kit:recalc');
-    $('.container').scrollLeft(ChartView.properties.scrollDistance);
+    // $('.container').scrollLeft(ChartView.properties.scrollDistance);
   }
 };

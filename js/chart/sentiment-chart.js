@@ -908,6 +908,9 @@ var SentimentChart = {
             // Display the Required Press
             var idString = '#time' + d.rdate + d.clock.slice(0, 5).replace(/:+/g, '') + ' .news-blocks';
             $(idString).show();
+
+            // Refresh sticky columns after height change
+            StickyColumns.start();
           });
 
         })
