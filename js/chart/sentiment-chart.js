@@ -229,7 +229,7 @@ var SentimentChart = {
     updateLegends: function (indexData, moodindexData) {
       $('#sentiment-chart-legend .security').text(indexData ? indexData.price : '--');
       $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : '--');
-      $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : '--');
+      $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : ChartView.data.sentiment.moodindexList[0].moodChg ? ChartView.data.sentiment.moodindexList[0].moodChg : '--');
     },
     getMousePosition: function (context) {
       'use strict';
