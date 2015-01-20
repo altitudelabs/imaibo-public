@@ -37,7 +37,7 @@ var RightPanel = {
     // Collapse right panel
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
-    $('#content').css('width', 'calc(100% - 55px)');
+    $('#content').addClass('full');
 
     // Rebuild chart after animation
     setTimeout(function(){
@@ -64,7 +64,8 @@ var RightPanel = {
   },
   expandView: function(){
     var self = this;
-    $('#content').css('width', 'calc(100% - 325px)');
+    // cannot set width directly as there may be problems with sticky kit
+    $('#content').removeClass('full');
 
     setTimeout(function(){
       self.collapsed.el.removeClass('uncollapsed');
