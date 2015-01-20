@@ -615,7 +615,7 @@ var IndexChart = {
               IndexChart.helpers.updateMAValue('60', d.ma60);
 
               var length = ChartView.getVisibleStockLine().length;
-              d.closepx = d.closepx? d.closepx : d.preclosepx;
+              d.closepx = d.closepx? d.closepx : '--';
               d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getVisibleStockLine()[j].moodindex - ChartView.getVisibleStockLine()[j-1].moodindex;
 
               var model = {
