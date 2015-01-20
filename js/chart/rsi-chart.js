@@ -25,11 +25,6 @@ var RsiChart = {
     this.draw();
     this.initCloseAction();
   },
-  update: function () {
-    this.setProperties();
-    this.updateData();
-    this.draw();
-  },
   updateData: function () {
     var self  = this;
 
@@ -59,23 +54,15 @@ var RsiChart = {
     $('#rsi-chart').empty();
     $('#rsi-chart-label').empty();
 
-    self.componentsBuilder.chart.append();
-    self.componentsBuilder.chartLabel.append();
-    self.componentsBuilder.topBorder.append();
-    self.componentsBuilder.rightBorder.append();
-    self.componentsBuilder.bottomBorder.append();
-    self.componentsBuilder.leftBorder.append();
-    self.componentsBuilder.xLabels.append();
-    self.componentsBuilder.y2Labels.append();
-    self.componentsBuilder.guideLine30.append();
-    self.componentsBuilder.guideLine70.append();
-      // RSI lines
-    this.components.chart.append('path').attr('class', 'rsi6');
-    this.components.chart.append('path').attr('class', 'rsi12');
-    this.components.chart.append('path').attr('class', 'rsi24');
+    for(var key in this.componentsBuilder){
+      self.componentsBuilder[key].append();
+      if(key === 'chart'){
+        this.components.chart.append('path').attr('class', 'rsi6');
+        this.components.chart.append('path').attr('class', 'rsi12');
+        this.components.chart.append('path').attr('class', 'rsi24');
+      }
+    }
 
-    self.componentsBuilder.mouseOverlay.append();
-    self.componentsBuilder.scrollBar.append();
   },
   draw: function() {
     var self = this;
@@ -162,10 +149,7 @@ var RsiChart = {
     },
     topBorder: {
       append: function () {
-        RsiChart.components.topBorder = RsiChart.components.chartLabel.append('svg:line')
-                                                .attr('class', 'xborder-top-thick')
-                                                .attr('stroke', 'rgb(77, 77, 77)')
-                                                .attr('stroke-width', '2px');
+        RsiChart.components.topBorder = ChartView.appendBorder(RsiChart.components.chartLabel);
       },
       update: function () {
         RsiChart.components.topBorder
@@ -177,10 +161,7 @@ var RsiChart = {
     },
     rightBorder: {
       append: function () {
-        RsiChart.components.rightBorder = RsiChart.components.chartLabel.append('svg:line')
-                                                  .attr('class', 'yborder-right')
-                                                  .attr('stroke', 'rgb(77, 77, 77)')
-                                                  .attr('stroke-width', '2px');
+        RsiChart.components.rightBorder = ChartView.appendBorder(RsiChart.components.chartLabel);
       },
       update: function () {
         RsiChart.components.rightBorder
@@ -192,10 +173,7 @@ var RsiChart = {
     },
     bottomBorder: {
       append: function () {
-        RsiChart.components.bottomBorder = RsiChart.components.chartLabel.append('svg:line')
-                                                   .attr('class', 'xaxis')
-                                                   .attr('stroke', 'rgb(77, 77, 77)')
-                                                   .attr('stroke-width', '2px');
+        RsiChart.components.bottomBorder = ChartView.appendBorder(RsiChart.components.chartLabel);
       },
       update: function () {
         RsiChart.components.bottomBorder
@@ -207,10 +185,7 @@ var RsiChart = {
     },
     leftBorder: {
       append: function () {
-        RsiChart.components.leftBorder = RsiChart.components.chartLabel.append('svg:line')
-                                                 .attr('class', 'yborder-left')
-                                                 .attr('stroke', 'rgb(77, 77, 77)')
-                                                 .attr('stroke-width', '2px');
+        RsiChart.components.leftBorder = ChartView.appendBorder(RsiChart.components.chartLabel);
       },
       update: function () {
         RsiChart.components.leftBorder
@@ -300,33 +275,11 @@ var RsiChart = {
     },
     scrollBar: {
       append: function () {
-        //because d3 drag requires data/datum to be valid
-        RsiChart.components.scrollBar = RsiChart.components.chart.append('rect')
-                                            .attr('class', 'scrollbar')
-                                            .datum([])
-                                            .attr('height', 7)
-                                            .attr('rx', 4)
-                                            .attr('ry', 4)
-                                            .style('fill', 'rgb(107, 107, 107)')
-                                            .style('fill-opacity', 50)
-                                            .call(ChartView.scrollbarDragBehavior());
-        ChartView.properties.mouseOverScrollbar = false;
-        ChartView.properties.mouseOverChart     = false;
+        RsiChart.components.scrollBar = ChartView.appendScrollbar(RsiChart.components.chart,
+                                                                  RsiChart.properties.height - 30);
       },
       update: function() {
-        RsiChart.components.scrollBar
-        .attr('x', ChartView.getScrollbarPos())
-        .attr('y', RsiChart.properties.height - 30)
-        .attr('width', ChartView.getScrollbarWidth())
-        .on('mouseenter', function(e) {
-            IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()? 50:0);
-            ChartView.properties.mouseOverScrollbar = true;
-        })
-        .on('mouseleave', function(e) {
-           var mChart = ChartView.properties.mouseOverChart;
-           RsiChart.components.scrollBar.transition().duration(1000).style('fill-opacity', !mChart? 0: 50);
-           ChartView.properties.mouseOverScrollbar = false;
-        });
+        ChartView.updateScrollbar(RsiChart.components.scrollBar);
       }
     },  
     mouseOverlay: {

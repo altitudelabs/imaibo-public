@@ -20,6 +20,8 @@ var ChartModel = {
     weekly:         '&weekly=1',
     date:           '&reqDate=',
     dailyLineSdate: '&dailyLineSdate=',
+    info:           '&info=1',
+    trading:        '&trading=1',
     jsonp:          '&callback=?',
   },
   currEarliestTime: 0,
@@ -53,7 +55,7 @@ var ChartModel = {
       api += (initial || updateByDragging ? this.api.daily : '');
       api += (updateByDragging? this.api.dailyLineSdate + date: '');
       api += (!updateByDragging? this.api.latest: '');
-      api += '&info=1&trading=1';
+      api += this.api.info + this.api.trading;
     }else{
       api += this.api.sentimentData;
       api += (initial? this.api.date + date: '');
@@ -104,10 +106,8 @@ var ChartModel = {
       self.errorCheckSentiment(res);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
         self.model.sentiment = res.data;
-        handler({ isError: self.model.sentimentError });
-      } else {
-        handler({ isError: self.model.sentimentError });
       }
+      handler({ isError: self.model.sentimentError });
     }).fail(function(){
       handler({ isError: self.model.sentimentError });
     });
@@ -148,6 +148,7 @@ var ChartModel = {
     return true;
   },
   errorCheckSentiment: function(res){
+    this.model.sentimentError = true;
     if(res.data === undefined){
         this.log(0, 'Sentiment API has no \'data\'');
       } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
@@ -167,8 +168,10 @@ var ChartModel = {
       } else {
         this.model.sentimentError = false;
       }
+      return this.model.sentimentError;
   },
   errorCheckIndex: function(res, initial){
+    this.model.indexError = true;
     if(res.data === undefined){
         this.log(0, 'Index API has no \'data\'');
       } else if(!this.isObject(res.data) || this.isEmptyObject(res.data)){
@@ -186,6 +189,7 @@ var ChartModel = {
       } else {
         this.model.indexError = false;
       }
+      return this.model.indexError;
   },
   processIndexData: function(res, initial, updateByDragging){
 
@@ -201,27 +205,20 @@ var ChartModel = {
       self.model.daily.stockLine.reverse();
     } 
     else if(updateByDragging){
-      ChartModel.errorCheckIndex(res, false);
-      if(ChartModel.model.indexError) return;
+      if(ChartModel.errorCheckIndex(res, false)) return;
+
       var stockLine = res.data.daily.stockLine;
-      var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
-
-      this.currEarliestTime  = this.currEarliestTime || daily.stockLine[0].timestamp;
-     
-     //mark if no more sentiment data is returned. i.e assuming when it returns 0
-      this.endOfSentiment = this.endOfSentiment || stockLine
-                                                    .map(function(e) { return e.moodindex === 0; })
-                                                    .reduce(function(prev, curr, i, arr) { return prev || curr; });
-
-      if(this.currEarliestTime < returnedLatestTime) return;
-      if(this.endOfSentiment) return;
-
+      if(this.compareDataTime(stockLine))        return;
+      if(this.isEndOfSentiment(stockLine))       return;
 
       //api returned in descending order
       stockLine.reverse();
+
       var orgLength = daily.stockLine.length;
       daily.stockLine = stockLine.concat(daily.stockLine);
+
       ChartModel.model.stockLineLengthDiff = daily.stockLine.length - orgLength- 10;
+
       this.currEarliestTime = daily.stockLine[0].timestamp;
     } else {
       var latestPrice = res.data.latestPrice;
@@ -232,10 +229,21 @@ var ChartModel = {
       }
     }
   },
+  compareDataTime: function(stockLine){
+     var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
+     this.currEarliestTime  = this.currEarliestTime || this.model.daily.stockLine[0].timestamp;
+     return this.currEarliestTime < returnedLatestTime;
+  },
+  //mark if no more sentiment data is returned. i.e assuming when it returns 0
+  isEndOfSentiment: function(stockLine){
+    this.endOfSentiment = this.endOfSentiment || stockLine
+                                                    .map(function(e) { return e.moodindex === 0; })
+                                                    .reduce(function(prev, curr, i, arr) { return prev || curr; });
+    return this.endOfSentiment;
+  },
   log: function(code, message) {
     if(PRODUCTION) return;
-    var now = new Date();
-    console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
+    console.log('%c [' +  new Date().toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
   /* Helper method for randomizing API values for testing */
   randomize: function(){
