@@ -300,27 +300,6 @@ var RsiChart = {
     },
     scrollBar: {
       append: function () {
-        var drag = d3.behavior.drag()
-          .origin(function(d) { return d; })
-          .on('drag', function(d){
-            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
-            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
-            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
-              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
-            if(xPos < 0)
-              xPos = 0;
-
-            ChartView.properties.scrollbarPos = xPos;
-            d3.select(this).attr('x', ChartView.properties.scrollbarPos);
-            var index = d3.event.dx / ChartView.getChartWidth() * ChartView.getStockLine().length;
-
-            if(d3.event.dx > 0){
-              ChartView.moveToRight(index);
-            }else{
-              ChartView.moveToLeft(index);
-            }
-            ChartView.showAllScrollbars();
-          });
         //because d3 drag requires data/datum to be valid
         RsiChart.components.scrollBar = RsiChart.components.chart.append('rect')
                                             .attr('class', 'scrollbar')
@@ -330,7 +309,7 @@ var RsiChart = {
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
                                             .style('fill-opacity', 50)
-                                            .call(drag);
+                                            .call(ChartView.scrollbarDragBehavior());
         ChartView.properties.mouseOverScrollbar = false;
         ChartView.properties.mouseOverChart     = false;
       },

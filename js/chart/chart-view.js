@@ -185,13 +185,13 @@ var ChartView = {
       return;
     }
     self.updating = true;
-    var earliestDate = self.data.daily.stockLine[0].rdate;
-    var oldLength = self.data.daily.stockLine.length;
+    var earliestDate = ChartView.getStockLine()[0].rdate;
+    var oldLength = ChartView.getStockLine().length;
     ChartModel.getIndexData(earliestDate-1, false, null, true, function () {
       self.updateData();
-      var diff = self.data.daily.stockLine.length - oldLength;
+      var diff = ChartView.getStockLine().length - oldLength;
       self.data.lastDataIndex += diff;
-      self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+      self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
       self.moveToLeft();
       self.updating = false;
     });
@@ -203,9 +203,9 @@ var ChartView = {
       index: indexError,
       sentiment: sentimentError
     };
-    self.data.lastDataIndex = self.data.lastDataIndex || self.data.daily.stockLine.length;
-    self.data.dataSetLength = self.data.dataSetLength || self.data.daily.stockLine.length;
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.lastDataIndex = self.data.lastDataIndex || ChartView.getStockLine().length;
+    self.data.dataSetLength = self.data.dataSetLength || ChartView.getStockLine().length;
+    self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
   /* Initial build of chart elements */
@@ -275,8 +275,8 @@ var ChartView = {
     var newLength = Math.floor(self.data.dataSetLength / zoomFactor);
     if (newLength < 20) { return; }
     // if (newLength > 250) { return; }
-    if (newLength > self.data.daily.stockLine.length) { 
-      newLength = self.data.daily.stockLine.length;
+    if (newLength > ChartView.getStockLine().length) { 
+      newLength = ChartView.getStockLine().length;
     }
     if (ChartView.getLastDataIndex() - newLength < 0) {
       var index = ChartView.getLastDataIndex() - (ChartView.getLastDataIndex() - newLength);
@@ -313,7 +313,7 @@ var ChartView = {
                     });
   },
   scrollbarDragBehavior: function(){
-    return d3.behavior.drag()
+    this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
           .on('drag', function(d){
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
@@ -333,6 +333,7 @@ var ChartView = {
               ChartView.moveToLeft(index);
             }
           });
+          return this.properties.scrollbarDragBehavior;
   },
   chartDragBehavior: function(){
     var self = this;
@@ -350,31 +351,31 @@ var ChartView = {
   },
   moveToRight: function (delta) {
     var self = this;
-    var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
+    var speed = delta || Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
         speed = Math.ceil(speed);
-    if(self.data.lastDataIndex + speed > self.data.daily.stockLine.length) { 
-      self.data.lastDataIndex = self.data.daily.stockLine.length;
+    if(self.data.lastDataIndex + speed > ChartView.getStockLine().length) { 
+      self.data.lastDataIndex = ChartView.getStockLine().length;
     } else {
       self.data.lastDataIndex+=speed;
     }
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
-    self.data.dataSetLength = self.data.visibleStockLine.length;
+    self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
     // self.properties.scrollbarPos += speed; 
   }, 
   moveToLeft: function (delta) {
     var self  = this;
-    var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
+    var speed = delta || Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
     speed = Math.ceil(speed);
-    speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
-    if(self.data.lastDataIndex - self.data.visibleStockLine.length - speed < 0) { 
-      self.data.lastDataIndex = self.data.visibleStockLine.length;
+    speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+    if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) { 
+      self.data.lastDataIndex = ChartView.getVisibleStockLine().length;
     } else {
       self.data.lastDataIndex -= speed;
     }
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
-    self.data.dataSetLength = self.data.visibleStockLine.length;
+    self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
     
@@ -388,7 +389,7 @@ var ChartView = {
   },
   // moveScrollbarToRight: function(){
   //   var self = this;
-  //   var speed = Math.ceil(self.data.visibleStockLine.length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
+  //   var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
   //   var nextXPos = ChartView.getScrollbarPos() + speed;
   //   if(nextXPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
   //     nextXPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
@@ -398,7 +399,7 @@ var ChartView = {
   // },
   // moveScrollbarToLeft: function(){
   //   var self = this;
-  //   var speed = Math.ceil(self.data.visibleStockLine.length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
+  //   var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
   //   var nextXPos = ChartView.getScrollbarPos() - speed;
   //   if(nextXPos < 0) nextXPos = 0;
 

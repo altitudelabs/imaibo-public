@@ -494,15 +494,15 @@ var IndexChart = {
                                             .on('mouseenter', function(e) {
                                               if(ChartView.isZoomed()){
                                                 ChartView.showAllScrollbars();
+                                                ChartView.properties.mouseOverScrollbar = true;
                                               }
-                                              ChartView.properties.mouseOverScrollbar = true;
                                             })
                                             .on('mouseleave', function(e) {
                                                var mChart = ChartView.properties.mouseOverChart;
                                                if(!mChart){
                                                 ChartView.hideAllScrollbars();
+                                                ChartView.properties.mouseOverScrollbar = false;
                                                }
-                                               ChartView.properties.mouseOverScrollbar = false;
                                             })
                                             .call(ChartView.scrollbarDragBehavior());
         ChartView.properties.mouseOverScrollbar = false;
@@ -548,10 +548,6 @@ var IndexChart = {
             IndexChart.components.horizontalBlock.style('fill-opacity', 0);
 
             return Tooltip.hide(); 
-          })
-          .on('mouseenter', function(){
-            IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()?50:0);
-            ChartView.properties.mouseOverChart = true;
           })
           .on('mousemove', function() {
               var xPos, yPos, mouseX, mouseY;
