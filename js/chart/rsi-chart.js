@@ -75,6 +75,7 @@ var RsiChart = {
     this.components.chart.append('path').attr('class', 'rsi24');
 
     self.componentsBuilder.mouseOverlay.append();
+    self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
   },
   draw: function() {
@@ -137,7 +138,13 @@ var RsiChart = {
       append: function () {
         RsiChart.components.chart = d3.select('#rsi-chart')
                                       .append('svg:svg')
-                                      .attr('class', 'chart');
+                                      .attr('class', 'chart')
+                                      .on('mouseenter', function(){
+                                        ChartView.showAllScrollbars();
+                                      })
+                                      .on('mouseleave', function(){
+                                        ChartView.hideAllScrollbars();
+                                      });
       },
       update: function () {
         RsiChart.components.chart
@@ -155,8 +162,8 @@ var RsiChart = {
       },
       update: function () {
         RsiChart.components.chartLabel         
-        .attr('width', ChartView.getContainerWidth())
-        .attr('height', RsiChart.properties.chartHeight)
+        .attr('width', ChartView.properties.width)
+        .attr('height', RsiChart.properties.height-17)
         .select('svg').attr('width', ChartView.getContainerWidth());
       }
     },
@@ -296,6 +303,27 @@ var RsiChart = {
           else
             return Helper.toDate(d.rdate, 'yyyy/mm');
         });
+      }
+    },
+    scrollbarRail: {
+      append: function () {
+        RsiChart.components.scrollbarRail = RsiChart.components.chartLabel
+                                            .append('rect')
+                                            .attr('class', 'scrollbar-rail')
+                                            .attr('width', ChartView.properties.width)
+                                            .attr('height', 10)
+                                            .attr('x', 0)
+                                            .attr('y', RsiChart.properties.height - 30)
+                                            .on('mouseenter', function(){
+                                              ChartView.showAllScrollbars();
+                                            })
+                                            .on('mouseleave', function(){
+                                              ChartView.hideAllScrollbars();
+                                            })
+                                            .style('fill-opacity', 0);
+      },
+      update: function(){
+        RsiChart.components.scrollbarRail.attr('width', ChartView.properties.width);
       }
     },
     scrollBar: {
