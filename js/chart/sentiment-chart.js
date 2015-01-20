@@ -854,7 +854,7 @@ var SentimentChart = {
           // var tooltipHeight;
           SentimentChart.components.tooltip
           .html(div)
-          .style('left', shouldRenderLeft ? dotPosition[0] - padding - 250 + 'px' : dotPosition[0] - padding + 'px')
+          .style('left', shouldRenderLeft ? dotPosition[0] - padding - 270 + 'px' : dotPosition[0] - padding + 'px')
           .style('top', shouldRenderBottom ? dotPosition[1] - padding + 'px' : dotPosition[1] - tooltipHeight + padding + 'px')
           .on('mouseout', function () {
             var mousePosition = SentimentChart.helpers.getMousePosition(dot);
@@ -868,12 +868,14 @@ var SentimentChart = {
             // Make the tooltip disappear if mouseout event fires, and the mouse position is not within the bound of the tooltip
             // shouldRenderLeft means the tooltip should render towards the left side of the hovered dot
             // shouldRenderBottom means the tooltip should render towards the bottom side of the hovered dot
+            var width = $("#sentiment-tooltip").css('width');
+            width = parseInt(width.slice(0, width.length-2));
             if (shouldRenderLeft) {
-              inLeft = mousePosition[0] > dotPosition[0] - 250 - padding;
+              inLeft = mousePosition[0] > dotPosition[0] - width - padding;
               inRight = mousePosition[0] < dotPosition[0] + padding;
             } else {
               inLeft = mousePosition[0] > dotPosition[0] - padding;
-              inRight = mousePosition[0] < dotPosition[0] + 250 + padding;
+              inRight = mousePosition[0] < dotPosition[0] + width + padding;
             }
             if (shouldRenderBottom) {
               inTop = mousePosition[1] > dotPosition[1] - padding;
