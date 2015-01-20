@@ -118,6 +118,7 @@ var IndexChart = {
     self.componentsBuilder.horizontalBlock.append();
     self.componentsBuilder.horizontalText.append();
     self.componentsBuilder.mouseOverlay.append();
+    self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
   },
   draw: function() {
@@ -237,7 +238,13 @@ var IndexChart = {
         IndexChart.components.chart = d3.select('#chart').append('svg:svg')
                                                          .attr('class', 'chart')
                                                          .attr('id', 'graph')
-                                                         .attr('width', ChartView.getContainerWidth());
+                                                         .attr('width', ChartView.getChartWidth())
+                                                         .on('mouseenter', function(){
+                                                            ChartView.showAllScrollbars();
+                                                         })
+                                                         .on('mouseleave', function(){
+                                                            ChartView.hideAllScrollbars();
+                                                         });
       },
       update: function () {
         var props = IndexChart.properties;
@@ -254,14 +261,14 @@ var IndexChart = {
                                                          .attr('class', 'chart')
                                                          .attr('id', 'graph-label')
                                                          .attr('width', ChartView.getContainerWidth())
-                                                         .attr('height', IndexChart.properties.height);
+                                                         .attr('height', IndexChart.properties.height + 15);
       },
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.chartLabel
         .attr('class', 'chart')
         .attr('width', ChartView.getContainerWidth())
-        .attr('height', props.height)
+        .attr('height', props.height+ 15)
         .select('svg').attr('width', ChartView.getContainerWidth());
       }
     },
@@ -519,9 +526,31 @@ var IndexChart = {
         IndexChart.components.horizontalText = IndexChart.components.chartLabel.append('text').attr('class', 'horizontal-text');
       }
     },
+    scrollbarRail: {
+      append: function () {
+        IndexChart.components.scrollbarRail = IndexChart.components.chartLabel
+                                            .append('rect')
+                                            .attr('class', 'scrollbar-rail')
+                                            .attr('width', ChartView.properties.width)
+                                            .attr('height', 15)
+                                            .attr('x', 0)
+                                            .attr('y', IndexChart.properties.height)
+                                            .on('mouseenter', function(){
+                                              ChartView.showAllScrollbars();
+                                            })
+                                            .on('mouseleave', function(){
+                                              ChartView.hideAllScrollbars();
+                                            })
+                                            .style('fill-opacity', 0);
+      },
+      update: function(){
+        IndexChart.components.scrollbarRail.attr('width', ChartView.properties.width);
+      }
+    },
     scrollBar: {
       append: function () {
-        IndexChart.components.scrollBar = IndexChart.components.chart.append('rect')
+        IndexChart.components.scrollBar = IndexChart.components.chart
+                                            .append('rect')
                                             .attr('class', 'scrollbar')
                                             .datum([])
                                             .attr('height', 7)

@@ -376,6 +376,7 @@ var ChartView = {
     var self  = this;
     var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
     speed = Math.ceil(speed);
+    speed = Math.abs(speed);
     if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) { 
       self.data.lastDataIndex = ChartView.getVisibleStockLine().length;
     } else {

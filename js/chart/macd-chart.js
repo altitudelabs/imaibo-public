@@ -63,6 +63,7 @@ var MacdChart = {
     self.componentsBuilder.y2Labels.append();
     self.componentsBuilder.xLabels.append();
     self.componentsBuilder.bars.append();
+    self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
     
     // DEA line
@@ -137,7 +138,13 @@ var MacdChart = {
       append: function () {
         MacdChart.components.chart = d3.select('#macd-chart')
         .append('svg:svg')
-        .attr('class', 'chart');
+        .attr('class', 'chart')
+        .on('mouseenter', function(){
+            ChartView.showAllScrollbars();
+         })
+         .on('mouseleave', function(){
+            ChartView.hideAllScrollbars();
+         });
       },
       update: function () {
         var props = MacdChart.properties;
@@ -160,7 +167,7 @@ var MacdChart = {
         MacdChart.components.chartLabel
         .attr('class', 'chart')
         .attr('width', ChartView.getContainerWidth())
-        .attr('height', props.height-27)
+        .attr('height', props.height-17)
         .select('svg').attr('width', ChartView.getContainerWidth());
       }
     },
@@ -314,6 +321,27 @@ var MacdChart = {
         .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
       }
     }, 
+    scrollbarRail: {
+      append: function () {
+        MacdChart.components.scrollbarRail = MacdChart.components.chartLabel
+                                            .append('rect')
+                                            .attr('class', 'scrollbar-rail')
+                                            .attr('width', ChartView.properties.width)
+                                            .attr('height', 10)
+                                            .attr('x', 0)
+                                            .attr('y', MacdChart.properties.height - 30)
+                                            .on('mouseenter', function(){
+                                              ChartView.showAllScrollbars();
+                                            })
+                                            .on('mouseleave', function(){
+                                              ChartView.hideAllScrollbars();
+                                            })
+                                            .style('fill-opacity', 0);
+      },
+      update: function(){
+        MacdChart.components.scrollbarRail.attr('width', ChartView.properties.width);
+      }
+    },
     scrollBar: {
       append: function () {
         //because d3 drag requires data/datum to be valid
