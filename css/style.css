@@ -1644,7 +1644,7 @@ body::-webkit-scrollbar {
 .outer .add-panel-item-content {
   background-color: #262626;
   width: 160px;
-  left: -160px;
+  left: -159px;
   height: 100%;
   border: #5a5a5a solid 1px;
   font-size: 12px;
@@ -1667,6 +1667,7 @@ body::-webkit-scrollbar {
   top: -1px;
   left: -353px;
   width: 353px;
+  height: 100%;
   border: #5a5a5a solid 1px;
   font-size: 12px;
   padding: 5px 0px 0px 0px;
@@ -1674,16 +1675,25 @@ body::-webkit-scrollbar {
 
 .outer #right-panel-option-container .add-stock-table.first-add-panel-item {
   top: 0px;
-  left: -300px;
+  left: -299px;
   width: 300px;
+  height: 100%;
+}
+
+.outer #stocktable1 th {
+  padding: 20px 15px 20px 15px;
+}
+
+.outer #stocktable1 td {
+  padding: 22px 15px 22px 15px;
 }
 
 .outer .add-stock-table th {
-  padding: 22px 15px 22px 15px;
+  padding: 18px 15px 17px 15px;
 }
 
 .outer .add-stock-table td {
-  padding: 22px 15px 22px 15px;
+  padding: 17px 15px 17px 15px;
 }
 
 .outer .add-stock-table tr {
@@ -1790,7 +1800,6 @@ body::-webkit-scrollbar {
 
 .outer #news-view {
   padding: 0px 0px 20px 0px;
-  border: 0px;
   margin: 0px;
   overflow: auto;
 }
