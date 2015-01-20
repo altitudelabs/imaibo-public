@@ -536,6 +536,41 @@
         </div>
 
         <div class="loader"></div>
+        <div id="sentiment" class="component">
+          <div class="chart-header">
+            <div class="title">上证分时 - 心情变动值<span id="sentiment-info-button" class="mb info-button"></span></div>
+            <ul id="sentiment-chart-legend">
+              <li>
+                <span>上证：</span>
+                <div class="security">
+                <span></span>
+                </div>
+              </li>
+              <li>
+                <span>心情：</span>
+                <div class="mood">
+                <span></span>
+                </div>
+              </li>
+              <li>
+                <span>心情变化：</span>
+                <div class="moodchange">
+                <span></span>
+                </div>
+              </li>
+            </ul>
+            <ul class="legend">
+              <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
+              <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
+            </ul>
+          </div>
+          <div id="sentiment-chart-label"></div>
+          <div class='container zoomable-chart-container' id="sentiment-chart-container" >
+            <div class="zoomable-chart" id="sentiment-chart"></div>
+          </div>
+        </div>
+        
+        
         <div id="price" class="component">
           <div class="chart-header">
             <div class="title">上证K线 - 心情累积值<span id="index-info-button" class="mb info-button"></span></div>
@@ -643,39 +678,7 @@
             </div>
           </div>
         </div>
-        <div id="sentiment" class="component">
-          <div class="chart-header">
-            <div class="title">上证分时 - 心情变动值<span id="sentiment-info-button" class="mb info-button"></span></div>
-            <ul id="sentiment-chart-legend">
-              <li>
-                <span>上证：</span>
-                <div class="security">
-                <span></span>
-                </div>
-              </li>
-              <li>
-                <span>心情：</span>
-                <div class="mood">
-                <span></span>
-                </div>
-              </li>
-              <li>
-                <span>心情变化：</span>
-                <div class="moodchange">
-                <span></span>
-                </div>
-              </li>
-            </ul>
-            <ul class="legend">
-              <li id="security-legend"><div id="security-legend-line" class="legend-line"></div><span>上证指数</span></li>
-              <li id="sentiment-legend"><div id="sentiment-legend-line" class="legend-line"></div><span>心情指数</span></li>
-            </ul>
-          </div>
-          <div id="sentiment-chart-label"></div>
-          <div class='container zoomable-chart-container' id="sentiment-chart-container" >
-            <div class="zoomable-chart" id="sentiment-chart"></div>
-          </div>
-        </div>
+       
       </div>
       <!-- Chart view end -->
 
@@ -871,7 +874,7 @@
   <script id="macd-tooltip-template" type="text/x-handlebars-template">
     <ul>
       <li class="tt-title">{{dateStr date}}</li>
-      <li class="tt-row"><span class="tt-label">Diff</span><span class="tt-value">{{diff}}</span></li>
+      <li class="tt-row"><span class="tt-label">DIF</span><span class="tt-value">{{diff}}</span></li>
       <li class="tt-row"><span class="tt-label">MACD</span><span class="tt-value">{{macd}}</span></li>
       <li class="tt-row"><span class="tt-label">DEA</span><span class="tt-value">{{dea}}</span></li>
       <li class="tt-lastrow"></li>

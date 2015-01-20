@@ -27,10 +27,10 @@ var ChartModel = {
   baseUrl: function(){
     return PRODUCTION ? this.api.production : this.api.staging;
   },
-  getIndexDataAsync: function(date, initial){
+  getIndexDataAsync: function(date, initial, drag){
     var self = this;
     return $.Deferred(function(d){
-      self.getIndexData(date, initial, d.resolve, false);
+      self.getIndexData(date, initial, d.resolve, drag);
     }).promise();
   },
   getSentimentDataAsync: function(){
@@ -47,10 +47,9 @@ var ChartModel = {
   },
   apiBuilder: function(requestChart, initial, updateByDragging, date) {
     var api = this.baseUrl() + this.api.base;
-
     if(requestChart === 'index') {
       api += this.api.indexData;
-      api += (initial || updateByDragging ? this.api.daily : '');
+      api += (ChartView.data.mode === 'weekly' ? this.api.weekly : this.api.daily);
       api += (updateByDragging? this.api.dailyLineSdate + date: '');
       api += (!updateByDragging? this.api.latest: '');
       api += '&info=1&trading=1';
@@ -59,7 +58,6 @@ var ChartModel = {
       api += (initial? this.api.date + date: '');
     }
     api += this.api.jsonp;
-
     return api;
   },
   setIndexData: function(res, handler, initial, updateByDragging) {
@@ -72,6 +70,7 @@ var ChartModel = {
       if(handler) handler({ isError: this.model.indexError });
     } else {
       handler({ isError: this.model.indexError });
+      IndexChart.initWithError();
     }
   },
   /*
@@ -83,16 +82,12 @@ var ChartModel = {
    * - handler: callback function
    * - updateByDragging: boolean, indicates if we are updating by dragging index chart
   */
-  getIndexData: function(date, initial, handler, updateByDragging, callback){
+  getIndexData: function(date, initial, handler, updateByDragging){
     var self = this;
     var api  = this.apiBuilder('index', initial, updateByDragging, date);
-
     $.getJSON(api, function(res) {
       self.errorCheckIndex(res, initial);
       self.setIndexData(res, handler, initial, updateByDragging);
-      if(callback){
-        callback();
-      }
     }).fail(function(){
       handler({ isError: self.model.indexError });
     });
@@ -169,31 +164,32 @@ var ChartModel = {
       }
   },
   errorCheckIndex: function(res, initial){
+    this.model.indexError = true;
     if(res.data === undefined){
-        this.log(0, 'Index API has no \'data\'');
-      } else if(!this.isObject(res.data) || this.isEmptyObject(res.data)){
-        this.log(0, 'Index API "data" variable is not an object or is empty');
-      } else if(res.data.info === undefined || this.isEmptyObject(res.data.info)){
-        this.log(0, 'Index API data.info does not exist');
-      } else if(res.data.info.stockIndexInfo === undefined || this.isEmptyObject(res.data.info.stockIndexInfo)){
-        this.log(0, 'Index API data.info.stockIndexInfo does not exist');
-      } else if(res.data.info.moodindexInfo === undefined || this.isEmptyObject(res.data.info.moodindexInfo)){
-        this.log(0, 'Index API data.info.moodindexInfo does not exist');
-      } else if(res.data.info.tradingSign === undefined || this.isEmptyObject(res.data.info.tradingSign)){
-        this.log(0, 'Index API data.info.tradingSign does not exist');
-      } else if(initial && (res.data.daily === undefined || res.data.daily.length === 0)){
-        this.log(0, 'Index API data.daily does not exist');
-      } else {
-        this.model.indexError = false;
-      }
+      this.log(0, 'Index API has no \'data\'');
+    } else if(!this.isObject(res.data) || this.isEmptyObject(res.data)){
+      this.log(0, 'Index API "data" variable is not an object or is empty');
+    } else if(res.data.info === undefined || this.isEmptyObject(res.data.info)){
+      this.log(0, 'Index API data.info does not exist');
+    } else if(res.data.info.stockIndexInfo === undefined || this.isEmptyObject(res.data.info.stockIndexInfo)){
+      this.log(0, 'Index API data.info.stockIndexInfo does not exist');
+    } else if(res.data.info.moodindexInfo === undefined || this.isEmptyObject(res.data.info.moodindexInfo)){
+      this.log(0, 'Index API data.info.moodindexInfo does not exist');
+    } else if(res.data.info.tradingSign === undefined || this.isEmptyObject(res.data.info.tradingSign)){
+      this.log(0, 'Index API data.info.tradingSign does not exist');
+    } else if(initial && (res.data[ChartView.data.mode] === undefined || res.data[ChartView.data.mode].length === 0)){
+      this.log(0, 'Index API data ' + [ChartView.data.mode] + ' does not exist');
+    } else if(initial && (res.data[ChartView.data.mode].stockLine === undefined || res.data[ChartView.data.mode].stockLine.length === 0)){
+      this.log(0, 'stockLine Data does not exist');
+    } else {
+      this.model.indexError = false;
+    }
   },
   processIndexData: function(res, initial, updateByDragging){
-
     var self = this;
     var daily = self.model.daily;
     if(initial){
       self.model.daily = res.data.daily;
-
       // API returns data in descending order
       if(self.model.daily.stockLine[0].timestamp != res.data.latestPrice.timestamp) {
         self.model.daily.stockLine.unshift(res.data.latestPrice);

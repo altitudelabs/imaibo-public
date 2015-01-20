@@ -174,12 +174,26 @@ var Toolbar = {
 
     $('#day-radio-row').click(function(e) {
       var rb = $(this).find(':radio')[0];
-      if(e.target != rb) rb.click();
+      if(e.target != rb) {
+        //changed to daily from something else
+        if (!rb.checked) {
+          ChartView.data.mode = 'daily';
+          ChartView.restartIndex();
+        }
+        rb.click();
+      }
     });
 
     $('#week-radio-row').click(function(e) {
       var rb = $(this).find(':radio')[0];
-      if(e.target != rb) rb.click();
+      if(e.target != rb) {
+        //changed to weekly from something else
+        if (!rb.checked) {
+          ChartView.data.mode = 'weekly';
+          ChartView.restartIndex();
+        }
+        rb.click();
+      }
     });
   }
 };
