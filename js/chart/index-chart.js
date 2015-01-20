@@ -521,7 +521,6 @@ var IndexChart = {
     },
     scrollBar: {
       append: function () {
-        console.log(ChartView.getScrollbarWidth());
         IndexChart.components.scrollBar = IndexChart.components.chart.append('rect')
                                             .attr('class', 'scrollbar')
                                             .datum([])
