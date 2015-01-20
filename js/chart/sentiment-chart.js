@@ -17,16 +17,24 @@ var SentimentChart = {
   },
   init: function () {
     'use strict';
-    $('#sentiment-chart').empty();
-    $('#sentiment-chart-label').empty();
-    this.appendComponents();
-    this.setProperties();
-    this.updateData();
-    this.draw();
+    this.initWithError();
+    // $('#sentiment-chart').empty();
+    // $('#sentiment-chart-label').empty();
+    // this.appendComponents();
+    // this.setProperties();
+    // this.drawContainer();
+    // this.updateData();
+    // this.draw();
   },
   initWithError: function () {
+    // $('#sentiment-chart').empty();
+    // $('#sentiment-chart-label').empty();
+    this.appendComponents();
     this.setProperties();
-    this.draw(true);
+    this.drawContainer();
+    this.updateDataWithError();
+    this.drawWithError();
+    // this.draw(true);
     $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
     $('#sentiment .legend').remove();
     $('#sentiment-chart-legend').remove();
@@ -38,9 +46,7 @@ var SentimentChart = {
   },
   updateData: function () {
     'use strict';
-
     if(ChartView.data.sentimentError) { return; }
-
     var self = this;
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
     self.data.indexList = self.helpers.processIndexData(ChartView.data.sentiment.indexList);
@@ -68,7 +74,26 @@ var SentimentChart = {
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
     self.data.x  = self.helpers.x(self.properties.chartWidth, self.data.ordinalTimeStamps);
   },
-  draw: function(error){
+  updateDataWithError: function () {
+    'use strict';
+    var self = this;
+    self.data.closePrice = ChartView.data.sentiment.preclosepx;
+    self.data.y1 = self.helpers.y(-100, 100);
+    var dataDate = new Date();
+    self.data.startTime = dataDate.setHours(8,30,0,0)/1000;
+    self.data.endTime = dataDate.setHours(17,30,0,0)/1000;
+    self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
+    self.data.x  = self.helpers.x(self.properties.chartWidth, self.data.ordinalTimeStamps);
+  },
+  drawContainer: function () {
+    var self = this;
+    self.componentsBuilder.chartLabel.update();
+    self.componentsBuilder.topBorder.update();
+    self.componentsBuilder.rightBorder.update();
+    self.componentsBuilder.bottomBorder.update();
+    self.componentsBuilder.leftBorder.update();
+  },
+  draw: function(){
     'use strict';
     var self = this;
     if (error) { return; }
@@ -108,7 +133,27 @@ var SentimentChart = {
     // Etc ===================================================================
     self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
     this.animate();
+  },
+  drawWithError: function () {
+    var self = this;
+    self.componentsBuilder.chart.update();
+    // LINK DATA ===================================================================
+    self.componentsBuilder.y1Labels.linkData();
+    self.componentsBuilder.xLabels.linkData();
+    self.componentsBuilder.verticalGridLines.linkData();
+    self.componentsBuilder.horizontalGridLines.linkData();
 
+    // ENTER LOOP ===================================================================
+    self.componentsBuilder.y1Labels.enter();
+    self.componentsBuilder.xLabels.enter();
+    self.componentsBuilder.verticalGridLines.enter();
+    self.componentsBuilder.horizontalGridLines.enter();
+
+    // UPDATE LOOP ===================================================================
+    self.componentsBuilder.y1Labels.update();
+    self.componentsBuilder.xLabels.update();
+    self.componentsBuilder.verticalGridLines.update();
+    self.componentsBuilder.horizontalGridLines.update();
   },
   appendComponents: function () {
     'use strict';

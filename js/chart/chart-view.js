@@ -240,11 +240,7 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    if (!self.data.error.sentiment.isError) {
-      SentimentChart.init();
-    } else {
-      SentimentChart.initWithError();
-    }
+    try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
     // Make charts visible
     $('#price').css('visibility', 'visible');
@@ -274,12 +270,8 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    if (!self.data.sentimentError) {
-      // SentimentChart.setProperties();
-      SentimentChart.update();
-    } else {
-      SentimentChart.initWithError();
-    }
+    try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
+
     // Refresh sticky columns and scroll position
     StickyColumns.start();
   },
