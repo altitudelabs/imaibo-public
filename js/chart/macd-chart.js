@@ -72,7 +72,7 @@ var MacdChart = {
     self.componentsBuilder.chartLabel.update();
     self.componentsBuilder.topBorder.update();
     self.componentsBuilder.rightBorder.update();
-    self.compentsBuilder.bottomBorder.update();
+    self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.update();
   },
   draw: function() {
