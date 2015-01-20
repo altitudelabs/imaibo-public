@@ -12,6 +12,7 @@ var IndexChart = {
   setProperties: function(options) {
     var properties = {
       height: 250,
+      width: ChartView.getChartWidth(),
     };
     properties.verticalOffset = 5;
     properties.yOffset = 2;
@@ -25,13 +26,20 @@ var IndexChart = {
   init: function() {
     this.setProperties();
     this.updateData();
-    this.appendComponents();
+    this.emptyGraph();
+    this.appendChart();
+    this.appendContainer();
+    this.updateContainer();
+    this.appendGraph();
     this.draw();
     this.hideScrollbar();
   },
   initWithError: function(){
     this.setProperties();
-    this.draw();
+    this.emptyGraph();
+    this.appendChart();
+    this.appendContainer();
+    this.updateContainer();
     $('#price').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
     $('#toolbar').remove();
     $('#legend').remove();
@@ -51,24 +59,50 @@ var IndexChart = {
   update: function (options) {
     this.setProperties(options);
     this.updateData();
+    this.updateContainer();
     this.draw();
+  },
+  updateWithError: function(){
+    this.setProperties();
+    this.componentsBuilder.chart.update();
+    this.componentsBuilder.chartLabel.update();
+    this.updateContainer();
   },
   hideScrollbar: function(){
     IndexChart.components.scrollBar
       .style('fill-opacity', 0);
   },
   appendComponents: function () {
+    this.appendChart();
+    this.appendContainer();
+    this.appendGraph();
+  },
+  emptyGraph: function(){
+    $('#chart').empty();
+    $('#chart-label').empty();
+  },
+  appendChart: function(){
     var self = this;
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
+  },
+  appendContainer: function(){
+    var self = this;
     self.componentsBuilder.topBorder.append();
-    self.componentsBuilder.topBorder.update();
     self.componentsBuilder.rightBorder.append();
-    self.componentsBuilder.rightBorder.update();
     self.componentsBuilder.bottomBorder.append();
-    self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.append();
+  },
+  updateContainer: function(){
+    var self = this;
+    self.componentsBuilder.topBorder.update();
+    self.componentsBuilder.rightBorder.update();
+    self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.update();
+  },
+  appendGraph: function(){
+    var self = this;
+    //append order is important. 
     self.componentsBuilder.y1Labels.append();
     self.componentsBuilder.y2Labels.append();
     self.componentsBuilder.volumes.append();
@@ -202,7 +236,8 @@ var IndexChart = {
       append: function () {
         IndexChart.components.chart = d3.select('#chart').append('svg:svg')
                                                          .attr('class', 'chart')
-                                                         .attr('id', 'graph');
+                                                         .attr('id', 'graph')
+                                                         .attr('width', ChartView.getContainerWidth());
       },
       update: function () {
         var props = IndexChart.properties;
@@ -215,7 +250,11 @@ var IndexChart = {
     },
     chartLabel: {
       append: function () {
-        IndexChart.components.chartLabel = d3.select('#chart-label').append('svg:svg');
+        IndexChart.components.chartLabel = d3.select('#chart-label').append('svg:svg')
+                                                         .attr('class', 'chart')
+                                                         .attr('id', 'graph-label')
+                                                         .attr('width', ChartView.getContainerWidth())
+                                                         .attr('height', IndexChart.properties.height);
       },
       update: function () {
         var props = IndexChart.properties;
@@ -482,6 +521,7 @@ var IndexChart = {
     },
     scrollBar: {
       append: function () {
+        console.log(ChartView.getScrollbarWidth());
         IndexChart.components.scrollBar = IndexChart.components.chart.append('rect')
                                             .attr('class', 'scrollbar')
                                             .datum([])

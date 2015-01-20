@@ -409,14 +409,18 @@ var ChartView = {
   },
   rebuild: function() {
     ChartView.setProperties();
-    ChartView.updateVisibleStockLine();
-    ChartView.setScrollbarWidth();
-    ChartView.setScrollbarPos();
+    if(!this.data.error.index.isError){
+      ChartView.updateVisibleStockLine();
+      ChartView.setScrollbarWidth();
+      ChartView.setScrollbarPos();
+      RsiChart.init();
+      MacdChart.init();
+      IndexChart.update();
+    }else{
+      SentimentChart.update();
+      IndexChart.updateWithError();
+    }
     $('.zoomable-chart-container').css('width', '100%');
-    RsiChart.init();
-    MacdChart.init();
-    IndexChart.update();
-    SentimentChart.update();
   },
   showAllScrollbars: function(){
       RsiChart.components.scrollBar.style('fill-opacity', 100);
