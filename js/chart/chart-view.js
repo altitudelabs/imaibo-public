@@ -417,9 +417,9 @@ var ChartView = {
       MacdChart.init();
       IndexChart.update();
     }else{
-      SentimentChart.update();
       IndexChart.updateWithError();
     }
+    SentimentChart.update();
     $('.zoomable-chart-container').css('width', '100%');
   },
   showAllScrollbars: function(){
