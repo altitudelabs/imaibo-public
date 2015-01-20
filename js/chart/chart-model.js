@@ -87,7 +87,13 @@ var ChartModel = {
     var api  = this.apiBuilder('index', initial, updateByDragging, date);
     $.getJSON(api, function(res) {
       self.errorCheckIndex(res, initial);
-      self.setIndexData(res, handler, initial, updateByDragging);
+      if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError){
+        self.setIndexData(res, handler, initial, updateByDragging);
+        if(callback){
+          callback();
+        }
+      }
+      handler({ isError: self.model.indexError });
     }).fail(function(){
       handler({ isError: self.model.indexError });
     });
