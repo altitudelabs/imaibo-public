@@ -94,8 +94,6 @@ var SentimentChart = {
   draw: function(){
     'use strict';
     var self = this;
-    if (error) { return; }
-    
     // LINK DATA ===================================================================
     self.componentsBuilder.y1Labels.linkData();
     self.componentsBuilder.y2Labels.linkData();

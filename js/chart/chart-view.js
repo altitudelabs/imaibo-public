@@ -240,6 +240,7 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
+    // SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
     // Make charts visible
@@ -270,6 +271,7 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
+    // SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
     // Refresh sticky columns and scroll position
