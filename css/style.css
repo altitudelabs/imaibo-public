@@ -729,7 +729,7 @@ body::-webkit-scrollbar {
 ------------------------------------------------------------ */
 #sentiment-tooltip {
   position: absolute;
-  width: 280px;
+  width: 300px;
   font-size: 11px;
   padding: 15px;
 }
@@ -766,7 +766,7 @@ body::-webkit-scrollbar {
 #sentiment-tooltip .wrapper {
   background-color: #454545;
   padding: 2px;
-  width: 248px;
+  width: 268px;
   height: 100%;
 }
 
@@ -819,7 +819,7 @@ body::-webkit-scrollbar {
   background-color: #2a2a2a;
   color: rgb(107, 107, 107);
   padding: 5px 3px 5px 3px;
-  width: 248px;
+  width: 268px;
 }
 #sentiment-tooltip .tooltip-date div {
   float: right;

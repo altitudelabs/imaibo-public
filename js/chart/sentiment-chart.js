@@ -17,6 +17,9 @@ var SentimentChart = {
   },
   init: function () {
     'use strict';
+    $('#sentiment-chart').empty();
+    $('#sentiment-chart-label').empty();
+    this.appendComponents();
     this.setProperties();
     this.updateData();
     this.draw();
@@ -68,7 +71,6 @@ var SentimentChart = {
   draw: function(error){
     'use strict';
     var self = this;
-    self.appendComponents();
     if (error) { return; }
     
     // LINK DATA ===================================================================
@@ -111,8 +113,8 @@ var SentimentChart = {
   appendComponents: function () {
     'use strict';
     var self = SentimentChart;
-    $('#sentiment-chart').empty();
-    $('#sentiment-chart-label').empty();
+    // $('#sentiment-chart').empty();
+    // $('#sentiment-chart-label').empty();
     //ordering here is important! do not use for-loop
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
@@ -616,11 +618,12 @@ var SentimentChart = {
       append: function () {
         SentimentChart.components.tooltip = d3.select('#sentiment-chart').append('div')
         .attr('id', 'sentiment-tooltip')
-        .attr('class', 'tooltip');
+        .attr('class', 'tooltip')
+        .style('display', 'none');
       },
       update: function () {
-        SentimentChart.components.tooltip
-        .style('display', 'none');
+        console.log('update');
+        // SentimentChart.components.tooltip
       }
     },
     scatterDots: {
@@ -658,7 +661,6 @@ var SentimentChart = {
         .attr('r', 4)
         .attr('cy', function (d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
         .attr('cx', function (d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
-
       },
       exit: function () {
         SentimentChart.components.scatterDots
@@ -808,29 +810,7 @@ var SentimentChart = {
           .on('mouseout', function () {
             var mousePosition = SentimentChart.helpers.getMousePosition(dot);
             var dotPosition = [parseInt(d3.select(dot).attr('cx')), parseInt(d3.select(dot).attr('cy'))];
-            // var outOfLeft;
-            // var outOfRight;
-            // var outOfTop;
-            // var outOfBottom;
-            // if (shouldRenderLeft) {
-            //   outOfLeft = mousePosition[0] < dotPosition[0] - 250 - padding;
-            //   outOfRight = mousePosition[0] > dotPosition[0] + padding;
-            // } else {
-            //   outOfLeft = mousePosition[0] < dotPosition[0] - padding;
-            //   outOfRight = mousePosition[0] > dotPosition[0] + 250 + padding;
-            // }
-            // if (shouldRenderBottom) {
-            //   outOfTop = mousePosition[1] < dotPosition[1] - padding;
-            //   outOfBottom = mousePosition[1] > dotPosition[1] + tooltipHeight - padding;
-            // } else {
-            //   outOfTop = mousePosition[1] < dotPosition[1] - tooltipHeight + padding;
-            //   outOfBottom = mousePosition[1] > dotPosition[1] + padding;
-            // }
-            
-            // if (outOfLeft || outOfRight || outOfTop || outOfBottom) {
-            //   self.componentsBuilder.tooltip.update()
-            //   self.componentsBuilder.scatterDots.update()
-            // }
+
             var inLeft;
             var inRight;
             var inTop;
@@ -854,7 +834,7 @@ var SentimentChart = {
               inBottom = mousePosition[1] < dotPosition[1] + padding;
             }
             if (!(inLeft && inRight && inTop && inBottom)) {
-              SentimentChart.componentsBuilder.tooltip.update();
+              SentimentChart.components.tooltip.style('display', 'none');
               SentimentChart.componentsBuilder.scatterDots.update();
             }
           })
@@ -943,7 +923,7 @@ var SentimentChart = {
           var moodindexData = SentimentChart.helpers.getLastest('moodindexList', timestamp);
           
           if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
-            SentimentChart.componentsBuilder.tooltip.update();
+            SentimentChart.components.tooltip.style('display', 'none');
             SentimentChart.componentsBuilder.scatterDots.update();
           }
 

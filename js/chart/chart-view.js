@@ -2,10 +2,11 @@ var ChartView = {
   data: {
     daily: {},
     sentiment: {},
-    error: {}
+    error: {},
+    mode: 'daily'
   },
   properties: {
-    refreshFrequency: 6000000,
+    refreshFrequency: 600000,
     scrollSpeed: 2,
     scrollbarPos: 0,
   },
@@ -26,7 +27,6 @@ var ChartView = {
     }
     this.properties = $.extend(true, this.properties, properties);
   },
-  //data.visibleStockLine
   x: function(returnProp){
     var self = this;
     var props = self.properties;
@@ -36,33 +36,26 @@ var ChartView = {
       return x[returnProp]; }))
     .rangeBands([0, props.chartWidth]); //inversed the x axis because api came in descending order
   },
-  // getXLabels: function(startI){
   getXLabels: function(){
-    // if the data has not changed, return old. if there is new recalculate
-    
-    // if (this.data.xlabels) {
-    //   return this.data.xlabels;
-    // } else {
-      var timeObjArray = {};
-      this.data.xlabels = ChartView.getVisibleStockLine().filter(function (e, i) {
-        // if (startI && i<startI) { return false; }
-        var date = new Date(e.timestamp*1000);
-        var month = date.getMonth();
-        var year = date.getYear();
+    var timeObjArray = {};
+    this.data.xlabels = ChartView.getVisibleStockLine().filter(function (e, i) {
+      // if (startI && i<startI) { return false; }
+      var date = new Date(e.timestamp*1000);
+      var month = date.getMonth();
+      var year = date.getYear();
 
-        var yearsArray = Object.keys(timeObjArray);
-        if (yearsArray === undefined || timeObjArray[year] === undefined) {
-          timeObjArray[year] = [];
-        }
-        if (timeObjArray[year].indexOf(month) === -1) {
-          timeObjArray[year].push(month);
-          return true;
-        }
-        return false;
-      });
+      var yearsArray = Object.keys(timeObjArray);
+      if (yearsArray === undefined || timeObjArray[year] === undefined) {
+        timeObjArray[year] = [];
+      }
+      if (timeObjArray[year].indexOf(month) === -1) {
+        timeObjArray[year].push(month);
+        return true;
+      }
+      return false;
+    });
 
-      return this.data.xlabels;
-    // }
+    return this.data.xlabels;
   },
   y1: function(height, returnProp, volumeHeight){
     var self = this;
@@ -157,12 +150,9 @@ var ChartView = {
     $('.loader').css('width', this.properties.width);
     
     self.getData(true, function () {
-      self.buildChartElements();
       if(!IE8) {
         setInterval(function () {
-          self.getData(false, function () {
-            self.updateChartElements();
-          });
+          self.getData(false);
         }, self.properties.refreshFrequency);
       }
     });
@@ -171,41 +161,65 @@ var ChartView = {
     var self = this,
            d = new Date(),
            today = d.yyyymmdd();
-    $.when(ChartModel.getIndexDataAsync(today, initial), ChartModel.getSentimentDataAsync())
-    .done(function(index, sentiment){
-      
-      self.updateData(index, sentiment);
-      // self.setLastIndexOnViewPort();
-      cb();
+    $.when(ChartModel.getIndexDataAsync(today, initial, false), ChartModel.getSentimentDataAsync())
+    .done(function (index, sentiment) {
+      self.updateData(index, sentiment, initial);
+      if (initial) {
+        self.buildChartElements();
+      } else {
+        self.updateChartElements();
+      }
+      if (cb) { cb(); }
     });
   },
   getPastData: function () {
     var self = this;
-    if (self.updating) {
-      return;
-    }
+    if (self.updating) { return; }
     self.updating = true;
-    var earliestDate = ChartView.getStockLine()[0].rdate;
-    var oldLength = ChartView.getStockLine().length;
-    ChartModel.getIndexData(earliestDate-1, false, null, true, function () {
-      self.updateData();
-      var diff = ChartView.getStockLine().length - oldLength;
+    var earliestDate = self.data.daily.stockLine[0].rdate;
+    var oldLength = self.data.daily.stockLine.length;
+    
+    ChartModel.getIndexDataAsync(earliestDate-1, false, true)
+    .done(function (indexError) {
+      self.updateData(indexError);
+      var diff = self.data.daily.stockLine.length - oldLength;
       self.data.lastDataIndex += diff;
       self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
       self.moveToLeft();
       self.updating = false;
     });
   },
-  updateData: function (indexError, sentimentError) {
+  restartIndex: function () {
+    var self = this,
+           d = new Date(),
+           today = d.yyyymmdd();
+    if (self.updating) { return; }
+    self.updating = true;
+    var oldLength = self.data.daily.stockLine.length;
+    ChartModel.getIndexDataAsync(today, true, false)
+    .done(function (indexError) {
+      self.updateData(indexError);
+      var diff = self.data.daily.stockLine.length - oldLength;
+      self.data.lastDataIndex += diff;
+      self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+      self.updating = false;
+      IndexChart.update(false);
+    });
+  },
+  updateData: function (indexError, sentimentError, initial) {
     var self = this;
     self.data = ChartModel.model;
     self.data.error = {
       index: indexError,
       sentiment: sentimentError
     };
-    self.data.lastDataIndex = self.data.lastDataIndex || ChartView.getStockLine().length;
-    self.data.dataSetLength = self.data.dataSetLength || ChartView.getStockLine().length;
-    self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.lastDataIndex = self.data.lastDataIndex || self.data.daily.stockLine.length;
+    self.data.dataSetLength = self.data.dataSetLength || self.data.daily.stockLine.length;
+    if (initial) {
+      self.data.lastDataIndex = self.data.daily.stockLine.length;
+      self.data.dataSetLength = self.data.daily.stockLine.length;
+    }
+    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
   /* Initial build of chart elements */
@@ -351,7 +365,7 @@ var ChartView = {
   },
   moveToRight: function (delta) {
     var self = this;
-    var speed = delta || Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
         speed = Math.ceil(speed);
     if(self.data.lastDataIndex + speed > ChartView.getStockLine().length) { 
       self.data.lastDataIndex = ChartView.getStockLine().length;
@@ -366,9 +380,8 @@ var ChartView = {
   }, 
   moveToLeft: function (delta) {
     var self  = this;
-    var speed = delta || Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
     speed = Math.ceil(speed);
-    speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
     if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) { 
       self.data.lastDataIndex = ChartView.getVisibleStockLine().length;
     } else {
@@ -380,32 +393,9 @@ var ChartView = {
     self.redraw();
     
     if(ChartView.getLastDataIndex() - ChartView.data.visibleStockLine.length === 0){
-      clearTimeout(self.dragEnd);
-      self.dragEnd = setTimeout(function(){
-          self.getPastData();
-      } ,100);
+      self.getPastData();
     }
-
   },
-  // moveScrollbarToRight: function(){
-  //   var self = this;
-  //   var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
-  //   var nextXPos = ChartView.getScrollbarPos() + speed;
-  //   if(nextXPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
-  //     nextXPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
-
-  //   IndexChart.components.scrollBar
-  //   .attr('x', ChartView.properties.scrollbarPos = nextXPos);
-  // },
-  // moveScrollbarToLeft: function(){
-  //   var self = this;
-  //   var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
-  //   var nextXPos = ChartView.getScrollbarPos() - speed;
-  //   if(nextXPos < 0) nextXPos = 0;
-
-  //   IndexChart.components.scrollBar
-  //   .attr('x', ChartView.properties.scrollbarPos = nextXPos);
-  // },
   redraw: function () {
     ChartView.updateVisibleStockLine();
     $('.zoomable-chart-container').css('width', '100%');
