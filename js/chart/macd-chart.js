@@ -53,28 +53,18 @@ var MacdChart = {
     var self = this;
     $('#macd-chart').empty();
     $('#macd-chart-label').empty();
-    self.componentsBuilder.chart.append();
-    self.componentsBuilder.chartLabel.append();
-    self.componentsBuilder.topBorder.append();
-    self.componentsBuilder.rightBorder.append();
-    self.componentsBuilder.bottomBorder.append();
-    self.componentsBuilder.leftBorder.append();
-    self.componentsBuilder.y1Labels.append();
-    self.componentsBuilder.y2Labels.append();
-    self.componentsBuilder.xLabels.append();
-    self.componentsBuilder.bars.append();
-    self.componentsBuilder.scrollBar.append();
-    
-    // DEA line
-    this.components.chart.append('path')
-      .attr('class','dea');
 
-    // MACD line
-    this.components.chart.append('path')
-      .attr('class','macd');
-
-    // tooltip
-    self.componentsBuilder.mouseOverlay.append();
+    for(var key in this.componentsBuilder){
+      this.componentsBuilder[key].append();
+      if(key === 'chart'){
+        // DEA line
+        this.components.chart.append('path')
+          .attr('class','dea');
+        // MACD line
+        this.components.chart.append('path')
+          .attr('class','macd');
+      }
+    }  
   },
   drawContainer: function () {
     var self = this;
@@ -91,7 +81,6 @@ var MacdChart = {
 
     $('#macd-chart-container').css('width', ChartView.properties.chartWidth);
 
-    
     //DATA SECTION ======================================================
     for (var key in self.components) {
       if (self.componentsBuilder[key].linkData) {
@@ -100,14 +89,12 @@ var MacdChart = {
     //ENTER LOOP ======================================================
       if (self.componentsBuilder[key].enter) {
         self.componentsBuilder[key].enter();
+    //EXIT LOOP ===============================================================
+        self.components[key].exit().remove();
       }
     //UPDATE LOOP ===============================================================
       if (self.componentsBuilder[key].update) {
         self.componentsBuilder[key].update();
-      }
-    //EXIT LOOP ===============================================================
-      if (self.componentsBuilder[key].enter) {
-        self.components[key].exit().remove();
       }
     }
 
@@ -166,63 +153,50 @@ var MacdChart = {
     },
     topBorder: {
       append: function () {
-        MacdChart.components.topBorder = MacdChart.components.chartLabel.append('svg:line')
-                                                  .attr('class', 'xborder-top-thick');
+        MacdChart.components.topBorder = ChartView.appendBorder(MacdChart.components.chartLabel);
       },
       update: function () {
         MacdChart.components.topBorder
         .attr('x1', ChartView.properties.margin.left)
         .attr('x2', ChartView.properties.chartWidth + ChartView.properties.margin.left)
         .attr('y1', ChartView.properties.margin.top)
-        .attr('y2', ChartView.properties.margin.top)
-        .attr('stroke', 'rgb(77, 77, 77)')
-        .attr('stroke-width', '2px');
+        .attr('y2', ChartView.properties.margin.top);
       }
     },
     rightBorder: {
       append: function () {
-        MacdChart.components.rightBorder = MacdChart.components.chartLabel.append('svg:line')
-                                                    .attr('class', 'yborder-right');
+        MacdChart.components.rightBorder = ChartView.appendBorder(MacdChart.components.chartLabel);
       },
       update: function () {
         MacdChart.components.rightBorder
         .attr('x1', ChartView.properties.chartWidth + ChartView.properties.margin.left)
         .attr('x2', ChartView.properties.chartWidth + ChartView.properties.margin.left)
         .attr('y1', MacdChart.properties.chartHeight - ChartView.properties.margin.bottom)
-        .attr('y2', ChartView.properties.margin.top)
-        .attr('stroke', 'rgb(77, 77, 77)')
-        .attr('stroke-width', '2px');
+        .attr('y2', ChartView.properties.margin.top);
       }
     },
     bottomBorder: {
       append: function () {
-        MacdChart.components.bottomBorder = MacdChart.components.chartLabel.append('svg:line')
-                                                     .attr('class', 'xaxis');
+        MacdChart.components.bottomBorder = ChartView.appendBorder(MacdChart.components.chartLabel);
       },
       update: function () {
         MacdChart.components.bottomBorder
         .attr('x1', ChartView.properties.margin.left)
         .attr('x2', ChartView.properties.width - ChartView.properties.margin.right)
         .attr('y1', MacdChart.properties.chartHeight - ChartView.properties.margin.bottom)
-        .attr('y2', MacdChart.properties.chartHeight - ChartView.properties.margin.bottom)
-        .attr('stroke', 'rgb(77, 77, 77)')
-        .attr('stroke-width', '2px');
+        .attr('y2', MacdChart.properties.chartHeight - ChartView.properties.margin.bottom);
       }
     },
     leftBorder: {
       append: function () {
-        MacdChart.components.leftBorder = MacdChart.components.chartLabel.append('svg:line')
-                                                   .attr('class', 'yborder-left');
-        
+        MacdChart.components.leftBorder = ChartView.appendBorder(MacdChart.components.chartLabel);
       },
       update: function () {
         MacdChart.components.leftBorder
         .attr('x1', ChartView.properties.margin.left)
         .attr('x2', ChartView.properties.margin.left)
         .attr('y1', MacdChart.properties.chartHeight - ChartView.properties.margin.bottom)
-        .attr('y2', ChartView.properties.margin.top)
-        .attr('stroke', 'rgb(77, 77, 77)')
-        .attr('stroke-width', '2px');
+        .attr('y2', ChartView.properties.margin.top);
       }
     },
     y1Labels: {
@@ -316,37 +290,11 @@ var MacdChart = {
     }, 
     scrollBar: {
       append: function () {
-        //because d3 drag requires data/datum to be valid
-        MacdChart.components.scrollBar = MacdChart.components.chart.append('rect')
-                                            .attr('class', 'scrollbar')
-                                            .datum([])
-                                            .attr('height', 7)
-                                            .attr('rx', 4)
-                                            .attr('ry', 4)
-                                            .style('fill', 'rgb(107, 107, 107)')
-                                            .style('fill-opacity', 50)
-                                            .call(ChartView.scrollbarDragBehavior());
-        ChartView.properties.mouseOverScrollbar = false;
-        ChartView.properties.mouseOverChart     = false;
+        MacdChart.components.scrollBar = ChartView.appendScrollbar(MacdChart.components.chart, 
+                                                                   MacdChart.properties.height - 30);
       },
       update: function() {
-        MacdChart.components.scrollBar
-        .attr('x', ChartView.getScrollbarPos())
-        .attr('y', MacdChart.properties.height - 30)
-        .attr('width', ChartView.getScrollbarWidth())
-        .on('mouseenter', function(e) {
-           if(ChartView.isZoomed()){
-              ChartView.showAllScrollbars();
-              ChartView.properties.mouseOverScrollbar = true;
-           }
-        })
-        .on('mouseleave', function(e) {
-           var mChart = ChartView.properties.mouseOverChart;
-           if(!mChart){
-              ChartView.hideAllScrollbars();
-              ChartView.properties.mouseOverScrollbar = false;
-           }
-        });
+        ChartView.updateScrollbar(MacdChart.components.scrollBar);
       }
     },  
     mouseOverlay: {

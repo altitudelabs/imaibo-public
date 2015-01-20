@@ -28,13 +28,10 @@ var ChartView = {
   },
   //data.visibleStockLine
   x: function(returnProp){
-    var self = this;
-    var props = self.properties;
-
     return d3.scale.ordinal()
     .domain(ChartView.getVisibleStockLine().map(function(x) {
       return x[returnProp]; }))
-    .rangeBands([0, props.chartWidth]); //inversed the x axis because api came in descending order
+    .rangeBands([0, this.properties.chartWidth]); //inversed the x axis because api came in descending order
   },
   // getXLabels: function(startI){
   getXLabels: function(){
@@ -65,7 +62,6 @@ var ChartView = {
     // }
   },
   y1: function(height, returnProp, volumeHeight){
-    var self = this;
     var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x[returnProp]; }));
     var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x[returnProp]; }));
 
@@ -75,7 +71,6 @@ var ChartView = {
   },
   //return lowpx, highpx
   y2: function(height, returnPropMax, returnPropMin, volumeHeight){
-    var self = this;
     var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMin]; }));
     var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMax]; }));
 
@@ -93,12 +88,9 @@ var ChartView = {
   //return .volumn
 // range -> volumeHeight
   v: function(returnProp) {
-    var self = this;
-    var props = self.properties;
-
     return d3.scale.linear()
     .domain([0, d3.max(ChartView.getVisibleStockLine().map(function(d){ return +d[returnProp];}))])
-    .range([0, props.volumeHeight]);
+    .range([0, this.properties.volumeHeight]);
   },
   /*
    * xInverse
@@ -125,10 +117,10 @@ var ChartView = {
   init: function(){
     // set up toolbar
     // this.horizontalScroll();
-    Toolbar.init();
-    this.initInfoButtons();
-    this.setProperties();
     var self = this;
+    Toolbar.init();
+    self.initInfoButtons();
+    self.setProperties();
     self.build();
 
     var resizeEnd;
@@ -169,8 +161,8 @@ var ChartView = {
   },
   getData: function (initial, cb) {
     var self = this,
-           d = new Date(),
-           today = d.yyyymmdd();
+    today = new Date().yyyymmdd();
+
     $.when(ChartModel.getIndexDataAsync(today, initial), ChartModel.getSentimentDataAsync())
     .done(function(index, sentiment){
       
@@ -187,6 +179,7 @@ var ChartView = {
     self.updating = true;
     var earliestDate = ChartView.getStockLine()[0].rdate;
     var oldLength = ChartView.getStockLine().length;
+                            //date, initial, handler, updateByDragging, callback() 
     ChartModel.getIndexData(earliestDate-1, false, null, true, function () {
       self.updateData();
       var diff = ChartView.getStockLine().length - oldLength;
@@ -262,7 +255,7 @@ var ChartView = {
     // Draw sentiment
     if (!self.data.sentimentError) {
       // SentimentChart.setProperties();
-      SentimentChart.update();
+      ChartView.update(SentimentChart);
     } else {
       SentimentChart.initWithError();
     }
@@ -385,7 +378,11 @@ var ChartView = {
           self.getPastData();
       } ,100);
     }
-
+  },
+  update: function(chart){
+    chart.setProperties();
+    chart.updateData();
+    chart.draw();
   },
   // moveScrollbarToRight: function(){
   //   var self = this;
@@ -412,10 +409,9 @@ var ChartView = {
     ChartView.setScrollbarWidth();
     ChartView.setScrollbarPos();
 
-    IndexChart.update();
-
-    RsiChart.update();
-    MacdChart.update();
+    ChartView.update(IndexChart);
+    ChartView.update(RsiChart);
+    ChartView.update(MacdChart);
   },
   rebuild: function() {
     ChartView.setProperties();
@@ -425,23 +421,23 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
     RsiChart.init();
     MacdChart.init();
-    IndexChart.update();
-    SentimentChart.update();
+    ChartView.update(IndexChart);
+    ChartView.update(SentimentChart);
   },
   showAllScrollbars: function(){
-      RsiChart.components.scrollBar.style('fill-opacity', 100);
       IndexChart.components.scrollBar.style('fill-opacity', 100);
-      MacdChart.components.scrollBar.style('fill-opacity', 100);
+      RsiChart  .components.scrollBar.style('fill-opacity', 100);
+      MacdChart .components.scrollBar.style('fill-opacity', 100);
   },
   hideAllScrollbars: function(){
-      RsiChart.components.scrollBar.style('fill-opacity', 0);
       IndexChart.components.scrollBar.style('fill-opacity', 0);
-      MacdChart.components.scrollBar.style('fill-opacity', 0);
+      RsiChart  .components.scrollBar.style('fill-opacity', 0);
+      MacdChart .components.scrollBar.style('fill-opacity', 0);
   },
   mouseOverMouseOverlay: function(){
     ChartView.properties.mouseOverChart = true;
     if(ChartView.isZoomed()){ 
-    $('html').css('overflow', 'hidden');
+      $('html').css('overflow', 'hidden');
       ChartView.showAllScrollbars();
     }
   },
@@ -453,7 +449,52 @@ var ChartView = {
       $('html').css('overflow', 'visible');
     }
   },
-  // ============= PUBLIC GETTERS/SETTERS ======================
+  mouseEnterScrollbar: function(){
+    if(ChartView.isZoomed()){
+      ChartView.showAllScrollbars();
+      ChartView.properties.mouseOverScrollbar = true;
+    }
+  },
+  mouseLeaveScrollbar: function(){
+    var mChart = ChartView.properties.mouseOverChart;
+     if(!mChart){
+      ChartView.hideAllScrollbars();
+      ChartView.properties.mouseOverScrollbar = false;
+     }
+  },
+  appendScrollbar: function(chart, y){
+    return chart.append('rect')
+            .attr('y', y)
+            .attr('class', 'scrollbar')
+            .attr('height', 7)
+            .attr('x', ChartView.getChartWidth() - ChartView.getScrollbarWidth())
+            .attr('rx', 4)
+            .attr('ry', 4)
+            .style('fill', 'rgb(107, 107, 107)')
+            .on('mouseenter', function(e) {
+              ChartView.mouseEnterScrollbar();
+            })
+            .on('mouseleave', function(e) {
+               ChartView.mouseLeaveScrollbar();
+            })
+            .datum([]) //because d3 drag requires data/datum to be valid
+            .call(ChartView.scrollbarDragBehavior());
+    ChartView.properties.mouseOverScrollbar = false;
+    ChartView.properties.mouseOverChart     = false;
+  },
+  updateScrollbar: function(scrollbar){
+    scrollbar
+      .attr('x', ChartView.getScrollbarPos())
+      .attr('width', ChartView.getScrollbarWidth())
+      .style('fill-opacity', 50);
+  },
+  appendBorder: function(chart){
+    return chart.append('svg:line')
+            .attr('class', 'xborder-top-thick')
+            .attr('stroke', 'rgb(77, 77, 77)')
+            .attr('stroke-width', '2px');
+  },
+  // ============= PUBLIC GETTERS ======================
   getLastIndexOnViewPort: function() {
     return this.properties.lastIndexOnViewPort;
   },
@@ -462,12 +503,6 @@ var ChartView = {
   },
   getVisibleStockLine: function() {
     return this.data.visibleStockLine || ChartView.getStockLine();
-  },
-  setVisibleStockLine: function(vsl){
-    this.data.visibleStockLine = vsl;
-  },
-  setChartWidth: function(chartWidth) {
-    this.properties.chartWidth = chartWidth;
   },
   getChartWidth: function() {
     return this.properties.chartWidth;
@@ -508,11 +543,28 @@ var ChartView = {
   getLastDataIndex: function() {
     return this.data.lastDataIndex;
   },
+  getDataSetLength: function() {
+    return this.data.dataSetLength;
+  },
+  getScrollSpeed: function(){
+    return this.properties.scrollSpeed;
+  },
+  getScrollbarWidth: function() {
+    return ChartView.properties.scrollBarWidth;
+  },
+  getScrollbarPos: function(){
+    return ChartView.properties.scrollbarPos;
+  }, 
+
+  //======== PUBLIC SETTERS ===================
   setLastDataIndex: function(index) {
     this.data.lastDataIndex = index;
   },
-  getDataSetLength: function() {
-    return this.data.dataSetLength;
+  setVisibleStockLine: function(vsl){
+    this.data.visibleStockLine = vsl;
+  },
+  setChartWidth: function(chartWidth) {
+    this.properties.chartWidth = chartWidth;
   },
   setDataSetLength: function(length){
     this.data.dataSetLength = length;
@@ -521,18 +573,9 @@ var ChartView = {
     var vsl = ChartView.getStockLine().slice(ChartView.getLastDataIndex() - ChartView.getDataSetLength(), ChartView.getLastDataIndex());
     ChartView.setVisibleStockLine(vsl);
   },
-  getScrollSpeed: function(){
-    return this.properties.scrollSpeed;
-  },
-  getScrollbarWidth: function() {
-    return ChartView.properties.scrollBarWidth;
-  },
   setScrollbarWidth: function(){
     ChartView.properties.scrollBarWidth = ChartView.getVisibleStockLine().length/ChartView.getStockLine().length*ChartView.getChartWidth();
   },
-  getScrollbarPos: function(){
-    return ChartView.properties.scrollbarPos;
-  }, 
   setScrollbarPos: function(){
     var x =  (ChartView.getLastDataIndex() - ChartView.getVisibleStockLine().length)/ChartView.getStockLine().length * ChartView.getChartWidth();
     ChartView.properties.scrollbarPos = x;
