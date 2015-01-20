@@ -853,7 +853,7 @@ body::-webkit-scrollbar {
 }
 
 #sentiment-chart-legend li {
-  padding-right: 5px;
+  padding-right: 7.5px;
 }
 
 #sentiment-chart-legend li,
