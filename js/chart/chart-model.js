@@ -89,9 +89,6 @@ var ChartModel = {
       self.errorCheckIndex(res, initial);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError){
         self.setIndexData(res, handler, initial, updateByDragging);
-        if(callback){
-          callback();
-        }
       }
       handler({ isError: self.model.indexError });
     }).fail(function(){

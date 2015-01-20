@@ -171,9 +171,14 @@ var SentimentChart = {
     },
     // Processing mood data filters out non-trading days
     processMoodData: function(data){
-      return data.filter(function (x) {
-        if (!!x.isTradingDay && !!x.timestamp && new Date(x.timestamp*1000).getHours() !== 7) {
-          return true;
+      var preOpenData;
+      var processedData = data.filter(function (x) {
+        if (!!x.isTradingDay && !!x.timestamp) {
+          if (new Date(x.timestamp*1000).getHours() === 7) {
+            preOpenData = x;
+          } else {
+            return true;
+          }
         } else {
           return false;
         }
@@ -181,6 +186,10 @@ var SentimentChart = {
       .sort(function (a, b){
         return a.timestamp - b.timestamp;
       });
+      if (preOpenData) {
+        SentimentChart.data.earlyMood = preOpenData;
+      }
+      return processedData;
     },
     // Processing index data filters out non-trading days
     processIndexData: function(data){
@@ -228,8 +237,8 @@ var SentimentChart = {
     },
     updateLegends: function (indexData, moodindexData) {
       $('#sentiment-chart-legend .security').text(indexData ? indexData.price : '--');
-      $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : '--');
-      $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : '--');
+      $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : SentimentChart.data.earlyMood ? SentimentChart.data.earlyMood.mood : '--');
+      $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : SentimentChart.data.earlyMood ? SentimentChart.data.earlyMood.moodChg : '--');
     },
     getMousePosition: function (context) {
       'use strict';
@@ -622,7 +631,6 @@ var SentimentChart = {
         .style('display', 'none');
       },
       update: function () {
-        console.log('update');
         // SentimentChart.components.tooltip
       }
     },
