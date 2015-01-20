@@ -356,19 +356,21 @@ var RightPanel = {
           });
         }
 
-        self.showStockpickerView();
-        // When view is rendered, also render settings panel and autocomplete
+        // Refresh sticky columns after height change
+        StickyColumns.start();
+
+        $('#stockpicker-view .panel-loader-wrapper').remove();
+
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        // Makes stockpicker view refresh every x seconds
         self.refreshStockpickerView();
       } 
       else {
         self.updateStockpickerView(model);
-      }
 
-      // Refresh sticky columns after height change
-      StickyColumns.start();
+        // Refresh sticky columns after height change
+        StickyColumns.start();
+      }
     };
 
     var errorHandler = function(model) {
@@ -383,10 +385,6 @@ var RightPanel = {
   hideStockpickerLoginPanel: function() {
     $('#stock-login').remove();
     $('#suggestion').remove();
-  },
-  showStockpickerView: function() {
-    $('#stockpicker-view').css('opacity', '1');
-    $('.panel-loader').remove();
   },
   updateStockpickerView: function(model) {
     var self = this;
@@ -561,10 +559,6 @@ var RightPanel = {
         $('#experts-view').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
       }
 
-      // Remove loader
-      $('#experts-view').css('visibility', 'visible');
-      $('.panel-loader').remove();
-
       // Refresh sticky columns after height change
       StickyColumns.start();
     });
@@ -610,30 +604,32 @@ var RightPanel = {
     // CREATE TIME BLOCKS
     var timeBlock = d3.select('#press-by-time')
                       .selectAll('div')
-                      .data(d3.keys(model.pressByTime));
+                      .data(model.pressByTime);
 
     timeBlock.enter().append('div')
-                     .attr("id", function(d) { return "time" + d.replace(/(-|:|\s)+/g, ''); })
+                     .attr("id", function(d) { return "time" + d.dateClock.replace(/(-|:|\s)+/g, ''); })
                      .attr("class", "time-block")
                      .html(timeBlockTemplate);
 
     timeBlock.exit().remove();
 
-    timeBlock.select('.date').html(function(d) { return d});
+    timeBlock.select('.date').html(function(d) { return d.dateClock; });
 
     // SET TIME BLOCKS
-    _.each(model.pressByTime, function(object, name) {
-      var timeBlockString = '#time' + name.replace(/(-|:|\s)+/g, '');
+    var lengthOfArray = model.pressByTime.length;
+
+    for (var i = 0; i < lengthOfArray; i++) {
+      var timeBlockString = '#time' + model.pressByTime[i].dateClock.replace(/(-|:|\s)+/g, '');
       var newsBlocksString = timeBlockString + ' .news-blocks';
       var numberOfMsgString = timeBlockString + ' .number-of-msg';
 
       // SET NUMBER OF MSG IN EACH TIME BLOCK
-      $(numberOfMsgString).html("共" + object.length + "条新闻");
+      $(numberOfMsgString).html("共" + model.pressByTime[i].list.length + "条新闻");
 
       // CREATE NEWS BLOCKS INSIDER EACH TIME BLOCK
       var newsBlocks = d3.select(newsBlocksString)
                          .selectAll('div')
-                         .data(object);
+                         .data(model.pressByTime[i].list);
 
       newsBlocks.enter().append('div')
                         .attr("class", function(d) {
@@ -653,7 +649,7 @@ var RightPanel = {
       newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
       newsBlocks.select('.percentage').html(function(d){ return d.newsMood + '%'; });
       newsBlocks.select('.source').html(function(d){ return "来自" + d.source; });
-    });
+    }
     
     this.setTimebarListener();
   },
@@ -661,7 +657,14 @@ var RightPanel = {
     var self = this;
 
     $('#press-by-time .calendar-and-date').click(function() { 
-      $(this).siblings().stop().slideToggle('slow');
+      var $thisObject = $(this);
+      
+      $thisObject.siblings().stop().slideToggle('slow');
+
+      if ($thisObject.hasClass("news-collapsed"))
+        $thisObject.removeClass("news-collapsed");
+      else
+        $thisObject.addClass("news-collapsed");
 
       // Refresh sticky columns after height change
       StickyColumns.start();
@@ -683,6 +686,8 @@ var RightPanel = {
         self.updatePressByTime(RightPanelModel.model);
       else
         $('#press-by-time').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+
+      $('#news-view .panel-loader-wrapper').remove();
 
       // Refresh sticky columns after height change
       StickyColumns.start();
