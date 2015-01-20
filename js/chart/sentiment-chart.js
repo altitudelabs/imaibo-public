@@ -17,24 +17,22 @@ var SentimentChart = {
   },
   init: function () {
     'use strict';
-    this.initWithError();
-    // $('#sentiment-chart').empty();
-    // $('#sentiment-chart-label').empty();
-    // this.appendComponents();
-    // this.setProperties();
-    // this.drawContainer();
-    // this.updateData();
-    // this.draw();
+    $('#sentiment-chart').empty();
+    $('#sentiment-chart-label').empty();
+    this.appendComponents();
+    this.setProperties();
+    this.drawContainer();
+    this.updateData();
+    this.draw();
   },
   initWithError: function () {
-    // $('#sentiment-chart').empty();
-    // $('#sentiment-chart-label').empty();
+    $('#sentiment-chart').empty();
+    $('#sentiment-chart-label').empty();
     this.appendComponents();
     this.setProperties();
     this.drawContainer();
     this.updateDataWithError();
     this.drawWithError();
-    // this.draw(true);
     $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
     $('#sentiment .legend').remove();
     $('#sentiment-chart-legend').remove();
