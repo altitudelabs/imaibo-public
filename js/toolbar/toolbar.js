@@ -156,25 +156,27 @@ var Toolbar = {
       if(e.target != cb) cb.click();
     });
 
-    $('#macd-checkbox').change(function(){
-      if(this.checked){
-        $('#macd').css('display', 'block');
-      } else {
-        $('#macd').css('display', 'none');
-      }
-      StickyColumns.recalc();
-    });
-
     // $('#macd-checkbox').change(function(){
     //   if(this.checked){
-    //     $('#macd').slideDown(300);
-    //   }else{
-    //     $('#macd').slideUp(300);
+    //     $('#macd').css('display', 'block');
+    //   } else {
+    //     $('#macd').css('display', 'none');
     //   }
-    //   setTimeout(function () {
-    //     StickyColumns.recalc();
-    //   }, 300); 
+    //   StickyColumns.recalc();
     // });
+
+    $('#macd-checkbox').change(function(){
+      if(this.checked){
+        $('#macd').slideDown(300, function () {
+        StickyColumns.recalc();
+
+        });
+      }else{
+        $('#macd').slideUp(300, function () {
+          StickyColumns.recalc();
+        });
+      }
+    });
   },
   initFreq: function() {
     $('#minute-radio-row').click(function(e) {
@@ -187,8 +189,7 @@ var Toolbar = {
       if(e.target != rb) {
         //changed to daily from something else
         if (!rb.checked) {
-          ChartView.data.mode = 'daily';
-          ChartView.restartIndex();
+          ChartView.changeMode('daily');
         }
         rb.click();
       }
@@ -199,8 +200,7 @@ var Toolbar = {
       if(e.target != rb) {
         //changed to weekly from something else
         if (!rb.checked) {
-          ChartView.data.mode = 'weekly';
-          ChartView.restartIndex();
+          ChartView.changeMode('weekly');
         }
         rb.click();
       }

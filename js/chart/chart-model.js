@@ -1,7 +1,7 @@
 var ChartModel = {
   model: {
     info:         {},
-    daily:        {},
+    index:        {},
     minute:       {},
     sentiment:    {},
     indexError:   true,
@@ -13,30 +13,31 @@ var ChartModel = {
     staging:        'http://t3-www.imaibo.net',
     base:           '/index.php?app=moodindex&mod=IndexShow',
     indexData:      '&act=main',
+    dailyIndexData: '&daily=1',
+    weeklyIndexData:'&act=getStkWeeklyLineAjax',
     sentimentData:  '&act=moodindexLine',
     latest:         '&latest=1',
-    daily:          '&daily=1',
     minute:         '&minute=1',
-    weekly:         '&weekly=1',
     date:           '&reqDate=',
     dailyLineSdate: '&dailyLineSdate=',
-    jsonp:          '&callback=?',
+    weeklyLineSdate: '&weeklyLineSdate=',
+    jsonp:          '&callback=?'
   },
   currEarliestTime: 0,
   endOfSentiment: false,
   baseUrl: function(){
     return PRODUCTION ? this.api.production : this.api.staging;
   },
-  getIndexDataAsync: function(date, initial, drag){
+  getIndexDataAsync: function(options, cb){
     var self = this;
     return $.Deferred(function(d){
-      self.getIndexData(date, initial, d.resolve, drag);
+      self.getIndexData(options, d.resolve, cb);
     }).promise();
   },
-  getSentimentDataAsync: function(){
+  getSentimentDataAsync: function(options, cb){
     var self = this;
     return $.Deferred(function(d){
-      self.getSentimentData(d.resolve, d.reject);
+      self.getSentimentData(options, d.resolve, cb);
     }).promise();
   },
   updateSentimentDataAsync: function(date){
@@ -45,33 +46,45 @@ var ChartModel = {
       self.updateSentimentData(date, d.resolve, d.reject);
     }).promise();
   },
-  apiBuilder: function(requestChart, initial, updateByDragging, date) {
+  apiBuilder: function(requestChart, options) {
     var api = this.baseUrl() + this.api.base;
+    // var today = new Date().yyyymmdd();
     if(requestChart === 'index') {
-      api += this.api.indexData;
-      api += (ChartView.data.mode === 'weekly' ? this.api.weekly : this.api.daily);
-      api += (updateByDragging? this.api.dailyLineSdate + date: '');
-      api += (!updateByDragging? this.api.latest: '');
-      api += '&info=1&trading=1';
+      api += (options.weekly ? this.api.weeklyIndexData : '');
+      api += (options.daily ? this.api.dailyIndexData + this.api.indexData : '');
+      api += ((options.daily&&options.date) ? this.api.dailyLineSdate + options.date : '');
+      api += ((options.daily&&options.date) ? this.api.indexData+this.api.latest : '');
+      api += ((options.weekly&&options.date) ? this.api.weeklyLineSdate + options.date : '');
+      api += (options.info ? '&info=1&trading=1' : '');
     }else{
       api += this.api.sentimentData;
-      api += (initial? this.api.date + date: '');
     }
     api += this.api.jsonp;
     return api;
   },
-  setIndexData: function(res, handler, initial, updateByDragging) {
-    if(res.code !== 'undefined' && res.code === 0 && !this.model.indexError) {
-      this.model.info   = res.data.info;
-      this.model.minute = res.data.minute;
-      // Process data
-      this.processIndexData(res, initial, updateByDragging);
-
-      if(handler) handler({ isError: this.model.indexError });
-    } else {
-      handler({ isError: this.model.indexError });
-      IndexChart.initWithError();
-    }
+  getInitialData: function () {
+    var self = this;
+    var indexOptions = {
+      daily: true,
+      info: true
+    };
+    var sentimentOptions = {};
+    var indexCallback = function (data, handler) {
+      var newData = data.daily ? data.daily.stockLine : [];
+      for (var key in data) {
+        if (key === 'daily') {
+          self.model.index.stockLine = newData.reverse();
+        } else {
+          self.model[key] = data[key];
+        }
+      }
+      handler(self.model.indexError);
+    };
+    var sentimentCallback = function (data, handler) {
+      self.model.sentiment = data;
+      handler(self.model.sentimentError);
+    };
+    return $.when(ChartModel.getIndexDataAsync(indexOptions, indexCallback), ChartModel.getSentimentDataAsync(sentimentOptions, sentimentCallback));
   },
   /*
    * func getIndexData()
@@ -82,56 +95,82 @@ var ChartModel = {
    * - handler: callback function
    * - updateByDragging: boolean, indicates if we are updating by dragging index chart
   */
-  getIndexData: function(date, initial, handler, updateByDragging){
+  getIndexData: function(options, handler, cb){
     var self = this;
-    var api  = this.apiBuilder('index', initial, updateByDragging, date);
-    $.getJSON(api, function(res) {
-      self.errorCheckIndex(res, initial);
+
+    var indexApi = self.apiBuilder('index' , options);
+    $.getJSON(indexApi, function(res) {
+      self.errorCheckIndex(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError){
-        self.setIndexData(res, handler, initial, updateByDragging);
+        cb(res.data, handler);
       }
-      handler({ isError: self.model.indexError });
     }).fail(function(){
       handler({ isError: self.model.indexError });
     });
   },
-  getSentimentData: function(handler){
+  updateIndexData: function (options) {
     var self = this;
-    var api = this.apiBuilder();
-    $.getJSON(api, function(res) {
-      self.errorCheckSentiment(res);
+    var callback = function (data, handler) {
+      var newData;
+      var timestamps = [];
+      if (data.daily) { 
+        newData = data.daily.stockLine.reverse();
+      } else if (data.weeklyKLine) {
+        newData = data.weeklyKLine.reverse();
+      }
+
+      self.model.index.stockLine = self.model.index.stockLine.concat(newData)
+      .sort(function (a, b) {
+        return a.timestamp - b.timestamp;
+      })
+      .filter(function (d) {
+        if (timestamps.indexOf(d.timestamp) === -1) {
+          timestamps.push(d.timestamp);
+          return true;
+        }
+      });
+      if (!!data.latestPrice && data.daily) {
+        if (data.latestPrice.timestamp > self.model.index.stockLine[self.model.index.stockLine.length-1].timestamp) {
+          self.model.index.stockLine.push(data.latestPrice);
+        } else {
+          // console.log('there is no data');
+        }
+      }
+      handler(self.model.indexError);
+    };
+    return $.when(ChartModel.getIndexDataAsync(options, callback));
+  },
+  refreshIndexData: function (options) {
+    var self = this;
+    var callback = function (data, handler) {
+      if (data.daily) { 
+        self.model.index.stockLine = data.daily.stockLine.reverse();
+      } else if (data.weeklyKLine) {
+        self.model.index.stockLine = data.weeklyKLine.reverse();
+      }
+      handler(self.model.indexError);
+    };
+    return $.when(ChartModel.getIndexDataAsync(options, callback));
+  },
+  getSentimentData: function(options, handler, cb){
+    var self = this;
+    
+    var sentimentApi = self.apiBuilder('sentiment' , options);
+    $.getJSON(sentimentApi, function(res) {
+      self.errorCheckSentiment(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
-        self.model.sentiment = res.data;
-        handler({ isError: self.model.sentimentError });
-      } else {
-        handler({ isError: self.model.sentimentError });
+        cb(res.data, handler);
       }
     }).fail(function(){
       handler({ isError: self.model.sentimentError });
     });
   },
-  updateSentimentData: function(date, handler){
+  updateSentimentData: function(options){
     var self = this;
-    var api = this.apiBuilder('sentiment', false, false, date);
-    $.getJSON(api, function(res) {
-      // Add new ticks to the existing array if no error
-      if (res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError){
-        var lastData = self.model.sentiment.indexList[self.model.sentiment.indexList.length-1],
-            lastTimestamp = lastData.timestamp;
-
-        _.each(res.data.indexList, function(tick){
-          if (tick.timestamp > lastTimestamp){
-            self.model.sentiment.indexList.push(tick);
-          }
-        });
-
-        self.model.sentiment.moodindexList = res.data.moodindexList;
-      }
-
-      handler({ isError: self.model.sentimentError });
-    }).fail(function(){
-      handler({ isError: self.model.sentimentError });
-    });
+    var callback = function (data) {
+      self.model.sentiment = data;
+    };
+    return $.when(ChartModel.getSentimentDataAsync(options, callback));
   },
   /* Checks if variable is object */
   isObject: function(val){
@@ -145,7 +184,7 @@ var ChartModel = {
     }
     return true;
   },
-  errorCheckSentiment: function(res){
+  errorCheckSentiment: function(res, options){
     if(res.data === undefined){
         this.log(0, 'Sentiment API has no \'data\'');
       } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
@@ -166,46 +205,55 @@ var ChartModel = {
         this.model.sentimentError = false;
       }
   },
-  errorCheckIndex: function(res, initial){
+  errorCheckIndex: function(res, options){
     this.model.indexError = true;
+    var type
+    if (!!options.daily) {
+      type = 'daily';
+    } else if (!!options.weekly) {
+      type = 'weeklyKLine';
+    }
     if(res.data === undefined){
       this.log(0, 'Index API has no \'data\'');
     } else if(!this.isObject(res.data) || this.isEmptyObject(res.data)){
       this.log(0, 'Index API "data" variable is not an object or is empty');
-    } else if(res.data.info === undefined || this.isEmptyObject(res.data.info)){
+    } else if(options.info && (res.data.info === undefined || this.isEmptyObject(res.data.info))){
       this.log(0, 'Index API data.info does not exist');
-    } else if(res.data.info.stockIndexInfo === undefined || this.isEmptyObject(res.data.info.stockIndexInfo)){
+    } else if(options.info && (res.data.info.stockIndexInfo === undefined || this.isEmptyObject(res.data.info.stockIndexInfo))){
       this.log(0, 'Index API data.info.stockIndexInfo does not exist');
-    } else if(res.data.info.moodindexInfo === undefined || this.isEmptyObject(res.data.info.moodindexInfo)){
+    } else if(options.info && (res.data.info.moodindexInfo === undefined || this.isEmptyObject(res.data.info.moodindexInfo))){
       this.log(0, 'Index API data.info.moodindexInfo does not exist');
-    } else if(res.data.info.tradingSign === undefined || this.isEmptyObject(res.data.info.tradingSign)){
+    } else if(options.info && (res.data.info.tradingSign === undefined || this.isEmptyObject(res.data.info.tradingSign))){
       this.log(0, 'Index API data.info.tradingSign does not exist');
-    } else if(initial && (res.data[ChartView.data.mode] === undefined || res.data[ChartView.data.mode].length === 0)){
-      this.log(0, 'Index API data ' + [ChartView.data.mode] + ' does not exist');
-    } else if(initial && (res.data[ChartView.data.mode].stockLine === undefined || res.data[ChartView.data.mode].stockLine.length === 0)){
+    } else if(!!type && (res.data[type] === undefined || res.data[type].length === 0)){
+      this.log(0, 'Index API data ' + [type] + ' does not exist');
+    } else if(type==='daily' && (res.data[type].stockLine === undefined || res.data[type].stockLine.length === 0)){
       this.log(0, 'stockLine Data does not exist');
     } else {
       this.model.indexError = false;
     }
   },
-  processIndexData: function(res, initial, updateByDragging){
+  processIndexData: function(res, options){
     var self = this;
-    var daily = self.model.daily;
+    var index = self.model.index;
+
     if(initial){
-      self.model.daily = res.data.daily;
+      self.model.index = res.data[ChartView.properties.mode];
       // API returns data in descending order
-      if(self.model.daily.stockLine[0].timestamp != res.data.latestPrice.timestamp) {
-        self.model.daily.stockLine.unshift(res.data.latestPrice);
+      if(self.model.index.stockLine[0].timestamp != res.data.latestPrice.timestamp) {
+        self.model.index.stockLine.unshift(res.data.latestPrice);
       }
-      self.model.daily.stockLine.reverse();
+      self.model.index.stockLine.reverse();
     } 
     else if(updateByDragging){
       ChartModel.errorCheckIndex(res, false);
+
       if(ChartModel.model.indexError) return;
-      var stockLine = res.data.daily.stockLine;
+
+      var stockLine = res.data[ChartView.properties.mode].stockLine;
       var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
 
-      this.currEarliestTime  = this.currEarliestTime || daily.stockLine[0].timestamp;
+      this.currEarliestTime  = this.currEarliestTime || index.stockLine[0].timestamp;
      
      //mark if no more sentiment data is returned. i.e assuming when it returns 0
       this.endOfSentiment = this.endOfSentiment || stockLine
@@ -215,20 +263,34 @@ var ChartModel = {
       if(this.currEarliestTime < returnedLatestTime) return;
       if(this.endOfSentiment) return;
 
+      //original earliest, latest
+      //for loop of returned
+      // if timestamp < earliest, 
+      // c
+
+
+      //concat two
+      // sort by timestamp
+      // remove duplicate timestamp
+
+
 
       //api returned in descending order
       stockLine.reverse();
-      var orgLength = daily.stockLine.length;
-      daily.stockLine = stockLine.concat(daily.stockLine);
-      ChartModel.model.stockLineLengthDiff = daily.stockLine.length - orgLength- 10;
-      this.currEarliestTime = daily.stockLine[0].timestamp;
-    } else {
+      var orgLength = index.stockLine.length;
+      index.stockLine = stockLine.concat(index.stockLine);
+      ChartModel.model.stockLineLengthDiff = index.stockLine.length - orgLength- 10;
+      this.currEarliestTime = index.stockLine[0].timestamp;
+    } else if (ChartView.properties.mode === 'daily') {
       var latestPrice = res.data.latestPrice;
-      var lastData    = self.model.daily.stockLine.slice(-1).pop();
+      var lastData    = self.model.index.stockLine.slice(-1).pop();
 
       if(lastData && lastData.timestamp !== res.data.latestPrice.timestamp){
-        self.model.daily.stockLine.push(res.data.latestPrice);
+        self.model.index.stockLine.push(res.data.latestPrice);
       }
+      //weekly
+    } else {
+      self.model.index.stockLine = res.data.weeklyKLine;
     }
   },
   log: function(code, message) {
