@@ -102,6 +102,8 @@ var SentimentChart = {
     self.componentsBuilder.horizontalGridLines.linkData();
     self.componentsBuilder.scatterDots.linkData();
     self.componentsBuilder.scatterDotsHover.linkData();
+    self.componentsBuilder.forecastBubble.linkData();
+    self.componentsBuilder.forecastBubbleText.linkData();
     self.componentsBuilder.sentimentLine.linkData();
     self.componentsBuilder.securityLines.linkData();
     if (!HIDE) {
@@ -117,6 +119,9 @@ var SentimentChart = {
     self.componentsBuilder.horizontalGridLines.enter();
     self.componentsBuilder.scatterDots.enter();
     self.componentsBuilder.scatterDotsHover.enter();
+    self.componentsBuilder.forecastBubble.enter();
+    self.componentsBuilder.forecastBubbleText.enter();
+
     if (!HIDE) {
       self.componentsBuilder.scatterDotsBubble.enter();
       self.componentsBuilder.scatterDotsBubbleText.enter();
@@ -174,6 +179,8 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsBubble.append();
     self.componentsBuilder.scatterDotsBubbleText.append();
     self.componentsBuilder.scatterDotsHover.append();
+    self.componentsBuilder.forecastBubble.append();
+    self.componentsBuilder.forecastBubbleText.append();
     self.componentsBuilder.sentimentCover.append();
     self.componentsBuilder.sentimentOverlay.append();
     self.componentsBuilder.tooltip.append();
@@ -775,11 +782,68 @@ var SentimentChart = {
         .remove();
       }
     },
-    // scatterDotsBubbleHover: {
-    //   append: function () {
-    //     SentimentChart.components.scatterDotsBubbleText = SentimentChart.components.chart.selectAll('scatter-dots');
-    //   }
-    // }
+    forecastBubble: {
+      append: function () {
+        SentimentChart.components.forecastBubble = SentimentChart.components.chart.selectAll('scatter-dots'); 
+      },
+      linkData: function () {
+        SentimentChart.components.forecastBubble = SentimentChart.components.forecastBubble.data(SentimentChart.data.moodindexList);
+      },
+      enter: function () {
+        SentimentChart.components.forecastBubble
+        .enter()
+        .append('path')
+        .attr('fill', function (d,i) {
+          if(!d.isRealTime) {
+            return '#D04D3D';
+          }
+        })
+        .attr('d', function (d,i) {
+          if (!d.isRealTime) {
+            return 'M62.416,43.5h-9.333l-3.709-3.083L45.666,43.5h-8.583c-1.657,0-3,1.343-3,3v10.833c0,1.657,1.343,3,3,3 h25.333c1.657,0,3-1.343,3-3V46.5C65.416,44.843,64.073,43.5,62.416,43.5z';
+          }
+        });
+      },
+      update: function () {
+        SentimentChart.components.forecastBubble
+        .attr('transform', function (d, i) {
+          return 'translate(' + (SentimentChart.data.x(d.timestamp) - 50 ) + ',' + (SentimentChart.data.y1(d.mood)-30) + ')';
+        });
+      },
+      exit: function () {
+        SentimentChart.components.forecastBubble
+        .exit()
+        .remove();
+      }
+    },
+    forecastBubbleText: {
+      append: function () {
+        SentimentChart.components.forecastBubbleText = SentimentChart.components.chart.selectAll('scatter-dots'); 
+      },
+      linkData: function () {
+        SentimentChart.components.forecastBubbleText = SentimentChart.components.forecastBubbleText.data(SentimentChart.data.moodindexList);
+      },
+      enter: function () {
+        SentimentChart.components.forecastBubbleText
+        .enter().append('text')  // create a new circle for each value
+        .attr('class', 'sentiment')
+        .attr('fill', 'white')
+        .text(function(d, i){
+          if (!d.isRealTime) { return '预测'; }
+        });
+      },
+      update: function () {
+        SentimentChart.components.forecastBubbleText
+        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 25; } ) // translate y value to a pixel
+        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 10 ; } ); // translate x value
+      },
+      exit: function () {
+        SentimentChart.components.forecastBubbleText
+        .exit()
+        .remove();
+      }
+    },
+
     scatterDotsHover: {
       append: function () {
         SentimentChart.components.scatterDotsHover = SentimentChart.components.chart.selectAll('scatter-dots');
