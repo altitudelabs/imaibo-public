@@ -1614,19 +1614,21 @@ body::-webkit-scrollbar {
 .outer #stock-add-panel {
   width: 220px;
   left: -221px;
+  height: 343px;
   background-color: #373737;
   font-size: 14px;
   box-shadow: 0px 0px 10px #222;
 }
 
 .outer .add-panel-item {
-  padding: 33px 30px 33px 30px;
+  height: 25%;
   border-top: #5a5a5a solid 1px;
   border-left: #5a5a5a solid 1px;
   border-right: #5a5a5a solid 1px;
 }
 
 .outer .add-panel-item div {
+  padding: 33px 30px 33px 30px;
   cursor: pointer;
 }
 
@@ -1680,34 +1682,27 @@ body::-webkit-scrollbar {
   height: 100%;
 }
 
-.outer #stocktable1 th {
-  padding: 20px 15px 20px 15px;
-}
-
-.outer #stocktable1 td {
-  padding: 22px 15px 22px 15px;
-}
-
-.outer .add-stock-table th {
-  padding: 18px 15px 17px 15px;
-}
-
-.outer .add-stock-table td {
-  padding: 17px 15px 17px 15px;
-}
-
 .outer .add-stock-table tr {
+  height: 48px;
   border-bottom: 1px solid #373737;
-}
-
-.outer .add-panel-more {
-  width: 100%;
   text-align: center;
-  padding: 10px 0px 10px 0px;
 }
 
-.outer .add-panel-more a {
+.outer #stocktable1 tr {
+  height: 57px;
+}
+
+.outer .add-stock-table tfoot tr {
+  border-bottom: 1px solid transparent;
+}
+
+.outer .add-stock-table tfoot a {
   color: rgb(107, 107, 107);
+}
+
+.outer .add-stock-table td,
+.outer .add-stock-table th {
+  vertical-align: middle;
 }
 
 .outer .add-stock-table .add-stock-name {
@@ -1750,7 +1745,6 @@ body::-webkit-scrollbar {
   display: inline-block;
   width: 10px;
   height: 10px;
-  margin-left: 35%;
   cursor: pointer;
   vertical-align: middle;
 }
