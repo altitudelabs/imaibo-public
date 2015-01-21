@@ -702,7 +702,8 @@ body::-webkit-scrollbar {
   position: absolute;
   top: 25px;
   overflow: scroll;
-  width: calc(100% - 120px);
+  width: calc(100% - 120px) !important;
+  /*sticky-kit may override width if important is not added*/
 }
 
 .outer .zoomable-chart-container{
@@ -1040,7 +1041,8 @@ body::-webkit-scrollbar {
   overflow: hidden;
   /*margin-right: 45px;*/
   margin-left: 10px;
-  width: calc(100% - 325px);
+  width: calc(100% - 325px) !important;
+  /*sticky-kit may override width if important is not added*/
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
   -o-transition: all 400ms ease-out;
@@ -1048,7 +1050,8 @@ body::-webkit-scrollbar {
 }
 
 .outer #content.full {
-  width: calc(100% - 55px);
+  width: calc(100% - 55px) !important;
+  /*sticky-kit may override width if important is not added*/
 }
 
 .outer #right-panel.collapsed { display: none; }
@@ -1568,14 +1571,15 @@ body::-webkit-scrollbar {
   height: 10px;
   cursor: pointer;
   margin-top: 3px;
+  background: url('../assets/mb-spritesheet.png') no-repeat top left;
 }
 
 .outer .search-add-stock-button.not-selected {
-  background: url('../assets/chart/plus-button.png') no-repeat center;
+  background-position: 0 -1896px;
 }
 
 .outer .search-add-stock-button.selected {
-  background: url('../assets/chart/tick-button.png') no-repeat center;
+  background-position: 0 -1916px;
 }
 
 /* =Stockpicker Add Panel
@@ -1747,14 +1751,15 @@ body::-webkit-scrollbar {
   height: 10px;
   cursor: pointer;
   vertical-align: middle;
+  background: url('../assets/mb-spritesheet.png') no-repeat top left;
 }
 
 .outer .add-stock-button span.not-selected {
-  background: url('../assets/chart/plus-button.png') no-repeat center;
+  background-position: 0 -1896px;
 }
 
 .outer .add-stock-button span.selected {
-  background: url('../assets/chart/tick-button.png') no-repeat center;
+  background-position: 0 -1916px;
 }
 
 /* =News

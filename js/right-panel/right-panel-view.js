@@ -42,6 +42,9 @@ var RightPanel = {
     // Rebuild chart after animation
     setTimeout(function(){
       ChartView.rebuild();
+
+      // Start sticky columns
+      StickyColumns.start();
     }, 400);
   },
 
