@@ -46,8 +46,10 @@ var MacdChart = {
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
-      $('#macd').slideUp(300);
+      $('#macd').css('disply', 'none');
+      // $('#macd').slideUp(300);
       $('#macd-checkbox').attr('checked', false);
+      StickyColumns.recalc();
     });
   },
   appendComponents: function () {

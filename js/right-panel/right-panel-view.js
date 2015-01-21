@@ -509,7 +509,7 @@ var RightPanel = {
     var self = this;
     var refreshRate = 5000;
 
-    setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+    // setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
   /* Experts module */
   initExpertsModule: function() {

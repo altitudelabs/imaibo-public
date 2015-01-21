@@ -127,24 +127,25 @@ var Toolbar = {
       if(e.target != cb) cb.click();
     });
 
-    // if($('#rsi-checkbox').checked){
-    //   $('#rsi').slideDown(300);
-    // }else{
-    //   $('#rsi').css('display', 'none');
-    //   // $('#rsi').slideDown(300);
-    // }
-    // StickyColumns.recalc();
-
-    $('#rsi-checkbox').change(function(e){
+    $('#rsi-checkbox').change(function(){
       if(this.checked){
-        $('#rsi').slideDown(300);
-      }else{
-        $('#rsi').slideUp(300);
+        $('#rsi').css('display', 'block');
+      } else {
+        $('#rsi').css('display', 'none');
       }
-      setTimeout(function () {
-        StickyColumns.recalc();
-      }, 300); 
+      StickyColumns.recalc();
     });
+
+    // $('#rsi-checkbox').change(function(e){
+    //   if(this.checked){
+    //     $('#rsi').slideDown(300);
+    //   }else{
+    //     $('#rsi').slideUp(300);
+    //   }
+    //   setTimeout(function () {
+    //     StickyColumns.recalc();
+    //   }, 300); 
+    // });
   },
   initMacd: function() {
     $('#macd-checkbox').prop('checked', false);
@@ -155,23 +156,25 @@ var Toolbar = {
       if(e.target != cb) cb.click();
     });
 
-    // if($('#macd-checkbox').checked){
-    //    $('#macd').slideDown(300);
-    // }else{
-    //    $('#macd').css('display', 'none');
-    // }
-    // StickyColumns.recalc();
-
     $('#macd-checkbox').change(function(){
       if(this.checked){
-        $('#macd').slideDown(300);
-      }else{
-        $('#macd').slideUp(300);
+        $('#macd').css('display', 'block');
+      } else {
+        $('#macd').css('display', 'none');
       }
-      setTimeout(function () {
-        StickyColumns.recalc();
-      }, 300); 
+      StickyColumns.recalc();
     });
+
+    // $('#macd-checkbox').change(function(){
+    //   if(this.checked){
+    //     $('#macd').slideDown(300);
+    //   }else{
+    //     $('#macd').slideUp(300);
+    //   }
+    //   setTimeout(function () {
+    //     StickyColumns.recalc();
+    //   }, 300); 
+    // });
   },
   initFreq: function() {
     $('#minute-radio-row').click(function(e) {
