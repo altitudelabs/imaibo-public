@@ -76,7 +76,6 @@ var ChartView = {
     max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
-  
   buildY: function(min, max, height) {
     var props = this.properties;
     return d3.scale.linear()
@@ -118,10 +117,10 @@ var ChartView = {
   init: function(){
     // set up toolbar
     // this.horizontalScroll();
-    Toolbar.init();
-    this.initInfoButtons();
-    this.setProperties();
     var self = this;
+    Toolbar.init();
+    self.initInfoButtons();
+    self.setProperties();
     self.build();
 
     var resizeEnd;

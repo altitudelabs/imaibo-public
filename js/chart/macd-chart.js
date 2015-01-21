@@ -23,6 +23,7 @@ var MacdChart = {
     this.appendComponents();
     this.draw();
     this.initCloseAction();
+    $('#macd').css('display', 'none');
   },
   update: function (options) {
     this.setProperties(options);
@@ -45,7 +46,7 @@ var MacdChart = {
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
-      $('#macd').slideUp(500);
+      $('#macd').slideUp(300);
       $('#macd-checkbox').attr('checked', false);
     });
   },

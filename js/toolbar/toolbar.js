@@ -127,19 +127,23 @@ var Toolbar = {
       if(e.target != cb) cb.click();
     });
 
-    if($('#rsi-checkbox').checked){
-       $('#rsi').css('display', 'block');
-    }else{
-       $('#rsi').css('display', 'none');
-    }
+    // if($('#rsi-checkbox').checked){
+    //   $('#rsi').slideDown(300);
+    // }else{
+    //   $('#rsi').css('display', 'none');
+    //   // $('#rsi').slideDown(300);
+    // }
+    // StickyColumns.recalc();
 
     $('#rsi-checkbox').change(function(e){
       if(this.checked){
-       $('#rsi').css('display', 'block');
+        $('#rsi').slideDown(300);
       }else{
-       $('#rsi').css('display', 'none');
+        $('#rsi').slideUp(300);
       }
-      StickyColumns.recalc();
+      setTimeout(function () {
+        StickyColumns.recalc();
+      }, 300); 
     });
   },
   initMacd: function() {
@@ -151,19 +155,22 @@ var Toolbar = {
       if(e.target != cb) cb.click();
     });
 
-    if($('#macd-checkbox').checked){
-       $('#macd').css('display', 'block');
-    }else{
-       $('#macd').css('display', 'none');
-    }
+    // if($('#macd-checkbox').checked){
+    //    $('#macd').slideDown(300);
+    // }else{
+    //    $('#macd').css('display', 'none');
+    // }
+    // StickyColumns.recalc();
 
     $('#macd-checkbox').change(function(){
       if(this.checked){
-       $('#macd').css('display', 'block');
+        $('#macd').slideDown(300);
       }else{
-       $('#macd').css('display', 'none');
+        $('#macd').slideUp(300);
       }
-      StickyColumns.recalc();
+      setTimeout(function () {
+        StickyColumns.recalc();
+      }, 300); 
     });
   },
   initFreq: function() {

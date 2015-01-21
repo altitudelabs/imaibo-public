@@ -24,6 +24,7 @@ var RsiChart = {
     this.appendComponents();
     this.draw();
     this.initCloseAction();
+    $('#rsi').css('display', 'none');
   },
   update: function () {
     this.setProperties();
@@ -50,7 +51,7 @@ var RsiChart = {
   },
   initCloseAction: function() {
     $('#rsi > .wrapper > .buttons > .close').on('click', function() {
-      $('#rsi').slideUp(500);
+      $('#rsi').slideUp(300);
       $('#rsi-checkbox').attr('checked', false);
     });
   },
