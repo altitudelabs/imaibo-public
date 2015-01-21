@@ -156,27 +156,27 @@ var Toolbar = {
       if(e.target != cb) cb.click();
     });
 
-    // $('#macd-checkbox').change(function(){
-    //   if(this.checked){
-    //     $('#macd').css('display', 'block');
-    //   } else {
-    //     $('#macd').css('display', 'none');
-    //   }
-    //   StickyColumns.recalc();
-    // });
-
     $('#macd-checkbox').change(function(){
       if(this.checked){
-        $('#macd').slideDown(300, function () {
-        StickyColumns.recalc();
-
-        });
-      }else{
-        $('#macd').slideUp(300, function () {
-          StickyColumns.recalc();
-        });
+        $('#macd').css('display', 'block');
+      } else {
+        $('#macd').css('display', 'none');
       }
+      StickyColumns.recalc();
     });
+
+    // $('#macd-checkbox').change(function(){
+    //   if(this.checked){
+    //     $('#macd').slideDown(300, function () {
+    //     StickyColumns.recalc();
+
+    //     });
+    //   }else{
+    //     $('#macd').slideUp(300, function () {
+    //       StickyColumns.recalc();
+    //     });
+    //   }
+    // });
   },
   initFreq: function() {
     $('#minute-radio-row').click(function(e) {
