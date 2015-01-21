@@ -142,12 +142,12 @@ var MacdChart = {
         MacdChart.components.chart = d3.select('#macd-chart')
         .append('svg:svg')
         .attr('class', 'chart')
-        .on('mouseenter', function(){
-            ChartView.showAllScrollbars();
-         })
-         .on('mouseleave', function(){
-            ChartView.hideAllScrollbars();
-         });
+        .on('mouseover', function(){
+          ChartView.showAllScrollbars();
+        })
+        .on('mouseleave', function(){
+          ChartView.hideAllScrollbars();
+        });
       },
       update: function () {
         var props = MacdChart.properties;
@@ -330,9 +330,9 @@ var MacdChart = {
                                             .append('rect')
                                             .attr('class', 'scrollbar-rail')
                                             .attr('width', ChartView.properties.width)
-                                            .attr('height', 10)
+                                            .attr('height', 50)
                                             .attr('x', 0)
-                                            .attr('y', MacdChart.properties.height - 30)
+                                            .attr('y', MacdChart.properties.height - 50)
                                             .on('mouseenter', function(){
                                               ChartView.showAllScrollbars();
                                             })
@@ -384,12 +384,12 @@ var MacdChart = {
       append: function () {
         MacdChart.components.mouseOverlay = MacdChart.components.chart.append('rect')
         .attr('class','mouseover-overlay')
-        .attr('fill', 'transparent')
+        // .attr('fill', 'transparent')
         .attr('fill-opacity', 0)
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', MacdChart.properties.graphWidth)
-        .attr('height', MacdChart.properties.chartHeight - 5)
+        .attr('height', MacdChart.properties.chartHeight - ChartView.getTopMargin() - ChartView.getBottomMargin())
         .call(ChartView.zoomBehavior())
         .datum([])   //because d3 drag requires data/datum to be valid
         .call(ChartView.chartDragBehavior());

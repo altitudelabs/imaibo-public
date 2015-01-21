@@ -146,5 +146,8 @@ var Helper = {
     }
 
     StickyColumns.start();
+  },
+  isHovering: function(id){
+    return $('#'+id+':hover').length > 0;
   }
 }

@@ -142,7 +142,7 @@ var RsiChart = {
         RsiChart.components.chart = d3.select('#rsi-chart')
                                       .append('svg:svg')
                                       .attr('class', 'chart')
-                                      .on('mouseenter', function(){
+                                      .on('mouseover', function(){
                                         ChartView.showAllScrollbars();
                                       })
                                       .on('mouseleave', function(){
@@ -314,9 +314,9 @@ var RsiChart = {
                                             .append('rect')
                                             .attr('class', 'scrollbar-rail')
                                             .attr('width', ChartView.properties.width)
-                                            .attr('height', 10)
+                                            .attr('height', 50)
                                             .attr('x', 0)
-                                            .attr('y', RsiChart.properties.height - 30)
+                                            .attr('y', RsiChart.properties.height - 50)
                                             .on('mouseenter', function(){
                                               ChartView.showAllScrollbars();
                                             })
@@ -365,12 +365,12 @@ var RsiChart = {
       // Tooltip
         RsiChart.components.mouseOverlay = RsiChart.components.chart.append('rect')
         .attr('class','mouseover-overlay')
-        .attr('fill', 'transparent')
+        // .attr('fill', 'transparent')
         .attr('fill-opacity', 0)
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
         .attr('width', RsiChart.properties.graphWidth)
-        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10)
+        .attr('height', RsiChart.properties.chartHeight - ChartView.getTopMargin() - ChartView.getBottomMargin())
         .call(ChartView.zoomBehavior())
         .datum([])   //because d3 drag requires data/datum to be valid
         .call(ChartView.chartDragBehavior());
