@@ -172,7 +172,7 @@ body::-webkit-scrollbar {
 .outer {
   overflow: hidden;
   background-color: rgb(15, 15, 15);
-  padding-top: 15px;
+  padding-top: 7.5px;
 }
 
 .outer .component-wrapper {
@@ -1046,11 +1046,11 @@ body::-webkit-scrollbar {
   -o-transition: all 400ms ease-out;
   transition: all 400ms ease-out;
 }
-/*
-#content.full {
-  width: calc(100% - 60px);
+
+.outer #content.full {
+  width: calc(100% - 55px);
 }
-*/
+
 .outer #right-panel.collapsed { display: none; }
 .outer #right-panel.uncollapsed { display: inline-flex; }
 
@@ -1136,10 +1136,10 @@ body::-webkit-scrollbar {
 }
 
 .outer #right-panel-collapsed {
-  position: absolute;
+  position: fixed;
   right: 0;
   width: 30px;
-
+  top: 75px;
   -webkit-transition: all 400ms ease-out 400ms;
   -moz-transition: all 400ms ease-out 400ms;
   -o-transition: all 400ms ease-out 400ms;
@@ -1630,7 +1630,6 @@ body::-webkit-scrollbar {
   cursor: pointer;
 }
 
-
 .outer .add-panel-item:last-child {
   border-bottom: #5a5a5a solid 1px;
 }
@@ -1666,9 +1665,9 @@ body::-webkit-scrollbar {
 .outer #right-panel-option-container .add-stock-table {
   background-color: #262626;
   top: -1px;
-  left: -353px;
-  width: 353px;
-  height: 100%;
+  left: -355px;
+  width: 355px;
+  height: calc(100% + 2px);
   border: #5a5a5a solid 1px;
   font-size: 12px;
   padding: 5px 0px 0px 0px;
@@ -1712,7 +1711,7 @@ body::-webkit-scrollbar {
 }
 
 .outer .add-stock-table .add-stock-name {
-  width: 84px;
+  width: 85px;
 }
 
 .outer .add-stock-table .add-stock-price {
@@ -1728,7 +1727,7 @@ body::-webkit-scrollbar {
 }
 
 .outer .add-stock-table .add-stock-button {
-  width: 66px; /*84 + 66.5 + 66.5 + 70 + 66 = 353*/
+  width: 67px; /*84 + 66.5 + 66.5 + 70 + 68 = 355*/
 }
 
 .outer #stocktable1 .add-stock-name {
@@ -1751,7 +1750,7 @@ body::-webkit-scrollbar {
   display: inline-block;
   width: 10px;
   height: 10px;
-  padding-left: 28px; /*(66 - 10) / 2*/
+  margin-left: 35%;
   cursor: pointer;
   vertical-align: middle;
 }
