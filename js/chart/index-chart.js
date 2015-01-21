@@ -239,20 +239,20 @@ var IndexChart = {
                                                          .attr('class', 'chart')
                                                          .attr('id', 'graph')
                                                          .attr('width', ChartView.getChartWidth())
-                                                         .on('mouseenter', function(){
-                                                            ChartView.showAllScrollbars();
-                                                         })
                                                          .on('mouseleave', function(){
                                                             ChartView.hideAllScrollbars();
+                                                         })
+                                                         .on('mouseover', function(){
+                                                            ChartView.showAllScrollbars();
                                                          });
       },
       update: function () {
         var props = IndexChart.properties;
         var width = ChartView.getChartWidth() * ChartView.getZoomFactor();
         IndexChart.components.chart
-        .attr('height', props.height + 20)
-        .attr('width', width)
-        .select('svg').attr('width', width);
+        .attr('height', props.height)
+        .attr('width', ChartView.getChartWidth() + 20)
+        .select('svg').attr('width', ChartView.getChartWidth() + 20);
       }
     },
     chartLabel: {
@@ -261,14 +261,14 @@ var IndexChart = {
                                                          .attr('class', 'chart')
                                                          .attr('id', 'graph-label')
                                                          .attr('width', ChartView.getContainerWidth())
-                                                         .attr('height', IndexChart.properties.height + 15);
+                                                         .attr('height', IndexChart.properties.height + 20);      
       },
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.chartLabel
         .attr('class', 'chart')
         .attr('width', ChartView.getContainerWidth())
-        .attr('height', props.height+ 15)
+        .attr('height', props.height+ 20)
         .select('svg').attr('width', ChartView.getContainerWidth());
       }
     },
@@ -349,7 +349,6 @@ var IndexChart = {
       },
       enter: function () {
         IndexChart.components.y1Labels.enter().append('text').attr('class', 'yrule');
-    
       },
       update: function () {
         var props = IndexChart.properties;
@@ -528,20 +527,22 @@ var IndexChart = {
     },
     scrollbarRail: {
       append: function () {
+                var props = IndexChart.properties;
+
         IndexChart.components.scrollbarRail = IndexChart.components.chartLabel
                                             .append('rect')
                                             .attr('class', 'scrollbar-rail')
+                                            .style('fill-opacity', 0)
                                             .attr('width', ChartView.properties.width)
-                                            .attr('height', 15)
+                                            .attr('height', 70)
                                             .attr('x', 0)
-                                            .attr('y', IndexChart.properties.height)
+                                            .attr('y', props.height-ChartView.getTopMargin() - ChartView.getBottomMargin() + 7)
                                             .on('mouseenter', function(){
                                               ChartView.showAllScrollbars();
                                             })
                                             .on('mouseleave', function(){
                                               ChartView.hideAllScrollbars();
-                                            })
-                                            .style('fill-opacity', 0);
+                                            });
       },
       update: function(){
         IndexChart.components.scrollbarRail.attr('width', ChartView.properties.width);
@@ -549,13 +550,13 @@ var IndexChart = {
     },
     scrollBar: {
       append: function () {
-        IndexChart.components.scrollBar = IndexChart.components.chart
+        IndexChart.components.scrollBar = IndexChart.components.chartLabel
                                             .append('rect')
                                             .attr('class', 'scrollbar')
                                             .datum([])
                                             .attr('height', 7)
                                             .attr('y', IndexChart.properties.height)
-                                            .attr('x', ChartView.getChartWidth() - ChartView.getScrollbarWidth())
+                                            .attr('x', ChartView.getLeftMargin() + ChartView.getChartWidth() - ChartView.getScrollbarWidth())
                                             .attr('rx', 4)
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
@@ -578,7 +579,7 @@ var IndexChart = {
       },
       update: function() {
         IndexChart.components.scrollBar
-        .attr('x', ChartView.getScrollbarPos())
+        .attr('x', ChartView.getScrollbarPos() + ChartView.getLeftMargin())
         .attr('width', ChartView.getScrollbarWidth())
         .style('fill-opacity', 50);
       }
@@ -603,8 +604,8 @@ var IndexChart = {
         var props = IndexChart.properties;
         IndexChart.components.mouseOverlay
           .attr('width', ChartView.getGraphWidth())
-          .attr('y', ChartView.getTopMargin() + props.yOffset)
-          .attr('height', props.height-4)
+          .attr('y', ChartView.getTopMargin())
+          .attr('height', props.height-ChartView.getTopMargin() - ChartView.getBottomMargin() + 5)
           .on('mouseover', function(e) { 
             ChartView.mouseOverMouseOverlay();
             return Tooltip.show(); })
@@ -633,7 +634,6 @@ var IndexChart = {
                 mouseY = d3.event.pageY;
               }
 
-              if(yPos > 230) yPos = 230;
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
               var d = ChartView.getVisibleStockLine()[j];

@@ -392,7 +392,7 @@ var ChartView = {
   },
   redraw: function () {
     ChartView.updateVisibleStockLine();
-    $('.zoomable-chart-container').css('width', '100%');
+    // $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();
     ChartView.setScrollbarPos();
 
@@ -414,17 +414,20 @@ var ChartView = {
       IndexChart.updateWithError();
     }
     SentimentChart.update();
-    $('.zoomable-chart-container').css('width', '100%');
+    // $('.zoomable-chart-container').css('width', '100%');
   },
   showAllScrollbars: function(){
+    if(!ChartView.isZoomed()) return;
       RsiChart.components.scrollBar.style('fill-opacity', 100);
       IndexChart.components.scrollBar.style('fill-opacity', 100);
       MacdChart.components.scrollBar.style('fill-opacity', 100);
+      $('.scrollbar-rail').css('cursor', 'pointer');
   },
   hideAllScrollbars: function(){
       RsiChart.components.scrollBar.style('fill-opacity', 0);
       IndexChart.components.scrollBar.style('fill-opacity', 0);
       MacdChart.components.scrollBar.style('fill-opacity', 0);
+      $('.scrollbar-rail').css('cursor', 'auto');
   },
   mouseOverMouseOverlay: function(){
     ChartView.properties.mouseOverChart = true;

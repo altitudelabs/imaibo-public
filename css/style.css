@@ -86,14 +86,6 @@ body::-webkit-scrollbar {
     margin: 0 0 0 0;
 }
 
-.outer .scroller {
-    overflow: hidden;
-}
-
-.outer .scroller::-webkit-scrollbar {
-    width: 0;
-}
-
 .outer .scroller__bar {
   display: none;
 }
@@ -112,6 +104,11 @@ body::-webkit-scrollbar {
 
 /* =Scroll bar
 ------------*/
+
+.scrollbar:hover {
+  cursor: pointer;
+}
+
 /*.scroll-bar {
   position: relative;
   width: 100%;
@@ -122,6 +119,7 @@ body::-webkit-scrollbar {
   opacity: 0.5;
   background: white;
 }
+
 
 .handle {
   position: absolute;
@@ -190,6 +188,7 @@ body::-webkit-scrollbar {
   border: 1px solid rgb(51, 51, 51);
   margin-bottom: 5px;
   padding: 7px;
+  padding-bottom: 0;
   padding-left: 0;
   padding-right: 0;
 }
@@ -675,7 +674,6 @@ body::-webkit-scrollbar {
 }
 
 .outer #chart {
-  padding-bottom: 7px;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -687,6 +685,10 @@ body::-webkit-scrollbar {
 .outer #macd:hover,
 .outer #rsi:hover {
   cursor: pointer;
+}
+
+.outer #chart-label {
+  z-index: -1;
 }
 
 .outer .chart-header {
@@ -702,14 +704,11 @@ body::-webkit-scrollbar {
   position: absolute;
   top: 25px;
   overflow: scroll;
-  width: calc(100% - 120px);
 }
 
 .outer .zoomable-chart-container{
-  overflow: hidden;
   top: 31px;
   left: 45px;
-  width: 100%;
 }
 
 .outer .zoomable-chart {
