@@ -702,7 +702,7 @@ body::-webkit-scrollbar {
   position: absolute;
   top: 25px;
   overflow: scroll;
-  width: calc(100% - 120px) !important;
+  width: 100% !important;
   /*sticky-kit may override width if important is not added*/
 }
 
