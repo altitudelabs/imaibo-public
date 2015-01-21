@@ -581,7 +581,7 @@ var SentimentChart = {
       },
       linkData: function () {
         var data = SentimentChart.data.indexList;
-
+        if (!data) { return; }
         //linear
         var amLinearData = data.slice(0, 121);
 
@@ -589,7 +589,6 @@ var SentimentChart = {
         var pmLinearData = data.slice(121, data.length);
 
         SentimentChart.components.securityLines['pmLinear'] = SentimentChart.components.securityLines['pmLinear'].datum(pmLinearData);
-        
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000);
@@ -600,7 +599,7 @@ var SentimentChart = {
         if (!SentimentChart.data.isPastData && currentTimeStamp < SentimentChart.data.startTime) { return; }
         
         //start - market open
-        var openDottedPrice = currentDate.getHours() < 9 ? SentimentChart.data.closePrice : data[0].price;
+        var openDottedPrice = (!!data[0] && data[0].price !== undefined) ? data[0].price : SentimentChart.data.closePrice;
         var openDottedData = [{ timestamp: SentimentChart.data.startTime,
                                 price: openDottedPrice
                               },
