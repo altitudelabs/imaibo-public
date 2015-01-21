@@ -967,10 +967,13 @@ var SentimentChart = {
 
             // Hide All Press by Time
             $('#press-by-time .time-block .news-blocks').hide();
+            $('#press-by-time .time-block .calendar-and-date').removeClass("news-collapsed");
+            $('#press-by-time .time-block .calendar-and-date').addClass("news-collapsed");
 
             // Display the Required Press
             var idString = '#time' + d.rdate + d.clock.slice(0, 5).replace(/:+/g, '') + ' .news-blocks';
             $(idString).show();
+            $(idString).siblings().removeClass("news-collapsed");
 
             // Refresh sticky columns after height change
             StickyColumns.start();
