@@ -3,12 +3,12 @@ var ChartView = {
     daily: {},
     sentiment: {},
     error: {},
-    mode: 'daily'
   },
   properties: {
-    refreshFrequency: 600000,
+    refreshFrequency: 6000,
     scrollSpeed: 2,
     scrollbarPos: 0,
+    mode: 'daily'
   },
   setProperties: function (options) {
     var self = this;
@@ -100,7 +100,7 @@ var ChartView = {
    * - xPos: Position of cursor
    * - x: x range, domain object of d3
    */
-   xInverse: function(xPos, x){
+  xInverse: function(xPos, x){
     var leftEdges = x.range(), // starting position of each column bar
     width = x.rangeBand(), //rangeBand = width of each column bar
     j;
@@ -148,77 +148,89 @@ var ChartView = {
     var self = this;
     $('.loader').css('width', this.properties.width);
     
-    self.getData(true, function () {
-      if(!IE8) {
-        setInterval(function () {
-          self.getData(false);
-        }, self.properties.refreshFrequency);
-      }
+    ChartModel.getInitialData()
+    .done(function (indexError, sentimentError) {
+      self.updateChartViewData(indexError, sentimentError, true);
+      self.buildChartElements();
     });
+
+    if(!IE8) {
+      setInterval(function () {
+        var indexOption = {};
+        if (self.properties.mode === 'daily') {
+          indexOption.daily = {};
+        } else {
+          indexOption.weekly = {};
+        }
+        $.when(ChartModel.updateIndexData(indexOption), ChartModel.updateSentimentData({}))
+        .done(function (indexError, sentimentError) {
+          self.updateChartViewData(indexError, sentimentError);
+          try { self.redraw(); } catch (error) { console.log(error); }
+        });
+      }, self.properties.refreshFrequency);
+    }
   },
-  getData: function (initial, cb) {
-    var self = this,
-           d = new Date(),
-           today = d.yyyymmdd();
-    $.when(ChartModel.getIndexDataAsync(today, initial, false), ChartModel.getSentimentDataAsync())
-    .done(function (index, sentiment) {
-      self.updateData(index, sentiment, initial);
-      if (initial) {
-        self.buildChartElements();
-      } else {
-        self.updateChartElements();
-      }
-      if (cb) { cb(); }
-    });
-  },
-  getPastData: function () {
+  getPastIndexData: function () {
     var self = this;
     if (self.updating) { return; }
     self.updating = true;
-    var earliestDate = self.data.daily.stockLine[0].rdate;
-    var oldLength = self.data.daily.stockLine.length;
+
+    var earliestDate = self.data.index.stockLine[0].rdate;
+    var oldLength = self.data.index.stockLine.length;
     
-    ChartModel.getIndexDataAsync(earliestDate-1, false, true)
+    var options = {};
+
+    if ( self.properties.mode === 'daily' ) {
+      options.daily = true;
+      options.date = earliestDate-1;
+    } else {
+      options.weekly = true;
+      options.date = earliestDate-7;
+    }
+
+    ChartModel.updateIndexData(options)
     .done(function (indexError) {
-      self.updateData(indexError);
-      var diff = self.data.daily.stockLine.length - oldLength;
+      self.updateChartViewData(indexError);
+      var diff = self.data.index.stockLine.length - oldLength;
       self.data.lastDataIndex += diff;
       self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
       self.moveToLeft();
       self.updating = false;
     });
   },
-  restartIndex: function () {
-    var self = this,
-           d = new Date(),
-           today = d.yyyymmdd();
-    if (self.updating) { return; }
-    self.updating = true;
-    var oldLength = self.data.daily.stockLine.length;
-    ChartModel.getIndexDataAsync(today, true, false)
+  changeMode: function (mode) {
+    var self = this;
+    var options;
+    ChartView.properties.mode = mode;
+    if (mode === 'weekly') {
+      options = {
+        weekly: {}
+      };
+    } else if (mode === 'daily') {
+      options = {
+        daily: {}
+      };
+    }
+    ChartModel.refreshIndexData(options)
     .done(function (indexError) {
-      self.updateData(indexError);
-      var diff = self.data.daily.stockLine.length - oldLength;
-      self.data.lastDataIndex += diff;
-      self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
-      self.updating = false;
-      IndexChart.update(false);
+      self.updateChartViewData(indexError, false, true);
+      self.redraw();
     });
   },
-  updateData: function (indexError, sentimentError, initial) {
+  updateChartViewData: function (indexError, sentimentError, initial) {
     var self = this;
     self.data = ChartModel.model;
     self.data.error = {
       index: indexError,
       sentiment: sentimentError
     };
-    self.data.lastDataIndex = self.data.lastDataIndex || self.data.daily.stockLine.length;
-    self.data.dataSetLength = self.data.dataSetLength || self.data.daily.stockLine.length;
+    self.data.lastDataIndex = self.data.lastDataIndex || self.data.index.stockLine.length;
+    self.data.dataSetLength = self.data.dataSetLength || self.data.index.stockLine.length;
     if (initial) {
-      self.data.lastDataIndex = self.data.daily.stockLine.length;
-      self.data.dataSetLength = self.data.daily.stockLine.length;
+      self.data.lastDataIndex = self.data.index.stockLine.length;
+      self.data.dataSetLength = self.data.index.stockLine.length;
     }
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.visibleStockLine = self.data.index.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
   /* Initial build of chart elements */
@@ -227,7 +239,7 @@ var ChartView = {
     // Draw index
     if (!self.data.error.index.isError) {
       IndexChart.init();
-      Toolbar.render(self.data.daily);
+      Toolbar.render(self.data.index);
       if(!HIDE) {
         RsiChart.init();
         MacdChart.init();
@@ -255,27 +267,38 @@ var ChartView = {
     StickyColumns.start();
   },
   /* Updates chart elements */
-  updateChartElements: function() {
-    var self = this;
-    // Update index
-    if (!self.data.indexError) {
-      IndexChart.update(false);
-      if(!HIDE) {
-        RsiChart.init();
-        MacdChart.init();
-      }
-      Dashboard.render(self.data.info);
-    } else {
-      Dashboard.renderWithError();
-      IndexChart.initWithError();
-    }
-    // Draw sentiment
-    // SentimentChart.init();
-    try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
+  // updateChartElements: function() {
+  //   var self = this;
+  //   // Update index
+  //   if (!self.data.indexError) {
+  //     IndexChart.update(false);
+  //     if(!HIDE) {
+  //       RsiChart.init();
+  //       MacdChart.init();
+  //     }
+  //     Dashboard.render(self.data.info);
+  //   } else {
+  //     Dashboard.renderWithError();
+  //     IndexChart.initWithError();
+  //   }
+  //   // Draw sentiment
+  //   // SentimentChart.init();
+  //   try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
-    // Refresh sticky columns and scroll position
-    StickyColumns.start();
-  },
+  //   // Refresh sticky columns and scroll position
+  //   StickyColumns.start();
+
+    
+  //   ChartView.updateVisibleStockLine();
+  //   $('.zoomable-chart-container').css('width', '100%');
+  //   ChartView.setScrollbarWidth();
+  //   ChartView.setScrollbarPos();
+
+  //   IndexChart.update();
+
+  //   RsiChart.update();
+  //   MacdChart.update();
+  // },
   zoom: function (zoomFactor) {
     var self = this;
     // ChartView.calcZoom(zoomFactor);
@@ -387,7 +410,7 @@ var ChartView = {
     self.redraw();
     
     if(ChartView.getLastDataIndex() - ChartView.data.visibleStockLine.length === 0){
-      self.getPastData();
+      self.getPastIndexData();
     }
   },
   redraw: function () {
@@ -395,9 +418,7 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();
     ChartView.setScrollbarPos();
-
     IndexChart.update();
-
     RsiChart.update();
     MacdChart.update();
   },
@@ -413,7 +434,8 @@ var ChartView = {
     }else{
       IndexChart.updateWithError();
     }
-    SentimentChart.update();
+    try { SentimentChart.update(); } catch (error) { SentimentChart.initWithError(); }
+    
     $('.zoomable-chart-container').css('width', '100%');
   },
   showAllScrollbars: function(){
@@ -446,7 +468,7 @@ var ChartView = {
     return this.properties.lastIndexOnViewPort;
   },
   getStockLine: function() {
-    return this.data.daily.stockLine;
+    return this.data.index.stockLine;
   },
   getVisibleStockLine: function() {
     return this.data.visibleStockLine || ChartView.getStockLine();

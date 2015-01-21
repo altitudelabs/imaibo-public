@@ -42,11 +42,10 @@ var MacdChart = {
     self.data.y1 = ChartView.buildY(y1Range[0], y1Range[1], self.properties.chartHeight);
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
-
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
-      $('#macd').css('disply', 'none');
+      $('#macd').css('display', 'none');
       // $('#macd').slideUp(300);
       $('#macd-checkbox').attr('checked', false);
       StickyColumns.recalc();
