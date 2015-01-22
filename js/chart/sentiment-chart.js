@@ -874,7 +874,6 @@ var SentimentChart = {
           var target = d3.select('#sd-' + i);
           target.attr('r', 6);
 
-          var arrow = (d.newsSign === '+'? 'rise':'fall');
           var moodDiff;
           if (i === 0) {
             moodDiff = ' - ';
@@ -889,6 +888,7 @@ var SentimentChart = {
           var tooltipHeight = 59;
           var news;
           var title;
+          var arrow;
           var div = '<div class="sentiment-tooltip">' +
                        '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '<div class="more-news" style="cursor:pointer;">更多</div></div>' +
                        '<div class="wrapper">';
@@ -896,14 +896,12 @@ var SentimentChart = {
           for (var j = 0; j < d.newsList.length; j++) {
             if (j === 3) { break; }
             news = d.newsList[j];
+            arrow = news.newsSign === '+' ? 'rise' : 'fall';
             title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
             div +=    '<div>&nbsp;&#183;' +
                          '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;' +
-                         '<div class="arrow-wrapper">' +
-                           '<div class="arrow-text">心情影响: </div>' +
-                           '<div class="arrow ' + arrow + '"></div>' +
-                           '<div class="arrow-number"> ' + news.newsMood + '</div>' +
-                         '</div>' +
+                           '<div class="arrow-number ' + arrow + '"> ' + news.newsSign + news.newsMood + '</div>' +
+                           '<div class="arrow-text">心情分数:</div>' +
                        '</div>';
             tooltipHeight += 22;
           }
