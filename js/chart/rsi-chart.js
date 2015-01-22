@@ -24,9 +24,7 @@ var RsiChart = {
     this.appendComponents();
     this.draw();
     this.initCloseAction();
-    if (!$('#rsi-checkbox').is(':checked')) {
-      $('#rsi').css('display', 'none');
-    }
+    $('#rsi').css('display', 'none');
   },
   update: function () {
     this.setProperties();
