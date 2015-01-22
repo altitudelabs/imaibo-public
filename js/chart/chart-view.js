@@ -335,6 +335,10 @@ var ChartView = {
     return d3.behavior.zoom()
                     .on("zoom", function(){
                       var deltaY = d3.event.sourceEvent.deltaY;
+
+                      if (!deltaY) // d3.event.sourceEvent.deltaY not defined in ie
+                        deltaY = -d3.event.sourceEvent.wheelDelta;
+
                       if(deltaY > 0){
                         ChartView.moveToLeft();
                         // ChartView.moveScrollbarToLeft();
