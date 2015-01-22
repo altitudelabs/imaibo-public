@@ -40,7 +40,7 @@ var IndexChart = {
     this.appendChart();
     this.appendContainer();
     this.updateContainer();
-    $('#price').append('<div class="empty-data" id="index-no-data">暂时无法下载数据，请稍后再试</div>');
+    $('#price').append('<div class="empty-data" id="index-no-data"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
     $('#toolbar').remove();
     $('#legend').remove();
   },

@@ -378,10 +378,12 @@ var RightPanel = {
     };
 
     var errorHandler = function(model) {
-      $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></td></tr>');
 
       // Refresh sticky columns after height change
       StickyColumns.start();
+
+      $('#stockpicker-view .panel-loader-wrapper').remove();
     };
 
     RightPanelModel.getStockData(successHandler, errorHandler);
@@ -496,7 +498,7 @@ var RightPanel = {
     }
 
     var errorHandler = function(model) {
-      $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></td></tr>');
 
       // Refresh sticky columns after height change
       StickyColumns.start();
@@ -560,7 +562,8 @@ var RightPanel = {
         });
       } 
       else {
-        $('#experts-view').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+        $('#experts-view').append('<div class="empty-data-right-panel"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
+        $('#experts-view .panel-loader-wrapper').remove();
       }
 
       // Refresh sticky columns after height change
@@ -690,13 +693,13 @@ var RightPanel = {
         self.updateAllPress(RightPanelModel.model);
       else {
         $('#all-press .calendar-and-date').remove();
-        $('#all-press').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+        $('#all-press').append('<div class="empty-data-right-panel"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
       }
 
       if(!RightPanelModel.model.getPressByTimeError)
         self.updatePressByTime(RightPanelModel.model);
       else
-        $('#press-by-time').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+        $('#press-by-time').append('<div class="empty-data-right-panel"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
 
       $('#news-view .panel-loader-wrapper').remove();
 

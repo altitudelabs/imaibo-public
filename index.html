@@ -967,13 +967,16 @@
     </div>
   {{else}}
     <div class="experts-header">
+
       <div class="name-and-date">
         <div class="name">今天解读</div>
-        <div class="date">{{headline.uptime}}</div>
       </div>
+
       <div class="content">
-        {{headline.title}}
+        <span class="expert-title">{{headline.title}}</span>
+        <span class="expert-date">{{headline.uptime}}</span>
       </div>
+      
     </div>
     {{#each list}}
     <div class="expert-block">
@@ -981,7 +984,7 @@
         <div class="profile-pic" style="background: url('{{uFace}}') center no-repeat"></div>
         <div class="name-and-date">
           <div class="name">{{uName}}</div>
-          <div class="date">{{time}}</div>
+          <div class="expert-date">{{time}}</div>
         </div>
         <div class="rating-and-content">
           {{#ifEq weiboMood 1}}
