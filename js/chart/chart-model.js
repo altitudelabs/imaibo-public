@@ -116,6 +116,14 @@ var ChartModel = {
           self.model[key] = data[key];
         }
       }
+
+      self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
+        if (d.rdate < 20130413) {
+          return false;
+        }
+        return true;
+      });
+      
       handler(self.model.indexError);
     };
     // var sentimentCallback = function (data, handler) {
@@ -150,7 +158,7 @@ var ChartModel = {
       return order;
     })
     .filter(function (d) {
-      if (rdates.indexOf(d.rdate) === -1) {
+      if (rdates.indexOf(d.rdate) === -1 && d.rdate > 20130412) {
         rdates.push(d.rdate);
         return true;
       }
@@ -173,6 +181,13 @@ var ChartModel = {
       } else if (data.weeklyKLine) {
         self.model.index.stockLine = data.weeklyKLine.reverse();
       }
+      self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
+        if (d.rdate < 20130413) {
+          return false;
+        }
+        return true;
+      });
+      
       handler(self.model.indexError);
     };
     return $.when(ChartModel.getIndexDataAsync(option, callback));
@@ -244,66 +259,6 @@ var ChartModel = {
       this.log(0, 'stockLine Data does not exist');
     } else {
       this.model.indexError = false;
-    }
-  },
-  processIndexData: function(res, options){
-    var self = this;
-    var index = self.model.index;
-
-    if(initial){
-      self.model.index = res.data[ChartView.properties.mode];
-      // API returns data in descending order
-      if(self.model.index.stockLine[0].timestamp != res.data.latestPrice.timestamp) {
-        self.model.index.stockLine.unshift(res.data.latestPrice);
-      }
-      self.model.index.stockLine.reverse();
-    } 
-    else if(updateByDragging){
-      ChartModel.errorCheckIndex(res, false);
-
-      if(ChartModel.model.indexError) return;
-
-      var stockLine = res.data[ChartView.properties.mode].stockLine;
-      var returnedLatestTime = stockLine.slice(-1).pop().timestamp;
-
-      this.currEarliestTime  = this.currEarliestTime || index.stockLine[0].timestamp;
-     
-     //mark if no more sentiment data is returned. i.e assuming when it returns 0
-      this.endOfSentiment = this.endOfSentiment || stockLine
-                                                    .map(function(e) { return e.moodindex === 0; })
-                                                    .reduce(function(prev, curr, i, arr) { return prev || curr; });
-
-      if(this.currEarliestTime < returnedLatestTime) return;
-      if(this.endOfSentiment) return;
-
-      //original earliest, latest
-      //for loop of returned
-      // if timestamp < earliest, 
-      // c
-
-
-      //concat two
-      // sort by timestamp
-      // remove duplicate timestamp
-
-
-
-      //api returned in descending order
-      stockLine.reverse();
-      var orgLength = index.stockLine.length;
-      index.stockLine = stockLine.concat(index.stockLine);
-      ChartModel.model.stockLineLengthDiff = index.stockLine.length - orgLength- 10;
-      this.currEarliestTime = index.stockLine[0].timestamp;
-    } else if (ChartView.properties.mode === 'daily') {
-      var latestPrice = res.data.latestPrice;
-      var lastData    = self.model.index.stockLine.slice(-1).pop();
-
-      if(lastData && lastData.timestamp !== res.data.latestPrice.timestamp){
-        self.model.index.stockLine.push(res.data.latestPrice);
-      }
-      //weekly
-    } else {
-      self.model.index.stockLine = res.data.weeklyKLine;
     }
   },
   log: function(code, message) {

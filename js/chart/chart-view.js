@@ -42,7 +42,7 @@ var ChartView = {
       var date = new Date(e.timestamp*1000);
       var month = date.getMonth();
       var year = date.getYear();
-      if (ChartView.properties.mode === 'weekly' && (month !== 11 && month !== 5)) {
+      if (ChartView.properties.mode === 'weekly' && (month % 3 !== 0)) {
         return false;
       }
       var yearsArray = Object.keys(timeObjArray);
@@ -178,6 +178,7 @@ var ChartView = {
   getPastIndexData: function () {
     var self = this;
     if (self.updating) { return; }
+    if (self.properties.mode === 'weekly') { return; }
     self.updating = true;
 
     var earliestDate = self.data.index.stockLine[0].rdate;

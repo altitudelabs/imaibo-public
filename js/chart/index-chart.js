@@ -133,15 +133,6 @@ var IndexChart = {
      *  - id: what you want to id your line as. Don't put '#'
      *        e.g 'ma5', 'ma10'. NOT 'ma5-line'
      */
-    var sentimentData = ChartView.getVisibleStockLine()
-                                 .filter(function (d) {
-                                   if (d.rdate < 20130410) {
-                                     return false;
-                                   }
-                                   return true;
-                                 });
-    var sentimentOffset = ChartView.getVisibleStockLine().length - sentimentData.length;
-
     function plotLines(type, color) {
       var id = type + '-line'; //e.g. sentiment-line, ma5-line
       var line = getLine(type);
@@ -153,20 +144,16 @@ var IndexChart = {
     function getLine(type) {
       return d3.svg.line()
              .x(function(d, i) {
-              if (type === 'sentiment' && d.rdate < 20130410) {
-                return self.data.x(sentimentOffset);
-              }
-              return self.data.x(i); })
+                return self.data.x(i); })
              .y(function(d)    { 
-              return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]); })
+                return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]); })
              .interpolate('linear');
     }
 
     function setLineAttr(id, line, color, type) {
-      var data = ChartView.getVisibleStockLine();
       self.components.chart
         .select('path#' + id)
-        .datum(data)
+        .datum(ChartView.getVisibleStockLine())
         .attr('d', line)
         .attr('stroke', color)
         .attr('fill', 'none')
