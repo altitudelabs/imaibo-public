@@ -531,19 +531,19 @@ body::-webkit-scrollbar {
 .outer #macd-chart { position: relative; }
 
 .outer #macd-dea-legend {
-  color: #d8db74;
+  color: #d7db74;
 }
 
 .outer #macd-legend {
-  color: #236a82;
+  color: #25bcf1;
 }
 
 .outer #macd-dea-legend-line {
-  border-color: #d8db74;
+  border-color: #d7db74;
 }
 
 .outer #macd-legend-line {
-  border-color: #236a82;
+  border-color: #25bcf1;
 }
 
 .outer #macd > .wrapper > .buttons > ul > li {
@@ -1547,8 +1547,8 @@ body::-webkit-scrollbar {
 .outer #search-result:before {
     content: ' ';
     position: absolute;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-bottom: 12px solid #3c3c3c;
@@ -1567,7 +1567,7 @@ body::-webkit-scrollbar {
   padding-left: 5px;
 }
 
-.outer .search-block:hover .ticker, 
+.outer .search-block:hover .ticker,
 .outer .search-block:hover .stock-name a {
   color: rgb(47, 184, 244);
 }
@@ -1799,7 +1799,7 @@ body::-webkit-scrollbar {
   border: 0px;
 }
 
-.outer #news-content a, 
+.outer #news-content a,
 .outer #news-content a:hover {
   color: #FFFFFF;
 }
@@ -1813,13 +1813,13 @@ body::-webkit-scrollbar {
 
 .outer #press-by-time .calendar-and-date {
   background: url('../assets/chart/news-background.png') repeat-x top left;
-  width: 300px; 
+  width: 300px;
 }
 
 .outer #press-by-time .arrow-sign {
   background: url('../assets/mb-spritesheet.png') no-repeat top left;
-  background-position: 0px -1866px; 
-  width: 20px; 
+  background-position: 0px -1866px;
+  width: 20px;
   height: 20px;
   padding-left: 3px;
 }
@@ -1853,7 +1853,7 @@ body::-webkit-scrollbar {
 
 .outer .calendar {
   background: url('../assets/mb-spritesheet.png') no-repeat top left;
-  width: 11px; 
+  width: 11px;
   height: 10px;
   background-position: 0px -496px;
   margin: 5px 5px 0px 0px;
@@ -1970,7 +1970,7 @@ body::-webkit-scrollbar {
   background-color: #595959;
   color: #FFFFFF;
 }
-    
+
 .outer #news-tabs li.active a:hover {
   background-color: #595959;
   color: #FFFFFF;
@@ -2092,16 +2092,18 @@ body::-webkit-scrollbar {
 }
 
 .outer #macd > .wrapper > .buttons {
-  width: 180px;
+  width: 250px;
+  text-align: right;
 }
 
 .outer #rsi > .wrapper > .buttons {
   width: 250px;
+  text-align: right;
 }
 
 .outer #rsi > .wrapper > .buttons > ul > li {
   display: inline-block;
-  padding-left: 5px;
+  padding-right: 15px;
 }
 
 .outer #rsi > .wrapper > .buttons > ul,
@@ -2128,11 +2130,11 @@ body::-webkit-scrollbar {
 }
 
 .outer #rsi24-legend {
- color: #784e7a;
+ color: #94599d;
 }
 
 .outer #rsi24-legend-line {
-  border-color: #784e7a;
+  border-color: #94599d;
 }
 
 .outer #rsi6-legend-line {
@@ -2142,6 +2144,11 @@ body::-webkit-scrollbar {
 .outer #macd > .wrapper > .buttons > ul,
 .outer #macd > .wrapper > .buttons > .close {
   display: inline-block;
+}
+
+.outer #macd > .wrapper > .buttons > ul > li {
+  display: inline-block;
+  padding-right: 15px;
 }
 
 .outer #rsi > .wrapper > .buttons,

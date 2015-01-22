@@ -60,7 +60,7 @@ var SentimentChart = {
 
     var serverTime = ChartView.data.sentiment.timestamp;
     var serverDate = new Date(serverTime*1000);
-    
+
     var dataTime = self.data.moodindexList[0].timestamp;
     var dataDate = new Date(dataTime*1000);
 
@@ -106,10 +106,8 @@ var SentimentChart = {
     self.componentsBuilder.forecastBubbleText.linkData();
     self.componentsBuilder.sentimentLine.linkData();
     self.componentsBuilder.securityLines.linkData();
-    if (!HIDE) {
-      self.componentsBuilder.scatterDotsBubble.linkData();
-      self.componentsBuilder.scatterDotsBubbleText.linkData();
-    } 
+    self.componentsBuilder.scatterDotsBubble.linkData();
+    self.componentsBuilder.scatterDotsBubbleText.linkData();
 
     // ENTER LOOP ===================================================================
     self.componentsBuilder.y1Labels.enter();
@@ -121,15 +119,13 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsHover.enter();
     self.componentsBuilder.forecastBubble.enter();
     self.componentsBuilder.forecastBubbleText.enter();
+    self.componentsBuilder.scatterDotsBubble.enter();
+    self.componentsBuilder.scatterDotsBubbleText.enter();
 
-    if (!HIDE) {
-      self.componentsBuilder.scatterDotsBubble.enter();
-      self.componentsBuilder.scatterDotsBubbleText.enter();
-    }
     // UPDATE LOOP ===================================================================
     for (var key in self.componentsBuilder) {
       self.componentsBuilder[key].update();
-    } 
+    }
 
     // Etc ===================================================================
     self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
@@ -315,7 +311,7 @@ var SentimentChart = {
         .attr('height', props.chartHeight);
       }
     },
-    chartLabel: { 
+    chartLabel: {
       append: function () {
         SentimentChart.components.chartLabel = d3.select('#sentiment-chart-label').append('svg:svg');
       },
@@ -393,7 +389,7 @@ var SentimentChart = {
         .attr({
           'x1' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
           'x2' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
-        });  
+        });
       },
       exit: function () {
         SentimentChart.components.verticalGridLines
@@ -604,7 +600,7 @@ var SentimentChart = {
         var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
 
         if (!SentimentChart.data.isPastData && currentTimeStamp < SentimentChart.data.startTime) { return; }
-        
+
         //start - market open
         var openDottedPrice = (!!data[0] && data[0].price !== undefined) ? data[0].price : SentimentChart.data.closePrice;
         var openDottedData = [{ timestamp: SentimentChart.data.startTime,
@@ -643,7 +639,7 @@ var SentimentChart = {
       },
       update: function () {
         var id;
-        
+
         for (var i = 0; i < this.types.length; i++) {
           id = this.types[i];
           //general
@@ -784,7 +780,7 @@ var SentimentChart = {
     },
     forecastBubble: {
       append: function () {
-        SentimentChart.components.forecastBubble = SentimentChart.components.chart.selectAll('scatter-dots'); 
+        SentimentChart.components.forecastBubble = SentimentChart.components.chart.selectAll('scatter-dots');
       },
       linkData: function () {
         SentimentChart.components.forecastBubble = SentimentChart.components.forecastBubble.data(SentimentChart.data.moodindexList);
@@ -818,7 +814,7 @@ var SentimentChart = {
     },
     forecastBubbleText: {
       append: function () {
-        SentimentChart.components.forecastBubbleText = SentimentChart.components.chart.selectAll('scatter-dots'); 
+        SentimentChart.components.forecastBubbleText = SentimentChart.components.chart.selectAll('scatter-dots');
       },
       linkData: function () {
         SentimentChart.components.forecastBubbleText = SentimentChart.components.forecastBubbleText.data(SentimentChart.data.moodindexList);
@@ -859,7 +855,7 @@ var SentimentChart = {
         .on('mouseover', function(d, i) {
           if (!d.newsList.length) { return; }
           var dot = this;
-          
+
           // shouldRenderLeft means the tooltip should render towards the left side of the hovered dot
           // shouldRenderBottom means the tooltip should render towards the bottom side of the hovered dot
           var shouldRenderLeft = true;
@@ -870,7 +866,7 @@ var SentimentChart = {
           if (SentimentChart.helpers.getMousePosition(dot)[1] > SentimentChart.properties.chartHeight/2) {
             shouldRenderBottom = false;
           }
-          
+
           var target = d3.select('#sd-' + i);
           target.attr('r', 6);
 
@@ -922,7 +918,7 @@ var SentimentChart = {
                   '</div>';
 
           var dotPosition = [d3.select(this).attr('cx'), d3.select(this).attr('cy')];
-          var padding = 15;          
+          var padding = 15;
           // var tooltipHeight;
           SentimentChart.components.tooltip
           .html(div)
@@ -1006,7 +1002,7 @@ var SentimentChart = {
       fadeIn: '',
       fadeOut: '',
       mousePosition: []
-      
+
     },
     sentimentCover: {
       append: function () {
@@ -1050,7 +1046,7 @@ var SentimentChart = {
           var timestamp = SentimentChart.data.ordinalTimeStamps[j];
           var indexData = SentimentChart.helpers.getLastest('indexList', timestamp);
           var moodindexData = SentimentChart.helpers.getLastest('moodindexList', timestamp);
-          
+
           if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
             SentimentChart.components.tooltip.style('display', 'none');
             SentimentChart.componentsBuilder.scatterDots.update();
