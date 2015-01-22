@@ -1359,7 +1359,7 @@ body::-webkit-scrollbar {
   padding: 0;
   overflow: visible;
   display: block;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
 .outer #stockpicker-wrapper {

@@ -176,7 +176,7 @@ var IndexChart = {
     function setCheckboxListener(type){
         var checkbox = $('#' + type + '-checkbox');
         if (IE8)
-          d3.select('#'+ type + '-line').style('stroke-opacity', checkbox.checked? '1':'0');
+          d3.select('#'+ type + '-line').style('stroke-opacity', checkbox.is(':checked')? 100:0);
         else
           d3.select('#'+ type + '-line').style('opacity', checkbox.is(':checked')? 1:0); 
     }
@@ -281,7 +281,7 @@ var IndexChart = {
     topBorder: {
       append: function () {
         IndexChart.components.topBorder = IndexChart.components.chartLabel.append('svg:line')
-        .attr('class', 'border-top');
+											.attr('class', 'border-top');
       },
       update: function () {
         var props = IndexChart.properties;
@@ -553,7 +553,7 @@ var IndexChart = {
                                             .on('mouseleave', function(){
                                               ChartView.hideAllScrollbars();
                                             })
-                                            .style('fill-opacity', 0);
+                                            .attr('fill-opacity', 0);
       },
       update: function(){
         IndexChart.components.scrollbarRail.attr('width', ChartView.properties.width);
@@ -644,8 +644,10 @@ var IndexChart = {
                 mouseX = d3.event.pageX;
                 mouseY = d3.event.pageY;
               }
-
-              if(yPos > 230) yPos = 230;
+              if(yPos > 230){
+                Tooltip.hide();
+                yPos = 230;
+              }
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
               var d = ChartView.getVisibleStockLine()[j];
@@ -673,6 +675,7 @@ var IndexChart = {
                     change: d.moodindexchg
                   }
               };
+
               IndexChart.components.horizontalText
               .attr('x', ChartView.getContainerWidth() - 37)
               .attr('y', yPos + 3)
