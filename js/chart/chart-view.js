@@ -2,12 +2,13 @@ var ChartView = {
   data: {
     daily: {},
     sentiment: {},
-    error: {}
+    error: {},
   },
   properties: {
-    refreshFrequency: 6000000,
+    refreshFrequency: 6000,
     scrollSpeed: 2,
     scrollbarPos: 0,
+    mode: 'daily'
   },
   setProperties: function (options) {
     var self = this;
@@ -26,7 +27,6 @@ var ChartView = {
     }
     this.properties = $.extend(true, this.properties, properties);
   },
-  //data.visibleStockLine
   x: function(returnProp){
     var self = this;
     var props = self.properties;
@@ -36,33 +36,27 @@ var ChartView = {
       return x[returnProp]; }))
     .rangeBands([0, props.chartWidth]); //inversed the x axis because api came in descending order
   },
-  // getXLabels: function(startI){
   getXLabels: function(){
-    // if the data has not changed, return old. if there is new recalculate
-    
-    // if (this.data.xlabels) {
-    //   return this.data.xlabels;
-    // } else {
-      var timeObjArray = {};
-      this.data.xlabels = ChartView.getVisibleStockLine().filter(function (e, i) {
-        // if (startI && i<startI) { return false; }
-        var date = new Date(e.timestamp*1000);
-        var month = date.getMonth();
-        var year = date.getYear();
-
-        var yearsArray = Object.keys(timeObjArray);
-        if (yearsArray === undefined || timeObjArray[year] === undefined) {
-          timeObjArray[year] = [];
-        }
-        if (timeObjArray[year].indexOf(month) === -1) {
-          timeObjArray[year].push(month);
-          return true;
-        }
+    var timeObjArray = {};
+    this.data.xlabels = ChartView.getVisibleStockLine().filter(function (e, i) {
+      var date = new Date(e.timestamp*1000);
+      var month = date.getMonth();
+      var year = date.getYear();
+      if (ChartView.properties.mode === 'weekly' && (month % 3 !== 0)) {
         return false;
-      });
+      }
+      var yearsArray = Object.keys(timeObjArray);
+      if (yearsArray === undefined || timeObjArray[year] === undefined) {
+        timeObjArray[year] = [];
+      }
+      if (timeObjArray[year].indexOf(month) === -1) {
+        timeObjArray[year].push(month);
+        return true;
+      }
+      return false;
+    });
 
-      return this.data.xlabels;
-    // }
+    return this.data.xlabels;
   },
   y1: function(height, returnProp, volumeHeight){
     var self = this;
@@ -70,7 +64,7 @@ var ChartView = {
     var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x[returnProp]; }));
 
     min = min - ((max-min)/height)*volumeHeight;
-    max = max + ((max - min)*0.1)
+    max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
   //return lowpx, highpx
@@ -80,10 +74,9 @@ var ChartView = {
     var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMax]; }));
 
     min = min - ((max-min)/height)*volumeHeight;
-    max = max + ((max - min)*0.1)
+    max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
-  
   buildY: function(min, max, height) {
     var props = this.properties;
     return d3.scale.linear()
@@ -108,7 +101,7 @@ var ChartView = {
    * - xPos: Position of cursor
    * - x: x range, domain object of d3
    */
-   xInverse: function(xPos, x){
+  xInverse: function(xPos, x){
     var leftEdges = x.range(), // starting position of each column bar
     width = x.rangeBand(), //rangeBand = width of each column bar
     j;
@@ -125,10 +118,10 @@ var ChartView = {
   init: function(){
     // set up toolbar
     // this.horizontalScroll();
-    Toolbar.init();
-    this.initInfoButtons();
-    this.setProperties();
     var self = this;
+    Toolbar.init();
+    self.initInfoButtons();
+    self.setProperties();
     self.build();
 
     var resizeEnd;
@@ -156,56 +149,95 @@ var ChartView = {
     var self = this;
     $('.loader').css('width', this.properties.width);
     
-    self.getData(true, function () {
+    ChartModel.getInitialData()
+    .done(function (indexError, sentimentError) {
+      self.updateChartViewData(indexError, sentimentError, true);
       self.buildChartElements();
-      if(!IE8) {
-        setInterval(function () {
-          self.getData(false, function () {
-            self.updateChartElements();
-          });
-        }, self.properties.refreshFrequency);
-      }
     });
-  },
-  getData: function (initial, cb) {
-    var self = this,
-           d = new Date(),
-           today = d.yyyymmdd();
-    $.when(ChartModel.getIndexDataAsync(today, initial), ChartModel.getSentimentDataAsync())
-    .done(function(index, sentiment){
-      
-      self.updateData(index, sentiment);
-      // self.setLastIndexOnViewPort();
-      cb();
-    });
-  },
-  getPastData: function () {
-    var self = this;
-    if (self.updating) {
-      return;
+
+    if(!IE8) {
+      setInterval(function () {
+        var indexOption = {};
+        var sentimentOption = {};
+
+        if (self.properties.mode === 'daily') {
+          indexOption.daily = true;
+        } else {
+          indexOption.weekly = true;
+          indexOption.weeklyUpdate = true;
+        }
+
+        ChartModel.updateAllData(indexOption, sentimentOption)
+        .done(function (indexError, sentimentError) {
+          self.updateChartViewData(indexError, sentimentError);
+          try { self.updateChartElements(); } catch (error) { console.log(error); }
+        });
+      }, self.properties.refreshFrequency);
     }
+  },
+  getPastIndexData: function () {
+    var self = this;
+    if (self.updating) { return; }
+    if (self.properties.mode === 'weekly') { return; }
     self.updating = true;
-    var earliestDate = self.data.daily.stockLine[0].rdate;
-    var oldLength = self.data.daily.stockLine.length;
-    ChartModel.getIndexData(earliestDate-1, false, null, true, function () {
-      self.updateData();
-      var diff = self.data.daily.stockLine.length - oldLength;
+
+    var earliestDate = self.data.index.stockLine[0].rdate;
+    var oldLength = self.data.index.stockLine.length;
+    var options = {};
+    var newDate = Helper.yyyymmddToDate(earliestDate.toString());
+
+    if ( self.properties.mode === 'daily' ) {
+      options.daily = true;
+      newDate.setDate(newDate.getDate()-1);
+      options.date = parseInt(newDate.yyyymmdd());
+    } else {
+      options.weekly = true;
+      newDate.setDate(newDate.getDate()-7);
+      options.date = parseInt(newDate.yyyymmdd());
+    }
+    ChartModel.updateIndexData(options)
+    .done(function (indexError) {
+      self.updateChartViewData(indexError);
+      var diff = self.data.index.stockLine.length - oldLength;
       self.data.lastDataIndex += diff;
-      self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+      self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
       self.moveToLeft();
       self.updating = false;
     });
   },
-  updateData: function (indexError, sentimentError) {
+  changeMode: function (mode) {
+    var self = this;
+    var options;
+    ChartView.properties.mode = mode;
+    if (mode === 'weekly') {
+      options = {
+        weekly: {}
+      };
+    } else if (mode === 'daily') {
+      options = {
+        daily: {}
+      };
+    }
+    ChartModel.refreshIndexData(options)
+    .done(function (indexError) {
+      self.updateChartViewData(indexError, false, true);
+      self.redraw();
+    });
+  },
+  updateChartViewData: function (indexError, sentimentError, initial) {
     var self = this;
     self.data = ChartModel.model;
     self.data.error = {
       index: indexError,
       sentiment: sentimentError
     };
-    self.data.lastDataIndex = self.data.lastDataIndex || self.data.daily.stockLine.length;
-    self.data.dataSetLength = self.data.dataSetLength || self.data.daily.stockLine.length;
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.lastDataIndex = self.data.lastDataIndex || self.data.index.stockLine.length;
+    self.data.dataSetLength = self.data.dataSetLength || self.data.index.stockLine.length;
+    if (initial) {
+      self.data.lastDataIndex = self.data.index.stockLine.length;
+      self.data.dataSetLength = self.data.index.stockLine.length;
+    }
+    self.data.visibleStockLine = self.data.index.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
   /* Initial build of chart elements */
@@ -214,7 +246,7 @@ var ChartView = {
     // Draw index
     if (!self.data.error.index.isError) {
       IndexChart.init();
-      Toolbar.render(self.data.daily);
+      Toolbar.render(self.data.index);
       if(!HIDE) {
         RsiChart.init();
         MacdChart.init();
@@ -226,11 +258,8 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    if (!self.data.error.sentiment.isError) {
-      SentimentChart.init();
-    } else {
-      SentimentChart.initWithError();
-    }
+    // SentimentChart.init();
+    try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
     // Make charts visible
     $('#price').css('visibility', 'visible');
@@ -247,27 +276,30 @@ var ChartView = {
   /* Updates chart elements */
   updateChartElements: function() {
     var self = this;
+
+    ChartView.updateVisibleStockLine();
     // Update index
     if (!self.data.indexError) {
-      IndexChart.update(false);
-      if(!HIDE) {
-        RsiChart.init();
-        MacdChart.init();
-      }
+      IndexChart.update();
+      RsiChart.update();
+      MacdChart.update();
       Dashboard.render(self.data.info);
     } else {
       Dashboard.renderWithError();
       IndexChart.initWithError();
     }
-    // Draw sentiment
+
     if (!self.data.sentimentError) {
-      // SentimentChart.setProperties();
       SentimentChart.update();
     } else {
       SentimentChart.initWithError();
     }
-    // Refresh sticky columns and scroll position
+
     StickyColumns.start();
+    
+    $('.zoomable-chart-container').css('width', '100%');
+    ChartView.setScrollbarWidth();
+    ChartView.setScrollbarPos();
   },
   zoom: function (zoomFactor) {
     var self = this;
@@ -275,8 +307,8 @@ var ChartView = {
     var newLength = Math.floor(self.data.dataSetLength / zoomFactor);
     if (newLength < 20) { return; }
     // if (newLength > 250) { return; }
-    if (newLength > self.data.daily.stockLine.length) { 
-      newLength = self.data.daily.stockLine.length;
+    if (newLength > ChartView.getStockLine().length) { 
+      newLength = ChartView.getStockLine().length;
     }
     if (ChartView.getLastDataIndex() - newLength < 0) {
       var index = ChartView.getLastDataIndex() - (ChartView.getLastDataIndex() - newLength);
@@ -303,6 +335,10 @@ var ChartView = {
     return d3.behavior.zoom()
                     .on("zoom", function(){
                       var deltaY = d3.event.sourceEvent.deltaY;
+
+                      if (!deltaY) // d3.event.sourceEvent.deltaY not defined in ie
+                        deltaY = -d3.event.sourceEvent.wheelDelta;
+
                       if(deltaY > 0){
                         ChartView.moveToLeft();
                         // ChartView.moveScrollbarToLeft();
@@ -313,7 +349,7 @@ var ChartView = {
                     });
   },
   scrollbarDragBehavior: function(){
-    return d3.behavior.drag()
+    this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
           .on('drag', function(d){
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
@@ -333,6 +369,7 @@ var ChartView = {
               ChartView.moveToLeft(index);
             }
           });
+          return this.properties.scrollbarDragBehavior;
   },
   chartDragBehavior: function(){
     var self = this;
@@ -350,82 +387,62 @@ var ChartView = {
   },
   moveToRight: function (delta) {
     var self = this;
-    var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
+    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
         speed = Math.ceil(speed);
-    if(self.data.lastDataIndex + speed > self.data.daily.stockLine.length) { 
-      self.data.lastDataIndex = self.data.daily.stockLine.length;
+    if(self.data.lastDataIndex + speed > ChartView.getStockLine().length) { 
+      self.data.lastDataIndex = ChartView.getStockLine().length;
     } else {
       self.data.lastDataIndex+=speed;
     }
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
-    self.data.dataSetLength = self.data.visibleStockLine.length;
+    self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
     // self.properties.scrollbarPos += speed; 
   }, 
   moveToLeft: function (delta) {
-    var self = this;
-    var speed = delta || Math.ceil(self.data.visibleStockLine.length * 0.075);
+    var self  = this;
+    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
     speed = Math.ceil(speed);
-    var speed = Math.ceil(self.data.visibleStockLine.length * 0.075);
-    if(self.data.lastDataIndex  - self.data.visibleStockLine.length - speed < 0) { 
-      self.data.lastDataIndex = self.data.visibleStockLine.length;
+    speed = Math.abs(speed);
+    if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) { 
+      self.data.lastDataIndex = ChartView.getVisibleStockLine().length;
     } else {
       self.data.lastDataIndex -= speed;
     }
-    self.data.visibleStockLine = self.data.daily.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
-    self.data.dataSetLength = self.data.visibleStockLine.length;
+    self.data.visibleStockLine = ChartView.getStockLine().slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
+    self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
     
     if(ChartView.getLastDataIndex() - ChartView.data.visibleStockLine.length === 0){
-      clearTimeout(self.dragEnd);
-      self.dragEnd = setTimeout(function(){
-          self.getPastData();
-      } ,100);
+      self.getPastIndexData();
     }
-
   },
-  // moveScrollbarToRight: function(){
-  //   var self = this;
-  //   var speed = Math.ceil(self.data.visibleStockLine.length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
-  //   var nextXPos = ChartView.getScrollbarPos() + speed;
-  //   if(nextXPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
-  //     nextXPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
-
-  //   IndexChart.components.scrollBar
-  //   .attr('x', ChartView.properties.scrollbarPos = nextXPos);
-  // },
-  // moveScrollbarToLeft: function(){
-  //   var self = this;
-  //   var speed = Math.ceil(self.data.visibleStockLine.length * 0.075) / ChartView.getStockLine().length * ChartView.getChartWidth();
-  //   var nextXPos = ChartView.getScrollbarPos() - speed;
-  //   if(nextXPos < 0) nextXPos = 0;
-
-  //   IndexChart.components.scrollBar
-  //   .attr('x', ChartView.properties.scrollbarPos = nextXPos);
-  // },
   redraw: function () {
     ChartView.updateVisibleStockLine();
     $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();
     ChartView.setScrollbarPos();
-
     IndexChart.update();
-
     RsiChart.update();
     MacdChart.update();
   },
   rebuild: function() {
     ChartView.setProperties();
-    ChartView.updateVisibleStockLine();
-    ChartView.setScrollbarWidth();
-    ChartView.setScrollbarPos();
+    if(!this.data.error.index.isError){
+      ChartView.updateVisibleStockLine();
+      ChartView.setScrollbarWidth();
+      ChartView.setScrollbarPos();
+      RsiChart.update();
+      MacdChart.update();
+      IndexChart.update();
+    }else{
+      IndexChart.updateWithError();
+    }
+    try { SentimentChart.update(); } catch (error) { SentimentChart.initWithError(); }
+    
     $('.zoomable-chart-container').css('width', '100%');
-    RsiChart.init();
-    MacdChart.init();
-    IndexChart.update();
-    SentimentChart.update();
   },
   showAllScrollbars: function(){
       RsiChart.components.scrollBar.style('fill-opacity', 100);
@@ -457,7 +474,7 @@ var ChartView = {
     return this.properties.lastIndexOnViewPort;
   },
   getStockLine: function() {
-    return this.data.daily.stockLine;
+    return this.data.index.stockLine;
   },
   getVisibleStockLine: function() {
     return this.data.visibleStockLine || ChartView.getStockLine();
@@ -517,7 +534,7 @@ var ChartView = {
     this.data.dataSetLength = length;
   },
   updateVisibleStockLine: function() {
-    var vsl = ChartView.getStockLine().slice(ChartView.getLastDataIndex() - ChartView.getDataSetLength(), ChartView.getLastDataIndex())
+    var vsl = ChartView.getStockLine().slice(ChartView.getLastDataIndex() - ChartView.getDataSetLength(), ChartView.getLastDataIndex());
     ChartView.setVisibleStockLine(vsl);
   },
   getScrollSpeed: function(){

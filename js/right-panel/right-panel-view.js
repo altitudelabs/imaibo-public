@@ -33,17 +33,18 @@ var RightPanel = {
   },
   noStocks: false,
   collapseView: function(){
-    // Remove sticky columns
-    StickyColumns.stop();
 
     // Collapse right panel
     this.el.addClass('collapsed');
     this.collapsed.el.removeClass('collapsed');
-    $('#content').css('width', 'calc(100% - 55px)');
+    $('#content').addClass('full');
 
     // Rebuild chart after animation
     setTimeout(function(){
       ChartView.rebuild();
+
+      // Start sticky columns
+      StickyColumns.start();
     }, 400);
   },
 
@@ -66,7 +67,8 @@ var RightPanel = {
   },
   expandView: function(){
     var self = this;
-    $('#content').css('width', 'calc(100% - 325px)');
+    // cannot set width directly as there may be problems with sticky kit
+    $('#content').removeClass('full');
 
     setTimeout(function(){
       self.collapsed.el.removeClass('uncollapsed');
@@ -174,6 +176,11 @@ var RightPanel = {
             spanObjects.classed("selected", true);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已添加自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           var DeleteSuccessHandler = function() {
@@ -181,6 +188,11 @@ var RightPanel = {
             spanObjects.classed("selected", false);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已移除自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           if (thisSpanObject.classed("selected"))
@@ -262,6 +274,11 @@ var RightPanel = {
             thisSpanObject.classed("selected", true);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已添加自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           var DeleteSuccessHandler = function() {
@@ -272,6 +289,11 @@ var RightPanel = {
             thisSpanObject.classed("not-selected", true);
 
             self.renderStockpickerView(false);
+
+            $('#alert-box').html("已移除自选股")
+                           .stop(true, true)
+                           .fadeIn("slow")
+                           .fadeOut(3000);
           };
 
           if (thisSpanObject.classed("selected"))
@@ -338,26 +360,30 @@ var RightPanel = {
           });
         }
 
-        self.showStockpickerView();
-        // When view is rendered, also render settings panel and autocomplete
+        // Refresh sticky columns after height change
+        StickyColumns.start();
+
+        $('#stockpicker-view .panel-loader-wrapper').remove();
+
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        // Makes stockpicker view refresh every x seconds
         self.refreshStockpickerView();
       } 
       else {
         self.updateStockpickerView(model);
-      }
 
-      // Refresh sticky columns after height change
-      StickyColumns.start();
+        // Refresh sticky columns after height change
+        StickyColumns.start();
+      }
     };
 
     var errorHandler = function(model) {
-      $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
 
       // Refresh sticky columns after height change
       StickyColumns.start();
+
+      $('#stockpicker-view .panel-loader-wrapper').remove();
     };
 
     RightPanelModel.getStockData(successHandler, errorHandler);
@@ -365,10 +391,6 @@ var RightPanel = {
   hideStockpickerLoginPanel: function() {
     $('#stock-login').remove();
     $('#suggestion').remove();
-  },
-  showStockpickerView: function() {
-    $('#stockpicker-view').css('opacity', '1');
-    $('.panel-loader').remove();
   },
   updateStockpickerView: function(model) {
     var self = this;
@@ -476,7 +498,7 @@ var RightPanel = {
     }
 
     var errorHandler = function(model) {
-      $('#stock-table').append('<tr>暂时无法下载数据，请稍后再试</tr>');
+      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
 
       // Refresh sticky columns after height change
       StickyColumns.start();
@@ -492,7 +514,7 @@ var RightPanel = {
     var self = this;
     var refreshRate = 5000;
 
-    setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+    // setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
   /* Experts module */
   initExpertsModule: function() {
@@ -523,11 +545,15 @@ var RightPanel = {
           else {
             // Otherwise, like comment
             RightPanelModel.likeCommentAsync(weiboId)
-            .then(function(res) {
-              var content = $(e.target).html();
-              var likes = parseInt(content.match(/[^()]+(?=\))/g));
-              likes++;
-              $(e.target).html('赞(' + likes + ')');
+            .then(function(code) {
+              // code = 0, successfull; = others, liked once, not login or other errors
+              // only if not liked before, increase the count by one
+              if (code === 0) {
+                var content = $(e.target).html();
+                var likes = parseInt(content.match(/[^()]+(?=\))/g));
+                likes++;
+                $(e.target).html('赞(' + likes + ')');
+              }
             }, function(res) {
               // handle error
             });
@@ -536,12 +562,9 @@ var RightPanel = {
         });
       } 
       else {
-        $('#experts-view').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+        $('#experts-view').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
+        $('#experts-view .panel-loader-wrapper').remove();
       }
-
-      // Remove loader
-      $('#experts-view').css('visibility', 'visible');
-      $('.panel-loader').remove();
 
       // Refresh sticky columns after height change
       StickyColumns.start();
@@ -553,7 +576,7 @@ var RightPanel = {
     $('#news-view .date').html(model.allPress[0].rdate);
 
     // CREATE NEWS BLOCKS
-    var template = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="arrow"></span><span class="percentage">{{newsMood}}%</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
+    var template = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="mood-change">{{newsMood}}</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
 
     var newsBlocks = d3.select('#news-blocks')
                        .selectAll('div')
@@ -562,7 +585,9 @@ var RightPanel = {
     // Enter loop
     newsBlocks.enter().append('div')
                       .attr("class", function(d) {
-                        if(d.sent === '+')
+                        if (d.newsMood == 0)
+                          return "news-block neutral";
+                        if (d.sent === '+')
                           return "news-block rise";
                         else 
                           return "news-block fall";
@@ -577,41 +602,54 @@ var RightPanel = {
       var htmlCode = '<a href="'+ d.url + '" target="_blank">' + d.title + '</a>';
       return htmlCode;
     });
-    newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-    newsBlocks.select('.percentage').html(function(d){ return d.newsMood + '%'; });
+    newsBlocks.select('.time').html(function(d) { return d.clock.substr(0, 5); });
+    newsBlocks.select('.mood-change').html(function(d) { 
+      if (d.newsMood == 0)
+        return d.newsMood; 
+      else
+        return d.sent + d.newsMood; 
+    });
     newsBlocks.select('.source').html(function(d){ return '来自' + d.source; });
   },
   updatePressByTime: function(model) {
-    var newsBlockTemplate = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="arrow"></span><span class="percentage">{{newsMood}}%</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
-    var timeBlockTemplate = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var newsBlockTemplate = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="mood-change">{{newsMood}}</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
+    var timeBlockTemplateForecast = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="predict-text">预测</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var timeBlockTemplateRealTime = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
 
     // CREATE TIME BLOCKS
     var timeBlock = d3.select('#press-by-time')
                       .selectAll('div')
-                      .data(d3.keys(model.pressByTime));
+                      .data(model.pressByTime);
 
     timeBlock.enter().append('div')
-                     .attr("id", function(d) { return "time" + d.replace(/(-|:|\s)+/g, ''); })
+                     .attr("id", function(d) { return "time" + d.dateClock.replace(/(-|:|\s)+/g, ''); })
                      .attr("class", "time-block")
-                     .html(timeBlockTemplate);
+                     .html(function(d) {
+                      if (d.isRealTime)
+                        return timeBlockTemplateRealTime;
+                      else
+                        return timeBlockTemplateForecast;
+                     });
 
     timeBlock.exit().remove();
 
-    timeBlock.select('.date').html(function(d) { return d});
+    timeBlock.select('.date').html(function(d) { return d.dateClock; });
 
     // SET TIME BLOCKS
-    _.each(model.pressByTime, function(object, name) {
-      var timeBlockString = '#time' + name.replace(/(-|:|\s)+/g, '');
+    var lengthOfArray = model.pressByTime.length;
+
+    for (var i = 0; i < lengthOfArray; i++) {
+      var timeBlockString = '#time' + model.pressByTime[i].dateClock.replace(/(-|:|\s)+/g, '');
       var newsBlocksString = timeBlockString + ' .news-blocks';
       var numberOfMsgString = timeBlockString + ' .number-of-msg';
 
       // SET NUMBER OF MSG IN EACH TIME BLOCK
-      $(numberOfMsgString).html("共" + object.length + "条新闻");
+      $(numberOfMsgString).html("共" + model.pressByTime[i].list.length + "条新闻");
 
       // CREATE NEWS BLOCKS INSIDER EACH TIME BLOCK
       var newsBlocks = d3.select(newsBlocksString)
                          .selectAll('div')
-                         .data(object);
+                         .data(model.pressByTime[i].list);
 
       newsBlocks.enter().append('div')
                         .attr("class", function(d) {
@@ -629,9 +667,9 @@ var RightPanel = {
         return htmlCode;
       });
       newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-      newsBlocks.select('.percentage').html(function(d){ return d.newsMood + '%'; });
+      newsBlocks.select('.mood-change').html(function(d){ return d.sent + d.newsMood; });
       newsBlocks.select('.source').html(function(d){ return "来自" + d.source; });
-    });
+    }
     
     this.setTimebarListener();
   },
@@ -639,10 +677,18 @@ var RightPanel = {
     var self = this;
 
     $('#press-by-time .calendar-and-date').click(function() { 
-      $(this).siblings().stop().slideToggle('slow');
+      var $thisObject = $(this);
+      
+      $thisObject.siblings().stop().slideToggle('slow', function() {
+        StickyColumns.start();
+      });
+
+      if ($thisObject.hasClass("news-collapsed"))
+        $thisObject.removeClass("news-collapsed");
+      else
+        $thisObject.addClass("news-collapsed");
 
       // Refresh sticky columns after height change
-      StickyColumns.start();
     });
   },
   initNewsModule: function() {
@@ -654,13 +700,15 @@ var RightPanel = {
         self.updateAllPress(RightPanelModel.model);
       else {
         $('#all-press .calendar-and-date').remove();
-        $('#all-press').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+        $('#all-press').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
       }
 
       if(!RightPanelModel.model.getPressByTimeError)
         self.updatePressByTime(RightPanelModel.model);
       else
-        $('#press-by-time').append('<div class="empty-data-right-panel" id="right-panel-data">暂时无法下载数据，请稍后再试</div>');
+        $('#press-by-time').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
+
+      $('#news-view .panel-loader-wrapper').remove();
 
       // Refresh sticky columns after height change
       StickyColumns.start();
