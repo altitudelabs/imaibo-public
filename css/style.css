@@ -2046,6 +2046,11 @@ body::-webkit-scrollbar {
   left: 54px;
   top: 49px;
   z-index: 10;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .outer ul.toolbar > li {
   display: inline-block;
