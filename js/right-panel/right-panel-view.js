@@ -653,6 +653,8 @@ var RightPanel = {
 
       newsBlocks.enter().append('div')
                         .attr("class", function(d) {
+                          if (d.newsMood == 0)
+                            return "news-block neutral";
                           if(d.sent === '+')
                             return "news-block rise";
                           else 
@@ -667,7 +669,12 @@ var RightPanel = {
         return htmlCode;
       });
       newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-      newsBlocks.select('.mood-change').html(function(d){ return d.sent + d.newsMood; });
+      newsBlocks.select('.mood-change').html(function(d){ 
+        if (d.newsMood == 0)
+          return d.newsMood; 
+        else
+          return d.sent + d.newsMood; 
+      });
       newsBlocks.select('.source').html(function(d){ return "来自" + d.source; });
     }
     
