@@ -33,7 +33,7 @@ var SentimentChart = {
     this.drawContainer();
     this.updateDataWithError();
     this.drawWithError();
-    $('#sentiment-chart-label').append('<div class="empty-data">暂时无法下载数据，请稍后再试</div>');
+    $('#sentiment').append('<div class="empty-data"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
     $('#sentiment .legend').remove();
     $('#sentiment-chart-legend').remove();
   },

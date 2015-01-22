@@ -213,12 +213,28 @@ body::-webkit-scrollbar {
   bottom: 35%;
 }
 
+.outer .empty-data a {
+  color: rgb(107, 107, 107);
+  font-size: 12px;
+}
+
 .outer .empty-data-right-panel {
   margin: 200px auto;
   text-align: center;
 }
 
-.outer #sentiment-chart-label .empty-data,
+.outer .empty-data-right-panel a {
+  color: rgb(107, 107, 107);
+  font-size: 12px;
+}
+
+/*added to override styling rules in news view*/
+.outer #news-view .empty-data-right-panel a {
+  color: rgb(107, 107, 107);
+  font-size: 12px;
+}
+
+.outer #sentiment .empty-data,
 .outer #index-no-data {
   top: 45%;
 }
@@ -1206,6 +1222,7 @@ body::-webkit-scrollbar {
 
 .outer .experts-header .content {
   padding-top: 10px;
+  width: 100%;
 }
 
 .outer .expert-block {
@@ -1249,10 +1266,11 @@ body::-webkit-scrollbar {
   color: #fff;
 }
 
-.outer .name {
+.outer .name,
+.outer .expert-title {
   float: left;
 }
-.outer .date {
+.outer .expert-date {
   float: right;
 }
 
