@@ -146,7 +146,18 @@ var IndexChart = {
 
       return d3.svg.line()
              .x(function(d, i) {
-                return self.data.x(i) + offset; })
+               if (i === 0) {
+                 return self.data.x(i);
+               } else if (i === ChartView.getVisibleStockLine().length-1){
+                 if (ChartView.data.lastDataIndex === ChartView.getStockLine().length) {
+                   return self.data.x(i) + offset;
+                 } else {
+                   return self.data.x(i) + offset*2;
+                 }
+               } else {
+                 return self.data.x(i) + offset;
+               }
+             })
              .y(function(d)    { 
                 return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]); })
              .interpolate('linear');
