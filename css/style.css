@@ -1814,7 +1814,8 @@ body::-webkit-scrollbar {
   display: inline-block;
 }
 .outer #news-view .calendar,
-.outer #news-view .date {
+.outer #news-view .date,
+.outer #news-view .predict-text {
   float: left;
 }
 
@@ -1835,6 +1836,15 @@ body::-webkit-scrollbar {
   height: 100%;
   color: #fff;
   margin-top: 3px;
+}
+
+.outer .predict-text {
+  color: rgb(47, 184, 244);
+  font-size: 12px;
+  padding: 2px 7px 0px 7px;
+  border: 1px solid rgb(47, 184, 244);
+  border-radius: 2px;
+  margin-left: 10px;
 }
 
 .outer .number-of-msg {

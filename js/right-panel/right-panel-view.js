@@ -603,7 +603,8 @@ var RightPanel = {
   },
   updatePressByTime: function(model) {
     var newsBlockTemplate = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="arrow"></span><span class="percentage">{{newsMood}}%</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
-    var timeBlockTemplate = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var timeBlockTemplateRealTime = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="predict-text">预测</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var timeBlockTemplateForecast = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
 
     // CREATE TIME BLOCKS
     var timeBlock = d3.select('#press-by-time')
@@ -613,7 +614,12 @@ var RightPanel = {
     timeBlock.enter().append('div')
                      .attr("id", function(d) { return "time" + d.dateClock.replace(/(-|:|\s)+/g, ''); })
                      .attr("class", "time-block")
-                     .html(timeBlockTemplate);
+                     .html(function(d) {
+                      if (d.isRealTime)
+                        return timeBlockTemplateRealTime;
+                      else
+                        return timeBlockTemplateForecast;
+                     });
 
     timeBlock.exit().remove();
 
@@ -663,7 +669,9 @@ var RightPanel = {
     $('#press-by-time .calendar-and-date').click(function() { 
       var $thisObject = $(this);
       
-      $thisObject.siblings().stop().slideToggle('slow');
+      $thisObject.siblings().stop().slideToggle('slow', function() {
+        StickyColumns.start();
+      });
 
       if ($thisObject.hasClass("news-collapsed"))
         $thisObject.removeClass("news-collapsed");
@@ -671,7 +679,6 @@ var RightPanel = {
         $thisObject.addClass("news-collapsed");
 
       // Refresh sticky columns after height change
-      StickyColumns.start();
     });
   },
   initNewsModule: function() {
