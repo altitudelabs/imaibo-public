@@ -629,13 +629,13 @@ var SentimentChart = {
         }
         //market close
         if (!SentimentChart.data.isPastData && currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 || notSameDay)) {
-          var closeDottedPrice = pmLinearData[120].price;
+          var closeDottedPrice = pmLinearData[pmLinearData.length - 1].price;
           var closeDottedData = [{
-                                  timestamp: pmLinearData[120].timestamp+60,
+                                  timestamp: pmLinearData[pmLinearData.length - 1].timestamp+60,
                                   price: closeDottedPrice
                                 },
                                 {
-                                  timestamp: Math.min(currentTimeStamp, pmLinearData[120].timestamp+9000),
+                                  timestamp: Math.min(currentTimeStamp, pmLinearData[pmLinearData.length - 1].timestamp+9000),
                                   price: closeDottedPrice
                                 }];
           SentimentChart.components.securityLines['closeDotted'] = SentimentChart.components.securityLines['closeDotted'].datum(closeDottedData);
@@ -889,6 +889,7 @@ var SentimentChart = {
           var news;
           var title;
           var arrow;
+          var arrowNumber;
           var div = '<div class="sentiment-tooltip">' +
                        '<div class="tooltip-date">' + Helper.toDate(d.rdate).slice(5) + ' ' + d.clock.slice(0, -3) + '<div class="more-news" style="cursor:pointer;">更多</div></div>' +
                        '<div class="wrapper">';
@@ -896,16 +897,21 @@ var SentimentChart = {
           for (var j = 0; j < d.newsList.length; j++) {
             if (j === 3) { break; }
             news = d.newsList[j];
-            if (news.newsMood == 0)
+            if (news.newsMood == 0) {
               arrow = 'neutral';
-            else if (news.newsSign === '+')
-              arrow = 'rise';
-            else
-              arrow = 'fall';
+              arrowNumber = news.newsMood;
+            }
+            else {
+              arrowNumber = news.newsSign + news.newsMood;
+              if (news.newsSign === '+')
+                arrow = 'rise';
+              else
+                arrow = 'fall';
+            }
             title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
             div +=    '<div>&nbsp;&#183;' +
                          '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;' +
-                           '<div class="arrow-number ' + arrow + '"> ' + news.newsSign + news.newsMood + '</div>' +
+                           '<div class="arrow-number ' + arrow + '"> ' + arrowNumber + '</div>' +
                            '<div class="arrow-text">心情分数:</div>' +
                        '</div>';
             tooltipHeight += 22;
