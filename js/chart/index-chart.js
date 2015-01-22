@@ -450,7 +450,8 @@ var IndexChart = {
       },
       update: function () {
         var props = IndexChart.properties;
-        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*ChartView.getZoomFactor() - 2*ChartView.getZoomFactor();
+        var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length/2;
+        // offset = 0;
 
         IndexChart.components.lineStems
         .attr('x1', function(d, i) { return IndexChart.data.x(i) + offset; })
@@ -637,7 +638,7 @@ var IndexChart = {
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
               var d = ChartView.getVisibleStockLine()[j];
-
+              if (d === undefined) { return; }
               IndexChart.helpers.updateMAValue('5', d.ma5);
               IndexChart.helpers.updateMAValue('10', d.ma10);
               IndexChart.helpers.updateMAValue('20', d.ma20);
