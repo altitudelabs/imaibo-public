@@ -142,9 +142,11 @@ var IndexChart = {
     }
 
     function getLine(type) {
+      var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length*0.8/2;
+
       return d3.svg.line()
              .x(function(d, i) {
-                return self.data.x(i); })
+                return self.data.x(i) + offset; })
              .y(function(d)    { 
                 return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]); })
              .interpolate('linear');
@@ -418,7 +420,7 @@ var IndexChart = {
 
         IndexChart.components.candleSticks
         .attr('x', function(d, i) {
-         return IndexChart.data.x(i) - 2*ChartView.getZoomFactor(); })
+         return IndexChart.data.x(i); })
         .attr('y', function(d) {
           var closepx = d.closepx? d.closepx:d.preclosepx;
           return IndexChart.data.y2(max(d.openpx, closepx)); 
@@ -443,9 +445,7 @@ var IndexChart = {
       },
       update: function () {
         var props = IndexChart.properties;
-        var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length/2;
-        // offset = 0;
-
+        var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length*0.8/2;
         IndexChart.components.lineStems
         .attr('x1', function(d, i) { return IndexChart.data.x(i) + offset; })
         .attr('x2', function(d, i) { return IndexChart.data.x(i) + offset; })
