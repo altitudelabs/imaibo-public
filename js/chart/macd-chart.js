@@ -67,7 +67,7 @@ var MacdChart = {
     self.componentsBuilder.bars.append();
     self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
-    
+
     // DEA line
     this.components.chart.append('path')
       .attr('class','dea');
@@ -94,7 +94,7 @@ var MacdChart = {
 
     $('#macd-chart-container').css('width', ChartView.properties.chartWidth);
 
-    
+
     //DATA SECTION ======================================================
     for (var key in self.components) {
       if (self.componentsBuilder[key].linkData) {
@@ -114,7 +114,7 @@ var MacdChart = {
       }
     }
 
-  
+
     // Update MACD and DEA lines
     function plotMACD(type, color){
       var line = d3.svg.line()
@@ -131,9 +131,9 @@ var MacdChart = {
     }
 
     plotMACD('dea', '#d7db74');
-    plotMACD('macd', '#236a82');
+    plotMACD('macd', '#25bcf1');
 
-    
+
   },
   componentsBuilder: {
     chart: {
@@ -222,7 +222,7 @@ var MacdChart = {
       append: function () {
         MacdChart.components.leftBorder = MacdChart.components.chartLabel.append('svg:line')
                                                    .attr('class', 'yborder-left');
-        
+
       },
       update: function () {
         MacdChart.components.leftBorder
@@ -322,7 +322,7 @@ var MacdChart = {
         .attr('width',function(d) { return 0.8 * MacdChart.properties.graphWidth/MacdChart.data.stockLine.length; })
         .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
       }
-    }, 
+    },
     scrollbarRail: {
       append: function () {
         MacdChart.components.scrollbarRail = MacdChart.components.chartLabel
@@ -378,7 +378,7 @@ var MacdChart = {
            }
         });
       }
-    },  
+    },
     mouseOverlay: {
       append: function () {
         MacdChart.components.mouseOverlay = MacdChart.components.chart.append('rect')

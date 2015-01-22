@@ -43,11 +43,11 @@ var RsiChart = {
       allDataArray.push(parseInt(self.data.stockLine[i].rsi12));
       allDataArray.push(parseInt(self.data.stockLine[i].rsi24));
     }
-    var y2Range = [0, 120];
+    var y2Range = [-10, 110];
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
-    
+
   },
   initCloseAction: function() {
     $('#rsi > .wrapper > .buttons > .close').on('click', function() {
@@ -102,7 +102,7 @@ var RsiChart = {
       if (self.componentsBuilder[key].enter) {
         self.components[key].exit().remove();
       }
-    }    
+    }
     // Draw RSI lines
     function plotRSI(rsi, color){
       var line = d3.svg.line()
@@ -123,7 +123,7 @@ var RsiChart = {
 
     plotRSI(6,'#fff');
     plotRSI(12,'#d8db74');
-    plotRSI(24,'#784e7a');
+    plotRSI(24,'#94599d');
 
   },
   drawContainer: function(){
@@ -164,7 +164,7 @@ var RsiChart = {
                                            .attr('class', 'chart');
       },
       update: function () {
-        RsiChart.components.chartLabel         
+        RsiChart.components.chartLabel
         .attr('width', ChartView.properties.width)
         .attr('height', RsiChart.properties.height-17)
         .select('svg').attr('width', ChartView.getContainerWidth());
@@ -269,7 +269,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data(RsiChart.helpers.getYLabelsData([0, 100]));
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([30,70]);
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -359,7 +359,7 @@ var RsiChart = {
            ChartView.properties.mouseOverScrollbar = false;
         });
       }
-    },  
+    },
     mouseOverlay: {
       append: function () {
       // Tooltip

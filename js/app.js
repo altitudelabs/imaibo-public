@@ -1,7 +1,9 @@
+// Toggles between staging (t3-www.imaibo.net) and production (www.imaibo.net)
 var PRODUCTION = false;
-// Hide Phase II features
-var HIDE = false;
+
+// IE8 indicator
 var IE8 = !!$('.lt-ie9').length;
+
 // var _MID_ = 1;
 
 $(function(){
@@ -15,16 +17,6 @@ $(function(){
 
   // Sets up routing logic for right content panel
   RightPanel.init();
-
-  // Hides certain features
-  if(HIDE){
-    $('#frequency').remove();
-    $('#rsi-icon').remove();
-    $('.link-stockpicker-view').remove();
-    $('.link-news-view').remove();
-    $('.vertical-collapse').remove();
-    $('.vertical-uncollapse').remove();
-  }
 
   // Show contents only after DOM loads
   $('.outer').css('visibility', 'visible');

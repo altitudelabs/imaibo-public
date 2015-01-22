@@ -91,9 +91,7 @@ var RightPanel = {
   },
   /* Stockpicker module */
   initStockpickerModule: function(){
-    if (!HIDE) {
-      this.renderStockpickerView(true);
-    }
+    this.renderStockpickerView(true);
   },
   canFindStockFromList: function(stockId) {
     var lengthOfStocks = RightPanelModel.model.stock.list.length;
@@ -141,7 +139,7 @@ var RightPanel = {
       if (i == 0)
         stockTable.select('.add-stock-name').html(function(d) { return d.stockName; });
       else
-        stockTable.select('.add-stock-name').html(function(d) { 
+        stockTable.select('.add-stock-name').html(function(d) {
           var htmlCode = '<a href="'+ d.url + '" target="_blank" class="white">' + d.stockName + '</a>'
           return htmlCode;
         });
@@ -156,12 +154,12 @@ var RightPanel = {
             return 'not-selected ' + 'Id' + d.stockId;
         });
       }
-      stockTable.select('.add-stock-button span').on('click', function(d) { 
+      stockTable.select('.add-stock-button span').on('click', function(d) {
         if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
           login_show();
         }
         else {
-          var selectorName = '.add-stock-button span.Id' + d.stockId; 
+          var selectorName = '.add-stock-button span.Id' + d.stockId;
           var spanObjects = d3.selectAll(selectorName); // select all elements with that stockId so as to change all their buttons
           var thisSpanObject = d3.select(this);
 
@@ -216,7 +214,7 @@ var RightPanel = {
 
       if(!error) {
         self.updateStockpickerSettingsPanel(RightPanelModel.model.addPanelStocks);
-      } 
+      }
     });
   },
   updateSearchResult: function(key) {
@@ -239,8 +237,8 @@ var RightPanel = {
       searchBlocks.exit().remove();
 
       // Update loop
-      searchBlocks.select('.stock-name').html(function(d){ 
-        return '<a href="' + d.url + '" target="_blank">' + d.stockName + '</a>'; 
+      searchBlocks.select('.stock-name').html(function(d){
+        return '<a href="' + d.url + '" target="_blank">' + d.stockName + '</a>';
       });
       searchBlocks.select('.ticker').html(function(d){ return '(SZ' + d.stockCode + ")"; });
       if (typeof _MID_ !== 'undefined' && _MID_ !== 0 && _MID_ !== '') { // if logged in
@@ -251,12 +249,12 @@ var RightPanel = {
             return 'not-selected search-add-stock-button';
         });
       }
-      searchBlocks.select('.search-add-stock-button').on('click', function(d) { 
+      searchBlocks.select('.search-add-stock-button').on('click', function(d) {
         if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
           login_show();
         }
         else {
-          var selectorName = '.add-stock-button span.Id' + d.stockId; 
+          var selectorName = '.add-stock-button span.Id' + d.stockId;
           var AddPanelSpanObjects = d3.selectAll(selectorName); // select all elements with that stockId so as to change all their buttons
           var thisSpanObject = d3.select(this);
 
@@ -351,7 +349,7 @@ var RightPanel = {
 
         if (model.stock.isLogin) {
           self.hideStockpickerLoginPanel();
-        } 
+        }
         else {
           $('#login').click(function() {
             if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
@@ -368,7 +366,7 @@ var RightPanel = {
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
         self.refreshStockpickerView();
-      } 
+      }
       else {
         self.updateStockpickerView(model);
 
@@ -426,10 +424,10 @@ var RightPanel = {
     table.attr('class', function(d) {
       if (d.sign === '+'){
         return 'rise';
-      } 
+      }
       else if (d.sign === '-') {
         return 'fall';
-      } 
+      }
       else {
         return 'neutral';
       }
@@ -477,10 +475,10 @@ var RightPanel = {
       table.attr('class', function(d) {
         if (d.sign === '+') {
           return 'rise';
-        } 
+        }
         else if (d.sign === '-') {
           return 'fall';
-        } 
+        }
         else {
           return 'neutral';
         }
@@ -508,7 +506,7 @@ var RightPanel = {
   },
   refreshStockpickerView: function() {
     // renderStockpickerView cannot be used as the function to refresh
-    // if renderStockpickerView is used, 
+    // if renderStockpickerView is used,
     // when refreshStockpickerView is called during refresh and the user tried to add stock,
     // refreshStockpickerView is called twice which may cause some problems
     var self = this;
@@ -541,7 +539,7 @@ var RightPanel = {
           // If user not logged in, show login panel
           if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
             login_show();
-          } 
+          }
           else {
             // Otherwise, like comment
             RightPanelModel.likeCommentAsync(weiboId)
@@ -560,7 +558,7 @@ var RightPanel = {
           }
 
         });
-      } 
+      }
       else {
         $('#experts-view').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
         $('#experts-view .panel-loader-wrapper').remove();
@@ -589,7 +587,7 @@ var RightPanel = {
                           return "news-block neutral";
                         if (d.sent === '+')
                           return "news-block rise";
-                        else 
+                        else
                           return "news-block fall";
                       })
                       .html(template);
@@ -603,11 +601,11 @@ var RightPanel = {
       return htmlCode;
     });
     newsBlocks.select('.time').html(function(d) { return d.clock.substr(0, 5); });
-    newsBlocks.select('.mood-change').html(function(d) { 
+    newsBlocks.select('.mood-change').html(function(d) {
       if (d.newsMood == 0)
-        return d.newsMood; 
+        return d.newsMood;
       else
-        return d.sent + d.newsMood; 
+        return d.sent + d.newsMood;
     });
     newsBlocks.select('.source').html(function(d){ return '来自' + d.source; });
   },
@@ -657,7 +655,7 @@ var RightPanel = {
                             return "news-block neutral";
                           if(d.sent === '+')
                             return "news-block rise";
-                          else 
+                          else
                             return "news-block fall";
                         })
                         .html(newsBlockTemplate);
@@ -669,23 +667,23 @@ var RightPanel = {
         return htmlCode;
       });
       newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-      newsBlocks.select('.mood-change').html(function(d){ 
+      newsBlocks.select('.mood-change').html(function(d){
         if (d.newsMood == 0)
-          return d.newsMood; 
+          return d.newsMood;
         else
-          return d.sent + d.newsMood; 
+          return d.sent + d.newsMood;
       });
       newsBlocks.select('.source').html(function(d){ return "来自" + d.source; });
     }
-    
+
     this.setTimebarListener();
   },
   setTimebarListener: function() {
     var self = this;
 
-    $('#press-by-time .calendar-and-date').click(function() { 
+    $('#press-by-time .calendar-and-date').click(function() {
       var $thisObject = $(this);
-      
+
       $thisObject.siblings().stop().slideToggle('slow', function() {
         StickyColumns.start();
       });
@@ -722,18 +720,13 @@ var RightPanel = {
     });
   },
   render: function(){
-    if(HIDE) { //app.js
-      this.goTo('expertsView');
-    }
-    else {
-      this.goTo('chooseStockView');
-    }
+    this.goTo('chooseStockView');
   },
   initNewsTabs: function() {
     var showTab = 1; // show the first tab by default
     var $defaultLi = $('ul#news-tabs li').eq(showTab).addClass('active');
     $($defaultLi.find('a').attr('href')).siblings().hide();
- 
+
     $('ul#news-tabs li').click(function() {
       var $this = $(this), clickTab = $this.find('a').attr('href');
 
@@ -745,7 +738,7 @@ var RightPanel = {
 
       // Refresh sticky columns after height change
       StickyColumns.start();
- 
+
       return false;
     });
   },
