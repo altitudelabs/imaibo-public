@@ -33,7 +33,7 @@ var SentimentChart = {
     this.drawContainer();
     this.updateDataWithError();
     this.drawWithError();
-    $('#sentiment').append('<div class="empty-data"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
+    $('#sentiment').append('<div class="empty-data">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
     $('#sentiment .legend').remove();
     $('#sentiment-chart-legend').remove();
   },
@@ -896,7 +896,12 @@ var SentimentChart = {
           for (var j = 0; j < d.newsList.length; j++) {
             if (j === 3) { break; }
             news = d.newsList[j];
-            arrow = news.newsSign === '+' ? 'rise' : 'fall';
+            if (news.newsMood == 0)
+              arrow = 'neutral';
+            else if (news.newsSign === '+')
+              arrow = 'rise';
+            else
+              arrow = 'fall';
             title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
             div +=    '<div>&nbsp;&#183;' +
                          '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;' +

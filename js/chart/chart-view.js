@@ -434,8 +434,8 @@ var ChartView = {
       ChartView.updateVisibleStockLine();
       ChartView.setScrollbarWidth();
       ChartView.setScrollbarPos();
-      RsiChart.init();
-      MacdChart.init();
+      RsiChart.update();
+      MacdChart.update();
       IndexChart.update();
     }else{
       IndexChart.updateWithError();

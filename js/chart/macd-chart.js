@@ -23,9 +23,7 @@ var MacdChart = {
     this.appendComponents();
     this.draw();
     this.initCloseAction();
-    if (!$('#macd-checkbox').is(':checked')) {
-      $('#macd').css('display', 'none');
-    }
+    $('#macd').css('display', 'none');
   },
   update: function (options) {
     this.setProperties(options);

@@ -206,6 +206,7 @@ body::-webkit-scrollbar {
 }
 
 .outer .empty-data {
+  color: rgb(107, 107, 107);
   position: absolute;
   top: 35%;
   left: 40%;
@@ -214,24 +215,29 @@ body::-webkit-scrollbar {
 }
 
 .outer .empty-data a {
-  color: rgb(107, 107, 107);
+  color: #CCCCCC;
   font-size: 12px;
 }
 
 .outer .empty-data-right-panel {
   margin: 200px auto;
   text-align: center;
+  color: rgb(107, 107, 107);
 }
 
 .outer .empty-data-right-panel a {
-  color: rgb(107, 107, 107);
+  color: #CCCCCC;
   font-size: 12px;
 }
 
 /*added to override styling rules in news view*/
-.outer #news-view .empty-data-right-panel a {
+.outer #news-view .empty-data-right-panel {
   color: rgb(107, 107, 107);
   font-size: 12px;
+}
+
+.outer #news-view .empty-data-right-panel a {
+  color: #CCCCCC;
 }
 
 .outer #sentiment .empty-data,

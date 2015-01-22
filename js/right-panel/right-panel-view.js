@@ -378,7 +378,7 @@ var RightPanel = {
     };
 
     var errorHandler = function(model) {
-      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></td></tr>');
+      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
 
       // Refresh sticky columns after height change
       StickyColumns.start();
@@ -498,7 +498,7 @@ var RightPanel = {
     }
 
     var errorHandler = function(model) {
-      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></td></tr>');
+      $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
 
       // Refresh sticky columns after height change
       StickyColumns.start();
@@ -562,7 +562,7 @@ var RightPanel = {
         });
       } 
       else {
-        $('#experts-view').append('<div class="empty-data-right-panel"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
+        $('#experts-view').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
         $('#experts-view .panel-loader-wrapper').remove();
       }
 
@@ -585,7 +585,9 @@ var RightPanel = {
     // Enter loop
     newsBlocks.enter().append('div')
                       .attr("class", function(d) {
-                        if(d.sent === '+')
+                        if (d.newsMood == 0)
+                          return "news-block neutral";
+                        if (d.sent === '+')
                           return "news-block rise";
                         else 
                           return "news-block fall";
@@ -600,8 +602,13 @@ var RightPanel = {
       var htmlCode = '<a href="'+ d.url + '" target="_blank">' + d.title + '</a>';
       return htmlCode;
     });
-    newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-    newsBlocks.select('.mood-change').html(function(d){ return d.sent + d.newsMood; });
+    newsBlocks.select('.time').html(function(d) { return d.clock.substr(0, 5); });
+    newsBlocks.select('.mood-change').html(function(d) { 
+      if (d.newsMood == 0)
+        return d.newsMood; 
+      else
+        return d.sent + d.newsMood; 
+    });
     newsBlocks.select('.source').html(function(d){ return '来自' + d.source; });
   },
   updatePressByTime: function(model) {
@@ -693,13 +700,13 @@ var RightPanel = {
         self.updateAllPress(RightPanelModel.model);
       else {
         $('#all-press .calendar-and-date').remove();
-        $('#all-press').append('<div class="empty-data-right-panel"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
+        $('#all-press').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
       }
 
       if(!RightPanelModel.model.getPressByTimeError)
         self.updatePressByTime(RightPanelModel.model);
       else
-        $('#press-by-time').append('<div class="empty-data-right-panel"><a href="javascript:window.location.reload();">网络太不给力了，请重新加载看看...</a></div>');
+        $('#press-by-time').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
 
       $('#news-view .panel-loader-wrapper').remove();
 
