@@ -194,7 +194,6 @@ var ChartView = {
       newDate.setDate(newDate.getDate()-7);
       options.date = parseInt(newDate.yyyymmdd());
     }
-
     ChartModel.updateIndexData(options)
     .done(function (indexError) {
       self.updateChartViewData(indexError);
