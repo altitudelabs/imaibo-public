@@ -576,7 +576,7 @@ var RightPanel = {
     $('#news-view .date').html(model.allPress[0].rdate);
 
     // CREATE NEWS BLOCKS
-    var template = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="arrow"></span><span class="percentage">{{newsMood}}%</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
+    var template = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="mood-change">{{newsMood}}</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
 
     var newsBlocks = d3.select('#news-blocks')
                        .selectAll('div')
@@ -601,13 +601,13 @@ var RightPanel = {
       return htmlCode;
     });
     newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-    newsBlocks.select('.percentage').html(function(d){ return d.newsMood + '%'; });
+    newsBlocks.select('.mood-change').html(function(d){ return d.sent + d.newsMood; });
     newsBlocks.select('.source').html(function(d){ return '来自' + d.source; });
   },
   updatePressByTime: function(model) {
-    var newsBlockTemplate = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="arrow"></span><span class="percentage">{{newsMood}}%</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
-    var timeBlockTemplateRealTime = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="predict-text">预测</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
-    var timeBlockTemplateForecast = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var newsBlockTemplate = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="mood-change">{{newsMood}}</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
+    var timeBlockTemplateForecast = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="predict-text">预测</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
+    var timeBlockTemplateRealTime = '<div class="calendar-and-date"><span class="calendar"></span><span class="date">{{date}}</span><span class="arrow-sign"></span><span class="number-of-msg">共{{length}}条新闻</span></div><div class="news-blocks"></div>';
 
     // CREATE TIME BLOCKS
     var timeBlock = d3.select('#press-by-time')
@@ -660,7 +660,7 @@ var RightPanel = {
         return htmlCode;
       });
       newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-      newsBlocks.select('.percentage').html(function(d){ return d.newsMood + '%'; });
+      newsBlocks.select('.mood-change').html(function(d){ return d.sent + d.newsMood; });
       newsBlocks.select('.source').html(function(d){ return "来自" + d.source; });
     }
     

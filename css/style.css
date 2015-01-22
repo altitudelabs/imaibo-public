@@ -815,18 +815,21 @@ body::-webkit-scrollbar {
     display: inline-block;
 }
 
-#sentiment-tooltip .wrapper .arrow-wrapper {
-  display: inline-block;
+#sentiment-tooltip .wrapper .arrow-text,
+#sentiment-tooltip .wrapper .arrow-number {
+  float: right;
   line-height: 22px;
-  float:right;
+}
+
+#sentiment-tooltip .wrapper .arrow-number {
+  padding-left: 5px;
   padding-right: 5px;
+  width: 35px;
 }
 
 #sentiment-tooltip .wrapper .arrow-text {
   color: rgb(170, 170, 170);
 }
-
-
 
 #sentiment-tooltip .wrapper .extra.hide {
   display: none;
@@ -1903,26 +1906,13 @@ body::-webkit-scrollbar {
   padding-bottom: 0px;
 }
 
-.outer .news-block .arrow {
-  display: inline-block;
-  vertical-align: middle;
-  background: url('../assets/mb-spritesheet.png') no-repeat top left;
-  width: 16px; 
-  height: 13px;
-  margin: 0px 5px 0px 3px;
-}
-
-.outer .news-block.rise .arrow {
-  background-position: 0px -1642px;
-}
-
-.outer .news-block.fall .arrow {
-  background-position: 0px -870px;
-}
-
 .outer .time-and-source {
   width: 100%;
   margin-top: 3px;
+}
+
+.outer .news-block .mood-change {
+  padding-left: 25px;
 }
 
 .outer .time-and-source .time,
