@@ -21,7 +21,7 @@ var ChartModel = {
     minute:         '&minute=1',
     date:           '&reqDate=',
     dailyLineSdate: '&dailyLineSdate=',
-    weeklyLineSdate: '&weeklyLineSdate=',
+    weeklyLineSdate:'&weeklyLineSdate=',
     jsonp:          '&callback=?'
   },
   currEarliestTime: 0,
@@ -143,7 +143,11 @@ var ChartModel = {
     }
     self.model.index.stockLine = self.model.index.stockLine.concat(newData)
     .sort(function (a, b) {
-      return a.rdate - b.rdate;
+      var order = a.rdate - b.rdate;
+      if (order === 0) {
+        order = a.timestamp - b.timestamp;
+      }
+      return order;
     })
     .filter(function (d) {
       if (rdates.indexOf(d.rdate) === -1) {
@@ -158,6 +162,7 @@ var ChartModel = {
         // console.log('there is no data');
       }
     }
+    ChartView.updating = false;
     handler(self.model.indexError);
   },
   refreshIndexData: function (option) {
