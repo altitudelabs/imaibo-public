@@ -47,6 +47,7 @@ var RsiChart = {
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
+    self.updateLegends();
 
   },
   initCloseAction: function() {
@@ -135,6 +136,12 @@ var RsiChart = {
     self.componentsBuilder.rightBorder.update();
     self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.update();
+  },
+  updateLegends: function () {
+    var self = this;
+    $('#rsi-chart-legend .rsi6').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].rsi6);
+    $('#rsi-chart-legend .rsi12').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].rsi12);
+    $('#rsi-chart-legend .rsi24').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].rsi24);
   },
   componentsBuilder: {
     chart: {

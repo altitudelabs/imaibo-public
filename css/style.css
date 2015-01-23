@@ -870,20 +870,33 @@ body::-webkit-scrollbar {
   user-select: none;
 }
 
-#sentiment-chart-legend {
+#sentiment-chart-legend,
+#macd-chart-legend,
+#rsi-chart-legend {
   color: rgb(160, 160, 160);
-
   position: absolute;
   top: 45px;
   left: 50px;
 }
+#macd-chart-legend,
+#rsi-chart-legend {
+  top: 40px;
+}
 
-#sentiment-chart-legend li {
+
+
+#sentiment-chart-legend li,
+#macd-chart-legend li,
+#rsi-chart-legend li {
   padding-right: 7.5px;
 }
 
 #sentiment-chart-legend li,
-#sentiment-chart-legend li div{
+#macd-chart-legend li,
+#rsi-chart-legend li,
+#sentiment-chart-legend li div,
+#macd-chart-legend li div,
+#rsi-chart-legend li div{
   display: inline-block;
 }
 /* =Nav
