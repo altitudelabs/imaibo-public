@@ -126,6 +126,13 @@ var Helper = {
       return year + '-' + month + '-' + day;
     }
   },
+  yyyymmddToDate: function (str) {
+    if (!/^(\d){8}$/.test(str)) { return 'invalid date'; }
+    var y = str.substr(0,4),
+        m = (parseInt(str.substr(4,2))-1).toString(),
+        d = str.substr(6,2);
+    return new Date(y,m,d);
+  },
   /*
    * Populate HandlebarJS template.
    * ==============================

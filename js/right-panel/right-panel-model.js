@@ -11,6 +11,7 @@ var RightPanelModel = {
     allPress: {},
     pressByTime: {},
     addPanelStocks: [],
+    addPanelStockGroupName: [],
     expertError: true,
     expertHeadlineError: true,
     getAllPressError: true,
@@ -57,16 +58,14 @@ var RightPanelModel = {
      });
   },
   // Experts tab: Handles user like action
-  likeComment: function(weiboId, successHandler, errorHandler){
-    $.get(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId)
-    .done(function(res){
-      if (res.code === 0){
-        successHandler(res);
-      } else {
-        errorHandler(res);
-      }
-    }).fail(function(res){
-      errorHandler(res);
+  likeComment: function(weiboId, successHandler, errorHandler) {
+    var self = this;
+
+    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId + '&callback=?', function(res) {
+      if (res.code === 0)
+        successHandler(res.data.code);
+      else
+        errorHandler(res.data.code);
     });
   },
   likeCommentAsync: function(weiboId) {
@@ -228,10 +227,17 @@ var RightPanelModel = {
     $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=cggsStocks&callback=?', function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
         self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
-        self.model.addPanelStocks[1] = res.data.mostHodingStock;
-        self.model.addPanelStocks[2] = res.data.mostHodingStockBuy;
-        self.model.addPanelStocks[3] = res.data.mostHodingStockSell;
-        self.model.addPanelStocks[4] = res.data.iteholdStock;
+
+        self.model.addPanelStocks[1] = res.data.mostHodingStock.stockList;
+        self.model.addPanelStocks[2] = res.data.mostHodingStockBuy.stockList;
+        self.model.addPanelStocks[3] = res.data.mostHodingStockSell.stockList;
+        self.model.addPanelStocks[4] = res.data.iteholdStock.stockList;
+
+        self.model.addPanelStockGroupName[0] = res.data.mostHodingStock.stockSortName;
+        self.model.addPanelStockGroupName[1] = res.data.mostHodingStockBuy.stockSortName;
+        self.model.addPanelStockGroupName[2] = res.data.mostHodingStockSell.stockSortName;
+        self.model.addPanelStockGroupName[3] = res.data.iteholdStock.stockSortName;
+
         handler(res.data);
       } 
       else {
@@ -253,10 +259,17 @@ var RightPanelModel = {
     $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=hotStocks&callback=?', function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
         self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
-        self.model.addPanelStocks[5] = res.data.hotSearchStock;
-        self.model.addPanelStocks[6] = res.data.optionalHotStock;
-        self.model.addPanelStocks[7] = res.data.hotStockDay;
-        self.model.addPanelStocks[8] = res.data.hotStockWeek;
+
+        self.model.addPanelStocks[5] = res.data.hotSearchStock.stockList;
+        self.model.addPanelStocks[6] = res.data.optionalHotStock.stockList;
+        self.model.addPanelStocks[7] = res.data.hotStockDay.stockList;
+        self.model.addPanelStocks[8] = res.data.hotStockWeek.stockList;
+
+        self.model.addPanelStockGroupName[4] = res.data.hotSearchStock.stockSortName;
+        self.model.addPanelStockGroupName[5] = res.data.optionalHotStock.stockSortName;
+        self.model.addPanelStockGroupName[6] = res.data.hotStockDay.stockSortName;
+        self.model.addPanelStockGroupName[7] = res.data.hotStockWeek.stockSortName;
+
         handler(res.data);
       } 
       else {
@@ -278,10 +291,17 @@ var RightPanelModel = {
     $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=marketStocks&callback=?', function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
         self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
-        self.model.addPanelStocks[9] = res.data.hotStockRise;
-        self.model.addPanelStocks[10] = res.data.hotStockFall;
-        self.model.addPanelStocks[11] = res.data.stockTrend;
-        self.model.addPanelStocks[12] = res.data.stockDealTrend;
+
+        self.model.addPanelStocks[9] = res.data.hotStockRise.stockList;
+        self.model.addPanelStocks[10] = res.data.hotStockFall.stockList;
+        self.model.addPanelStocks[11] = res.data.stockTrend.stockList;
+        self.model.addPanelStocks[12] = res.data.stockDealTrend.stockList;
+
+        self.model.addPanelStockGroupName[8] = res.data.hotStockRise.stockSortName;
+        self.model.addPanelStockGroupName[9] = res.data.hotStockFall.stockSortName;
+        self.model.addPanelStockGroupName[10] = res.data.stockTrend.stockSortName;
+        self.model.addPanelStockGroupName[11] = res.data.stockDealTrend.stockSortName;
+
         handler(res.data);
       } 
       else {

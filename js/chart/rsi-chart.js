@@ -24,6 +24,7 @@ var RsiChart = {
     this.appendComponents();
     this.draw();
     this.initCloseAction();
+    $('#rsi').css('display', 'none');
   },
   update: function () {
     this.setProperties();
@@ -42,16 +43,18 @@ var RsiChart = {
       allDataArray.push(parseInt(self.data.stockLine[i].rsi12));
       allDataArray.push(parseInt(self.data.stockLine[i].rsi24));
     }
-    var y2Range = [0, 120];
+    var y2Range = [-10, 110];
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
-    
+
   },
   initCloseAction: function() {
     $('#rsi > .wrapper > .buttons > .close').on('click', function() {
-      $('#rsi').slideUp(500);
+      $('#rsi').css('display', 'none');
+      // $('#rsi').slideUp(300);
       $('#rsi-checkbox').attr('checked', false);
+      StickyColumns.recalc();
     });
   },
   appendComponents: function () {
@@ -75,6 +78,7 @@ var RsiChart = {
     this.components.chart.append('path').attr('class', 'rsi24');
 
     self.componentsBuilder.mouseOverlay.append();
+    self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
   },
   draw: function() {
@@ -98,7 +102,7 @@ var RsiChart = {
       if (self.componentsBuilder[key].enter) {
         self.components[key].exit().remove();
       }
-    }    
+    }
     // Draw RSI lines
     function plotRSI(rsi, color){
       var line = d3.svg.line()
@@ -119,7 +123,7 @@ var RsiChart = {
 
     plotRSI(6,'#fff');
     plotRSI(12,'#d8db74');
-    plotRSI(24,'#784e7a');
+    plotRSI(24,'#94599d');
 
   },
   drawContainer: function(){
@@ -137,7 +141,13 @@ var RsiChart = {
       append: function () {
         RsiChart.components.chart = d3.select('#rsi-chart')
                                       .append('svg:svg')
-                                      .attr('class', 'chart');
+                                      .attr('class', 'chart')
+                                      .on('mouseenter', function(){
+                                        ChartView.showAllScrollbars();
+                                      })
+                                      .on('mouseleave', function(){
+                                        ChartView.hideAllScrollbars();
+                                      });
       },
       update: function () {
         RsiChart.components.chart
@@ -154,9 +164,9 @@ var RsiChart = {
                                            .attr('class', 'chart');
       },
       update: function () {
-        RsiChart.components.chartLabel         
-        .attr('width', ChartView.getContainerWidth())
-        .attr('height', RsiChart.properties.chartHeight)
+        RsiChart.components.chartLabel
+        .attr('width', ChartView.properties.width)
+        .attr('height', RsiChart.properties.height-17)
         .select('svg').attr('width', ChartView.getContainerWidth());
       }
     },
@@ -259,7 +269,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data(RsiChart.helpers.getYLabelsData([0, 100]));
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([30,70]);
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -298,29 +308,29 @@ var RsiChart = {
         });
       }
     },
+    scrollbarRail: {
+      append: function () {
+        RsiChart.components.scrollbarRail = RsiChart.components.chartLabel
+                                            .append('rect')
+                                            .attr('class', 'scrollbar-rail')
+                                            .attr('width', ChartView.properties.width)
+                                            .attr('height', 10)
+                                            .attr('x', 0)
+                                            .attr('y', RsiChart.properties.height - 30)
+                                            .on('mouseenter', function(){
+                                              ChartView.showAllScrollbars();
+                                            })
+                                            .on('mouseleave', function(){
+                                              ChartView.hideAllScrollbars();
+                                            })
+                                            .style('fill-opacity', 0);
+      },
+      update: function(){
+        RsiChart.components.scrollbarRail.attr('width', ChartView.properties.width);
+      }
+    },
     scrollBar: {
       append: function () {
-        var drag = d3.behavior.drag()
-          .origin(function(d) { return d; })
-          .on('drag', function(d){
-            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
-            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
-            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
-              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
-            if(xPos < 0)
-              xPos = 0;
-
-            ChartView.properties.scrollbarPos = xPos;
-            d3.select(this).attr('x', ChartView.properties.scrollbarPos);
-            var index = d3.event.dx / ChartView.getChartWidth() * ChartView.getStockLine().length;
-
-            if(d3.event.dx > 0){
-              ChartView.moveToRight(index);
-            }else{
-              ChartView.moveToLeft(index);
-            }
-            ChartView.showAllScrollbars();
-          });
         //because d3 drag requires data/datum to be valid
         RsiChart.components.scrollBar = RsiChart.components.chart.append('rect')
                                             .attr('class', 'scrollbar')
@@ -330,7 +340,7 @@ var RsiChart = {
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
                                             .style('fill-opacity', 50)
-                                            .call(drag);
+                                            .call(ChartView.scrollbarDragBehavior());
         ChartView.properties.mouseOverScrollbar = false;
         ChartView.properties.mouseOverChart     = false;
       },
@@ -349,7 +359,7 @@ var RsiChart = {
            ChartView.properties.mouseOverScrollbar = false;
         });
       }
-    },  
+    },
     mouseOverlay: {
       append: function () {
       // Tooltip
@@ -363,7 +373,7 @@ var RsiChart = {
         .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10)
         .call(ChartView.zoomBehavior())
         .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());;
+        .call(ChartView.chartDragBehavior());
       },
       update: function () {
         RsiChart.components.mouseOverlay
