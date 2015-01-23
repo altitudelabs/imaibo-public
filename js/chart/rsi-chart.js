@@ -173,8 +173,7 @@ var RsiChart = {
       update: function () {
         RsiChart.components.chartLabel
         .attr('width', ChartView.properties.width)
-        .attr('height', RsiChart.properties.height-17)
-        .select('svg').attr('width', ChartView.getContainerWidth());
+        .attr('height', RsiChart.properties.height-17);
       }
     },
     topBorder: {
@@ -330,7 +329,7 @@ var RsiChart = {
                                             .on('mouseleave', function(){
                                               ChartView.hideAllScrollbars();
                                             })
-                                            .style('fill-opacity', 0);
+                                            .attr('fill-opacity', 0);
       },
       update: function(){
         RsiChart.components.scrollbarRail.attr('width', ChartView.properties.width);

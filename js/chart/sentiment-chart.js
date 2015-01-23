@@ -128,8 +128,7 @@ var SentimentChart = {
     }
 
     // Etc ===================================================================
-    // self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
-    this.animate();
+
   },
   drawWithError: function () {
     var self = this;
@@ -177,14 +176,8 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsHover.append();
     self.componentsBuilder.forecastBubble.append();
     self.componentsBuilder.forecastBubbleText.append();
-    self.componentsBuilder.sentimentCover.append();
     self.componentsBuilder.sentimentOverlay.append();
     self.componentsBuilder.tooltip.append();
-  },
-  animate: function () {
-    var self = this;
-    //sentimentCover (animation)
-    self.componentsBuilder.sentimentCover.animate();
   },
   helpers: {
     x: function (width, data) {
@@ -851,7 +844,7 @@ var SentimentChart = {
         SentimentChart.components.scatterDotsHover
         .enter().append('svg:circle')  // create a new circle for each value
         .attr('r', 8)
-        .style('opacity', 0)
+        .attr('opacity', 0) // IE8 uses attr. else use Style
         .on('mouseover', function(d, i) {
           if (!d.newsList.length) { return; }
           var dot = this;
@@ -1003,27 +996,6 @@ var SentimentChart = {
       fadeOut: '',
       mousePosition: []
 
-    },
-    sentimentCover: {
-      append: function () {
-        SentimentChart.components.sentimentCover = d3.select('#sentiment-chart').append('svg:svg');
-      },
-      update: function () {
-        var props = SentimentChart.properties;
-        SentimentChart.components.sentimentCover
-        .style('position', 'absolute')
-        .style('left', 0)
-        .style('top', 7)
-        .style('background-color', 'rgb(38, 38, 38)')
-        .attr('width', props.chartWidth - 2)
-        .attr('height', props.chartHeight - 44);
-      },
-      animate: function () {
-        var props = SentimentChart.properties;
-        SentimentChart.components.sentimentCover
-        .style('left', props.chartWidth - 2)
-        .attr('width', 0);
-      }
     },
     sentimentOverlay: {
       append: function () {

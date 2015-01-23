@@ -31,6 +31,24 @@ var Toolbar = {
     $("#ma10-checkbox").click();
     $("#ma20-checkbox").click();
 
+    if(IE8){
+      $("#ma5-checkbox").attr('checked', true);
+      $("#ma10-checkbox").attr('checked', true);
+      $("#ma20-checkbox").attr('checked', true);
+
+      $('#legend').attr('ma', '5, 10, 20');
+      _.each([5, 10, 20], function(e){
+        $('#legend').prepend('<li id="ma' + e + '-legend">'                                    +
+                              '<div id="ma' + e + '-legend-line" class="legend-line"></div>' +
+                              '<span>MA' + e + ': ' + temp['ma'+e] + '</span>'              +
+                           '</li>');
+      });
+    }
+
+
+
+   
+
 
     //bind checkbox listeners to each MA line
     function toggleMA(val){

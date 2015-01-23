@@ -12,7 +12,7 @@ var ChartView = {
   },
   setProperties: function (options) {
     var self = this;
-    //review
+    // //review
     var properties = {
       width: $('#content').width(), // width of left panel
       margin: { top: 2, right: 45, bottom: 25, left: 45 }, // chart margins
@@ -67,7 +67,7 @@ var ChartView = {
     max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
-  //return lowpx, highpx
+  // //return lowpx, highpx
   y2: function(height, returnPropMax, returnPropMin, volumeHeight){
     var self = this;
     var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMin]; }));
@@ -116,8 +116,8 @@ var ChartView = {
     return j;
   },
   init: function(){
-    // set up toolbar
-    // this.horizontalScroll();
+    // // set up toolbar
+    // // this.horizontalScroll();
     var self = this;
     Toolbar.init();
     self.initInfoButtons();
@@ -240,8 +240,13 @@ var ChartView = {
     self.data.visibleStockLine = self.data.index.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
-  /* Initial build of chart elements */
+  // /* Initial build of chart elements */
   buildChartElements: function() {
+	$('#price').css('visibility', 'visible');
+	$('#macd').css('visibility', 'visible');
+	$('#rsi').css('visibility', 'visible');
+	$('#sentiment').css('visibility', 'visible');
+
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
@@ -256,19 +261,15 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    // SentimentChart.init();
+    SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
-    // Make charts visible
-    $('#price').css('visibility', 'visible');
-    $('#macd').css('visibility', 'visible');
-    $('#rsi').css('visibility', 'visible');
-    $('#sentiment').css('visibility', 'visible');
+    // // Make charts visible
 
-    // Remove loaders
+    // // Remove loaders
     $('.loader').remove();
     $('.dashboard-loader').remove();
-    // Refresh sticky columns and scroll position
+    // // Refresh sticky columns and scroll position
     StickyColumns.start();
   },
   /* Updates chart elements */
@@ -348,14 +349,19 @@ var ChartView = {
     var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
-          .on('drag', function(d){
-            
+          .on('drag', function(d){            
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
             if (xPos < 0 || xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) {
               return;
             }
             self.moveScrollBar(xPos, this);
 
+            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
+            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth())
+              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
+            if(xPos < 0)
+              xPos = 0;
           });
           return this.properties.scrollbarDragBehavior;
   },
@@ -430,14 +436,14 @@ var ChartView = {
   },
   rebuild: function() {
     ChartView.setProperties();
-    if(!this.data.error.index.isError){
+     try {
       ChartView.updateVisibleStockLine();
       ChartView.setScrollbarWidth();
       ChartView.setScrollbarPos();
       RsiChart.update();
       MacdChart.update();
       IndexChart.update();
-    }else{
+    } catch (error) {
       IndexChart.updateWithError();
     }
     try { SentimentChart.update(); } catch (error) { SentimentChart.initWithError(); }
@@ -445,6 +451,7 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
   },
   showAllScrollbars: function(){
+    if(!ChartView.isZoomed()) return;
       RsiChart.components.scrollBar.style('fill-opacity', 100);
       IndexChart.components.scrollBar.style('fill-opacity', 100);
       MacdChart.components.scrollBar.style('fill-opacity', 100);
