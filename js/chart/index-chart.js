@@ -477,17 +477,24 @@ var IndexChart = {
       },
       update: function () {
         var props = IndexChart.properties;
-        var offset = IndexChart.data.x.rangeBand()/2 - 0.5*ChartView.getZoomFactor();
         IndexChart.components.xLabels
-        .attr('x', function(d,i){ return IndexChart.data.x(d.rdate) + offset; })
+        .attr('x', function(d,i){ 
+          return IndexChart.data.x(d.rdate);
+          
+        })
         .attr('y', props.height - ChartView.getBottomMargin() + 20)
         .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
-          if(i === 0 || today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1)
-            return '';
-          else
+          // if(i === 0 || today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1){
+            // return '';
+          // } else {
+          if (ChartView.getChartWidth() - IndexChart.data.x(d.rdate) > 20 && IndexChart.data.x(d.rdate) > 20) {
             return Helper.toDate(d.rdate, 'yyyy/mm');
+          } else {
+            return '';
+          }
+          // }
         });
       }
     },
