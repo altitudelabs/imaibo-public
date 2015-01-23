@@ -42,6 +42,7 @@ var MacdChart = {
     self.data.y1 = ChartView.buildY(y1Range[0], y1Range[1], self.properties.chartHeight);
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
+    this.updateLegends();
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
@@ -134,6 +135,12 @@ var MacdChart = {
     plotMACD('macd', '#25bcf1');
 
 
+  },
+  updateLegends: function () {
+    var self = this;
+    $('#macd-chart-legend .dif').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].diff);
+    $('#macd-chart-legend .dea').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].dea);
+    $('#macd-chart-legend .macd').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].macd);
   },
   componentsBuilder: {
     chart: {

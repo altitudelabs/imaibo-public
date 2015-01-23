@@ -128,7 +128,7 @@ var SentimentChart = {
     }
 
     // Etc ===================================================================
-    self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
+    // self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
     this.animate();
   },
   drawWithError: function () {
