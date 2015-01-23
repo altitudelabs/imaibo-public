@@ -104,11 +104,13 @@ var RightPanel = {
 
     return false;
   },
-  updateStockpickerSettingsPanel: function(model) {
+  updateStockpickerSettingsPanel: function(addPanelStocks, addPanelStockGroupName) {
     var self = this;
-    var numberOfTable = model.length;
+    var numberOfTable = addPanelStocks.length;
 
     for (var i = 0; i < numberOfTable; i++) {
+      $('#stocktable' + (i + 2) + '-name').html(addPanelStockGroupName[i]);
+
       var template;
       if (i == 0)
         template = '<td class="add-stock-name white"></td><td class="add-stock-price"></td><td class="add-stock-change"></td><td class="add-stock-change-ratio"></td>';
@@ -118,7 +120,7 @@ var RightPanel = {
       var selectorName = '#stocktable' + (i + 1) + ' tbody';
       var stockTable = d3.select(selectorName)
                          .selectAll('tr')
-                         .data(model[i]);
+                         .data(addPanelStocks[i]);
 
       // Enter loop
       stockTable.enter().append('tr')
@@ -213,7 +215,7 @@ var RightPanel = {
       var error = RightPanelModel.model.getAddPanelStocksError;
 
       if(!error) {
-        self.updateStockpickerSettingsPanel(RightPanelModel.model.addPanelStocks);
+        self.updateStockpickerSettingsPanel(RightPanelModel.model.addPanelStocks, RightPanelModel.model.addPanelStockGroupName);
       }
     });
   },
