@@ -339,35 +339,36 @@ var ChartView = {
 
                       if(deltaY > 0){
                         ChartView.moveToLeft();
-                        // ChartView.moveScrollbarToLeft();
                       }else if(deltaY < 0){
                         ChartView.moveToRight();
-                        // ChartView.moveScrollbarToRight();
                       }
                     });
   },
   scrollbarDragBehavior: function(){
+    var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
           .on('drag', function(d){
+            
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
-            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
-            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth())
-              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
-            if(xPos < 0)
-              xPos = 0;
-
-            ChartView.properties.scrollbarPos = xPos;
-            d3.select(this).attr('x', ChartView.properties.scrollbarPos);
-            var index = d3.event.dx / ChartView.getChartWidth() * ChartView.getStockLine().length;
-
-            if(d3.event.dx > 0){
-              ChartView.moveToRight(index);
-            }else{
-              ChartView.moveToLeft(index);
+            if (xPos < 0 || xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) {
+              return;
             }
+            self.moveScrollBar(xPos, this);
+
           });
           return this.properties.scrollbarDragBehavior;
+  },
+  moveScrollBar: function (xPos, scrollbar) {
+    ChartView.properties.scrollbarPos = xPos;
+
+    d3.select(scrollbar).attr('x', ChartView.properties.scrollbarPos);
+    var index = Math.round(xPos / ChartView.getChartWidth() * ChartView.getStockLine().length);
+    if (index !== ChartView.data.lastDataIndex - ChartView.data.dataSetLength) {
+      ChartView.data.lastDataIndex = index + ChartView.data.dataSetLength;
+      ChartView.redraw();
+    }
+
   },
   chartDragBehavior: function(){
     var self = this;
@@ -376,17 +377,17 @@ var ChartView = {
     .on("drag", function(d){
       if(d3.event.dx < 0){
         ChartView.moveToRight();
-        // ChartView.moveScrollbarToRight();
       }else{
         ChartView.moveToLeft();
-        // ChartView.moveScrollbarToLeft();
       }
     });
   },
-  moveToRight: function (delta) {
+  moveToRight: function () {
     var self = this;
-    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
+    var speed = ChartView.getVisibleStockLine().length * 0.05;
         speed = Math.ceil(speed);
+        speed = Math.abs(speed);
+
     if(self.data.lastDataIndex + speed > ChartView.getStockLine().length) {
       self.data.lastDataIndex = ChartView.getStockLine().length;
     } else {
@@ -398,11 +399,12 @@ var ChartView = {
     self.redraw();
     // self.properties.scrollbarPos += speed;
   },
-  moveToLeft: function (delta) {
+  moveToLeft: function () {
     var self  = this;
-    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
-    speed = Math.ceil(speed);
-    speed = Math.abs(speed);
+    var speed = ChartView.getVisibleStockLine().length * 0.05;
+        speed = Math.ceil(speed);
+        speed = Math.abs(speed);
+
     if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) {
       self.data.lastDataIndex = ChartView.getVisibleStockLine().length;
     } else {
