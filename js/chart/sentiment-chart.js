@@ -258,7 +258,7 @@ var SentimentChart = {
     },
     // Returns current timestamp in client format
     getCurrentTimestamp: function(){
-      var t = new Date();
+      var t = new Date(ChartView.data.sentiment.timestamp*1000);
       t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
       return t;
     },
@@ -588,6 +588,8 @@ var SentimentChart = {
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000);
+        console.log(currentTimeStamp);
+        console.log(currentDate);
         var dataDate = new Date(data[0].timestamp*1000);
 
         var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
