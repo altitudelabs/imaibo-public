@@ -116,7 +116,6 @@ var ChartModel = {
           self.model[key] = data[key];
         }
       }
-
       self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
         if (d.rdate < 20130413) {
           return false;
@@ -176,6 +175,7 @@ var ChartModel = {
   refreshIndexData: function (option) {
     var self = this;
     var callback = function (data, handler) {
+      console.log(data);
       if (data.daily) { 
         self.model.index.stockLine = data.daily.stockLine.reverse();
       } else if (data.weeklyKLine) {
