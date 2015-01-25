@@ -118,45 +118,45 @@ var RightPanel = {
         template = '<td class="add-stock-name"></td><td class="add-stock-price"></td><td class="add-stock-change"></td><td class="add-stock-change-ratio"></td><td class="add-stock-button"><span class="not-selected"></span></td>';
 
       var selectorName = '#stocktable' + (i + 1) + ' tbody';
-	  
-	  if(IE8){
-		   var data = addPanelStocks[i];
-		   var $table = $(selectorName),
-			   $rows = $(selectorName + ' tr'),
-			   rowsToAdd = data.length - $rows.length;
 
-		   for (var j = 0; j < rowsToAdd; j++) {
-			   var tr = '<tr class='
-			   var d = data[j];
-			   if(d.pxchg == 0){
-				   tr += '"add-security-row neutral"';
-			   }else if(d.sign === '+'){
-				   tr += '"add-security-row rise"';
-			   }else {
-				   tr += '"add-security-row fall"';
-			   }
-			   tr += '>';
-			 $table.append(tr + template + '</tr>');
-		   }
-	  }
-	  
-	      var stockTable = d3.select(selectorName)
-                         .selectAll('tr')
-                         .data(addPanelStocks[i]);
-	   
-	   if(!IE8){
-		   stockTable.enter().append('tr')
-                        .attr("class", function(d) {
-                          if (d.pxchg == 0)
-                            return "add-security-row neutral";
-                          if (d.sign === '+')
-                            return "add-security-row rise";
-                          else
-                            return "add-security-row fall";
-                        })
-                        .html(template);
-	   }
-	  
+  	  if(IE8){
+  		   var data = addPanelStocks[i];
+  		   var $table = $(selectorName),
+  			   $rows = $(selectorName + ' tr'),
+  			   rowsToAdd = data.length - $rows.length;
+
+  		   for (var j = 0; j < rowsToAdd; j++) {
+  			   var tr = '<tr class='
+  			   var d = data[j];
+  			   if(d.pxchg == 0){
+  				   tr += '"add-security-row neutral"';
+  			   }else if(d.sign === '+'){
+  				   tr += '"add-security-row rise"';
+  			   }else {
+  				   tr += '"add-security-row fall"';
+  			   }
+  			   tr += '>';
+  			 $table.append(tr + template + '</tr>');
+  		   }
+  	  }
+
+      var stockTable = d3.select(selectorName)
+                       .selectAll('tr')
+                       .data(addPanelStocks[i]);
+
+	    if(!IE8){
+		    stockTable.enter().append('tr')
+          .attr("class", function(d) {
+            if (d.pxchg == 0)
+              return "add-security-row neutral";
+            if (d.sign === '+')
+              return "add-security-row rise";
+            else
+              return "add-security-row fall";
+          })
+          .html(template);
+	    }
+
       // Exit loop
       stockTable.exit().remove();
 
@@ -430,7 +430,7 @@ var RightPanel = {
 
 	var template = '<td><div class="indicator"></div></td>'                               +
                    '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
-                   '<td class="zxg-price">{{lastpx}}</td>'                                + 
+                   '<td class="zxg-price">{{lastpx}}</td>'                                +
                    '<td class="zxg-price-change-abs">{{pxchg}}</td>'                      +
                    '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
@@ -475,18 +475,18 @@ var RightPanel = {
         self.noStocks == false;
       }
 
-      var template = '<td><div class="indicator"></div></td>' + 
+      var template = '<td><div class="indicator"></div></td>' +
                     '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
                     '<td class="zxg-price">{{lastpx}}</td>' +
                     '<td class="zxg-price-change-abs">{{pxchg}}</td>' +
                     '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
       var table = d3.select('#stockpicker-table-body')
-                    .selectAll('div')
+                    .selectAll('tr')
                     .data(model.stock.list); // model.stock = data
 
       // // Enter loop
-      table.enter().append('div')
+      table.enter().append('tr')
                    .html(template);
 
       // Exit loop
