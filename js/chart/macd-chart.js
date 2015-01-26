@@ -395,10 +395,14 @@ var MacdChart = {
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', MacdChart.properties.graphWidth)
-        .attr('height', MacdChart.properties.chartHeight - 5)
-        .call(ChartView.zoomBehavior())
-        .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());
+        .attr('height', MacdChart.properties.chartHeight - 5);
+
+        if(!IE8){
+          MacdChart.components.mouseOverlay
+            .call(ChartView.zoomBehavior())
+            .datum([])   //because d3 drag requires data/datum to be valid
+            .call(ChartView.chartDragBehavior()); 
+        }
       },
       update: function () {
         MacdChart.components.mouseOverlay

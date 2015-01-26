@@ -376,10 +376,14 @@ var RsiChart = {
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
         .attr('width', RsiChart.properties.graphWidth)
-        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10)
-        .call(ChartView.zoomBehavior())
-        .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());
+        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10);
+
+        if(!IE8){
+          RsiChart.components.mouseOverlay
+          .call(ChartView.zoomBehavior())
+          .datum([])   //because d3 drag requires data/datum to be valid
+          .call(ChartView.chartDragBehavior());
+        }
       },
       update: function () {
         RsiChart.components.mouseOverlay
