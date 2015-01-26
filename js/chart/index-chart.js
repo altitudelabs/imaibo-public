@@ -629,20 +629,20 @@ var IndexChart = {
           .on('mouseout', function() { 
             ChartView.mouseOutMouseOverlay();
 
-            if(IE8) return Tooltip.hide(); 
+            // if(IE8) return Tooltip.hide(); 
             
-            IndexChart.components.horizontalText.style('fill-opacity', 0);
-            IndexChart.components.horizontalLine.style('stroke-opacity', 0);
-            IndexChart.components.horizontalBlock.style('fill-opacity', 0);
+            // IndexChart.components.horizontalText.style('fill-opacity', 0);
+            // IndexChart.components.horizontalLine.style('stroke-opacity', 0);
+            // IndexChart.components.horizontalBlock.style('fill-opacity', 0);
 
-            return Tooltip.hide(); 
+            // return Tooltip.hide(); 
           })
           .on('mousemove', function() {
               var xPos, yPos, mouseX, mouseY;
 
               if(IE8) {
-                xPos = event.clientX;
-                yPos = event.clientY;
+                xPos = event.clientX + document.documentElement.scrollLeft;
+                yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
                 mouseX = xPos;
                 mouseY = yPos;
               }
@@ -652,11 +652,10 @@ var IndexChart = {
                 mouseX = d3.event.pageX;
                 mouseY = d3.event.pageY;
               }
-              console.log(yPos);
-              if(yPos > 230){
-                Tooltip.hide();
-                yPos = 230;
-              }
+              // if(yPos > 230){
+                // Tooltip.hide();
+                // yPos = 230;
+              // }
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
               var d = ChartView.getVisibleStockLine()[j];
