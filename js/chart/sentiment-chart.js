@@ -764,8 +764,9 @@ var SentimentChart = {
       },
       update: function () {
         SentimentChart.components.scatterDotsBubbleText
+        .attr('text-anchor', 'middle')
         .attr('y', function (d) { return SentimentChart.data.y1(d.mood) - 13; } ) // translate y value to a pixel
-        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 3 ; } ); // translate x value
+        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
       },
       exit: function () {
         SentimentChart.components.scatterDotsBubbleText
@@ -819,14 +820,15 @@ var SentimentChart = {
         .enter().append('text')  // create a new circle for each value
         .attr('class', 'sentiment')
         .attr('fill', 'white')
+        .attr('text-anchor', 'middle')
         .text(function(d, i){
           if (!d.isRealTime) { return '预测'; }
         });
       },
       update: function () {
         SentimentChart.components.forecastBubbleText
-        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 25; } ) // translate y value to a pixel
-        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 10 ; } ); // translate x value
+        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
+        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 1; } ); // translate x value
       },
       exit: function () {
         SentimentChart.components.forecastBubbleText

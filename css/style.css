@@ -163,7 +163,9 @@ body::-webkit-scrollbar {
   position: absolute;
   top: 3px;
   margin-left: 3px;
+  cursor: pointer;
 }
+
 .outer .rise { color: #d74e37; }
 .outer .fall { color: #3bbb57; }
 .outer .neutral { color: rgb(107, 107, 107); }
@@ -2254,6 +2256,11 @@ body::-webkit-scrollbar {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+}
+
+#sentiment-info-modal,
+#index-info-modal {
+  width: 470px;
 }
 
 .outer .modal h1 {
