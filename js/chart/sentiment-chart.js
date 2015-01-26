@@ -602,8 +602,6 @@ var SentimentChart = {
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000);
-        console.log(currentTimeStamp);
-        console.log(currentDate);
         var dataDate = new Date(data[0].timestamp*1000);
 
         var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
