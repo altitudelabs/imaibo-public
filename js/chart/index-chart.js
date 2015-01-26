@@ -114,9 +114,11 @@ var IndexChart = {
     self.componentsBuilder.ma10Line.append();
     self.componentsBuilder.ma20Line.append();
     self.componentsBuilder.ma60Line.append();
-    self.componentsBuilder.horizontalLine.append();
-    self.componentsBuilder.horizontalBlock.append();
-    self.componentsBuilder.horizontalText.append();
+    if(!IE8){
+      self.componentsBuilder.horizontalLine.append();
+      self.componentsBuilder.horizontalBlock.append();
+      self.componentsBuilder.horizontalText.append(); 
+    }
     self.componentsBuilder.mouseOverlay.append();
     self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
@@ -603,13 +605,17 @@ var IndexChart = {
                                              .attr('class', 'mouseover-overlay')
                                              .attr('fill-opacity', 0)
                                              .attr('x', 0)
-                                             .attr('id', 'abc')
-                                             .call(ChartView.zoomBehavior())
-                                             .datum([])   //because d3 drag requires data/datum to be valid
-                                             .call(ChartView.chartDragBehavior());
-                                             // .on("touchstart.zoom", null)
-                                             // .on("touchmove.zoom", null)
-                                             // .on("touchend.zoom", null);
+                                             .attr('id', 'abc');
+        if(!IE8){
+          IndexChart.components.mouseOverlay
+            .call(ChartView.zoomBehavior())
+            .datum([])   //because d3 drag requires data/datum to be valid
+            .call(ChartView.chartDragBehavior());
+            // .on("touchstart.zoom", null)
+            // .on("touchmove.zoom", null)
+            // .on("touchend.zoom", null);
+        }
+          
       },
       update: function () {
         var props = IndexChart.properties;
@@ -623,30 +629,32 @@ var IndexChart = {
           .on('mouseout', function() { 
             ChartView.mouseOutMouseOverlay();
 
-            IndexChart.components.horizontalText.style('fill-opacity', 0);
-            IndexChart.components.horizontalLine.style('stroke-opacity', 0);
-            IndexChart.components.horizontalBlock.style('fill-opacity', 0);
+            // if(IE8) return Tooltip.hide(); 
+            
+            // IndexChart.components.horizontalText.style('fill-opacity', 0);
+            // IndexChart.components.horizontalLine.style('stroke-opacity', 0);
+            // IndexChart.components.horizontalBlock.style('fill-opacity', 0);
 
-            return Tooltip.hide(); 
+            // return Tooltip.hide(); 
           })
           .on('mousemove', function() {
               var xPos, yPos, mouseX, mouseY;
 
               if(IE8) {
-                xPos = event.clientX;
-                yPos = event.clientY;
-                mouseX = xPos;
-                mouseY = yPos;
+                xPos = event.clientX + document.documentElement.scrollLeft;
+                yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+                mouseX = xPos + 10;
+                mouseY = yPos + 60;
               }
               else {
                 xPos = d3.mouse(this)[0];
                 yPos = d3.mouse(this)[1];
                 mouseX = d3.event.pageX;
-                mouseY = d3.event.pageY;
-              }
-              if(yPos > 230){
-                Tooltip.hide();
-                yPos = 230;
+                mouseY = d3.event.pageY + 10;
+				if(yPos > 230){
+					Tooltip.hide();
+					yPos = 230;
+				}
               }
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
@@ -662,7 +670,7 @@ var IndexChart = {
               d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getVisibleStockLine()[j].moodindex - ChartView.getVisibleStockLine()[j-1].moodindex;
 
               var model = {
-                  top: mouseY + 10,
+                  top: mouseY,
                   // 10 = horizontal distance from mouse cursor
                   left: ChartView.getChartWidth() - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
                   // if the right edge touches the right y axis
@@ -675,6 +683,8 @@ var IndexChart = {
                     change: d.moodindexchg
                   }
               };
+
+              if(IE8) return Tooltip.render.index(model);
 
               IndexChart.components.horizontalText
               .attr('x', ChartView.getContainerWidth() - 37)

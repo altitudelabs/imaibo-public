@@ -43,6 +43,10 @@
   <!-- End Sentiment JS -->
 </head>
 <body>
+  <div class="outer">
+    <div id="tooltip"></div>
+    <div id="alert-box"></div>
+  </div>
   <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
   <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
   <!--[if (gt IE 9)|!(IE)]>-->
@@ -56,12 +60,16 @@
   <!--<![endif]-->
     <!-- Right panel start -->
     <div id="right-panel">
+    <!--[if gt IE 8]><!-->
       <div class="vertical-collapse"></div>
+    <!--<![endif]-->
       <ul class="mb-nav mb-nav-tabs mb-nav-tabs-full-width">
         <li><a class="link-stockpicker-view" href="#">自选股</a></li>
         <li><a class="link-experts-view" href="#">专家解读</a></li>
         <li><a class="link-news-view" href="#">新闻</a></li>
+        <!--[if gt IE 8]><!-->
         <li class="close-button pull-right"><a class="link-right-panel-collapsed" href="#"></a></li>
+        <!--<![endif]-->
       </ul>
 
       <!-- Stockpicker view start -->
@@ -588,6 +596,10 @@
 
     <!-- Content panel start -->
     <div id="content">
+      <!--[if lte IE 8]>
+      <div class='upgrade-browser'>
+        <div class='text'>您使用的是旧版本IE浏览器，为更好的体验，请升级您的浏览器</div>
+      </div> <![endif]-->
       <ul class="mb-nav mb-nav-tabs">
         <li><a class="link-chart-view active" href="#">心情指数</a></li>
         <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
@@ -647,6 +659,7 @@
           <!-- Toolbar start -->
           <div id="toolbar">
             <ul class="toolbar">
+            <!--[if gt IE 8]><!-->
               <li class="zoom noselect"><a class="mb zoomout" id="zoomout"></a></li>
               <li class="zoom noselect"><a class="mb zoomin" id="zoomin"></a></li>
               <li class="link-dropdown noselect" id="frequency" data-target="frequency">
@@ -668,6 +681,7 @@
                 </form>
                 </div>
               </li>
+              <!--<![endif]-->
               <li class="link-dropdown noselect" id="ma" data-target="ma">
                 <a class="mb ma-button" id="ma-icon"></a>
                 <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu"></div>
