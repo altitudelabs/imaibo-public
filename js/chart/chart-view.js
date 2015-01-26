@@ -170,7 +170,7 @@ var ChartView = {
         ChartModel.updateAllData(indexOption, sentimentOption)
         .done(function (indexError, sentimentError) {
           self.updateChartViewData(indexError, sentimentError);
-          try { self.updateChartElements(); } catch (error) { console.log(error); }
+          try { self.updateChartElements(); } catch (error) {  }
         });
       }, self.properties.refreshFrequency);
     }
