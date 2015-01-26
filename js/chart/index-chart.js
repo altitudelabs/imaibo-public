@@ -652,6 +652,7 @@ var IndexChart = {
                 mouseX = d3.event.pageX;
                 mouseY = d3.event.pageY;
               }
+              console.log(yPos);
               if(yPos > 230){
                 Tooltip.hide();
                 yPos = 230;
