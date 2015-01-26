@@ -629,6 +629,8 @@ var IndexChart = {
           .on('mouseout', function() { 
             ChartView.mouseOutMouseOverlay();
 
+            if(IE8) return Tooltip.hide(); 
+            
             IndexChart.components.horizontalText.style('fill-opacity', 0);
             IndexChart.components.horizontalLine.style('stroke-opacity', 0);
             IndexChart.components.horizontalBlock.style('fill-opacity', 0);
