@@ -416,23 +416,22 @@ var MacdChart = {
           var xPos, mouseX, mouseY;
 
           if(IE8) {
-            /* TO BE FIXED:
-            xPos = eventX;
-            leftOffset = eventX - 60;
-            top = event.offsetY + ($('#rsi-checkbox').is(':checked')? 450:300);
-            */
+			xPos = event.clientX + document.documentElement.scrollLeft;
+			var yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+			mouseX = xPos + 10;
+			mouseY = yPos + 60;
           }
           else {
             xPos = d3.mouse(this)[0];
             mouseX = d3.event.pageX;
-            mouseY = d3.event.pageY;
+            mouseY = d3.event.pageY + 10;
           }
-
+		  
           var j = ChartView.xInverse((IE8?xPos-55:xPos), MacdChart.data.x);
           var d = MacdChart.data.stockLine[j];
 
           var model = {
-            top: mouseY + 10,
+            top: mouseY,
             // 10 = horizontal distance from mouse cursor
             left: ChartView.properties.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
             // if the right edge touches the right y axis

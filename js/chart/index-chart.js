@@ -643,19 +643,19 @@ var IndexChart = {
               if(IE8) {
                 xPos = event.clientX + document.documentElement.scrollLeft;
                 yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
-                mouseX = xPos;
-                mouseY = yPos;
+                mouseX = xPos + 10;
+                mouseY = yPos + 60;
               }
               else {
                 xPos = d3.mouse(this)[0];
                 yPos = d3.mouse(this)[1];
                 mouseX = d3.event.pageX;
-                mouseY = d3.event.pageY;
+                mouseY = d3.event.pageY + 10;
+				if(yPos > 230){
+					Tooltip.hide();
+					yPos = 230;
+				}
               }
-              // if(yPos > 230){
-                // Tooltip.hide();
-                // yPos = 230;
-              // }
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
               var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
               var d = ChartView.getVisibleStockLine()[j];
@@ -670,7 +670,7 @@ var IndexChart = {
               d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getVisibleStockLine()[j].moodindex - ChartView.getVisibleStockLine()[j-1].moodindex;
 
               var model = {
-                  top: mouseY + 10,
+                  top: mouseY,
                   // 10 = horizontal distance from mouse cursor
                   left: ChartView.getChartWidth() - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
                   // if the right edge touches the right y axis
