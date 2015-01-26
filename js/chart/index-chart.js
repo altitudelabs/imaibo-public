@@ -603,13 +603,17 @@ var IndexChart = {
                                              .attr('class', 'mouseover-overlay')
                                              .attr('fill-opacity', 0)
                                              .attr('x', 0)
-                                             .attr('id', 'abc')
-                                             .call(ChartView.zoomBehavior())
-                                             .datum([])   //because d3 drag requires data/datum to be valid
-                                             .call(ChartView.chartDragBehavior());
-                                             // .on("touchstart.zoom", null)
-                                             // .on("touchmove.zoom", null)
-                                             // .on("touchend.zoom", null);
+                                             .attr('id', 'abc');
+        if(!IE8){
+          IndexChart.components.mouseOverlay
+            .call(ChartView.zoomBehavior())
+            .datum([])   //because d3 drag requires data/datum to be valid
+            .call(ChartView.chartDragBehavior());
+            // .on("touchstart.zoom", null)
+            // .on("touchmove.zoom", null)
+            // .on("touchend.zoom", null);
+        }
+          
       },
       update: function () {
         var props = IndexChart.properties;
