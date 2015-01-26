@@ -69,8 +69,13 @@ var IndexChart = {
     this.updateContainer();
   },
   hideScrollbar: function(){
-    IndexChart.components.scrollBar
-      .style('fill-opacity', 0);
+	if(IE8){
+		IndexChart.components.scrollBar
+		    .attr('fill-opacity', 0);
+	}else{
+		IndexChart.components.scrollBar
+		    .style('fill-opacity', 0);		
+	}
   },
   appendComponents: function () {
     this.appendChart();
@@ -594,7 +599,7 @@ var IndexChart = {
         IndexChart.components.scrollBar
         .attr('x', ChartView.getScrollbarPos())
         .attr('width', ChartView.getScrollbarWidth())
-        .style('fill-opacity', 50);
+        .style('fill-opacity', ChartView.isZoomed()? 50:0);
       }
     },  
     mouseOverlay: {
@@ -652,14 +657,14 @@ var IndexChart = {
                 mouseX = d3.event.pageX;
                 mouseY = d3.event.pageY + 10;
                 
-          				if(yPos > 230){
-          					Tooltip.hide();
-          					yPos = 230;
-          				}
+				if(yPos > 230){
+				    Tooltip.hide();
+				    yPos = 230;
+				}
 
-                  if (IE9) {
-                    yPos += 53;
-                  }
+			    if (IE9) {
+				    yPos += 53;
+			    }
               }
 
               var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
