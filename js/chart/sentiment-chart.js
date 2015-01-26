@@ -48,6 +48,21 @@ var SentimentChart = {
     'use strict';
     if(ChartView.data.sentimentError) { return; }
     var self = this;
+    
+
+    var serverTime = ChartView.data.sentiment.timestamp;
+    var serverDate = new Date(serverTime*1000);
+
+    //difference between UTC 0:00 to local time, in hours
+    self.data.timezoneDiff = (new Date(serverDate.setHours(0,0,0,0)).getTimezoneOffset()/60 + 8);
+    
+    //since HK is 8 hours ahead of UTC, subtract a whole day(24hours) if the difference is greater than 8
+    if (self.data.timezoneDiff > 7) {
+      self.data.timezoneDiff -= 24;
+    }
+    //transform to timestamp
+    self.data.timezoneDiff *= 3600;
+    
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
     self.data.indexList = self.helpers.processIndexData(ChartView.data.sentiment.indexList);
     self.data.closePrice = ChartView.data.sentiment.preclosepx;
@@ -59,18 +74,15 @@ var SentimentChart = {
     var y2Range = self.helpers.getRangeWithBuffer(minY2, maxY2);
     self.data.y1 = self.helpers.y(y1Range[0], y1Range[1]);
     self.data.y2 = self.helpers.y(y2Range[0], y2Range[1]);
-
-    var serverTime = ChartView.data.sentiment.timestamp;
-    var serverDate = new Date(serverTime*1000);
-
+    
     var dataTime = self.data.moodindexList[0].timestamp;
     var dataDate = new Date(dataTime*1000);
 
     if (serverDate.getDate() - dataDate.getDate() > 0) {
       self.data.isPastData = true;
     }
-    self.data.startTime = dataDate.setHours(8,30,0,0)/1000;
-    self.data.endTime = dataDate.setHours(17,30,0,0)/1000;
+    self.data.startTime = dataDate.setHours(8,30,0,0)/1000 - self.data.timezoneDiff;
+    self.data.endTime = dataDate.setHours(17,30,0,0)/1000 - self.data.timezoneDiff;
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
     self.data.x  = self.helpers.x(self.properties.chartWidth, self.data.ordinalTimeStamps);
   },
@@ -223,9 +235,11 @@ var SentimentChart = {
     // Processing mood data filters out non-trading days
     processMoodData: function(data){
       var preOpenData;
-      var processedData = data.filter(function (x) {
+      var hour;
+      var processedData = data.filter(function (x, i) {
+        hour = new Date(x.timestamp*1000).getHours() + SentimentChart.data.timezoneDiff/3600;
         if (!!x.isTradingDay && !!x.timestamp) {
-          if (new Date(x.timestamp*1000).getHours() === 7) {
+          if (hour === 7 || hour === -17) {
             preOpenData = x;
           } else {
             return true;
@@ -548,11 +562,16 @@ var SentimentChart = {
       },
       update: function () {
         var props = SentimentChart.properties;
+        var hour;
         SentimentChart.components.xLabels
         .attr('x', function (d, i) { return SentimentChart.data.x(d); })
         .attr('y', props.chartHeight - 22)
         .text(function (d, i) {
-          return new Date(d * 1000).getHours() + ':00';
+          hour = new Date(d * 1000).getHours() + SentimentChart.data.timezoneDiff/3600;
+          if (hour < 0) {
+            hour += 24;
+          }
+          return hour + ':00';
         });
       },
       exit: function () {
