@@ -114,9 +114,11 @@ var IndexChart = {
     self.componentsBuilder.ma10Line.append();
     self.componentsBuilder.ma20Line.append();
     self.componentsBuilder.ma60Line.append();
-    self.componentsBuilder.horizontalLine.append();
-    self.componentsBuilder.horizontalBlock.append();
-    self.componentsBuilder.horizontalText.append();
+    if(!IE8){
+      self.componentsBuilder.horizontalLine.append();
+      self.componentsBuilder.horizontalBlock.append();
+      self.componentsBuilder.horizontalText.append(); 
+    }
     self.componentsBuilder.mouseOverlay.append();
     self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
@@ -679,6 +681,8 @@ var IndexChart = {
                     change: d.moodindexchg
                   }
               };
+
+              if(IE8) return Tooltip.render.index(model);
 
               IndexChart.components.horizontalText
               .attr('x', ChartView.getContainerWidth() - 37)
