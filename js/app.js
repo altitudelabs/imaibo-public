@@ -3,6 +3,8 @@ var PRODUCTION = false;
 
 // IE8 indicator
 var IE8 = !!$('.lt-ie9').length;
+var IE9 = !!$('.ie9').length;
+var LteIE9 = IE8 || IE9;
 
 // var _MID_ = 1;
 

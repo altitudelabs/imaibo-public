@@ -1,5 +1,4 @@
 var RightPanel = {
-  // data: {},
   el: $('#right-panel'),
   collapsed: {
     el: $('#right-panel-collapsed'),
@@ -46,24 +45,6 @@ var RightPanel = {
       // Start sticky columns
       StickyColumns.start();
     }, 400);
-  },
-
-  /*
-   * Populate HandlebarJS template.
-   * ==============================
-   * arguments:
-   *  - targetSelector: DOM object of your target div. i.e. $('#expertsView')
-   *  - templateSelector: DOM object of your template. i.e. $('#experts-template')
-   *  - resource: the data you are passing in. e.g. {name: 'Ray'}
-   *  - returnHtml: return HTML instead of replacing HTML in target selector
-   */
-  populateView: function (targetSelector, templateSelector, resource, returnHtml){
-    var template = Handlebars.compile(templateSelector.html());
-    if (returnHtml) {
-      return template(resource);
-    } else {
-      targetSelector.html(template(resource));
-    }
   },
   expandView: function(){
     var self = this;
@@ -119,7 +100,7 @@ var RightPanel = {
 
       var selectorName = '#stocktable' + (i + 1) + ' tbody';
 
-  	  if(IE8){
+  	  if(LteIE9){
   		   var data = addPanelStocks[i];
   		   var $table = $(selectorName),
   			   $rows = $(selectorName + ' tr'),
@@ -144,7 +125,7 @@ var RightPanel = {
                        .selectAll('tr')
                        .data(addPanelStocks[i]);
 
-	    if(!IE8){
+	    if(!LteIE9){
 		    stockTable.enter().append('tr')
           .attr("class", function(d) {
             if (d.pxchg == 0)
@@ -428,14 +409,14 @@ var RightPanel = {
       self.noStocks = false;
     }
 
-	var template = '<td><div class="indicator"></div></td>'                               +
+	  var template = '<td><div class="indicator"></div></td>'                               +
                    '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
                    '<td class="zxg-price">{{lastpx}}</td>'                                +
                    '<td class="zxg-price-change-abs">{{pxchg}}</td>'                      +
                    '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
-	var tableID = '#stockpicker-table-body';
-	var table = Helper.enterLoop(tableID, model.stock.list, template, IE8);
+	  var tableID = '#stockpicker-table-body';
+	  var table = Helper.enterLoop(tableID, model.stock.list, template, LteIE9);
 
 
     // Exit loop
@@ -453,7 +434,6 @@ var RightPanel = {
         return 'neutral';
       }
     });
-
     table.select('.zxg-ticker').html(function(d) {
       return '<a href="' + d.stockUrl + '" target="_blank" class="white">' + d.stockName + '</a>';
     });
@@ -535,7 +515,7 @@ var RightPanel = {
 
     setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
-  // /* Experts module */
+  /* Experts module */
   initExpertsModule: function() {
     var self = this;
 
@@ -589,7 +569,7 @@ var RightPanel = {
       StickyColumns.start();
     });
   },
-  // /* News module */
+  /* News module */
   updateAllPress: function(model) {
     // SET DATE
     $('#news-view .date').html(model.allPress[0].rdate);

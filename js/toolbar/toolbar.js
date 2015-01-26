@@ -2,10 +2,12 @@ var Toolbar = {
   el: '#toolbar',
   init: function(){
     //this.initDropdown();
-    this.initZoom();
+    if(!IE8){
+      this.initZoom();
+      this.initFreq(); 
+    }
     this.initRsi();
     this.initMacd();
-    this.initFreq();
   },
   render: function(model){
     var temp = model.stockLine.slice(-1).pop();
