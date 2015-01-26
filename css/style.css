@@ -5,6 +5,7 @@
   =Nav
   =Dropdown menu
   =SVG
+  =Upgrade Browser
   =Dashboard
   =Price Chart
   =Sentiment Chart
@@ -33,7 +34,6 @@ html {
 }
 body {
   overflow-x: hidden !important;
-  overflow-y: scroll !important;
 }
 
 body::-webkit-scrollbar {
@@ -327,6 +327,26 @@ body::-webkit-scrollbar {
   fill: white;
   cursor: default;
 }
+
+/* =Upgrade Browser
+-------------------------------------------------------------- */
+.outer .upgrade-browser {
+  width: 100%;
+  height: 50px;
+  background: #262626;
+  margin-bottom: 5px;
+  border: 1px solid #333;
+  position: relative;
+}
+
+.outer .upgrade-browser .text {
+  color: #fff;
+  border: none;
+  position: absolute;
+  left: 40%;
+  top: 30%;
+}
+
 /* =Dashboard
 -------------------------------------------------------------- */
 .outer #snapshot {
