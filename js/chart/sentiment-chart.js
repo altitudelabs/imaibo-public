@@ -28,7 +28,9 @@ var SentimentChart = {
   initWithError: function () {
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
-    this.appendComponents();
+    this.appendCharts();
+    this.appendGrids();
+    this.appendBorders();
     this.setProperties();
     this.drawContainer();
     this.updateDataWithError();
@@ -151,20 +153,32 @@ var SentimentChart = {
     self.componentsBuilder.verticalGridLines.update();
     self.componentsBuilder.horizontalGridLines.update();
   },
+  appendBorders: function() {
+    var self = this;
+    self.componentsBuilder.topBorder.append();
+    self.componentsBuilder.rightBorder.append();
+    self.componentsBuilder.bottomBorder.append();
+    self.componentsBuilder.leftBorder.append();
+  },
+  appendCharts: function(){
+    var self = this;
+    self.componentsBuilder.chart.append();
+    self.componentsBuilder.chartLabel.append();
+  },
+  appendGrids: function(){
+    var self = this;
+    self.componentsBuilder.verticalGridLines.append();
+    self.componentsBuilder.horizontalGridLines.append();
+  },
   appendComponents: function () {
     'use strict';
     var self = SentimentChart;
     // $('#sentiment-chart').empty();
     // $('#sentiment-chart-label').empty();
     //ordering here is important! do not use for-loop
-    self.componentsBuilder.chart.append();
-    self.componentsBuilder.chartLabel.append();
-    self.componentsBuilder.verticalGridLines.append();
-    self.componentsBuilder.horizontalGridLines.append();
-    self.componentsBuilder.topBorder.append();
-    self.componentsBuilder.rightBorder.append();
-    self.componentsBuilder.bottomBorder.append();
-    self.componentsBuilder.leftBorder.append();
+    self.appendCharts();
+    self.appendGrids();
+    self.appendBorders();
     self.componentsBuilder.y1Labels.append();
     self.componentsBuilder.y2Labels.append();
     self.componentsBuilder.xLabels.append();
