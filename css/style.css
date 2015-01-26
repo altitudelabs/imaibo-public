@@ -579,6 +579,10 @@ body::-webkit-scrollbar {
   margin-right: 15px;
 }
 
+.outer #sentiment > .legend {
+  margin-right: 100px;
+}
+
 .outer .legend > li{
   display: inline;
   padding-right: 10px;
@@ -742,6 +746,11 @@ body::-webkit-scrollbar {
   padding: 8px 35px 8px 13px;
 }
 
+
+.outer #sentiment .legend {
+  padding-right: 0;
+}
+
 .outer .container {
   position: absolute;
   top: 25px;
@@ -897,12 +906,13 @@ body::-webkit-scrollbar {
 #rsi-chart-legend {
   color: rgb(160, 160, 160);
   position: absolute;
-  top: 45px;
+  top: 48px;
   left: 50px;
 }
+
 #macd-chart-legend,
 #rsi-chart-legend {
-  top: 40px;
+  top: 43px;
 }
 
 
@@ -1930,6 +1940,7 @@ body::-webkit-scrollbar {
   border-radius: 3px;
   padding: 2px 6px 2px 6px;
   font-size: 12px;
+  width: 111px;
 }
 
 .outer .news-block {
@@ -1954,6 +1965,10 @@ body::-webkit-scrollbar {
 
 .outer .news-block .mood-change {
   padding-left: 25px;
+}
+
+.outer .news-block.fall .mood-change {
+  padding-left: 28px;
 }
 
 .outer .time-and-source .time,
@@ -2075,7 +2090,7 @@ body::-webkit-scrollbar {
 .outer #toolbar {
   position: absolute;
   left: 54px;
-  top: 49px;
+  top: 45px;
   z-index: 10;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;

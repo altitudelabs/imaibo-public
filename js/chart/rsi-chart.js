@@ -43,7 +43,7 @@ var RsiChart = {
       allDataArray.push(parseInt(self.data.stockLine[i].rsi12));
       allDataArray.push(parseInt(self.data.stockLine[i].rsi24));
     }
-    var y2Range = [-10, 110];
+    var y2Range = [20, 110];
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
@@ -275,7 +275,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([30,70]);
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([20, 60, 100]);
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
