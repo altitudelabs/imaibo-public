@@ -5,7 +5,7 @@ var ChartView = {
     error: {},
   },
   properties: {
-    refreshFrequency: 6000,
+    refreshFrequency: 6000000,
     scrollSpeed: 2,
     scrollbarPos: 0,
     mode: 'daily'
