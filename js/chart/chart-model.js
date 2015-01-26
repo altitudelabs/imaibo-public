@@ -77,7 +77,6 @@ var ChartModel = {
   getIndexData: function(options, handler, cb){
     var self = this;
     var indexApi = self.apiBuilder('index' , options);
-
     $.getJSON(indexApi, function(res) {
       self.errorCheckIndex(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError){
@@ -96,6 +95,7 @@ var ChartModel = {
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
         cb(res.data, handler);
       }
+      handler({ isError: self.model.sentimentError });
     }).fail(function(){
       handler({ isError: self.model.sentimentError });
     });
@@ -116,14 +116,9 @@ var ChartModel = {
           self.model[key] = data[key];
         }
       }
-
       self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
-        if (d.rdate < 20130413) {
-          return false;
-        }
-        return true;
+        return (d.rdate > 20130413);
       });
-      
       handler(self.model.indexError);
     };
     // var sentimentCallback = function (data, handler) {
@@ -182,10 +177,7 @@ var ChartModel = {
         self.model.index.stockLine = data.weeklyKLine.reverse();
       }
       self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
-        if (d.rdate < 20130413) {
-          return false;
-        }
-        return true;
+        return (d.rdate > 20130413);
       });
       
       handler(self.model.indexError);
@@ -217,7 +209,7 @@ var ChartModel = {
         this.log(0, 'Sentiment API has no \'data\'');
       } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
         this.log(0, 'Sentiment API "data" variable is not an object or is empty');
-      } else if (res.data.indexList === undefined || res.data.indexList.length === 0){
+      } else if (res.data.indexList === undefined || res.data.indexList.length === 0 || $.isEmptyObject(res.data.indexList)){
         this.log(0, 'Sentiment API data.indexList does not exist');
       } else if (res.data.indexList[0].price === undefined){
         this.log(0, 'Sentiment API data.indexList does not have variable "price"');

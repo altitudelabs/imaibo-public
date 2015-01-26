@@ -240,8 +240,13 @@ var ChartView = {
     self.data.visibleStockLine = self.data.index.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
-  /* Initial build of chart elements */
+  // /* Initial build of chart elements */
   buildChartElements: function() {
+	$('#price').css('visibility', 'visible');
+	$('#macd').css('visibility', 'visible');
+	$('#rsi').css('visibility', 'visible');
+	$('#sentiment').css('visibility', 'visible');
+
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
@@ -256,14 +261,7 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    // SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
-
-    // Make charts visible
-    $('#price').css('visibility', 'visible');
-    $('#macd').css('visibility', 'visible');
-    $('#rsi').css('visibility', 'visible');
-    $('#sentiment').css('visibility', 'visible');
 
     // Remove loaders
     $('.loader').remove();
@@ -320,9 +318,9 @@ var ChartView = {
        RsiChart  .components.scrollBar.style('fill-opacity', 50);
        MacdChart .components.scrollBar.style('fill-opacity', 50);
     }else{
-       IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
-       RsiChart  .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
-       MacdChart .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
+       IndexChart.components.scrollBar.style('fill-opacity', 0);
+       RsiChart  .components.scrollBar.style('fill-opacity', 0);
+       MacdChart .components.scrollBar.style('fill-opacity', 0);
     }
     ChartView.setDataSetLength(newLength);
     self.setScrollbarWidth();
@@ -348,14 +346,19 @@ var ChartView = {
     var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
-          .on('drag', function(d){
-            
+          .on('drag', function(d){            
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
             if (xPos < 0 || xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) {
               return;
             }
             self.moveScrollBar(xPos, this);
 
+            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
+            var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
+            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth())
+              xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
+            if(xPos < 0)
+              xPos = 0;
           });
           return this.properties.scrollbarDragBehavior;
   },
@@ -430,14 +433,14 @@ var ChartView = {
   },
   rebuild: function() {
     ChartView.setProperties();
-    if(!this.data.error.index.isError){
+     try {
       ChartView.updateVisibleStockLine();
       ChartView.setScrollbarWidth();
       ChartView.setScrollbarPos();
       RsiChart.update();
       MacdChart.update();
       IndexChart.update();
-    }else{
+    } catch (error) {
       IndexChart.updateWithError();
     }
     try { SentimentChart.update(); } catch (error) { SentimentChart.initWithError(); }
@@ -445,6 +448,7 @@ var ChartView = {
     $('.zoomable-chart-container').css('width', '100%');
   },
   showAllScrollbars: function(){
+    if(!ChartView.isZoomed()) return;
       RsiChart.components.scrollBar.style('fill-opacity', 100);
       IndexChart.components.scrollBar.style('fill-opacity', 100);
       MacdChart.components.scrollBar.style('fill-opacity', 100);

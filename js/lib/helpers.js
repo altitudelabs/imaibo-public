@@ -153,5 +153,35 @@ var Helper = {
     }
 
     StickyColumns.start();
-  }
+  },
+  IEtableEnterLoop: function(tableID, data, template){
+   var $table = $(tableID),
+       $rows = $(tableID + ' tr'),
+       rowsToAdd = data.length - $rows.length;
+
+   for (var i = 0; i < rowsToAdd; i++){
+     $table.append('<tr>' + template + '</tr>');
+   }
+  },
+  /*
+   *enterLoop():
+   * - Acts as a helper function if you decide to use D3 for <tr> append
+   * - This helper negates the error thrown by r2d3 for appending 'tr' element on the enter loop
+   * - Note: the ordering is important. IEtableEnterLoop() must prepend the d3 selection-data loop
+   *          Or else d3 selection object would not select anything.
+   * ===============================
+   * arguments:
+   * - tableID:  (string) y     Our table id with # selector. i.e. '#stockpicker-table-body'
+   * - data:     (array)        The data you are passing in. usually an array.
+   * - template: (string, html) The html you want d3 to render for you on the enter() loop
+   * - isIE8:    (boolean)      Defines if it is running in IE8
+   */
+  enterLoop: function(tableID, data, template, isIE8){
+	if(isIE8) Helper.IEtableEnterLoop(tableID, data, template); //ordering is important
+    var table = d3.select(tableID)
+                  .selectAll('tr')
+                  .data(data);
+	if(!isIE8) table.enter().append('tr').html(template);	          // ordering is important
+	return table;
+  },
 }

@@ -345,7 +345,7 @@ var MacdChart = {
                                             .on('mouseleave', function(){
                                               ChartView.hideAllScrollbars();
                                             })
-                                            .style('fill-opacity', 0);
+                                            .attr('fill-opacity', 0);
       },
       update: function(){
         MacdChart.components.scrollbarRail.attr('width', ChartView.properties.width);

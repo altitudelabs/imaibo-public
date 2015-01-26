@@ -1,5 +1,5 @@
 var RightPanel = {
-  data: {},
+  // data: {},
   el: $('#right-panel'),
   collapsed: {
     el: $('#right-panel-collapsed'),
@@ -118,21 +118,44 @@ var RightPanel = {
         template = '<td class="add-stock-name"></td><td class="add-stock-price"></td><td class="add-stock-change"></td><td class="add-stock-change-ratio"></td><td class="add-stock-button"><span class="not-selected"></span></td>';
 
       var selectorName = '#stocktable' + (i + 1) + ' tbody';
-      var stockTable = d3.select(selectorName)
-                         .selectAll('tr')
-                         .data(addPanelStocks[i]);
 
-      // Enter loop
-      stockTable.enter().append('tr')
-                        .attr("class", function(d) {
-                          if (d.pxchg == 0)
-                            return "add-security-row neutral";
-                          if (d.sign === '+')
-                            return "add-security-row rise";
-                          else
-                            return "add-security-row fall";
-                        })
-                        .html(template);
+  	  if(IE8){
+  		   var data = addPanelStocks[i];
+  		   var $table = $(selectorName),
+  			   $rows = $(selectorName + ' tr'),
+  			   rowsToAdd = data.length - $rows.length;
+
+  		   for (var j = 0; j < rowsToAdd; j++) {
+  			   var tr = '<tr class='
+  			   var d = data[j];
+  			   if(d.pxchg == 0){
+  				   tr += '"add-security-row neutral"';
+  			   }else if(d.sign === '+'){
+  				   tr += '"add-security-row rise"';
+  			   }else {
+  				   tr += '"add-security-row fall"';
+  			   }
+  			   tr += '>';
+  			 $table.append(tr + template + '</tr>');
+  		   }
+  	  }
+
+      var stockTable = d3.select(selectorName)
+                       .selectAll('tr')
+                       .data(addPanelStocks[i]);
+
+	    if(!IE8){
+		    stockTable.enter().append('tr')
+          .attr("class", function(d) {
+            if (d.pxchg == 0)
+              return "add-security-row neutral";
+            if (d.sign === '+')
+              return "add-security-row rise";
+            else
+              return "add-security-row fall";
+          })
+          .html(template);
+	    }
 
       // Exit loop
       stockTable.exit().remove();
@@ -363,11 +386,11 @@ var RightPanel = {
         // Refresh sticky columns after height change
         StickyColumns.start();
 
-        $('#stockpicker-view .panel-loader-wrapper').remove();
+        $('#stockpicker-view > .panel-loader-wrapper').remove();
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        self.refreshStockpickerView();
+        if(!IE8) self.refreshStockpickerView();
       }
       else {
         self.updateStockpickerView(model);
@@ -405,19 +428,15 @@ var RightPanel = {
       self.noStocks = false;
     }
 
-    var template = '<td><div class="indicator"></div></td> \
-                    <td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td> \
-                    <td class="zxg-price">{{lastpx}}</td> \
-                    <td class="zxg-price-change-abs">{{pxchg}}</td> \
-                    <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
+	var template = '<td><div class="indicator"></div></td>'                               +
+                   '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
+                   '<td class="zxg-price">{{lastpx}}</td>'                                +
+                   '<td class="zxg-price-change-abs">{{pxchg}}</td>'                      +
+                   '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
-    var table = d3.select('#stockpicker-table-body')
-                  .selectAll('tr')
-                  .data(model.stock.list); // model.stock = data
+	var tableID = '#stockpicker-table-body';
+	var table = Helper.enterLoop(tableID, model.stock.list, template, IE8);
 
-    // Enter loop
-    table.enter().append('tr')
-                 .html(template);
 
     // Exit loop
     table.exit().remove();
@@ -456,17 +475,17 @@ var RightPanel = {
         self.noStocks == false;
       }
 
-      var template = '<td><div class="indicator"></div></td> \
-                    <td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td> \
-                    <td class="zxg-price">{{lastpx}}</td> \
-                    <td class="zxg-price-change-abs">{{pxchg}}</td> \
-                    <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
+      var template = '<td><div class="indicator"></div></td>' +
+                    '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
+                    '<td class="zxg-price">{{lastpx}}</td>' +
+                    '<td class="zxg-price-change-abs">{{pxchg}}</td>' +
+                    '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
       var table = d3.select('#stockpicker-table-body')
                     .selectAll('tr')
                     .data(model.stock.list); // model.stock = data
 
-      // Enter loop
+      // // Enter loop
       table.enter().append('tr')
                    .html(template);
 
@@ -514,9 +533,9 @@ var RightPanel = {
     var self = this;
     var refreshRate = 5000;
 
-    // setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+    setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
-  /* Experts module */
+  // /* Experts module */
   initExpertsModule: function() {
     var self = this;
 
@@ -570,7 +589,7 @@ var RightPanel = {
       StickyColumns.start();
     });
   },
-  /* News module */
+  // /* News module */
   updateAllPress: function(model) {
     // SET DATE
     $('#news-view .date').html(model.allPress[0].rdate);

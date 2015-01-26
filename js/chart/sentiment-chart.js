@@ -28,7 +28,9 @@ var SentimentChart = {
   initWithError: function () {
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
-    this.appendComponents();
+    this.appendCharts();
+    this.appendGrids();
+    this.appendBorders();
     this.setProperties();
     this.drawContainer();
     this.updateDataWithError();
@@ -128,8 +130,7 @@ var SentimentChart = {
     }
 
     // Etc ===================================================================
-    // self.helpers.updateLegends(self.data.indexList[self.data.indexList.length-1], self.data.moodindexList[self.data.moodindexList.length-1]);
-    this.animate();
+
   },
   drawWithError: function () {
     var self = this;
@@ -152,20 +153,32 @@ var SentimentChart = {
     self.componentsBuilder.verticalGridLines.update();
     self.componentsBuilder.horizontalGridLines.update();
   },
+  appendBorders: function() {
+    var self = this;
+    self.componentsBuilder.topBorder.append();
+    self.componentsBuilder.rightBorder.append();
+    self.componentsBuilder.bottomBorder.append();
+    self.componentsBuilder.leftBorder.append();
+  },
+  appendCharts: function(){
+    var self = this;
+    self.componentsBuilder.chart.append();
+    self.componentsBuilder.chartLabel.append();
+  },
+  appendGrids: function(){
+    var self = this;
+    self.componentsBuilder.verticalGridLines.append();
+    self.componentsBuilder.horizontalGridLines.append();
+  },
   appendComponents: function () {
     'use strict';
     var self = SentimentChart;
     // $('#sentiment-chart').empty();
     // $('#sentiment-chart-label').empty();
     //ordering here is important! do not use for-loop
-    self.componentsBuilder.chart.append();
-    self.componentsBuilder.chartLabel.append();
-    self.componentsBuilder.verticalGridLines.append();
-    self.componentsBuilder.horizontalGridLines.append();
-    self.componentsBuilder.topBorder.append();
-    self.componentsBuilder.rightBorder.append();
-    self.componentsBuilder.bottomBorder.append();
-    self.componentsBuilder.leftBorder.append();
+    self.appendCharts();
+    self.appendGrids();
+    self.appendBorders();
     self.componentsBuilder.y1Labels.append();
     self.componentsBuilder.y2Labels.append();
     self.componentsBuilder.xLabels.append();
@@ -177,14 +190,8 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsHover.append();
     self.componentsBuilder.forecastBubble.append();
     self.componentsBuilder.forecastBubbleText.append();
-    self.componentsBuilder.sentimentCover.append();
     self.componentsBuilder.sentimentOverlay.append();
     self.componentsBuilder.tooltip.append();
-  },
-  animate: function () {
-    var self = this;
-    //sentimentCover (animation)
-    self.componentsBuilder.sentimentCover.animate();
   },
   helpers: {
     x: function (width, data) {
@@ -265,7 +272,7 @@ var SentimentChart = {
     },
     // Returns current timestamp in client format
     getCurrentTimestamp: function(){
-      var t = new Date();
+      var t = new Date(ChartView.data.sentiment.timestamp*1000);
       t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
       return t;
     },
@@ -595,6 +602,8 @@ var SentimentChart = {
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000);
+        console.log(currentTimeStamp);
+        console.log(currentDate);
         var dataDate = new Date(data[0].timestamp*1000);
 
         var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
@@ -611,7 +620,7 @@ var SentimentChart = {
                               }];
         SentimentChart.components.securityLines['openDotted'] = SentimentChart.components.securityLines['openDotted'].datum(openDottedData);
         //lunch
-        if (!SentimentChart.data.isPastData && (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30) || notSameDay)) {
+        if (SentimentChart.data.isPastData || (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30) || notSameDay)) {
           var lunchDottedPrice = amLinearData[120].price;
           var lunchDottedData = [{
                                   timestamp: amLinearData[120].timestamp+60,
@@ -769,8 +778,9 @@ var SentimentChart = {
       },
       update: function () {
         SentimentChart.components.scatterDotsBubbleText
+        .attr('text-anchor', 'middle')
         .attr('y', function (d) { return SentimentChart.data.y1(d.mood) - 13; } ) // translate y value to a pixel
-        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 3 ; } ); // translate x value
+        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
       },
       exit: function () {
         SentimentChart.components.scatterDotsBubbleText
@@ -824,14 +834,15 @@ var SentimentChart = {
         .enter().append('text')  // create a new circle for each value
         .attr('class', 'sentiment')
         .attr('fill', 'white')
+        .attr('text-anchor', 'middle')
         .text(function(d, i){
           if (!d.isRealTime) { return '预测'; }
         });
       },
       update: function () {
         SentimentChart.components.forecastBubbleText
-        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 25; } ) // translate y value to a pixel
-        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 10 ; } ); // translate x value
+        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
+        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 1; } ); // translate x value
       },
       exit: function () {
         SentimentChart.components.forecastBubbleText
@@ -851,7 +862,7 @@ var SentimentChart = {
         SentimentChart.components.scatterDotsHover
         .enter().append('svg:circle')  // create a new circle for each value
         .attr('r', 8)
-        .style('opacity', 0)
+        .attr('opacity', 0) // IE8 uses attr. else use Style
         .on('mouseover', function(d, i) {
           if (!d.newsList.length) { return; }
           var dot = this;
@@ -1003,27 +1014,6 @@ var SentimentChart = {
       fadeOut: '',
       mousePosition: []
 
-    },
-    sentimentCover: {
-      append: function () {
-        SentimentChart.components.sentimentCover = d3.select('#sentiment-chart').append('svg:svg');
-      },
-      update: function () {
-        var props = SentimentChart.properties;
-        SentimentChart.components.sentimentCover
-        .style('position', 'absolute')
-        .style('left', 0)
-        .style('top', 7)
-        .style('background-color', 'rgb(38, 38, 38)')
-        .attr('width', props.chartWidth - 2)
-        .attr('height', props.chartHeight - 44);
-      },
-      animate: function () {
-        var props = SentimentChart.properties;
-        SentimentChart.components.sentimentCover
-        .style('left', props.chartWidth - 2)
-        .attr('width', 0);
-      }
     },
     sentimentOverlay: {
       append: function () {

@@ -696,7 +696,7 @@
 
           <div id="chart-label"></div>
           <div class='container zoomable-chart-container' id="chart-container">
-          <div id="chart" class="scroller"></div>
+			<div id="chart" class="scroller"></div>
           </div>
 
         </div>
@@ -716,19 +716,19 @@
 
           <ul id="rsi-chart-legend">
             <li>
-              <span>rsi6：</span>
+              <span>RSI6：</span>
               <div class="rsi6">
               <span></span>
               </div>
             </li>
             <li>
-              <span>rsi12：</span>
+              <span>RSI12：</span>
               <div class="rsi12">
               <span></span>
               </div>
             </li>
             <li>
-              <span>rsi24：</span>
+              <span>RSI24：</span>
               <div class="rsi24">
               <span></span>
               </div>
@@ -798,16 +798,33 @@
 
     <!-- Start modal dialogs -->
     <div id="experts-modal" class="modal"></div>
+
     <div id="index-info-modal" class="modal">
-      <h1>上证K线 - 心情累积值是什么?</h1>
-      <div class="content">内容</div>
+      <h1>心情指数累积值——产生买卖信号</h1>
+      <div class="content">
+        <div>心情指数累积值是累积统计每天心情指数动态值而形成的分值，用来反映股市的长期走势。</div>
+        <div>&nbsp;</div>
+        <div>投资脉搏与香港大学合作研究3年，目前心情指数累计分值与大盘指数的相关度高达75%，这证明了心情指数能反映股市的趋势。</div>
+        <div>&nbsp;</div>
+        <div>当心情指数累计分值加上一些技术指标和资金流入数据分析，最终会生成一个短期内有效的信号——“买卖信号”。</div>
+      </div>
       <a class="modal-close mb close-modal" href="#"></a>
     </div>
+
     <div id="sentiment-info-modal" class="modal">
-      <h1>上证分时 - 心情变动值是什么?</h1>
-      <div class="content">内容</div>
+      <h1>心情指数动态值——反应短期的情绪</h1>
+      <div class="content">
+        <div>心情指数动态值是分析统计当天的新闻、讨论而产生的分值，用来反映股市的短期情绪。</div>
+        <div>&nbsp;</div>
+        <div>每天新闻和讨论源源不断的产生，一些新闻和讨论价值较高，反映了市场的影响力，反映了股民的“心情”。</div>
+        <div>&nbsp;</div>
+        <div>经过自然语言神经智能分析，这些新闻、讨论会得出一个分数，反映新闻的趋势、权重，分数范围是[-1.0，1.0]。</div>
+        <div>&nbsp;</div>
+        <div>每天心情指数会从0开始累计每条新闻和讨论的分数，一天生成8个特定时间的动态分值，分别是（7:00，9:00，10:00，11:00，14:00，15:00，17:00，23:59），来预测股市短期的趋势。</div>
+      </div>
       <a class="modal-close mb close-modal" href="#"></a>
     </div>
+    
     <div id="lean_overlay"></div>
     <!-- End modal dialogs -->
   </div>
