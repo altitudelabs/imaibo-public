@@ -743,7 +743,7 @@ body::-webkit-scrollbar {
 
 .outer #price .chart-header,
 .outer #sentiment .chart-header {
-  padding: 8px 35px 8px 13px;
+  padding: 8px 33px 8px 13px;
 }
 
 
@@ -851,6 +851,11 @@ body::-webkit-scrollbar {
 #sentiment-tooltip .wrapper .extra {
     display: inline-block;
 }
+#sentiment-tooltip .wrapper .arrow-number {
+  text-align: right;
+  float: right;  
+}
+
 
 #sentiment-tooltip .wrapper .arrow-text,
 #sentiment-tooltip .wrapper .arrow-number {
@@ -1302,6 +1307,7 @@ body::-webkit-scrollbar {
   border-radius: 3px;
   background-color: rgb(107, 107, 107);
   margin-right: 10px;
+  margin-top: 4px;
   float: left;
 }
 .outer .name-and-date {

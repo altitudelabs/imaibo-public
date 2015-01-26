@@ -511,7 +511,7 @@ var RightPanel = {
     // when refreshStockpickerView is called during refresh and the user tried to add stock,
     // refreshStockpickerView is called twice which may cause some problems
     var self = this;
-    var refreshRate = 5000;
+    var refreshRate = 5000000;
 
     setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
