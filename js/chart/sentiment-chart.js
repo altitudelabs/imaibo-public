@@ -776,17 +776,17 @@ var SentimentChart = {
           if (d.newsCount) { return d.newsCount; }
         });
       },
-      update: function () {
+      update: function () { 
         SentimentChart.components.scatterDotsBubbleText
         .attr('text-anchor', 'middle')
-        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) - 13; } ) // translate y value to a pixel
+        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) - 13 - (IE8? 3:0); } ) // translate y value to a pixel
         .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
       },
       exit: function () {
         SentimentChart.components.scatterDotsBubbleText
         .exit()
         .remove();
-      }
+      } 
     },
     forecastBubble: {
       append: function () {
