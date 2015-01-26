@@ -31,17 +31,25 @@
     <div id="tooltip"></div>
     <div id="alert-box"></div>
   </div>
-  
+
+  <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
+  <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
+  <!--[if (gt IE 9)|!(IE)]>-->
   <div class="outer">
   <!--<![endif]-->
+
     <!-- Right panel start -->
     <div id="right-panel">
+    <!--[if gt IE 8]><!-->
       <div class="vertical-collapse"></div>
+    <!--<![endif]-->
       <ul class="mb-nav mb-nav-tabs mb-nav-tabs-full-width">
         <li><a class="link-stockpicker-view" href="#">自选股</a></li>
         <li><a class="link-experts-view" href="#">专家解读</a></li>
         <li><a class="link-news-view" href="#">新闻</a></li>
+        <!--[if gt IE 8]><!-->
         <li class="close-button pull-right"><a class="link-right-panel-collapsed" href="#"></a></li>
+        <!--<![endif]-->
       </ul>
 
       <!-- Stockpicker view start -->
@@ -85,7 +93,7 @@
                             <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                           </tr>
                         </tfoot>
-            
+
                       </table>
                     </li>
                   </ul>
@@ -96,7 +104,7 @@
 
                   <ul class="add-panel-item-content">
                     <li class="add-panel-sub-item">
-                      <div>最多持仓</div>
+                      <div id="stocktable2-name">最多持仓</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -119,14 +127,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>最多买入</div>
+                      <div id="stocktable3-name">最多买入</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -149,14 +157,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>最多卖出</div>
+                      <div id="stocktable4-name">最多卖出</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -179,14 +187,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>重仓股</div>
+                      <div id="stocktable5-name">重仓股</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -209,7 +217,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
@@ -222,7 +230,7 @@
 
                   <ul class="add-panel-item-content">
                     <li class="add-panel-sub-item">
-                      <div>热搜股票</div>
+                      <div id="stocktable6-name">热搜股票</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -245,14 +253,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>最多关注股票</div>
+                      <div id="stocktable7-name">最多关注股票</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -275,14 +283,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>热股讨论股票(一天)</div>
+                      <div id="stocktable8-name">热股讨论股票(一天)</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -305,14 +313,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>热股讨论股票(一周)</div>
+                      <div id="stocktable9-name">热股讨论股票(一周)</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -335,7 +343,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
@@ -348,7 +356,7 @@
 
                   <ul class="add-panel-item-content">
                     <li class="add-panel-sub-item">
-                      <div>涨幅榜</div>
+                      <div id="stocktable10-name">涨幅榜</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -371,14 +379,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>跌幅榜</div>
+                      <div id="stocktable11-name">跌幅榜</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -401,14 +409,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>股票趋势</div>
+                      <div id="stocktable12-name">股票趋势</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -431,14 +439,14 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
                     </li>
 
                     <li class="add-panel-sub-item">
-                      <div>成交突破</div>
+                      <div id="stocktable13-name">成交突破</div>
                       <ul class="add-stock-table">
 
                         <li>
@@ -461,7 +469,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-            
+
                           </table>
                         </li>
                       </ul>
@@ -475,7 +483,7 @@
           </ul>
 
           <div id="search-wrapper">
-            
+
               <div id="search-button"></div>
               <input type="text" id="stock-search" autocomplete="off" placeholder="输入股票名称/代码">
               <div id="search-result"></div>
@@ -528,11 +536,11 @@
 
         <ul id="news-tabs">
           <li><a href="#press-by-time">时间划分</a></li>
-          <li><a href="#all-press">全展开</a></li>
+          <li><a href="#all-press">全部展开</a></li>
         </ul>
 
         <div id="news-content">
-          
+
           <div id="press-by-time" class="content"></div>
 
           <div id="all-press" class="content">
@@ -568,6 +576,10 @@
 
     <!-- Content panel start -->
     <div id="content">
+      <!--[if lte IE 8]>
+      <div class='upgrade-browser'>
+        <div class='text'>您使用的是旧版本IE浏览器，为更好的体验，请升级您的浏览器</div>
+      </div> <![endif]-->
       <ul class="mb-nav mb-nav-tabs">
         <li><a class="link-chart-view active" href="#">心情指数</a></li>
         <li><a class="link-about-index-view" href="#">什么是心情指数</a></li>
@@ -588,19 +600,19 @@
               <li>
                 <span>上证：</span>
                 <div class="security">
-                <span></span>
+                <span>--</span>
                 </div>
               </li>
               <li>
                 <span>心情：</span>
                 <div class="mood">
-                <span></span>
+                <span>--</span>
                 </div>
               </li>
               <li>
                 <span>心情变化：</span>
                 <div class="moodchange">
-                <span></span>
+                <span>--</span>
                 </div>
               </li>
             </ul>
@@ -614,8 +626,8 @@
             <div class="zoomable-chart" id="sentiment-chart"></div>
           </div>
         </div>
-        
-        
+
+
         <div id="price" class="component">
           <div class="chart-header">
             <div class="title">上证K线 - 心情累积值<span id="index-info-button" class="mb info-button"></span></div>
@@ -627,6 +639,7 @@
           <!-- Toolbar start -->
           <div id="toolbar">
             <ul class="toolbar">
+            <!--[if gt IE 8]><!-->
               <li class="zoom noselect"><a class="mb zoomout" id="zoomout"></a></li>
               <li class="zoom noselect"><a class="mb zoomin" id="zoomin"></a></li>
               <li class="link-dropdown noselect" id="frequency" data-target="frequency">
@@ -648,6 +661,7 @@
                 </form>
                 </div>
               </li>
+              <!--<![endif]-->
               <li class="link-dropdown noselect" id="ma" data-target="ma">
                 <a class="mb ma-button" id="ma-icon"></a>
                 <div class="dropdown-menu"  data-target="ma" id="ma-dropdown-menu"></div>
@@ -676,7 +690,7 @@
 
           <div id="chart-label"></div>
           <div class='container zoomable-chart-container' id="chart-container">
-          <div id="chart" class="scroller"></div>
+      <div id="chart" class="scroller"></div>
           </div>
 
         </div>
@@ -693,6 +707,27 @@
               <div class="close"></div>
             </div>
           </div>
+
+          <ul id="rsi-chart-legend">
+            <li>
+              <span>RSI6：</span>
+              <div class="rsi6">
+              <span></span>
+              </div>
+            </li>
+            <li>
+              <span>RSI12：</span>
+              <div class="rsi12">
+              <span></span>
+              </div>
+            </li>
+            <li>
+              <span>RSI24：</span>
+              <div class="rsi24">
+              <span></span>
+              </div>
+            </li>
+          </ul>
 
           <div id="rsi-chart-label"></div>
           <div class='container zoomable-chart-container' id="rsi-chart-container" >
@@ -714,6 +749,26 @@
               <div class="close"></div>
             </div>
           </div>
+          <ul id="macd-chart-legend">
+            <li>
+              <span>DIF：</span>
+              <div class="dif">
+              <span></span>
+              </div>
+            </li>
+            <li>
+              <span>DEA：</span>
+              <div class="dea">
+              <span></span>
+              </div>
+            </li>
+            <li>
+              <span>MACD：</span>
+              <div class="macd">
+              <span></span>
+              </div>
+            </li>
+          </ul>
 
           <div id="macd-chart-label"></div>
           <div class='container zoomable-chart-container' id="macd-chart-container">
@@ -723,7 +778,7 @@
             </div>
           </div>
         </div>
-       
+
       </div>
       <!-- Chart view end -->
 
@@ -737,16 +792,33 @@
 
     <!-- Start modal dialogs -->
     <div id="experts-modal" class="modal"></div>
+
     <div id="index-info-modal" class="modal">
-      <h1>上证K线 - 心情累积值是什么?</h1>
-      <div class="content">内容</div>
+      <h1>心情指数累积值——产生买卖信号</h1>
+      <div class="content">
+        <div>心情指数累积值是累积统计每天心情指数动态值而形成的分值，用来反映股市的长期走势。</div>
+        <div>&nbsp;</div>
+        <div>投资脉搏与香港大学合作研究3年，目前心情指数累计分值与大盘指数的相关度高达75%，这证明了心情指数能反映股市的趋势。</div>
+        <div>&nbsp;</div>
+        <div>当心情指数累计分值加上一些技术指标和资金流入数据分析，最终会生成一个短期内有效的信号——“买卖信号”。</div>
+      </div>
       <a class="modal-close mb close-modal" href="#"></a>
     </div>
+
     <div id="sentiment-info-modal" class="modal">
-      <h1>上证分时 - 心情变动值是什么?</h1>
-      <div class="content">内容</div>
+      <h1>心情指数动态值——反应短期的情绪</h1>
+      <div class="content">
+        <div>心情指数动态值是分析统计当天的新闻、讨论而产生的分值，用来反映股市的短期情绪。</div>
+        <div>&nbsp;</div>
+        <div>每天新闻和讨论源源不断的产生，一些新闻和讨论价值较高，反映了市场的影响力，反映了股民的“心情”。</div>
+        <div>&nbsp;</div>
+        <div>经过自然语言神经智能分析，这些新闻、讨论会得出一个分数，反映新闻的趋势、权重，分数范围是[-1.0，1.0]。</div>
+        <div>&nbsp;</div>
+        <div>每天心情指数会从0开始累计每条新闻和讨论的分数，一天生成8个特定时间的动态分值，分别是（7:00，9:00，10:00，11:00，14:00，15:00，17:00，23:59），来预测股市短期的趋势。</div>
+      </div>
       <a class="modal-close mb close-modal" href="#"></a>
     </div>
+
     <div id="lean_overlay"></div>
     <!-- End modal dialogs -->
   </div>
@@ -956,7 +1028,7 @@
         <span class="expert-title">{{headline.title}}</span>
         <span class="expert-date">{{headline.uptime}}</span>
       </div>
-      
+
     </div>
     {{#each list}}
     <div class="expert-block">
