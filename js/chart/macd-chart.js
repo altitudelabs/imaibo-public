@@ -42,6 +42,7 @@ var MacdChart = {
     self.data.y1 = ChartView.buildY(y1Range[0], y1Range[1], self.properties.chartHeight);
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
+    this.updateLegends();
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
@@ -67,7 +68,7 @@ var MacdChart = {
     self.componentsBuilder.bars.append();
     self.componentsBuilder.scrollbarRail.append();
     self.componentsBuilder.scrollBar.append();
-    
+
     // DEA line
     this.components.chart.append('path')
       .attr('class','dea');
@@ -94,7 +95,7 @@ var MacdChart = {
 
     $('#macd-chart-container').css('width', ChartView.properties.chartWidth);
 
-    
+
     //DATA SECTION ======================================================
     for (var key in self.components) {
       if (self.componentsBuilder[key].linkData) {
@@ -114,7 +115,7 @@ var MacdChart = {
       }
     }
 
-  
+
     // Update MACD and DEA lines
     function plotMACD(type, color){
       var line = d3.svg.line()
@@ -131,9 +132,15 @@ var MacdChart = {
     }
 
     plotMACD('dea', '#d7db74');
-    plotMACD('macd', '#236a82');
+    plotMACD('macd', '#25bcf1');
 
-    
+
+  },
+  updateLegends: function () {
+    var self = this;
+    $('#macd-chart-legend .dif').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].diff);
+    $('#macd-chart-legend .dea').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].dea);
+    $('#macd-chart-legend .macd').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].macd);
   },
   componentsBuilder: {
     chart: {
@@ -222,7 +229,7 @@ var MacdChart = {
       append: function () {
         MacdChart.components.leftBorder = MacdChart.components.chartLabel.append('svg:line')
                                                    .attr('class', 'yborder-left');
-        
+
       },
       update: function () {
         MacdChart.components.leftBorder
@@ -322,7 +329,7 @@ var MacdChart = {
         .attr('width',function(d) { return 0.8 * MacdChart.properties.graphWidth/MacdChart.data.stockLine.length; })
         .attr('fill', function(d) { return +d.diff > 0 ? '#f65c4e' : '#3bbb57'; });
       }
-    }, 
+    },
     scrollbarRail: {
       append: function () {
         MacdChart.components.scrollbarRail = MacdChart.components.chartLabel
@@ -338,7 +345,7 @@ var MacdChart = {
                                             .on('mouseleave', function(){
                                               ChartView.hideAllScrollbars();
                                             })
-                                            .style('fill-opacity', 0);
+                                            .attr('fill-opacity', 0);
       },
       update: function(){
         MacdChart.components.scrollbarRail.attr('width', ChartView.properties.width);
@@ -378,7 +385,7 @@ var MacdChart = {
            }
         });
       }
-    },  
+    },
     mouseOverlay: {
       append: function () {
         MacdChart.components.mouseOverlay = MacdChart.components.chart.append('rect')
@@ -388,10 +395,14 @@ var MacdChart = {
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', MacdChart.properties.graphWidth)
-        .attr('height', MacdChart.properties.chartHeight - 5)
-        .call(ChartView.zoomBehavior())
-        .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());
+        .attr('height', MacdChart.properties.chartHeight - 5);
+
+        if(!IE8){
+          MacdChart.components.mouseOverlay
+            .call(ChartView.zoomBehavior())
+            .datum([])   //because d3 drag requires data/datum to be valid
+            .call(ChartView.chartDragBehavior()); 
+        }
       },
       update: function () {
         MacdChart.components.mouseOverlay
@@ -405,23 +416,22 @@ var MacdChart = {
           var xPos, mouseX, mouseY;
 
           if(IE8) {
-            /* TO BE FIXED:
-            xPos = eventX;
-            leftOffset = eventX - 60;
-            top = event.offsetY + ($('#rsi-checkbox').is(':checked')? 450:300);
-            */
+			xPos = event.clientX + document.documentElement.scrollLeft;
+			var yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+			mouseX = xPos + 10;
+			mouseY = yPos + 60;
           }
           else {
             xPos = d3.mouse(this)[0];
             mouseX = d3.event.pageX;
-            mouseY = d3.event.pageY;
+            mouseY = d3.event.pageY + 10;
           }
-
+		  
           var j = ChartView.xInverse((IE8?xPos-55:xPos), MacdChart.data.x);
           var d = MacdChart.data.stockLine[j];
 
           var model = {
-            top: mouseY + 10,
+            top: mouseY,
             // 10 = horizontal distance from mouse cursor
             left: ChartView.properties.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
             // if the right edge touches the right y axis

@@ -5,6 +5,7 @@
   =Nav
   =Dropdown menu
   =SVG
+  =Upgrade Browser
   =Dashboard
   =Price Chart
   =Sentiment Chart
@@ -33,7 +34,6 @@ html {
 }
 body {
   overflow-x: hidden !important;
-  overflow-y: scroll !important;
 }
 
 body::-webkit-scrollbar {
@@ -163,7 +163,9 @@ body::-webkit-scrollbar {
   position: absolute;
   top: 3px;
   margin-left: 3px;
+  cursor: pointer;
 }
+
 .outer .rise { color: #d74e37; }
 .outer .fall { color: #3bbb57; }
 .outer .neutral { color: rgb(107, 107, 107); }
@@ -325,6 +327,26 @@ body::-webkit-scrollbar {
   fill: white;
   cursor: default;
 }
+
+/* =Upgrade Browser
+-------------------------------------------------------------- */
+.outer .upgrade-browser {
+  width: 100%;
+  height: 50px;
+  background: #262626;
+  margin-bottom: 5px;
+  border: 1px solid #333;
+  position: relative;
+}
+
+.outer .upgrade-browser .text {
+  color: #fff;
+  border: none;
+  position: absolute;
+  left: 40%;
+  top: 30%;
+}
+
 /* =Dashboard
 -------------------------------------------------------------- */
 .outer #snapshot {
@@ -531,19 +553,19 @@ body::-webkit-scrollbar {
 .outer #macd-chart { position: relative; }
 
 .outer #macd-dea-legend {
-  color: #d8db74;
+  color: #d7db74;
 }
 
 .outer #macd-legend {
-  color: #236a82;
+  color: #25bcf1;
 }
 
 .outer #macd-dea-legend-line {
-  border-color: #d8db74;
+  border-color: #d7db74;
 }
 
 .outer #macd-legend-line {
-  border-color: #236a82;
+  border-color: #25bcf1;
 }
 
 .outer #macd > .wrapper > .buttons > ul > li {
@@ -555,6 +577,10 @@ body::-webkit-scrollbar {
 .outer #macd .legend,
 .outer #rsi  .legend {
   margin-right: 15px;
+}
+
+.outer #sentiment > .legend {
+  margin-right: 100px;
 }
 
 .outer .legend > li{
@@ -717,7 +743,12 @@ body::-webkit-scrollbar {
 
 .outer #price .chart-header,
 .outer #sentiment .chart-header {
-  padding: 8px 35px 8px 13px;
+  padding: 8px 33px 8px 13px;
+}
+
+
+.outer #sentiment .legend {
+  padding-right: 0;
 }
 
 .outer .container {
@@ -820,6 +851,11 @@ body::-webkit-scrollbar {
 #sentiment-tooltip .wrapper .extra {
     display: inline-block;
 }
+#sentiment-tooltip .wrapper .arrow-number {
+  text-align: right;
+  float: right;  
+}
+
 
 #sentiment-tooltip .wrapper .arrow-text,
 #sentiment-tooltip .wrapper .arrow-number {
@@ -870,20 +906,34 @@ body::-webkit-scrollbar {
   user-select: none;
 }
 
-#sentiment-chart-legend {
+#sentiment-chart-legend,
+#macd-chart-legend,
+#rsi-chart-legend {
   color: rgb(160, 160, 160);
-
   position: absolute;
-  top: 45px;
+  top: 48px;
   left: 50px;
 }
 
-#sentiment-chart-legend li {
+#macd-chart-legend,
+#rsi-chart-legend {
+  top: 43px;
+}
+
+
+
+#sentiment-chart-legend li,
+#macd-chart-legend li,
+#rsi-chart-legend li {
   padding-right: 7.5px;
 }
 
 #sentiment-chart-legend li,
-#sentiment-chart-legend li div{
+#macd-chart-legend li,
+#rsi-chart-legend li,
+#sentiment-chart-legend li div,
+#macd-chart-legend li div,
+#rsi-chart-legend li div{
   display: inline-block;
 }
 /* =Nav
@@ -1257,6 +1307,7 @@ body::-webkit-scrollbar {
   border-radius: 3px;
   background-color: rgb(107, 107, 107);
   margin-right: 10px;
+  margin-top: 4px;
   float: left;
 }
 .outer .name-and-date {
@@ -1346,7 +1397,7 @@ body::-webkit-scrollbar {
   padding: 0;
   overflow: visible;
   display: block;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
 .outer #stockpicker-wrapper {
@@ -1547,8 +1598,8 @@ body::-webkit-scrollbar {
 .outer #search-result:before {
     content: ' ';
     position: absolute;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
     border-bottom: 12px solid #3c3c3c;
@@ -1567,7 +1618,7 @@ body::-webkit-scrollbar {
   padding-left: 5px;
 }
 
-.outer .search-block:hover .ticker, 
+.outer .search-block:hover .ticker,
 .outer .search-block:hover .stock-name a {
   color: rgb(47, 184, 244);
 }
@@ -1799,7 +1850,7 @@ body::-webkit-scrollbar {
   border: 0px;
 }
 
-.outer #news-content a, 
+.outer #news-content a,
 .outer #news-content a:hover {
   color: #FFFFFF;
 }
@@ -1813,13 +1864,13 @@ body::-webkit-scrollbar {
 
 .outer #press-by-time .calendar-and-date {
   background: url('../assets/chart/news-background.png') repeat-x top left;
-  width: 300px; 
+  width: 300px;
 }
 
 .outer #press-by-time .arrow-sign {
   background: url('../assets/mb-spritesheet.png') no-repeat top left;
-  background-position: 0px -1866px; 
-  width: 20px; 
+  background-position: 0px -1866px;
+  width: 20px;
   height: 20px;
   padding-left: 3px;
 }
@@ -1853,7 +1904,7 @@ body::-webkit-scrollbar {
 
 .outer .calendar {
   background: url('../assets/mb-spritesheet.png') no-repeat top left;
-  width: 11px; 
+  width: 11px;
   height: 10px;
   background-position: 0px -496px;
   margin: 5px 5px 0px 0px;
@@ -1895,6 +1946,7 @@ body::-webkit-scrollbar {
   border-radius: 3px;
   padding: 2px 6px 2px 6px;
   font-size: 12px;
+  width: 111px;
 }
 
 .outer .news-block {
@@ -1919,6 +1971,10 @@ body::-webkit-scrollbar {
 
 .outer .news-block .mood-change {
   padding-left: 25px;
+}
+
+.outer .news-block.fall .mood-change {
+  padding-left: 28px;
 }
 
 .outer .time-and-source .time,
@@ -1970,7 +2026,7 @@ body::-webkit-scrollbar {
   background-color: #595959;
   color: #FFFFFF;
 }
-    
+
 .outer #news-tabs li.active a:hover {
   background-color: #595959;
   color: #FFFFFF;
@@ -2040,7 +2096,7 @@ body::-webkit-scrollbar {
 .outer #toolbar {
   position: absolute;
   left: 54px;
-  top: 49px;
+  top: 45px;
   z-index: 10;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -2092,16 +2148,18 @@ body::-webkit-scrollbar {
 }
 
 .outer #macd > .wrapper > .buttons {
-  width: 180px;
+  width: 250px;
+  text-align: right;
 }
 
 .outer #rsi > .wrapper > .buttons {
   width: 250px;
+  text-align: right;
 }
 
 .outer #rsi > .wrapper > .buttons > ul > li {
   display: inline-block;
-  padding-left: 5px;
+  padding-right: 15px;
 }
 
 .outer #rsi > .wrapper > .buttons > ul,
@@ -2128,11 +2186,11 @@ body::-webkit-scrollbar {
 }
 
 .outer #rsi24-legend {
- color: #784e7a;
+ color: #94599d;
 }
 
 .outer #rsi24-legend-line {
-  border-color: #784e7a;
+  border-color: #94599d;
 }
 
 .outer #rsi6-legend-line {
@@ -2142,6 +2200,11 @@ body::-webkit-scrollbar {
 .outer #macd > .wrapper > .buttons > ul,
 .outer #macd > .wrapper > .buttons > .close {
   display: inline-block;
+}
+
+.outer #macd > .wrapper > .buttons > ul > li {
+  display: inline-block;
+  padding-right: 15px;
 }
 
 .outer #rsi > .wrapper > .buttons,
@@ -2234,6 +2297,11 @@ body::-webkit-scrollbar {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+}
+
+#sentiment-info-modal,
+#index-info-modal {
+  width: 470px;
 }
 
 .outer .modal h1 {

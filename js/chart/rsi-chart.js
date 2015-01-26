@@ -43,11 +43,12 @@ var RsiChart = {
       allDataArray.push(parseInt(self.data.stockLine[i].rsi12));
       allDataArray.push(parseInt(self.data.stockLine[i].rsi24));
     }
-    var y2Range = [0, 120];
+    var y2Range = [20, 110];
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
-    
+    self.updateLegends();
+
   },
   initCloseAction: function() {
     $('#rsi > .wrapper > .buttons > .close').on('click', function() {
@@ -102,7 +103,7 @@ var RsiChart = {
       if (self.componentsBuilder[key].enter) {
         self.components[key].exit().remove();
       }
-    }    
+    }
     // Draw RSI lines
     function plotRSI(rsi, color){
       var line = d3.svg.line()
@@ -123,7 +124,7 @@ var RsiChart = {
 
     plotRSI(6,'#fff');
     plotRSI(12,'#d8db74');
-    plotRSI(24,'#784e7a');
+    plotRSI(24,'#94599d');
 
   },
   drawContainer: function(){
@@ -135,6 +136,12 @@ var RsiChart = {
     self.componentsBuilder.rightBorder.update();
     self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.update();
+  },
+  updateLegends: function () {
+    var self = this;
+    $('#rsi-chart-legend .rsi6').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].rsi6);
+    $('#rsi-chart-legend .rsi12').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].rsi12);
+    $('#rsi-chart-legend .rsi24').text(ChartView.getStockLine()[ChartView.getStockLine().length-1].rsi24);
   },
   componentsBuilder: {
     chart: {
@@ -164,10 +171,9 @@ var RsiChart = {
                                            .attr('class', 'chart');
       },
       update: function () {
-        RsiChart.components.chartLabel         
+        RsiChart.components.chartLabel
         .attr('width', ChartView.properties.width)
-        .attr('height', RsiChart.properties.height-17)
-        .select('svg').attr('width', ChartView.getContainerWidth());
+        .attr('height', RsiChart.properties.height-17);
       }
     },
     topBorder: {
@@ -269,7 +275,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data(RsiChart.helpers.getYLabelsData([0, 100]));
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([20, 60, 100]);
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -323,7 +329,7 @@ var RsiChart = {
                                             .on('mouseleave', function(){
                                               ChartView.hideAllScrollbars();
                                             })
-                                            .style('fill-opacity', 0);
+                                            .attr('fill-opacity', 0);
       },
       update: function(){
         RsiChart.components.scrollbarRail.attr('width', ChartView.properties.width);
@@ -359,7 +365,7 @@ var RsiChart = {
            ChartView.properties.mouseOverScrollbar = false;
         });
       }
-    },  
+    },
     mouseOverlay: {
       append: function () {
       // Tooltip
@@ -370,10 +376,14 @@ var RsiChart = {
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
         .attr('width', RsiChart.properties.graphWidth)
-        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10)
-        .call(ChartView.zoomBehavior())
-        .datum([])   //because d3 drag requires data/datum to be valid
-        .call(ChartView.chartDragBehavior());
+        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10);
+
+        if(!IE8){
+          RsiChart.components.mouseOverlay
+          .call(ChartView.zoomBehavior())
+          .datum([])   //because d3 drag requires data/datum to be valid
+          .call(ChartView.chartDragBehavior());
+        }
       },
       update: function () {
         RsiChart.components.mouseOverlay
@@ -387,23 +397,22 @@ var RsiChart = {
           var xPos, mouseX, mouseY;
 
           if(IE8) {
-            /* TO BE FIXED:
-            xPos = eventX;
-            leftOffset = eventX - 60;
-            top = event.offsetY + 300;
-            */
+			xPos = event.clientX + document.documentElement.scrollLeft;
+			var yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+			mouseX = xPos + 10;
+			mouseY = yPos + 60;
           }
           else {
             xPos = d3.mouse(this)[0];
             mouseX = d3.event.pageX;
-            mouseY = d3.event.pageY;
+            mouseY = d3.event.pageY + 10;
           }
 
           var j = ChartView.xInverse((IE8?xPos-55:xPos), RsiChart.data.x);
           var d = RsiChart.data.stockLine[j];
 
           var model = {
-            top: mouseY + 10,
+            top: mouseY,
             // 10 = horizontal distance from mouse cursor
             left: ChartView.properties.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
             // if the right edge touches the right y axis

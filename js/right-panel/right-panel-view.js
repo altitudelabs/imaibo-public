@@ -1,5 +1,4 @@
 var RightPanel = {
-  data: {},
   el: $('#right-panel'),
   collapsed: {
     el: $('#right-panel-collapsed'),
@@ -47,24 +46,6 @@ var RightPanel = {
       StickyColumns.start();
     }, 400);
   },
-
-  /*
-   * Populate HandlebarJS template.
-   * ==============================
-   * arguments:
-   *  - targetSelector: DOM object of your target div. i.e. $('#expertsView')
-   *  - templateSelector: DOM object of your template. i.e. $('#experts-template')
-   *  - resource: the data you are passing in. e.g. {name: 'Ray'}
-   *  - returnHtml: return HTML instead of replacing HTML in target selector
-   */
-  populateView: function (targetSelector, templateSelector, resource, returnHtml){
-    var template = Handlebars.compile(templateSelector.html());
-    if (returnHtml) {
-      return template(resource);
-    } else {
-      targetSelector.html(template(resource));
-    }
-  },
   expandView: function(){
     var self = this;
     // cannot set width directly as there may be problems with sticky kit
@@ -91,9 +72,7 @@ var RightPanel = {
   },
   /* Stockpicker module */
   initStockpickerModule: function(){
-    if (!HIDE) {
-      this.renderStockpickerView(true);
-    }
+    this.renderStockpickerView(true);
   },
   canFindStockFromList: function(stockId) {
     var lengthOfStocks = RightPanelModel.model.stock.list.length;
@@ -106,11 +85,13 @@ var RightPanel = {
 
     return false;
   },
-  updateStockpickerSettingsPanel: function(model) {
+  updateStockpickerSettingsPanel: function(addPanelStocks, addPanelStockGroupName) {
     var self = this;
-    var numberOfTable = model.length;
+    var numberOfTable = addPanelStocks.length;
 
     for (var i = 0; i < numberOfTable; i++) {
+      $('#stocktable' + (i + 2) + '-name').html(addPanelStockGroupName[i]);
+
       var template;
       if (i == 0)
         template = '<td class="add-stock-name white"></td><td class="add-stock-price"></td><td class="add-stock-change"></td><td class="add-stock-change-ratio"></td>';
@@ -118,21 +99,44 @@ var RightPanel = {
         template = '<td class="add-stock-name"></td><td class="add-stock-price"></td><td class="add-stock-change"></td><td class="add-stock-change-ratio"></td><td class="add-stock-button"><span class="not-selected"></span></td>';
 
       var selectorName = '#stocktable' + (i + 1) + ' tbody';
-      var stockTable = d3.select(selectorName)
-                         .selectAll('tr')
-                         .data(model[i]);
 
-      // Enter loop
-      stockTable.enter().append('tr')
-                        .attr("class", function(d) {
-                          if (d.pxchg == 0)
-                            return "add-security-row neutral";
-                          if (d.sign === '+')
-                            return "add-security-row rise";
-                          else
-                            return "add-security-row fall";
-                        })
-                        .html(template);
+  	  if(LteIE9){
+  		   var data = addPanelStocks[i];
+  		   var $table = $(selectorName),
+  			   $rows = $(selectorName + ' tr'),
+  			   rowsToAdd = data.length - $rows.length;
+
+  		   for (var j = 0; j < rowsToAdd; j++) {
+  			   var tr = '<tr class='
+  			   var d = data[j];
+  			   if(d.pxchg == 0){
+  				   tr += '"add-security-row neutral"';
+  			   }else if(d.sign === '+'){
+  				   tr += '"add-security-row rise"';
+  			   }else {
+  				   tr += '"add-security-row fall"';
+  			   }
+  			   tr += '>';
+  			 $table.append(tr + template + '</tr>');
+  		   }
+  	  }
+
+      var stockTable = d3.select(selectorName)
+                       .selectAll('tr')
+                       .data(addPanelStocks[i]);
+
+	    if(!LteIE9){
+		    stockTable.enter().append('tr')
+          .attr("class", function(d) {
+            if (d.pxchg == 0)
+              return "add-security-row neutral";
+            if (d.sign === '+')
+              return "add-security-row rise";
+            else
+              return "add-security-row fall";
+          })
+          .html(template);
+	    }
 
       // Exit loop
       stockTable.exit().remove();
@@ -141,7 +145,7 @@ var RightPanel = {
       if (i == 0)
         stockTable.select('.add-stock-name').html(function(d) { return d.stockName; });
       else
-        stockTable.select('.add-stock-name').html(function(d) { 
+        stockTable.select('.add-stock-name').html(function(d) {
           var htmlCode = '<a href="'+ d.url + '" target="_blank" class="white">' + d.stockName + '</a>'
           return htmlCode;
         });
@@ -156,12 +160,12 @@ var RightPanel = {
             return 'not-selected ' + 'Id' + d.stockId;
         });
       }
-      stockTable.select('.add-stock-button span').on('click', function(d) { 
+      stockTable.select('.add-stock-button span').on('click', function(d) {
         if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
           login_show();
         }
         else {
-          var selectorName = '.add-stock-button span.Id' + d.stockId; 
+          var selectorName = '.add-stock-button span.Id' + d.stockId;
           var spanObjects = d3.selectAll(selectorName); // select all elements with that stockId so as to change all their buttons
           var thisSpanObject = d3.select(this);
 
@@ -215,8 +219,8 @@ var RightPanel = {
       var error = RightPanelModel.model.getAddPanelStocksError;
 
       if(!error) {
-        self.updateStockpickerSettingsPanel(RightPanelModel.model.addPanelStocks);
-      } 
+        self.updateStockpickerSettingsPanel(RightPanelModel.model.addPanelStocks, RightPanelModel.model.addPanelStockGroupName);
+      }
     });
   },
   updateSearchResult: function(key) {
@@ -239,8 +243,8 @@ var RightPanel = {
       searchBlocks.exit().remove();
 
       // Update loop
-      searchBlocks.select('.stock-name').html(function(d){ 
-        return '<a href="' + d.url + '" target="_blank">' + d.stockName + '</a>'; 
+      searchBlocks.select('.stock-name').html(function(d){
+        return '<a href="' + d.url + '" target="_blank">' + d.stockName + '</a>';
       });
       searchBlocks.select('.ticker').html(function(d){ return '(SZ' + d.stockCode + ")"; });
       if (typeof _MID_ !== 'undefined' && _MID_ !== 0 && _MID_ !== '') { // if logged in
@@ -251,12 +255,12 @@ var RightPanel = {
             return 'not-selected search-add-stock-button';
         });
       }
-      searchBlocks.select('.search-add-stock-button').on('click', function(d) { 
+      searchBlocks.select('.search-add-stock-button').on('click', function(d) {
         if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
           login_show();
         }
         else {
-          var selectorName = '.add-stock-button span.Id' + d.stockId; 
+          var selectorName = '.add-stock-button span.Id' + d.stockId;
           var AddPanelSpanObjects = d3.selectAll(selectorName); // select all elements with that stockId so as to change all their buttons
           var thisSpanObject = d3.select(this);
 
@@ -351,7 +355,7 @@ var RightPanel = {
 
         if (model.stock.isLogin) {
           self.hideStockpickerLoginPanel();
-        } 
+        }
         else {
           $('#login').click(function() {
             if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
@@ -363,12 +367,12 @@ var RightPanel = {
         // Refresh sticky columns after height change
         StickyColumns.start();
 
-        $('#stockpicker-view .panel-loader-wrapper').remove();
+        $('#stockpicker-view > .panel-loader-wrapper').remove();
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        self.refreshStockpickerView();
-      } 
+        if(!IE8) self.refreshStockpickerView();
+      }
       else {
         self.updateStockpickerView(model);
 
@@ -405,19 +409,15 @@ var RightPanel = {
       self.noStocks = false;
     }
 
-    var template = '<td><div class="indicator"></div></td> \
-                    <td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td> \
-                    <td class="zxg-price">{{lastpx}}</td> \
-                    <td class="zxg-price-change-abs">{{pxchg}}</td> \
-                    <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
+	  var template = '<td><div class="indicator"></div></td>'                               +
+                   '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
+                   '<td class="zxg-price">{{lastpx}}</td>'                                +
+                   '<td class="zxg-price-change-abs">{{pxchg}}</td>'                      +
+                   '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
-    var table = d3.select('#stockpicker-table-body')
-                  .selectAll('tr')
-                  .data(model.stock.list); // model.stock = data
+	  var tableID = '#stockpicker-table-body';
+	  var table = Helper.enterLoop(tableID, model.stock.list, template, LteIE9);
 
-    // Enter loop
-    table.enter().append('tr')
-                 .html(template);
 
     // Exit loop
     table.exit().remove();
@@ -426,15 +426,14 @@ var RightPanel = {
     table.attr('class', function(d) {
       if (d.sign === '+'){
         return 'rise';
-      } 
+      }
       else if (d.sign === '-') {
         return 'fall';
-      } 
+      }
       else {
         return 'neutral';
       }
     });
-
     table.select('.zxg-ticker').html(function(d) {
       return '<a href="' + d.stockUrl + '" target="_blank" class="white">' + d.stockName + '</a>';
     });
@@ -456,17 +455,17 @@ var RightPanel = {
         self.noStocks == false;
       }
 
-      var template = '<td><div class="indicator"></div></td> \
-                    <td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td> \
-                    <td class="zxg-price">{{lastpx}}</td> \
-                    <td class="zxg-price-change-abs">{{pxchg}}</td> \
-                    <td class="zxg-price-change-rel">{{pxchgratio}}</td>';
+      var template = '<td><div class="indicator"></div></td>' +
+                    '<td class="zxg-ticker"><a href="{{stockUrl}}">{{stockName}}</a></td>' +
+                    '<td class="zxg-price">{{lastpx}}</td>' +
+                    '<td class="zxg-price-change-abs">{{pxchg}}</td>' +
+                    '<td class="zxg-price-change-rel">{{pxchgratio}}</td>';
 
       var table = d3.select('#stockpicker-table-body')
                     .selectAll('tr')
                     .data(model.stock.list); // model.stock = data
 
-      // Enter loop
+      // // Enter loop
       table.enter().append('tr')
                    .html(template);
 
@@ -477,10 +476,10 @@ var RightPanel = {
       table.attr('class', function(d) {
         if (d.sign === '+') {
           return 'rise';
-        } 
+        }
         else if (d.sign === '-') {
           return 'fall';
-        } 
+        }
         else {
           return 'neutral';
         }
@@ -508,13 +507,13 @@ var RightPanel = {
   },
   refreshStockpickerView: function() {
     // renderStockpickerView cannot be used as the function to refresh
-    // if renderStockpickerView is used, 
+    // if renderStockpickerView is used,
     // when refreshStockpickerView is called during refresh and the user tried to add stock,
     // refreshStockpickerView is called twice which may cause some problems
     var self = this;
     var refreshRate = 5000;
 
-    // setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+    setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
   /* Experts module */
   initExpertsModule: function() {
@@ -541,7 +540,7 @@ var RightPanel = {
           // If user not logged in, show login panel
           if (typeof _MID_ === 'undefined' || _MID_ === 0 || _MID_ === '') {
             login_show();
-          } 
+          }
           else {
             // Otherwise, like comment
             RightPanelModel.likeCommentAsync(weiboId)
@@ -560,7 +559,7 @@ var RightPanel = {
           }
 
         });
-      } 
+      }
       else {
         $('#experts-view').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
         $('#experts-view .panel-loader-wrapper').remove();
@@ -589,7 +588,7 @@ var RightPanel = {
                           return "news-block neutral";
                         if (d.sent === '+')
                           return "news-block rise";
-                        else 
+                        else
                           return "news-block fall";
                       })
                       .html(template);
@@ -603,11 +602,11 @@ var RightPanel = {
       return htmlCode;
     });
     newsBlocks.select('.time').html(function(d) { return d.clock.substr(0, 5); });
-    newsBlocks.select('.mood-change').html(function(d) { 
+    newsBlocks.select('.mood-change').html(function(d) {
       if (d.newsMood == 0)
-        return d.newsMood; 
+        return d.newsMood;
       else
-        return d.sent + d.newsMood; 
+        return d.sent + d.newsMood;
     });
     newsBlocks.select('.source').html(function(d){ return '来自' + d.source; });
   },
@@ -657,7 +656,7 @@ var RightPanel = {
                             return "news-block neutral";
                           if(d.sent === '+')
                             return "news-block rise";
-                          else 
+                          else
                             return "news-block fall";
                         })
                         .html(newsBlockTemplate);
@@ -669,23 +668,23 @@ var RightPanel = {
         return htmlCode;
       });
       newsBlocks.select('.time').html(function(d){ return d.clock.substr(0, 5); });
-      newsBlocks.select('.mood-change').html(function(d){ 
+      newsBlocks.select('.mood-change').html(function(d){
         if (d.newsMood == 0)
-          return d.newsMood; 
+          return d.newsMood;
         else
-          return d.sent + d.newsMood; 
+          return d.sent + d.newsMood;
       });
       newsBlocks.select('.source').html(function(d){ return "来自" + d.source; });
     }
-    
+
     this.setTimebarListener();
   },
   setTimebarListener: function() {
     var self = this;
 
-    $('#press-by-time .calendar-and-date').click(function() { 
+    $('#press-by-time .calendar-and-date').click(function() {
       var $thisObject = $(this);
-      
+
       $thisObject.siblings().stop().slideToggle('slow', function() {
         StickyColumns.start();
       });
@@ -722,18 +721,13 @@ var RightPanel = {
     });
   },
   render: function(){
-    if(HIDE) { //app.js
-      this.goTo('expertsView');
-    }
-    else {
-      this.goTo('chooseStockView');
-    }
+    this.goTo('chooseStockView');
   },
   initNewsTabs: function() {
     var showTab = 1; // show the first tab by default
     var $defaultLi = $('ul#news-tabs li').eq(showTab).addClass('active');
     $($defaultLi.find('a').attr('href')).siblings().hide();
- 
+
     $('ul#news-tabs li').click(function() {
       var $this = $(this), clickTab = $this.find('a').attr('href');
 
@@ -745,7 +739,7 @@ var RightPanel = {
 
       // Refresh sticky columns after height change
       StickyColumns.start();
- 
+
       return false;
     });
   },

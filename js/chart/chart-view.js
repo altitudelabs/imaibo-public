@@ -5,7 +5,7 @@ var ChartView = {
     error: {},
   },
   properties: {
-    refreshFrequency: 6000,
+    refreshFrequency: 60000,
     scrollSpeed: 2,
     scrollbarPos: 0,
     mode: 'daily'
@@ -82,7 +82,7 @@ var ChartView = {
     return d3.scale.linear()
     .domain([min, max])
     .range([height-props.margin.bottom, props.margin.top]);
-  }, 
+  },
   //return .volumn
 // range -> volumeHeight
   v: function(returnProp) {
@@ -148,7 +148,7 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
-    
+
     ChartModel.getInitialData()
     .done(function (indexError, sentimentError) {
       self.updateChartViewData(indexError, sentimentError, true);
@@ -170,7 +170,7 @@ var ChartView = {
         ChartModel.updateAllData(indexOption, sentimentOption)
         .done(function (indexError, sentimentError) {
           self.updateChartViewData(indexError, sentimentError);
-          try { self.updateChartElements(); } catch (error) { console.log(error); }
+          try { self.updateChartElements(); } catch (error) {  }
         });
       }, self.properties.refreshFrequency);
     }
@@ -240,17 +240,20 @@ var ChartView = {
     self.data.visibleStockLine = self.data.index.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
-  /* Initial build of chart elements */
+  // /* Initial build of chart elements */
   buildChartElements: function() {
+	$('#price').css('visibility', 'visible');
+	$('#macd').css('visibility', 'visible');
+	$('#rsi').css('visibility', 'visible');
+	$('#sentiment').css('visibility', 'visible');
+
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
       IndexChart.init();
       Toolbar.render(self.data.index);
-      if(!HIDE) {
-        RsiChart.init();
-        MacdChart.init();
-      }
+      RsiChart.init();
+      MacdChart.init();
       ChartView.setScrollbarWidth();
       Dashboard.render(self.data.info);
     } else {
@@ -258,14 +261,7 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    // SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
-
-    // Make charts visible
-    $('#price').css('visibility', 'visible');
-    $('#macd').css('visibility', 'visible');
-    $('#rsi').css('visibility', 'visible');
-    $('#sentiment').css('visibility', 'visible');
 
     // Remove loaders
     $('.loader').remove();
@@ -296,7 +292,7 @@ var ChartView = {
     }
 
     StickyColumns.start();
-    
+
     $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();
     ChartView.setScrollbarPos();
@@ -307,7 +303,7 @@ var ChartView = {
     var newLength = Math.floor(self.data.dataSetLength / zoomFactor);
     if (newLength < 20) { return; }
     // if (newLength > 250) { return; }
-    if (newLength > ChartView.getStockLine().length) { 
+    if (newLength > ChartView.getStockLine().length) {
       newLength = ChartView.getStockLine().length;
     }
     if (ChartView.getLastDataIndex() - newLength < 0) {
@@ -322,9 +318,9 @@ var ChartView = {
        RsiChart  .components.scrollBar.style('fill-opacity', 50);
        MacdChart .components.scrollBar.style('fill-opacity', 50);
     }else{
-       IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
-       RsiChart  .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
-       MacdChart .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
+       IndexChart.components.scrollBar.style('fill-opacity', 0);
+       RsiChart  .components.scrollBar.style('fill-opacity', 0);
+       MacdChart .components.scrollBar.style('fill-opacity', 0);
     }
     ChartView.setDataSetLength(newLength);
     self.setScrollbarWidth();
@@ -341,35 +337,41 @@ var ChartView = {
 
                       if(deltaY > 0){
                         ChartView.moveToLeft();
-                        // ChartView.moveScrollbarToLeft();
                       }else if(deltaY < 0){
                         ChartView.moveToRight();
-                        // ChartView.moveScrollbarToRight();
                       }
                     });
   },
   scrollbarDragBehavior: function(){
+    var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
-          .on('drag', function(d){
+          .on('drag', function(d){            
+            var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
+            if (xPos < 0 || xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) {
+              return;
+            }
+            self.moveScrollBar(xPos, this);
+
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
             var speed = Math.ceil(ChartView.getVisibleStockLine().length * 0.075);
-            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth()) 
+            if(xPos + ChartView.getScrollbarWidth() > ChartView.getChartWidth())
               xPos = ChartView.getChartWidth() - ChartView.getScrollbarWidth();
             if(xPos < 0)
               xPos = 0;
-
-            ChartView.properties.scrollbarPos = xPos;
-            d3.select(this).attr('x', ChartView.properties.scrollbarPos);
-            var index = d3.event.dx / ChartView.getChartWidth() * ChartView.getStockLine().length;
-
-            if(d3.event.dx > 0){
-              ChartView.moveToRight(index);
-            }else{
-              ChartView.moveToLeft(index);
-            }
           });
           return this.properties.scrollbarDragBehavior;
+  },
+  moveScrollBar: function (xPos, scrollbar) {
+    ChartView.properties.scrollbarPos = xPos;
+
+    d3.select(scrollbar).attr('x', ChartView.properties.scrollbarPos);
+    var index = Math.round(xPos / ChartView.getChartWidth() * ChartView.getStockLine().length);
+    if (index !== ChartView.data.lastDataIndex - ChartView.data.dataSetLength) {
+      ChartView.data.lastDataIndex = index + ChartView.data.dataSetLength;
+      ChartView.redraw();
+    }
+
   },
   chartDragBehavior: function(){
     var self = this;
@@ -378,18 +380,18 @@ var ChartView = {
     .on("drag", function(d){
       if(d3.event.dx < 0){
         ChartView.moveToRight();
-        // ChartView.moveScrollbarToRight();
       }else{
         ChartView.moveToLeft();
-        // ChartView.moveScrollbarToLeft();
       }
     });
   },
-  moveToRight: function (delta) {
+  moveToRight: function () {
     var self = this;
-    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
+    var speed = ChartView.getVisibleStockLine().length * 0.05;
         speed = Math.ceil(speed);
-    if(self.data.lastDataIndex + speed > ChartView.getStockLine().length) { 
+        speed = Math.abs(speed);
+
+    if(self.data.lastDataIndex + speed > ChartView.getStockLine().length) {
       self.data.lastDataIndex = ChartView.getStockLine().length;
     } else {
       self.data.lastDataIndex+=speed;
@@ -398,14 +400,15 @@ var ChartView = {
     self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
-    // self.properties.scrollbarPos += speed; 
-  }, 
-  moveToLeft: function (delta) {
+    // self.properties.scrollbarPos += speed;
+  },
+  moveToLeft: function () {
     var self  = this;
-    var speed = delta || ChartView.getVisibleStockLine().length * 0.05;
-    speed = Math.ceil(speed);
-    speed = Math.abs(speed);
-    if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) { 
+    var speed = ChartView.getVisibleStockLine().length * 0.05;
+        speed = Math.ceil(speed);
+        speed = Math.abs(speed);
+
+    if(self.data.lastDataIndex - ChartView.getVisibleStockLine().length - speed < 0) {
       self.data.lastDataIndex = ChartView.getVisibleStockLine().length;
     } else {
       self.data.lastDataIndex -= speed;
@@ -414,7 +417,7 @@ var ChartView = {
     self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
-    
+
     if(ChartView.getLastDataIndex() - ChartView.data.visibleStockLine.length === 0){
       self.getPastIndexData();
     }
@@ -430,21 +433,22 @@ var ChartView = {
   },
   rebuild: function() {
     ChartView.setProperties();
-    if(!this.data.error.index.isError){
+     try {
       ChartView.updateVisibleStockLine();
       ChartView.setScrollbarWidth();
       ChartView.setScrollbarPos();
       RsiChart.update();
       MacdChart.update();
       IndexChart.update();
-    }else{
+    } catch (error) {
       IndexChart.updateWithError();
     }
     try { SentimentChart.update(); } catch (error) { SentimentChart.initWithError(); }
-    
+
     $('.zoomable-chart-container').css('width', '100%');
   },
   showAllScrollbars: function(){
+    if(!ChartView.isZoomed()) return;
       RsiChart.components.scrollBar.style('fill-opacity', 100);
       IndexChart.components.scrollBar.style('fill-opacity', 100);
       MacdChart.components.scrollBar.style('fill-opacity', 100);
@@ -456,7 +460,7 @@ var ChartView = {
   },
   mouseOverMouseOverlay: function(){
     ChartView.properties.mouseOverChart = true;
-    if(ChartView.isZoomed()){ 
+    if(ChartView.isZoomed()){
     $('html').css('overflow', 'hidden');
       ChartView.showAllScrollbars();
     }
@@ -548,10 +552,10 @@ var ChartView = {
   },
   getScrollbarPos: function(){
     return ChartView.properties.scrollbarPos;
-  }, 
+  },
   setScrollbarPos: function(){
     var x =  (ChartView.getLastDataIndex() - ChartView.getVisibleStockLine().length)/ChartView.getStockLine().length * ChartView.getChartWidth();
     ChartView.properties.scrollbarPos = x;
-  } 
+  }
 };
 

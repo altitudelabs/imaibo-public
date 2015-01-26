@@ -2,10 +2,12 @@ var Toolbar = {
   el: '#toolbar',
   init: function(){
     //this.initDropdown();
-    this.initZoom();
+    if(!IE8){
+      this.initZoom();
+      this.initFreq(); 
+    }
     this.initRsi();
     this.initMacd();
-    this.initFreq();
   },
   render: function(model){
     var temp = model.stockLine.slice(-1).pop();
@@ -30,6 +32,24 @@ var Toolbar = {
     $("#ma5-checkbox").click();
     $("#ma10-checkbox").click();
     $("#ma20-checkbox").click();
+
+    if(IE8){
+      $("#ma5-checkbox").attr('checked', true);
+      $("#ma10-checkbox").attr('checked', true);
+      $("#ma20-checkbox").attr('checked', true);
+
+      $('#legend').attr('ma', '5, 10, 20');
+      _.each([5, 10, 20], function(e){
+        $('#legend').prepend('<li id="ma' + e + '-legend">'                                    +
+                              '<div id="ma' + e + '-legend-line" class="legend-line"></div>' +
+                              '<span>MA' + e + ': ' + temp['ma'+e] + '</span>'              +
+                           '</li>');
+      });
+    }
+
+
+
+   
 
 
     //bind checkbox listeners to each MA line
