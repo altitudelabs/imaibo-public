@@ -12,7 +12,7 @@ var ChartView = {
   },
   setProperties: function (options) {
     var self = this;
-    // //review
+    //review
     var properties = {
       width: $('#content').width(), // width of left panel
       margin: { top: 2, right: 45, bottom: 25, left: 45 }, // chart margins
@@ -67,7 +67,7 @@ var ChartView = {
     max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
-  // //return lowpx, highpx
+  //return lowpx, highpx
   y2: function(height, returnPropMax, returnPropMin, volumeHeight){
     var self = this;
     var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMin]; }));
@@ -116,8 +116,8 @@ var ChartView = {
     return j;
   },
   init: function(){
-    // // set up toolbar
-    // // this.horizontalScroll();
+    // set up toolbar
+    // this.horizontalScroll();
     var self = this;
     Toolbar.init();
     self.initInfoButtons();
@@ -261,15 +261,12 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
-    // // Make charts visible
-
-    // // Remove loaders
+    // Remove loaders
     $('.loader').remove();
     $('.dashboard-loader').remove();
-    // // Refresh sticky columns and scroll position
+    // Refresh sticky columns and scroll position
     StickyColumns.start();
   },
   /* Updates chart elements */
@@ -321,9 +318,9 @@ var ChartView = {
        RsiChart  .components.scrollBar.style('fill-opacity', 50);
        MacdChart .components.scrollBar.style('fill-opacity', 50);
     }else{
-       IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
-       RsiChart  .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
-       MacdChart .components.scrollBar.transition().duration(1000).style('fill-opacity', 0);
+       IndexChart.components.scrollBar.style('fill-opacity', 0);
+       RsiChart  .components.scrollBar.style('fill-opacity', 0);
+       MacdChart .components.scrollBar.style('fill-opacity', 0);
     }
     ChartView.setDataSetLength(newLength);
     self.setScrollbarWidth();
