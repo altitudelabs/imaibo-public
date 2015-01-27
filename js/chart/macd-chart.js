@@ -407,33 +407,42 @@ var MacdChart = {
       update: function () {
         MacdChart.components.mouseOverlay
         .on('mouseover', function(e){
-         ChartView.mouseOverMouseOverlay();
-          return Tooltip.show(); })
+          ChartView.mouseOverMouseOverlay();
+          return Tooltip.show.macd();
+        })
         .on('mouseout', function(){
           ChartView.mouseOutMouseOverlay();
-          return Tooltip.hide(); })
+          return Tooltip.hide.macd();
+        })
         .on('mousemove', function(){
-          var xPos, mouseX, mouseY;
+          Tooltip.show.macd();
+          var xPos, yPos, mouseX, mouseY;
 
           if(IE8) {
-			xPos = event.clientX + document.documentElement.scrollLeft;
-			var yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
-			mouseX = xPos + 10;
-			mouseY = yPos + 60;
+      			xPos = event.clientX + document.documentElement.scrollLeft;
+      			yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+      			// mouseX = xPos + 10;
+      			// mouseY = yPos + 60;
           }
           else {
             xPos = d3.mouse(this)[0];
-            mouseX = d3.event.pageX;
-            mouseY = d3.event.pageY + 10;
+            yPos = d3.mouse(this)[1];
+            // mouseX = d3.event.pageX;
+            // mouseY = d3.event.pageY + 10;
           }
 		  
           var j = ChartView.xInverse((IE8?xPos-55:xPos), MacdChart.data.x);
           var d = MacdChart.data.stockLine[j];
 
+          var offset = 10;
+          mouseX = xPos + ChartView.getLeftMargin();
+              
+
           var model = {
-            top: mouseY,
+            top: yPos + 40,
             // 10 = horizontal distance from mouse cursor
-            left: ChartView.properties.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
+            left: ChartView.getChartWidth() - xPos > 200 ? mouseX + offset : mouseX - 180 - offset,
+            // left: ChartView.properties.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
             // if the right edge touches the right y axis
             // 180 = width of tooltip, 10 = vertical distance from cursor
             date: d.rdate,

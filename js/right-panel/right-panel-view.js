@@ -588,7 +588,6 @@ var RightPanel = {
     var newsBlocks = d3.select('#all-press')
                        .selectAll('div')
                        .data(model.allPress);
-                       console.log(model.allPress);
     // Enter loop
     newsBlocks.enter().append('div')
                       .attr("class", function(d) {
