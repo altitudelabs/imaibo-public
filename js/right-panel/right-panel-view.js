@@ -31,7 +31,7 @@ var RightPanel = {
     }
   },
   noStocks: false,
-  collapseView: function(){
+  collapseView: function() {
 
     // Collapse right panel
     this.el.addClass('collapsed');
@@ -39,19 +39,16 @@ var RightPanel = {
     $('#content').addClass('full');
 
     // Rebuild chart after animation
-    setTimeout(function(){
+    setTimeout(function() {
       ChartView.rebuild();
-
-      // Start sticky columns
-      StickyColumns.start();
     }, 400);
   },
-  expandView: function(){
+  expandView: function() {
     var self = this;
     // cannot set width directly as there may be problems with sticky kit
     $('#content').removeClass('full');
 
-    setTimeout(function(){
+    setTimeout(function() {
       self.collapsed.el.removeClass('uncollapsed');
       self.el.removeClass('collapsed');
       self.collapsed.el.addClass('collapsed');
@@ -59,8 +56,6 @@ var RightPanel = {
       // Rebuild chart
       ChartView.rebuild();
 
-      // Start sticky columns
-      StickyColumns.start();
     }, 500);
   },
   init: function(){
@@ -364,9 +359,6 @@ var RightPanel = {
           });
         }
 
-        // Refresh sticky columns after height change
-        StickyColumns.start();
-
         $('#stockpicker-view > .panel-loader-wrapper').remove();
 
         self.initStockpickerSettingsPanel();
@@ -375,18 +367,11 @@ var RightPanel = {
       }
       else {
         self.updateStockpickerView(model);
-
-        // Refresh sticky columns after height change
-        StickyColumns.start();
       }
     };
 
     var errorHandler = function(model) {
       $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
-
       $('#stockpicker-view .panel-loader-wrapper').remove();
     };
 
@@ -491,16 +476,10 @@ var RightPanel = {
       table.select('.zxg-price').html(function(d){ return d.lastpx; });
       table.select('.zxg-price-change-abs').html(function(d){ return d.pxchg; });
       table.select('.zxg-price-change-rel').html(function(d){ return d.pxchgratio; });
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     }
 
     var errorHandler = function(model) {
       $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     };
 
     RightPanelModel.getStockData(successHandler, errorHandler);
@@ -564,9 +543,6 @@ var RightPanel = {
         $('#experts-view').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
         $('#experts-view .panel-loader-wrapper').remove();
       }
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     });
   },
   /* News module */
@@ -588,6 +564,7 @@ var RightPanel = {
     var newsBlocks = d3.select('#all-press')
                        .selectAll('div')
                        .data(model.allPress);
+
     // Enter loop
     newsBlocks.enter().append('div')
                       .attr("class", function(d) {
@@ -705,13 +682,11 @@ var RightPanel = {
         $thisObject.removeClass("news-collapsed");
 
         $thisObject.siblings().show();
-        StickyColumns.start();
       }
       else {
         $thisObject.addClass("news-collapsed");
 
         $thisObject.siblings().hide();
-        StickyColumns.start();
       }
     });
   },
@@ -733,9 +708,6 @@ var RightPanel = {
         $('#press-by-time').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
 
       $('#news-view .panel-loader-wrapper').remove();
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     });
   },
   render: function(){
@@ -754,9 +726,6 @@ var RightPanel = {
 
       $(clickTab).show();
       $(clickTab).siblings().hide();
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
 
       return false;
     });

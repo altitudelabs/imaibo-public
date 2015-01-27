@@ -55,7 +55,6 @@ var RsiChart = {
       $('#rsi').css('display', 'none');
       // $('#rsi').slideUp(300);
       $('#rsi-checkbox').attr('checked', false);
-      StickyColumns.recalc();
     });
   },
   appendComponents: function () {

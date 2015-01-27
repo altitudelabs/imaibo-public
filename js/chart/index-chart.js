@@ -619,119 +619,120 @@ var IndexChart = {
             // .on("touchstart.zoom", null)
             // .on("touchmove.zoom", null)
             // .on("touchend.zoom", null);
-        }
-          
+        }    
       },
       update: function () {
         var props = IndexChart.properties;
         IndexChart.components.mouseOverlay
-          .attr('width', ChartView.getGraphWidth())
-          .attr('y', ChartView.getTopMargin() + props.yOffset)
-          .attr('height', props.height-4)
-          .on('mouseover', function(e) { 
-            ChartView.mouseOverMouseOverlay();
-            return Tooltip.show.index(); })
-          .on('mouseout', function() { 
-            ChartView.mouseOutMouseOverlay();
+        .attr('width', ChartView.getGraphWidth())
+        .attr('y', ChartView.getTopMargin() + props.yOffset)
+        .attr('height', props.height-4)
+        .on('mouseover', function(e) { 
+          ChartView.mouseOverMouseOverlay();
+          return Tooltip.show.index();
+        })
+        .on('mouseout', function() { 
+          ChartView.mouseOutMouseOverlay();
 
-            if(IE8) return Tooltip.hide.index(); 
-            
-            IndexChart.components.horizontalText.style('fill-opacity', 0);
-            IndexChart.components.horizontalLine.style('stroke-opacity', 0);
-            IndexChart.components.horizontalBlock.style('fill-opacity', 0);
+          if(IE8) return Tooltip.hide.index(); 
+          
+          IndexChart.components.horizontalText.style('fill-opacity', 0);
+          IndexChart.components.horizontalLine.style('stroke-opacity', 0);
+          IndexChart.components.horizontalBlock.style('fill-opacity', 0);
 
-            return Tooltip.hide.index(); 
-          })
-          .on('mousemove', function() {
-            Tooltip.show.index();
+          return Tooltip.hide.index(); 
+        })
+        .on('mousemove', function() {
+          Tooltip.show.index();
 
-            var xPos, yPos, mouseX, mouseY;
+          var xPos, yPos, mouseX, mouseY;
 
-            if(IE8) {
-              xPos = event.clientX + document.documentElement.scrollLeft;
-              yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
-              // mouseX = xPos + 10; 
-              // mouseY = yPos + 60;
-            }
-            else {
-              xPos = d3.mouse(this)[0];
-              yPos = d3.mouse(this)[1];
-              // mouseX = d3.event.pageX;
-              // mouseY = d3.event.pageY + 10;
-              
-        				if(yPos > 230){
-        					Tooltip.hide.index();
-        					yPos = 230;
-        				}
-
-                if (IE9) {
-                  yPos += 53;
-                }
-            }
-
-            var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
-            var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
-            var d = ChartView.getVisibleStockLine()[j];
-            if (d === undefined) { return; }
-            IndexChart.helpers.updateMAValue('5', d.ma5);
-            IndexChart.helpers.updateMAValue('10', d.ma10);
-            IndexChart.helpers.updateMAValue('20', d.ma20);
-            IndexChart.helpers.updateMAValue('60', d.ma60);
-
-            var length = ChartView.getVisibleStockLine().length;
-            d.closepx = d.closepx? d.closepx : '--';
-            d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getVisibleStockLine()[j].moodindex - ChartView.getVisibleStockLine()[j-1].moodindex;
-            
-            var offset = 10;
-            mouseX = xPos + ChartView.getLeftMargin();
-            // ChartView.getChartWidth() - xPos > 200 ?  : xPos - 180
-            var model = {
-                top: yPos + 40,
-                left: ChartView.getChartWidth() - xPos > 200 ? mouseX + offset : mouseX - 180 - offset,
-                // if the right edge touches the right y axis
-                // 180 = width of tooltip, 10 = vertical distance from cursor
-                date: d.rdate,
-                price: cursorPriceLevel,
-                security: d,
-                sentiment: {
-                  price: d.moodindex,
-                  change: d.moodindexchg
-                }
-            };
-
-            if(IE8) return Tooltip.render.index(model);
-
-            IndexChart.components.horizontalText
-            .attr('x', ChartView.getContainerWidth() - 37)
-            .attr('y', yPos + 3)
-            .attr('text-anchor', 'left')
-            .text(cursorPriceLevel.toFixed(0))
-            .style('fill-opacity', 100)
-            .style('fill', 'white');
-
-            IndexChart.components.horizontalLine
-            .attr('x1', 0)
-            .attr('x2', ChartView.getGraphWidth())
-            .attr('y1', yPos) //make it line up with the label
-            .attr('y2', yPos)
-            .attr('stroke', '#f65c4e')
-            .style('stroke-opacity', 100);
-
-            IndexChart.components.horizontalBlock
-            .attr('rx', 4)
-            .attr('ry', 4)
-            .attr('x', ChartView.getChartWidth()+ChartView.getLeftMargin()+1)
-            .attr('y', yPos-10)
-            .attr('height', 20)
-            .attr('width',  ChartView.getRightMargin())
-            .attr('fill', '#f65c4e')
-            .style('fill-opacity', 100);
-
-            return Tooltip.render.index(model);
-          });
-          this.isDrawing = false;
+          if(IE8) {
+            xPos = event.clientX + document.documentElement.scrollLeft;
+            yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+            // mouseX = xPos + 10; 
+            // mouseY = yPos + 60;
           }
-        }
+          else {
+            xPos = d3.mouse(this)[0];
+            yPos = d3.mouse(this)[1];
+            // mouseX = d3.event.pageX;
+            // mouseY = d3.event.pageY + 10;
+            
+      				if(yPos > 230){
+      					Tooltip.hide.index();
+      					yPos = 230;
+      				}
+
+              if (IE9) {
+                yPos += 57;
+              }
+          }
+
+          var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
+          var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
+          var d = ChartView.getVisibleStockLine()[j];
+          if (d === undefined) { return; }
+          IndexChart.helpers.updateMAValue('5', d.ma5);
+          IndexChart.helpers.updateMAValue('10', d.ma10);
+          IndexChart.helpers.updateMAValue('20', d.ma20);
+          IndexChart.helpers.updateMAValue('60', d.ma60);
+
+          var length = ChartView.getVisibleStockLine().length;
+          d.closepx = d.closepx? d.closepx : '--';
+          d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getVisibleStockLine()[j].moodindex - ChartView.getVisibleStockLine()[j-1].moodindex;
+          
+          var offset = 10; 
+          mouseX = xPos + ChartView.getLeftMargin();
+          // ChartView.getChartWidth() - xPos > 200 ?  : xPos - 180
+          var model = {
+              top: yPos + 40,
+              left: ChartView.getChartWidth() - xPos > 200 ? mouseX + offset : mouseX - 180 - offset,
+              // if the right edge touches the right y axis
+              // 180 = width of tooltip, 10 = vertical distance from cursor
+              date: d.rdate,
+              price: cursorPriceLevel,
+              security: d,
+              sentiment: {
+                price: d.moodindex,
+                change: d.moodindexchg
+              }
+          };
+
+          if(IE8) return Tooltip.render.index(model);
+
+          IndexChart.components.horizontalText
+          .attr('x', ChartView.getContainerWidth() - 37)
+          .attr('y', yPos + 3)
+          .attr('text-anchor', 'left')
+          .text(cursorPriceLevel.toFixed(0))
+          .style('fill-opacity', 100)
+          .style('fill', 'white');
+
+          IndexChart.components.horizontalLine
+          .attr('x1', 0)
+          .attr('x2', ChartView.getGraphWidth())
+          .attr('y1', yPos) //make it line up with the label
+          .attr('y2', yPos)
+          .attr('stroke', '#f65c4e')
+          .style('stroke-opacity', 100);
+
+          IndexChart.components.horizontalBlock
+          .attr('rx', 4)
+          .attr('ry', 4)
+          .attr('x', ChartView.getChartWidth()+ChartView.getLeftMargin()+1)
+          .attr('y', yPos-10)
+          .attr('height', 20)
+          .attr('width',  ChartView.getRightMargin())
+          .attr('fill', '#f65c4e')
+          .style('fill-opacity', 100);
+
+          return Tooltip.render.index(model);
+        });
+
+        this.isDrawing = false;
+      }
+    }
   },
   helpers: {
     updateMAValue: function (ma, data) {
