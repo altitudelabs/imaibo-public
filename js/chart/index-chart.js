@@ -682,7 +682,7 @@ var IndexChart = {
           d.closepx = d.closepx? d.closepx : '--';
           d.moodindexchg = d.moodindexchg? d.moodindexchg : ChartView.getVisibleStockLine()[j].moodindex - ChartView.getVisibleStockLine()[j-1].moodindex;
           
-          var offset = 10;
+          var offset = 10; 
           mouseX = xPos + ChartView.getLeftMargin();
           // ChartView.getChartWidth() - xPos > 200 ?  : xPos - 180
           var model = {
