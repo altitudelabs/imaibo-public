@@ -154,7 +154,6 @@ var Toolbar = {
       } else {
         $('#rsi').css('display', 'none');
       }
-      StickyColumns.recalc();
     });
 
     // $('#rsi-checkbox').change(function(e){
@@ -184,7 +183,6 @@ var Toolbar = {
       } else {
         $('#macd').css('display', 'none');
       }
-      StickyColumns.recalc();
     });
 
     // $('#macd-checkbox').change(function(){

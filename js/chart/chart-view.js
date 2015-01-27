@@ -266,8 +266,6 @@ var ChartView = {
     // Remove loaders
     $('.loader').remove();
     $('.dashboard-loader').remove();
-    // Refresh sticky columns and scroll position
-    StickyColumns.start();
   },
   /* Updates chart elements */
   updateChartElements: function() {
@@ -290,8 +288,6 @@ var ChartView = {
     } else {
       SentimentChart.initWithError();
     }
-
-    StickyColumns.start();
 
     $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();

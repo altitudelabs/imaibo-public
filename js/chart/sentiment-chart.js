@@ -1007,9 +1007,6 @@ var SentimentChart = {
             var idString = '#time' + d.rdate + d.clock.slice(0, 5).replace(/:+/g, '') + ' .news-blocks';
             $(idString).show();
             $(idString).siblings().removeClass("news-collapsed");
-
-            // Refresh sticky columns after height change
-            StickyColumns.start();
           });
 
         })
