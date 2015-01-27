@@ -342,7 +342,7 @@ var ChartView = {
     var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
-          .on('drag', function(d){            
+          .on('drag', function(d){
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
             if (xPos < 0 || xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) {
               return;
@@ -457,7 +457,6 @@ var ChartView = {
   mouseOverMouseOverlay: function(){
     ChartView.properties.mouseOverChart = true;
     if(ChartView.isZoomed()){
-    $('html').css('overflow', 'hidden');
       ChartView.showAllScrollbars();
     }
   },
