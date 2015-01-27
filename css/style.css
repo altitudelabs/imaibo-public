@@ -1856,15 +1856,14 @@ body::-webkit-scrollbar {
 }
 
 .outer .calendar-and-date {
-  width: 100%;
+  background: url('../assets/chart/news-background.png') repeat-x top left;
+  width: 300px;
   height: 37px;
   padding: 10px 17px 10px 20px;
-  cursor: pointer;
 }
 
 .outer #press-by-time .calendar-and-date {
-  background: url('../assets/chart/news-background.png') repeat-x top left;
-  width: 300px;
+  cursor: pointer;
 }
 
 .outer #press-by-time .arrow-sign {
