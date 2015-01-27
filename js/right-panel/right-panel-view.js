@@ -571,19 +571,29 @@ var RightPanel = {
   },
   /* News module */
   updateAllPress: function(model) {
-    // SET DATE
-    $('#news-view .date').html(model.allPress[0].rdate);
+
+    // ADDING DATE OBJECT IN BETWEEN NEWS OF DIFFERENT DATE
+    var currentDate = 'NONE';
+    for (var i = 0; i < model.allPress.length; i++) {
+      if (model.allPress[i].rdate !== currentDate) {
+        currentDate = model.allPress[i].rdate;
+        var dateObject = { date: currentDate };
+        model.allPress.splice(i, 0, dateObject);
+      }
+    }
 
     // CREATE NEWS BLOCKS
     var template = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="mood-change">{{newsMood}}</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
 
-    var newsBlocks = d3.select('#news-blocks')
+    var newsBlocks = d3.select('#all-press')
                        .selectAll('div')
                        .data(model.allPress);
-
+                       console.log(model.allPress);
     // Enter loop
     newsBlocks.enter().append('div')
                       .attr("class", function(d) {
+                        if (d.date) // if the date object exists
+                          return 'calendar-and-date';
                         if (d.newsMood == 0)
                           return "news-block neutral";
                         if (d.sent === '+')
@@ -591,7 +601,14 @@ var RightPanel = {
                         else
                           return "news-block fall";
                       })
-                      .html(template);
+                      .html(function(d) {
+                        if (d.date) { // if the date object exists
+                          return '<span class="calendar"></span><span class="date">' + d.date + '</span>';
+                        }
+                        else {
+                          return template;
+                        }
+                      });
 
     // Exit loop
     newsBlocks.exit().remove();
@@ -685,16 +702,18 @@ var RightPanel = {
     $('#press-by-time .calendar-and-date').click(function() {
       var $thisObject = $(this);
 
-      $thisObject.siblings().stop().slideToggle('slow', function() {
-        StickyColumns.start();
-      });
-
-      if ($thisObject.hasClass("news-collapsed"))
+      if ($thisObject.hasClass("news-collapsed")) {
         $thisObject.removeClass("news-collapsed");
-      else
+
+        $thisObject.siblings().show();
+        StickyColumns.start();
+      }
+      else {
         $thisObject.addClass("news-collapsed");
 
-      // Refresh sticky columns after height change
+        $thisObject.siblings().hide();
+        StickyColumns.start();
+      }
     });
   },
   initNewsModule: function() {
