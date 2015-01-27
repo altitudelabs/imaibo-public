@@ -21,4 +21,6 @@ $(function(){
 
   // Show contents only after DOM loads
   $('.outer').css('visibility', 'visible');
+
+  $('.outer #right-panel').css('height', $(window).height() - 60 + 'px');
 });
