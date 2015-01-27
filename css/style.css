@@ -2033,7 +2033,9 @@ body::-webkit-scrollbar {
 
 /* =Tooltip
 -------------------------------------------------------------- */
-.outer #tooltip {
+.outer #index-tooltip,
+.outer #rsi-tooltip,
+.outer #macd-tooltip {
   visibility: hidden;
   position: absolute;
   z-index: 10;
@@ -2055,7 +2057,9 @@ body::-webkit-scrollbar {
   border: 1px solid #454545;
 }
 
-.outer #tooltip > ul > li {
+.outer #index-tooltip > ul > li,
+.outer #rsi-tooltip > ul > li,
+.outer #macd-tooltip > ul > li {
   padding: 4px 8px;
 }
 
@@ -2063,19 +2067,27 @@ body::-webkit-scrollbar {
   color: #fff;
 }
 
-.outer #tooltip > ul > li.tt-title {
+.outer #index-tooltip > ul > li.tt-title,
+.outer #rsi-tooltip > ul > li.tt-title,
+.outer #macd-tooltip > ul > li.tt-title {
   background-color: #454545;
   padding: 7px 8px;
 }
-.outer #tooltip > ul > li.tt-subtitle {
+.outer #index-tooltip > ul > li.tt-subtitle,
+.outer #rsi-tooltip > ul > li.tt-subtitle,
+.outer #macd-tooltip > ul > li.tt-subtitle {
   color: rgb(140, 140, 140);
   background-color: #2a2a2a
 }
-.outer #tooltip > ul > li.tt-row {
+.outer #index-tooltip > ul > li.tt-row,
+.outer #rsi-tooltip > ul > li.tt-row,
+.outer #macd-tooltip > ul > li.tt-row {
   color: rgb(140, 140, 140);
   background-color: #363636;
 }
-.outer #tooltip > ul > li.tt-lastrow {
+.outer #index-tooltip > ul > li.tt-lastrow,
+.outer #macd-tooltip > ul > li.tt-lastrow,
+.outer #rsi-tooltip > ul > li.tt-lastrow {
   background-color: #363636;
 }
 .outer .tt-label {

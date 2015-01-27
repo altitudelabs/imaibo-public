@@ -150,6 +150,7 @@ var Toolbar = {
     $('#rsi-checkbox').change(function(){
       if(this.checked){
         $('#rsi').css('display', 'block');
+        // $('html, body').scrollTop( $(document).height() );
       } else {
         $('#rsi').css('display', 'none');
       }
@@ -179,6 +180,7 @@ var Toolbar = {
     $('#macd-checkbox').change(function(){
       if(this.checked){
         $('#macd').css('display', 'block');
+        // $('html, body').scrollTop( $(document).height() );
       } else {
         $('#macd').css('display', 'none');
       }
