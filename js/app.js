@@ -1,5 +1,5 @@
 // Toggles between staging (t3-www.imaibo.net) and production (www.imaibo.net)
-var PRODUCTION = false;
+var PRODUCTION = true;
 
 // IE8 indicator
 var IE8 = !!$('.lt-ie9').length;
