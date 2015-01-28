@@ -148,7 +148,7 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
-    $('.outer #content').css('min-height', $(window).height() + 'px');
+    $('.outer #content').css('min-height', $(window).height() - 15 + 'px'); // 15 = size of top padding
 
     ChartModel.getInitialData()
     .done(function (indexError, sentimentError) {
