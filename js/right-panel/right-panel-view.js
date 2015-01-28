@@ -364,7 +364,7 @@ var RightPanel = {
           });
         }
 
-        $('#stockpicker-view > .panel-loader-wrapper').remove();
+        $('#stockpicker-view .panel-loader-wrapper').remove();
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();

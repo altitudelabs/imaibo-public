@@ -12,4 +12,11 @@ window.onload = function() {
         bar: '.scroller__bar',
         barOnCls: 'baron'
     });
+
+    window.dima = baron({
+        root: '#stockpicker-view',
+        scroller: '.scroller',
+        bar: '.scroller__bar',
+        barOnCls: 'baron'
+    });
 };
