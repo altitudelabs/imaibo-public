@@ -148,6 +148,7 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
+    $('.outer #content').css('min-height', $(window).height() - 15 + 'px'); // 15 = size of top padding
 
     ChartModel.getInitialData()
     .done(function (indexError, sentimentError) {
@@ -250,8 +251,8 @@ var ChartView = {
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
+      Toolbar.render(self.data.index); //must render before IndexChart.init. Or else ma60 won't hide properly
       IndexChart.init();
-      Toolbar.render(self.data.index);
       RsiChart.init();
       MacdChart.init();
       ChartView.setScrollbarWidth();
@@ -266,8 +267,6 @@ var ChartView = {
     // Remove loaders
     $('.loader').remove();
     $('.dashboard-loader').remove();
-    // Refresh sticky columns and scroll position
-    StickyColumns.start();
   },
   /* Updates chart elements */
   updateChartElements: function() {
@@ -290,8 +289,6 @@ var ChartView = {
     } else {
       SentimentChart.initWithError();
     }
-
-    StickyColumns.start();
 
     $('.zoomable-chart-container').css('width', '100%');
     ChartView.setScrollbarWidth();
@@ -346,7 +343,7 @@ var ChartView = {
     var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
-          .on('drag', function(d){            
+          .on('drag', function(d) {
             var xPos = ChartView.getScrollbarPos() + d3.event.dx; //(get total chart width - starting xpos)/total chart width* stockline length
             if (xPos < 0 || xPos > ChartView.getChartWidth() - ChartView.getScrollbarWidth()) {
               return;
@@ -460,8 +457,7 @@ var ChartView = {
   },
   mouseOverMouseOverlay: function(){
     ChartView.properties.mouseOverChart = true;
-    if(ChartView.isZoomed()){
-    $('html').css('overflow', 'hidden');
+    if(ChartView.isZoomed()) {
       ChartView.showAllScrollbars();
     }
   },

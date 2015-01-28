@@ -4,7 +4,7 @@ var Toolbar = {
     //this.initDropdown();
     if(!IE8){
       this.initZoom();
-      this.initFreq(); 
+      this.initFreq();
     }
     this.initRsi();
     this.initMacd();
@@ -49,7 +49,7 @@ var Toolbar = {
 
 
 
-   
+
 
 
     //bind checkbox listeners to each MA line
@@ -150,10 +150,10 @@ var Toolbar = {
     $('#rsi-checkbox').change(function(){
       if(this.checked){
         $('#rsi').css('display', 'block');
+        $('.outer-scroller').scrollTop($('#macd').offset().top+300);
       } else {
         $('#rsi').css('display', 'none');
       }
-      StickyColumns.recalc();
     });
 
     // $('#rsi-checkbox').change(function(e){
@@ -164,7 +164,7 @@ var Toolbar = {
     //   }
     //   setTimeout(function () {
     //     StickyColumns.recalc();
-    //   }, 300); 
+    //   }, 300);
     // });
   },
   initMacd: function() {
@@ -179,10 +179,10 @@ var Toolbar = {
     $('#macd-checkbox').change(function(){
       if(this.checked){
         $('#macd').css('display', 'block');
+        $('.outer-scroller').scrollTop($('#macd').offset().top+300);
       } else {
         $('#macd').css('display', 'none');
       }
-      StickyColumns.recalc();
     });
 
     // $('#macd-checkbox').change(function(){

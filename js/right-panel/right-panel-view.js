@@ -31,7 +31,7 @@ var RightPanel = {
     }
   },
   noStocks: false,
-  collapseView: function(){
+  collapseView: function() {
 
     // Collapse right panel
     this.el.addClass('collapsed');
@@ -39,19 +39,16 @@ var RightPanel = {
     $('#content').addClass('full');
 
     // Rebuild chart after animation
-    setTimeout(function(){
+    setTimeout(function() {
       ChartView.rebuild();
-
-      // Start sticky columns
-      StickyColumns.start();
     }, 400);
   },
-  expandView: function(){
+  expandView: function() {
     var self = this;
     // cannot set width directly as there may be problems with sticky kit
     $('#content').removeClass('full');
 
-    setTimeout(function(){
+    setTimeout(function() {
       self.collapsed.el.removeClass('uncollapsed');
       self.el.removeClass('collapsed');
       self.collapsed.el.addClass('collapsed');
@@ -59,11 +56,44 @@ var RightPanel = {
       // Rebuild chart
       ChartView.rebuild();
 
-      // Start sticky columns
-      StickyColumns.start();
     }, 500);
   },
-  init: function(){
+  initHeights: function() {
+    var self = this,
+        windowHeight = $(window).height(),
+        navHeight = 60,
+        padding = 120,
+        stockpickerSearchHeight = 42;
+
+    // set the heights so that baron works properly
+    $('.outer #right-panel').css('height', windowHeight - padding + 'px');
+    $('.outer #news-view').css('height', windowHeight - padding + 'px');
+    $('.outer #experts-view').css('height', windowHeight - padding + 'px');
+    $('.outer #stockpicker-view').css('height', windowHeight - padding + 'px');
+    $('.outer #stockpicker-scroller-wrap').css('height', windowHeight - padding - stockpickerSearchHeight + 'px');
+    $('.outer').css('height', windowHeight - navHeight + 'px');
+    $('.outer .outer-scroller__bar').css('height', windowHeight + 'px');
+
+    // Handle resizing of columns when screen height changes
+    var resizeEnd;
+    if(!IE8){
+      $(window).on('resize', function() {
+        clearTimeout(resizeEnd);
+        resizeEnd = setTimeout(function() {
+          self.initHeights();
+        }, 500);
+      });
+
+      $('#right-panel').on('resize', function(){
+        clearTimeout(resizeEnd);
+        resizeEnd = setTimeout(function() {
+          self.initHeights();
+        }, 500);
+      });
+    }
+  },
+  init: function() {
+    this.initHeights();
     this.initLinks();
     this.render();
     this.initStockpickerModule();
@@ -364,10 +394,7 @@ var RightPanel = {
           });
         }
 
-        // Refresh sticky columns after height change
-        StickyColumns.start();
-
-        $('#stockpicker-view > .panel-loader-wrapper').remove();
+        $('#stockpicker-view .panel-loader-wrapper').remove();
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
@@ -375,18 +402,11 @@ var RightPanel = {
       }
       else {
         self.updateStockpickerView(model);
-
-        // Refresh sticky columns after height change
-        StickyColumns.start();
       }
     };
 
     var errorHandler = function(model) {
       $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
-
       $('#stockpicker-view .panel-loader-wrapper').remove();
     };
 
@@ -491,16 +511,10 @@ var RightPanel = {
       table.select('.zxg-price').html(function(d){ return d.lastpx; });
       table.select('.zxg-price-change-abs').html(function(d){ return d.pxchg; });
       table.select('.zxg-price-change-rel').html(function(d){ return d.pxchgratio; });
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     }
 
     var errorHandler = function(model) {
       $('#stock-table tbody').html('<tr class="empty-data-right-panel"><td colspan="5">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</td></tr>');
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     };
 
     RightPanelModel.getStockData(successHandler, errorHandler);
@@ -526,7 +540,7 @@ var RightPanel = {
 
       if(!error) {
         // Populate views
-        Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
+        Helper.populateView($('#experts-view .scroller'), experts.template, RightPanelModel.model.experts);
         Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
         // Init experts modal
@@ -564,26 +578,33 @@ var RightPanel = {
         $('#experts-view').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
         $('#experts-view .panel-loader-wrapper').remove();
       }
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     });
   },
   /* News module */
   updateAllPress: function(model) {
-    // SET DATE
-    $('#news-view .date').html(model.allPress[0].rdate);
+
+    // ADDING DATE OBJECT IN BETWEEN NEWS OF DIFFERENT DATE
+    var currentDate = 'NONE';
+    for (var i = 0; i < model.allPress.length; i++) {
+      if (model.allPress[i].rdate !== currentDate) {
+        currentDate = model.allPress[i].rdate;
+        var dateObject = { date: currentDate };
+        model.allPress.splice(i, 0, dateObject);
+      }
+    }
 
     // CREATE NEWS BLOCKS
     var template = '<div class="content">{{title}}</div><div class="sentiment-news"><span class="label">心情分数</span><span class="mood-change">{{newsMood}}</span></div><div class="time-and-source"><div class="time">{{time}}</div><div class="source">来自{{source}}</div></div>';
 
-    var newsBlocks = d3.select('#news-blocks')
+    var newsBlocks = d3.select('#all-press')
                        .selectAll('div')
                        .data(model.allPress);
 
     // Enter loop
     newsBlocks.enter().append('div')
                       .attr("class", function(d) {
+                        if (d.date) // if the date object exists
+                          return 'calendar-and-date';
                         if (d.newsMood == 0)
                           return "news-block neutral";
                         if (d.sent === '+')
@@ -591,7 +612,14 @@ var RightPanel = {
                         else
                           return "news-block fall";
                       })
-                      .html(template);
+                      .html(function(d) {
+                        if (d.date) { // if the date object exists
+                          return '<span class="calendar"></span><span class="date">' + d.date + '</span>';
+                        }
+                        else {
+                          return template;
+                        }
+                      });
 
     // Exit loop
     newsBlocks.exit().remove();
@@ -685,16 +713,16 @@ var RightPanel = {
     $('#press-by-time .calendar-and-date').click(function() {
       var $thisObject = $(this);
 
-      $thisObject.siblings().stop().slideToggle('slow', function() {
-        StickyColumns.start();
-      });
-
-      if ($thisObject.hasClass("news-collapsed"))
+      if ($thisObject.hasClass("news-collapsed")) {
         $thisObject.removeClass("news-collapsed");
-      else
+
+        $thisObject.siblings().show();
+      }
+      else {
         $thisObject.addClass("news-collapsed");
 
-      // Refresh sticky columns after height change
+        $thisObject.siblings().hide();
+      }
     });
   },
   initNewsModule: function() {
@@ -715,9 +743,6 @@ var RightPanel = {
         $('#press-by-time').append('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
 
       $('#news-view .panel-loader-wrapper').remove();
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
     });
   },
   render: function(){
@@ -736,9 +761,6 @@ var RightPanel = {
 
       $(clickTab).show();
       $(clickTab).siblings().hide();
-
-      // Refresh sticky columns after height change
-      StickyColumns.start();
 
       return false;
     });

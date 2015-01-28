@@ -815,7 +815,10 @@ var SentimentChart = {
       enter: function () {
         SentimentChart.components.forecastBubble
         .enter()
-        .append('path')
+        .append('path');
+      },
+      update: function () {
+        SentimentChart.components.forecastBubble
         .attr('fill', function (d,i) {
           if(!d.isRealTime) {
             return '#D04D3D';
@@ -825,10 +828,7 @@ var SentimentChart = {
           if (!d.isRealTime) {
             return 'M62.416,43.5h-9.333l-3.709-3.083L45.666,43.5h-8.583c-1.657,0-3,1.343-3,3v10.833c0,1.657,1.343,3,3,3 h25.333c1.657,0,3-1.343,3-3V46.5C65.416,44.843,64.073,43.5,62.416,43.5z';
           }
-        });
-      },
-      update: function () {
-        SentimentChart.components.forecastBubble
+        })
         .attr('transform', function (d, i) {
           return 'translate(' + (SentimentChart.data.x(d.timestamp) - 50 ) + ',' + (SentimentChart.data.y1(d.mood)-30) + ')';
         });
@@ -858,8 +858,14 @@ var SentimentChart = {
       },
       update: function () {
         SentimentChart.components.forecastBubbleText
-        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
         .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 1; } ); // translate x value
+        if(IE8){
+          SentimentChart.components.forecastBubbleText
+            .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 20; } ) // translate y value to a pixel
+        }else{
+          SentimentChart.components.forecastBubbleText
+            .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
+        }
       },
       exit: function () {
         SentimentChart.components.forecastBubbleText
@@ -1007,9 +1013,6 @@ var SentimentChart = {
             var idString = '#time' + d.rdate + d.clock.slice(0, 5).replace(/:+/g, '') + ' .news-blocks';
             $(idString).show();
             $(idString).siblings().removeClass("news-collapsed");
-
-            // Refresh sticky columns after height change
-            StickyColumns.start();
           });
 
         })

@@ -151,8 +151,6 @@ var Helper = {
     else {
       targetSelector.html(template(resource));
     }
-
-    StickyColumns.start();
   },
   IEtableEnterLoop: function(tableID, data, template){
    var $table = $(tableID),

@@ -30,14 +30,10 @@
   box-sizing: border-box;
 }
 html {
-  overflow-x: hidden !important;
+  overflow: hidden !important;
 }
 body {
-  overflow-x: hidden !important;
-}
-
-body::-webkit-scrollbar {
-  width: 0em !important;
+  overflow: hidden !important;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
@@ -87,11 +83,13 @@ body::-webkit-scrollbar {
 }
 
 .outer .scroller {
-    overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .outer .scroller::-webkit-scrollbar {
-    width: 0;
+  width: 0;
 }
 
 .outer .scroller__bar {
@@ -100,14 +98,44 @@ body::-webkit-scrollbar {
 
 .outer .baron .scroller__bar {
   display: block;
-  opacity: 0;
   position: absolute;
-  width: 10px;
-  background: #595959;
-  z-index: 1;
+  background: rgb(107, 107, 107);
+  z-index: 999;
   border-radius: 3px;
-  height: 7px;
-  bottom: 0px;
+  right: 0px;
+  width: 7px;
+  opacity: 0.7;
+}
+
+.outer .outer-scroller {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.outer .outer-scroller::-webkit-scrollbar {
+  width: 0;
+}
+
+.outer .outer-scroller__track {
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 10px;
+    height: 100%;
+    opacity: 0.8;
+    background: white;
+}
+
+.outer .outer-scroller__bar {
+  display: block;
+  position: absolute;
+  background: rgb(180, 180, 180);
+  z-index: 999;
+  border-radius: 3px;
+  right: 2px;
+  width: 6px;
 }
 
 /* =Scroll bar
@@ -174,7 +202,6 @@ body::-webkit-scrollbar {
 .outer {
   overflow: hidden;
   background-color: rgb(15, 15, 15);
-  padding-top: 7.5px;
 }
 
 .outer .component-wrapper {
@@ -332,26 +359,34 @@ body::-webkit-scrollbar {
 -------------------------------------------------------------- */
 .outer .upgrade-browser {
   width: 100%;
-  height: 50px;
+  min-height: 50px;
   background: #262626;
   margin-bottom: 5px;
   border: 1px solid #333;
-  position: relative;
+  text-align: center;
+
+  /*position: relative;*/
 }
 
 .outer .upgrade-browser .text {
   color: #fff;
   border: none;
-  position: absolute;
-  left: 40%;
-  top: 30%;
+  width: 50%;
+  display: inline-block;
+  margin-top: 15px;
+/*  padding-left: 30%;
+  padding-right: 30%;*/
+  /*position: absolute;*/
+/*  left: 40%;
+  right: 40%;*/
+  /*top: 30%;*/
 }
 
 /* =Dashboard
 -------------------------------------------------------------- */
 .outer #snapshot {
   z-index: 1;
-  min-height: 75px;
+  /*min-height: 75px;*/
 }
 
 .outer .value-label {
@@ -550,7 +585,10 @@ body::-webkit-scrollbar {
 /* =Charts
 -------------------------------------------------------------- */
 
-.outer #macd-chart { position: relative; }
+.outer #macd-chart {
+  position: relative;
+  overflow: hidden;
+}
 
 .outer #macd-dea-legend {
   color: #d7db74;
@@ -723,12 +761,19 @@ body::-webkit-scrollbar {
 }
 
 .outer #chart {
+  overflow: hidden;
   padding-bottom: 7px;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+
+.outer #chart,
+.outer #macd-chart,
+.outer #rsi-chart {
+  overflow: none;
 }
 
 .outer #chart:hover,
@@ -759,7 +804,7 @@ body::-webkit-scrollbar {
   /*sticky-kit may override width if important is not added*/
 }
 
-.outer .zoomable-chart-container{
+.outer .zoomable-chart-container {
   overflow: hidden;
   top: 31px;
   left: 45px;
@@ -853,7 +898,7 @@ body::-webkit-scrollbar {
 }
 #sentiment-tooltip .wrapper .arrow-number {
   text-align: right;
-  float: right;  
+  float: right;
 }
 
 
@@ -1115,8 +1160,9 @@ body::-webkit-scrollbar {
 .outer #content {
   overflow: hidden;
   /*margin-right: 45px;*/
+  padding-top: 15px;
   margin-left: 10px;
-  width: calc(100% - 325px) !important;
+  width: calc(100% - 335px) !important;
   /*sticky-kit may override width if important is not added*/
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
@@ -1124,9 +1170,23 @@ body::-webkit-scrollbar {
   transition: all 400ms ease-out;
 }
 
+.outer.ie8 #content {
+	padding-right: 325px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .outer #content.full {
-  width: calc(100% - 55px) !important;
+  width: calc(100% - 65px) !important;
   /*sticky-kit may override width if important is not added*/
+}
+
+.outer.ie8 #content.full{
+	padding-left: 55px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .outer #right-panel.collapsed { display: none; }
@@ -1136,9 +1196,12 @@ body::-webkit-scrollbar {
   display: none;
 }
 .outer #right-panel {
-  float: right;
+  position: fixed;
+  right: 10px;
   width: 300px;
+  padding-top: 15px;
   margin-left: 15px;
+  z-index: 500;
 
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
@@ -1161,12 +1224,12 @@ body::-webkit-scrollbar {
 
 .outer .vertical-collapse {
   background: url('../assets/chart/collapse-rightwards.png') no-repeat center;
-  right: 300px;
+  right: 310px;
 }
 
-.outer .vertical-uncollapse{
+.outer .vertical-uncollapse {
   background: url('../assets/chart/collapse-leftwards.png') no-repeat center;
-  right: 30px;
+  right: 40px;
   display: none;
 }
 
@@ -1215,7 +1278,7 @@ body::-webkit-scrollbar {
 
 .outer #right-panel-collapsed {
   position: fixed;
-  right: 0;
+  right: 10px;
   width: 30px;
   top: 75px;
   -webkit-transition: all 400ms ease-out 400ms;
@@ -1257,8 +1320,9 @@ body::-webkit-scrollbar {
 /* =Experts
 ---------------------------------------------------------------*/
 .outer #experts-view {
-  padding: 0px 0px 20px 0px;
-  overflow: auto;
+  padding: 0px 0px 0px 0px;
+  margin: 0px;
+  overflow: hidden;
 }
 
 .outer .experts-header {
@@ -1393,11 +1457,16 @@ body::-webkit-scrollbar {
 
 /* =Stockpicker
 ---------------------------------------------------------------*/
-.outer #stockpicker-view{
-  padding: 0;
-  overflow: visible;
-  display: block;
+.outer #stockpicker-view {
+  /*overflow: hidden;*/
+  padding: 0px 0px 0px 0px;
+  margin: 0px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+}
+
+.outer #stockpicker-scroller-wrap {
+  overflow: hidden;
+  position: relative;
 }
 
 .outer #stockpicker-wrapper {
@@ -1856,15 +1925,14 @@ body::-webkit-scrollbar {
 }
 
 .outer .calendar-and-date {
-  width: 100%;
+  background: url('../assets/chart/news-background.png') repeat-x top left;
+  width: 300px;
   height: 37px;
   padding: 10px 17px 10px 20px;
-  cursor: pointer;
 }
 
 .outer #press-by-time .calendar-and-date {
-  background: url('../assets/chart/news-background.png') repeat-x top left;
-  width: 300px;
+  cursor: pointer;
 }
 
 .outer #press-by-time .arrow-sign {
@@ -1880,9 +1948,9 @@ body::-webkit-scrollbar {
 }
 
 .outer #news-view {
-  padding: 0px 0px 20px 0px;
+  padding: 0px 0px 0px 0px;
   margin: 0px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .outer .calendar,
@@ -1956,12 +2024,10 @@ body::-webkit-scrollbar {
 
 .outer #all-press .news-block:last-child {
   border-bottom: none;
-  padding-bottom: 0px;
 }
 
 .outer #press-by-time .time-block:last-child .news-block:last-child {
   border-bottom: none;
-  padding-bottom: 0px;
 }
 
 .outer .time-and-source {
@@ -2034,7 +2100,9 @@ body::-webkit-scrollbar {
 
 /* =Tooltip
 -------------------------------------------------------------- */
-.outer #tooltip {
+.outer #index-tooltip,
+.outer #rsi-tooltip,
+.outer #macd-tooltip {
   visibility: hidden;
   position: absolute;
   z-index: 10;
@@ -2056,7 +2124,9 @@ body::-webkit-scrollbar {
   border: 1px solid #454545;
 }
 
-.outer #tooltip > ul > li {
+.outer #index-tooltip > ul > li,
+.outer #rsi-tooltip > ul > li,
+.outer #macd-tooltip > ul > li {
   padding: 4px 8px;
 }
 
@@ -2064,19 +2134,27 @@ body::-webkit-scrollbar {
   color: #fff;
 }
 
-.outer #tooltip > ul > li.tt-title {
+.outer #index-tooltip > ul > li.tt-title,
+.outer #rsi-tooltip > ul > li.tt-title,
+.outer #macd-tooltip > ul > li.tt-title {
   background-color: #454545;
   padding: 7px 8px;
 }
-.outer #tooltip > ul > li.tt-subtitle {
+.outer #index-tooltip > ul > li.tt-subtitle,
+.outer #rsi-tooltip > ul > li.tt-subtitle,
+.outer #macd-tooltip > ul > li.tt-subtitle {
   color: rgb(140, 140, 140);
   background-color: #2a2a2a
 }
-.outer #tooltip > ul > li.tt-row {
+.outer #index-tooltip > ul > li.tt-row,
+.outer #rsi-tooltip > ul > li.tt-row,
+.outer #macd-tooltip > ul > li.tt-row {
   color: rgb(140, 140, 140);
   background-color: #363636;
 }
-.outer #tooltip > ul > li.tt-lastrow {
+.outer #index-tooltip > ul > li.tt-lastrow,
+.outer #macd-tooltip > ul > li.tt-lastrow,
+.outer #rsi-tooltip > ul > li.tt-lastrow {
   background-color: #363636;
 }
 .outer .tt-label {
@@ -2171,7 +2249,10 @@ body::-webkit-scrollbar {
   width: 100%;
 }
 
-.outer #rsi-chart { position: relative; }
+.outer #rsi-chart {
+  position: relative;
+  overflow: hidden;
+}
 
 .outer #rsi6-legend {
   color: #fff;

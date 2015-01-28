@@ -25,6 +25,7 @@ var RsiChart = {
     this.draw();
     this.initCloseAction();
     $('#rsi').css('display', 'none');
+    this.hideScrollbar();
   },
   update: function () {
     this.setProperties();
@@ -43,19 +44,27 @@ var RsiChart = {
       allDataArray.push(parseInt(self.data.stockLine[i].rsi12));
       allDataArray.push(parseInt(self.data.stockLine[i].rsi24));
     }
-    var y2Range = [20, 110];
+    var y2Range = [-10, 110];
 
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
     self.updateLegends();
 
   },
+  hideScrollbar: function(){
+    if(IE8){
+      RsiChart.components.scrollBar
+          .attr('fill-opacity', 0);
+    }else{
+      RsiChart.components.scrollBar
+          .style('fill-opacity', 0);
+    }
+  },
   initCloseAction: function() {
     $('#rsi > .wrapper > .buttons > .close').on('click', function() {
       $('#rsi').css('display', 'none');
       // $('#rsi').slideUp(300);
       $('#rsi-checkbox').attr('checked', false);
-      StickyColumns.recalc();
     });
   },
   appendComponents: function () {
@@ -275,7 +284,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([20, 60, 100]);
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([30, 70, 100]);
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -283,7 +292,9 @@ var RsiChart = {
       update: function () {
         RsiChart.components.y2Labels
         .attr('x', ChartView.properties.width - ChartView.properties.margin.right + 15)
-        .attr('y', RsiChart.data.y2)
+        .attr('y', function (d) {
+         return RsiChart.data.y2(d) + 4; //vertically center the texts
+       })
         .attr('text-anchor', 'middle')
         .text(String);
       }
@@ -346,6 +357,19 @@ var RsiChart = {
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
                                             .style('fill-opacity', 50)
+                                            .on('mouseenter', function(e) {
+                                                if(ChartView.isZoomed()){
+                                                  ChartView.showAllScrollbars();
+                                                  ChartView.properties.mouseOverScrollbar = true;
+                                               }
+                                            })
+                                            .on('mouseleave', function(e) {
+                                               var mChart = ChartView.properties.mouseOverChart;
+                                               if(!mChart){
+                                                  ChartView.hideAllScrollbars();
+                                                  ChartView.properties.mouseOverScrollbar = false;
+                                               }
+                                            })
                                             .call(ChartView.scrollbarDragBehavior());
         ChartView.properties.mouseOverScrollbar = false;
         ChartView.properties.mouseOverChart     = false;
@@ -355,15 +379,7 @@ var RsiChart = {
         .attr('x', ChartView.getScrollbarPos())
         .attr('y', RsiChart.properties.height - 30)
         .attr('width', ChartView.getScrollbarWidth())
-        .on('mouseenter', function(e) {
-            IndexChart.components.scrollBar.transition().duration(1000).style('fill-opacity', ChartView.isZoomed()? 50:0);
-            ChartView.properties.mouseOverScrollbar = true;
-        })
-        .on('mouseleave', function(e) {
-           var mChart = ChartView.properties.mouseOverChart;
-           RsiChart.components.scrollBar.transition().duration(1000).style('fill-opacity', !mChart? 0: 50);
-           ChartView.properties.mouseOverScrollbar = false;
-        });
+        .style('fill-opacity', ChartView.isZoomed()? 50:0);
       }
     },
     mouseOverlay: {
@@ -389,32 +405,36 @@ var RsiChart = {
         RsiChart.components.mouseOverlay
         .on('mouseover', function(e){
           ChartView.mouseOverMouseOverlay();
-          return Tooltip.show(); })
+          return Tooltip.show.rsi(); })
         .on('mouseout', function(){
           ChartView.mouseOutMouseOverlay();
-          return Tooltip.hide(); })
+          return Tooltip.hide.rsi(); })
         .on('mousemove', function(){
-          var xPos, mouseX, mouseY;
+          Tooltip.show.rsi();
+          var xPos, yPos, mouseX, mouseY;
 
           if(IE8) {
-			xPos = event.clientX + document.documentElement.scrollLeft;
-			var yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
-			mouseX = xPos + 10;
-			mouseY = yPos + 60;
+      			xPos = event.offsetX;
+      			yPos = event.offsetY; //because of the old browser info box on top
+      			// mouseX = xPos + 10;
+      			// mouseY = yPos + 60;
           }
           else {
             xPos = d3.mouse(this)[0];
-            mouseX = d3.event.pageX;
-            mouseY = d3.event.pageY + 10;
+            yPos = d3.mouse(this)[1];
+            // mouseX = d3.event.pageX;
+            // mouseY = d3.event.pageY + 10;
           }
 
-          var j = ChartView.xInverse((IE8?xPos-55:xPos), RsiChart.data.x);
+          var j = ChartView.xInverse(xPos, RsiChart.data.x);
           var d = RsiChart.data.stockLine[j];
 
+          var offset = 10;
+          mouseX = xPos + ChartView.getLeftMargin();
+
           var model = {
-            top: mouseY,
-            // 10 = horizontal distance from mouse cursor
-            left: ChartView.properties.chartWidth - mouseX > 135 ? mouseX + 10 : mouseX - 180 - 10,
+            top: yPos + 40,
+            left: ChartView.getChartWidth() - xPos > 200 ? mouseX + offset : mouseX - 180 - offset,
             // if the right edge touches the right y axis
             // 180 = width of tooltip, 10 = vertical distance from cursor
             date: Helper.toDate(d.rdate),
