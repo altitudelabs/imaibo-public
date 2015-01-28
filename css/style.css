@@ -1257,7 +1257,7 @@ body {
 .outer #experts-view {
   padding: 0px 0px 20px 0px;
   margin: 0px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .outer .experts-header {
@@ -1395,7 +1395,7 @@ body {
 .outer #stockpicker-view {
   padding: 0px 0px 20px 0px;
   margin: 0px;
-  overflow-x: hidden;
+  overflow: hidden;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 

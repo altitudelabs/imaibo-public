@@ -61,9 +61,9 @@ var RightPanel = {
   init: function() {
     // height of right panel should be smaller so that everything is visible
     $('.outer #right-panel').css('height', $(window).height() - 50 + 'px');
-    $('#news-view').css('height', $(window).height() - 50 + 'px');
-    $('#experts-view').css('height', $(window).height() - 50 + 'px');
-    $('#stockpicker-view').css('height', $(window).height() - 50 + 'px');
+    $('#news-view').css('height', $(window).height() - 30 - 36 + 'px');
+    $('#experts-view').css('height', $(window).height() - 30 - 36 + 'px');
+    $('#stockpicker-view').css('height', $(window).height() - 30 - 36 + 'px');
     this.initLinks();
     this.render();
     this.initStockpickerModule();
