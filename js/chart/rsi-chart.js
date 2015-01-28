@@ -433,7 +433,7 @@ var RsiChart = {
           mouseX = xPos + ChartView.getLeftMargin();
               
           var model = {
-            top: (yPos > 18? yPos - 100:yPos) + 40,
+            top: yPos + 40,
             left: ChartView.getChartWidth() - xPos > 200 ? mouseX + offset : mouseX - 180 - offset,
             // if the right edge touches the right y axis
             // 180 = width of tooltip, 10 = vertical distance from cursor
