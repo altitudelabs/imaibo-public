@@ -19,4 +19,11 @@ window.onload = function() {
         bar: '.scroller__bar',
         barOnCls: 'baron'
     });
+
+    window.dima = baron({
+        root: '.outer',
+        scroller: '#outer-scroller',
+        bar: '#outer-scroller__bar',
+        barOnCls: 'baron'
+    });
 };
