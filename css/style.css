@@ -1955,12 +1955,10 @@ body {
 
 .outer #all-press .news-block:last-child {
   border-bottom: none;
-  padding-bottom: 0px;
 }
 
 .outer #press-by-time .time-block:last-child .news-block:last-child {
   border-bottom: none;
-  padding-bottom: 0px;
 }
 
 .outer .time-and-source {
