@@ -1138,7 +1138,7 @@ body {
   right: 0;
   width: 300px;
   margin-left: 15px;
-  overflow: hidden;
+  z-index: 500;
 
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
@@ -1397,7 +1397,6 @@ body {
 .outer #stockpicker-view {
   padding: 0px 0px 0px 0px;
   margin: 0px;
-  overflow: hidden;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
