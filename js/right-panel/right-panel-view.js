@@ -62,6 +62,8 @@ var RightPanel = {
     // height of right panel should be smaller so that everything is visible
     $('.outer #right-panel').css('height', $(window).height() - 50 + 'px');
     $('#news-view').css('height', $(window).height() - 50 + 'px');
+    $('#experts-view').css('height', $(window).height() - 50 + 'px');
+    $('#stockpicker-view').css('height', $(window).height() - 50 + 'px');
     this.initLinks();
     this.render();
     this.initStockpickerModule();
@@ -508,7 +510,7 @@ var RightPanel = {
 
       if(!error) {
         // Populate views
-        Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
+        Helper.populateView($('#experts-view .scroller'), experts.template, RightPanelModel.model.experts);
         Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
         // Init experts modal
