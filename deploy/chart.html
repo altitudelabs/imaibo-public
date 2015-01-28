@@ -26,17 +26,10 @@
   <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
   <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
   <!--[if (gt IE 9)|!(IE)]>-->
-
-  <div class="outer">
-    <div id="tooltip"></div>
-    <div id="alert-box"></div>
-  </div>
-
-  <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
-  <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
-  <!--[if (gt IE 9)|!(IE)]>-->
   <div class="outer">
   <!--<![endif]-->
+
+    <div id="alert-box"></div>
 
     <!-- Right panel start -->
     <div id="right-panel">
@@ -54,6 +47,8 @@
 
       <!-- Stockpicker view start -->
       <div id="stockpicker-view" class="component">
+
+        <div class="scroller">
 
         <div class="panel-loader-wrapper">
           <div class="panel-loader"></div>
@@ -93,7 +88,7 @@
                             <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                           </tr>
                         </tfoot>
-
+            
                       </table>
                     </li>
                   </ul>
@@ -127,7 +122,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -157,7 +152,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -187,7 +182,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -217,7 +212,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -253,7 +248,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -283,7 +278,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -313,7 +308,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -343,7 +338,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -379,7 +374,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -409,7 +404,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -439,7 +434,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -469,7 +464,7 @@
                                 <td colspan="5"><a href="http://www.imaibo.net/hqzx" target="_blank">查看更多</a></td>
                               </tr>
                             </tfoot>
-
+            
                           </table>
                         </li>
                       </ul>
@@ -483,7 +478,7 @@
           </ul>
 
           <div id="search-wrapper">
-
+            
               <div id="search-button"></div>
               <input type="text" id="stock-search" autocomplete="off" placeholder="输入股票名称/代码">
               <div id="search-result"></div>
@@ -515,46 +510,52 @@
             <tbody id="stockpicker-table-body"></tbody>
           </table>
         </div>
+
+        </div>
+
+        <div class="scroller__bar"></div>
+
       </div>
       <!-- Stockpicker view end -->
 
       <!-- Experts view start -->
       <div id="experts-view" class="component">
 
-        <div class="panel-loader-wrapper">
-          <div class="panel-loader"></div>
+        <div class="scroller">
+
+          <div class="panel-loader-wrapper">
+            <div class="panel-loader"></div>
+          </div>
+
         </div>
+
+        <div class="scroller__bar"></div>
 
       </div>
       <!-- Experts view end -->
 
       <!-- News view start -->
       <div id="news-view" class="component">
-        <div class="panel-loader-wrapper">
-          <div class="panel-loader"></div>
-        </div>
 
-        <ul id="news-tabs">
-          <li><a href="#press-by-time">时间划分</a></li>
-          <li><a href="#all-press">全部展开</a></li>
-        </ul>
+        <div class="scroller">
 
-        <div id="news-content">
+          <div class="panel-loader-wrapper">
+            <div class="panel-loader"></div>
+          </div>
 
-          <div id="press-by-time" class="content"></div>
+          <ul id="news-tabs">
+            <li><a href="#press-by-time">时间划分</a></li>
+            <li><a href="#all-press">全部展开</a></li>
+          </ul>
 
-          <div id="all-press" class="content">
-
-            <div class="calendar-and-date">
-              <span class="calendar"></span>
-              <span class="date"></span>
-            </div>
-
-            <div id='news-blocks'></div>
-
+          <div id="news-content">
+            <div id="press-by-time" class="content"></div>
+            <div id="all-press" class="content"></div>
           </div>
 
         </div>
+
+        <div class="scroller__bar"></div>
 
       </div>
       <!-- News view end -->
@@ -626,9 +627,11 @@
             <div class="zoomable-chart" id="sentiment-chart"></div>
           </div>
         </div>
-
-
+        
+        
         <div id="price" class="component">
+          <div id="index-tooltip"></div>
+
           <div class="chart-header">
             <div class="title">上证K线 - 心情累积值<span id="index-info-button" class="mb info-button"></span></div>
             <ul class="legend" id="legend" ma=" ">
@@ -637,8 +640,8 @@
             </ul>
           </div>
           <!-- Toolbar start -->
-          <div id="toolbar">
-            <ul class="toolbar">
+          <div id="toolbar"> 
+            <ul class="toolbar"> 
             <!--[if gt IE 8]><!-->
               <li class="zoom noselect"><a class="mb zoomout" id="zoomout"></a></li>
               <li class="zoom noselect"><a class="mb zoomin" id="zoomin"></a></li>
@@ -690,11 +693,13 @@
 
           <div id="chart-label"></div>
           <div class='container zoomable-chart-container' id="chart-container">
-      <div id="chart" class="scroller"></div>
+            <div id="chart" class="scroller"></div>
           </div>
 
         </div>
         <div id="rsi" class="component">
+          <div id="rsi-tooltip"></div>
+
           <div class="wrapper chart-header">
 
             <div class="title">RSI</div>
@@ -739,6 +744,8 @@
 
         </div>
         <div id="macd" class="component">
+          <div id="macd-tooltip"></div>
+
           <div class="wrapper chart-header">
             <div class="title">MACD</div>
             <div class="buttons">
@@ -778,7 +785,7 @@
             </div>
           </div>
         </div>
-
+       
       </div>
       <!-- Chart view end -->
 
@@ -818,9 +825,10 @@
       </div>
       <a class="modal-close mb close-modal" href="#"></a>
     </div>
-
+    
     <div id="lean_overlay"></div>
     <!-- End modal dialogs -->
+
   </div>
 
   <!-- Dashboard start -->
@@ -1028,7 +1036,7 @@
         <span class="expert-title">{{headline.title}}</span>
         <span class="expert-date">{{headline.uptime}}</span>
       </div>
-
+      
     </div>
     {{#each list}}
     <div class="expert-block">
@@ -1068,6 +1076,8 @@
   </script>
   <!-- End experts modal dialog -->
 
+
+  
   <!-- Start charting JS files -->
   <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/helpers.js?v={:C('html_cache')}"></script>
   <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/sticky-columns.js?v={:C('html_cache')}"></script>
