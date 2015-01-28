@@ -13,5 +13,12 @@ var DoubleScrollbars = {
     };
 
     baron(params);
+
+    // show scrollbar only while hovering the corr view
+    var scrollbarSelector = root + ' ' + bar;
+    $(root).hover(
+      function() { $(scrollbarSelector).fadeIn(); },
+      function() { $(scrollbarSelector).fadeOut(); }
+    );
   }
 };
