@@ -85,6 +85,7 @@ body {
 .outer .scroller,
 .outer #outer-scroller {
   overflow-y: scroll;
+  overflow-x: hidden;
   height: 100%;
 }
 
@@ -1268,7 +1269,7 @@ body {
 /* =Experts
 ---------------------------------------------------------------*/
 .outer #experts-view {
-  padding: 0px 0px 20px 0px;
+  padding: 0px 0px 0px 0px;
   margin: 0px;
   overflow: hidden;
 }
@@ -1406,7 +1407,7 @@ body {
 /* =Stockpicker
 ---------------------------------------------------------------*/
 .outer #stockpicker-view {
-  padding: 0px 0px 20px 0px;
+  padding: 0px 0px 0px 0px;
   margin: 0px;
   overflow: hidden;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
@@ -1891,7 +1892,7 @@ body {
 }
 
 .outer #news-view {
-  padding: 0px 0px 20px 0px;
+  padding: 0px 0px 0px 0px;
   margin: 0px;
   overflow: hidden;
 }
