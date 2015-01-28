@@ -31,11 +31,10 @@
 }
 html {
   overflow-x: hidden !important;
-  overflow-y: hidden !important;
+  overflow-y: scroll !important;
 }
 body {
-  overflow-x: hidden !important;
-  overflow-y: hidden;
+  overflow: hidden !important;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
