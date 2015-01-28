@@ -31,10 +31,11 @@
 }
 html {
   overflow-x: hidden !important;
-  overflow-y: scroll !important;
+  overflow-y: hidden !important;
 }
 body {
   overflow-x: hidden !important;
+  overflow-y: hidden;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
@@ -1122,9 +1123,23 @@ body {
   transition: all 400ms ease-out;
 }
 
+.outer.ie8 #content {
+	padding-right: 325px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .outer #content.full {
   width: calc(100% - 55px) !important;
   /*sticky-kit may override width if important is not added*/
+}
+
+.outer.ie8 #content.full{
+	padding-left: 55px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .outer #right-panel.collapsed { display: none; }
@@ -1755,6 +1770,13 @@ body {
   border: #5a5a5a solid 1px;
   font-size: 12px;
   padding: 5px 0px 0px 0px;
+}
+
+.outer.ie8 #right-panel-option-container .add-stock-table {
+    padding-right: 2px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .outer #right-panel-option-container .add-stock-table.first-add-panel-item {
