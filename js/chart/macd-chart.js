@@ -24,6 +24,7 @@ var MacdChart = {
     this.draw();
     this.initCloseAction();
     $('#macd').css('display', 'none');
+    this.hideScrollbar();
   },
   update: function (options) {
     this.setProperties(options);
@@ -43,6 +44,15 @@ var MacdChart = {
     self.data.y2 = ChartView.buildY(y2Range[0], y2Range[1], self.properties.chartHeight);
     self.data.x  = ChartView.x('rdate');
     this.updateLegends();
+  },
+   hideScrollbar: function(){
+    if(IE8){
+      MacdChart.components.scrollBar
+          .attr('fill-opacity', 0);
+    }else{
+      MacdChart.components.scrollBar
+          .style('fill-opacity', 0);    
+    }
   },
   initCloseAction: function(){
     $('#macd > .wrapper > .buttons > .close').on('click', function() {
@@ -359,6 +369,19 @@ var MacdChart = {
                                             .attr('height', 7)
                                             .attr('rx', 4)
                                             .attr('ry', 4)
+                                            .on('mouseenter', function(e) {
+                                               if(ChartView.isZoomed()){
+                                                  ChartView.showAllScrollbars();
+                                                  ChartView.properties.mouseOverScrollbar = true;
+                                               }
+                                            })
+                                            .on('mouseleave', function(e) {
+                                               var mChart = ChartView.properties.mouseOverChart;
+                                               if(!mChart){
+                                                  ChartView.hideAllScrollbars();
+                                                  ChartView.properties.mouseOverScrollbar = false;
+                                               }
+                                            })
                                             .style('fill', 'rgb(107, 107, 107)')
                                             .style('fill-opacity', 50)
                                             .call(ChartView.scrollbarDragBehavior());
@@ -370,19 +393,7 @@ var MacdChart = {
         .attr('x', ChartView.getScrollbarPos())
         .attr('y', MacdChart.properties.height - 30)
         .attr('width', ChartView.getScrollbarWidth())
-        .on('mouseenter', function(e) {
-           if(ChartView.isZoomed()){
-              ChartView.showAllScrollbars();
-              ChartView.properties.mouseOverScrollbar = true;
-           }
-        })
-        .on('mouseleave', function(e) {
-           var mChart = ChartView.properties.mouseOverChart;
-           if(!mChart){
-              ChartView.hideAllScrollbars();
-              ChartView.properties.mouseOverScrollbar = false;
-           }
-        });
+        .style('fill-opacity', ChartView.isZoomed()? 50:0);
       }
     },
     mouseOverlay: {
@@ -418,8 +429,8 @@ var MacdChart = {
           var xPos, yPos, mouseX, mouseY;
 
           if(IE8) {
-      			xPos = event.clientX + document.documentElement.scrollLeft;
-      			yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+      			xPos = event.offsetX;
+      			yPos = event.offsetY; //because of the old browser info box on top
       			// mouseX = xPos + 10;
       			// mouseY = yPos + 60;
           }
@@ -430,7 +441,7 @@ var MacdChart = {
             // mouseY = d3.event.pageY + 10;
           }
 		  
-          var j = ChartView.xInverse((IE8?xPos-55:xPos), MacdChart.data.x);
+          var j = ChartView.xInverse(xPos, MacdChart.data.x);
           var d = MacdChart.data.stockLine[j];
 
           var offset = 10;

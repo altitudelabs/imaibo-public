@@ -69,13 +69,13 @@ var IndexChart = {
     this.updateContainer();
   },
   hideScrollbar: function(){
-	if(IE8){
-		IndexChart.components.scrollBar
-		    .attr('fill-opacity', 0);
-	}else{
-		IndexChart.components.scrollBar
-		    .style('fill-opacity', 0);		
-	}
+  	if(IE8){
+  		IndexChart.components.scrollBar
+  		    .attr('fill-opacity', 0);
+  	}else{
+  		IndexChart.components.scrollBar
+  		    .style('fill-opacity', 0);		
+  	}
   },
   appendComponents: function () {
     this.appendChart();
@@ -183,7 +183,7 @@ var IndexChart = {
     function setCheckboxListener(type){
         var checkbox = $('#' + type + '-checkbox');
         if (IE8)
-          d3.select('#'+ type + '-line').style('stroke-opacity', checkbox.is(':checked')? 100:0);
+          d3.select('#'+ type + '-line').attr('stroke-opacity', checkbox.is(':checked')? 100:0);
         else
           d3.select('#'+ type + '-line').style('opacity', checkbox.is(':checked')? 1:0); 
     }
@@ -634,11 +634,11 @@ var IndexChart = {
         .on('mouseout', function() { 
           ChartView.mouseOutMouseOverlay();
 
-          if(IE8) return Tooltip.hide.index(); 
-          
-          IndexChart.components.horizontalText.style('fill-opacity', 0);
-          IndexChart.components.horizontalLine.style('stroke-opacity', 0);
-          IndexChart.components.horizontalBlock.style('fill-opacity', 0);
+          if(!IE8){
+            IndexChart.components.horizontalText.style('fill-opacity', 0);
+            IndexChart.components.horizontalLine.style('stroke-opacity', 0);
+            IndexChart.components.horizontalBlock.style('fill-opacity', 0);
+          }
 
           return Tooltip.hide.index(); 
         })
@@ -648,8 +648,8 @@ var IndexChart = {
           var xPos, yPos, mouseX, mouseY;
 
           if(IE8) {
-            xPos = event.clientX + document.documentElement.scrollLeft;
-            yPos = event.clientY + document.documentElement.scrollTop - 60; //because of the old browser info box on top
+            xPos = event.offsetX;
+            yPos = event.offsetY; //because of the old browser info box on top
             // mouseX = xPos + 10; 
             // mouseY = yPos + 60;
           }
@@ -669,8 +669,8 @@ var IndexChart = {
               }
           }
 
-          var j = ChartView.xInverse((IE8?xPos-55:xPos), IndexChart.data.x);
-          var cursorPriceLevel = IndexChart.data.y2.invert((IE8?yPos-243:yPos));
+          var j = ChartView.xInverse(xPos, IndexChart.data.x);
+          var cursorPriceLevel = IndexChart.data.y2.invert(yPos);
           var d = ChartView.getVisibleStockLine()[j];
           if (d === undefined) { return; }
           IndexChart.helpers.updateMAValue('5', d.ma5);
@@ -699,7 +699,7 @@ var IndexChart = {
               }
           };
 
-          if(IE8) return Tooltip.render.index(model);
+          if(IE8) return Tooltip.render.index(model); //we don't want to render horizontal line/text
 
           IndexChart.components.horizontalText
           .attr('x', ChartView.getContainerWidth() - 37)
