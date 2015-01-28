@@ -10,6 +10,10 @@ var LteIE9 = IE8 || IE9;
 
 $(function(){
   'use strict';
+
+  // Start double scrolling capability
+  DoubleScrollbars.start();
+
   // Sets up routing logic for left content panel
   ContentView.init();
 

@@ -58,7 +58,15 @@ var RightPanel = {
 
     }, 500);
   },
-  init: function(){
+  initHeights: function() {
+    // set the heights so that baron works properly
+    $('.outer #right-panel').css('height', $(window).height() - 30 + 'px');
+    $('.outer #news-view').css('height', $(window).height() - 30 - 37 + 'px');
+    $('.outer #experts-view').css('height', $(window).height() - 30 - 37 + 'px');
+    $('.outer #stockpicker-view').css('height', $(window).height() - 30 - 37 + 'px');
+  },
+  init: function() {
+    this.initHeights();
     this.initLinks();
     this.render();
     this.initStockpickerModule();
@@ -359,7 +367,7 @@ var RightPanel = {
           });
         }
 
-        $('#stockpicker-view > .panel-loader-wrapper').remove();
+        $('#stockpicker-view .panel-loader-wrapper').remove();
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
@@ -505,7 +513,7 @@ var RightPanel = {
 
       if(!error) {
         // Populate views
-        Helper.populateView(experts.el, experts.template, RightPanelModel.model.experts);
+        Helper.populateView($('#experts-view .scroller'), experts.template, RightPanelModel.model.experts);
         Helper.populateView(experts.modalEl, experts.modalTemplate, RightPanelModel.model.experts);
 
         // Init experts modal

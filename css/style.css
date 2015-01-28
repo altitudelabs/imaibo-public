@@ -31,13 +31,10 @@
 }
 html {
   overflow-x: hidden !important;
+  overflow-y: scroll !important;
 }
 body {
-  overflow-x: hidden !important;
-}
-
-body::-webkit-scrollbar {
-  width: 0em !important;
+  overflow: hidden !important;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
@@ -87,11 +84,13 @@ body::-webkit-scrollbar {
 }
 
 .outer .scroller {
-    overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .outer .scroller::-webkit-scrollbar {
-    width: 0;
+  width: 0;
 }
 
 .outer .scroller__bar {
@@ -100,14 +99,13 @@ body::-webkit-scrollbar {
 
 .outer .baron .scroller__bar {
   display: block;
-  opacity: 0;
   position: absolute;
-  width: 10px;
-  background: #595959;
-  z-index: 1;
+  background: rgb(107, 107, 107);
+  z-index: 999;
   border-radius: 3px;
-  height: 7px;
-  bottom: 0px;
+  right: 0px;
+  width: 7px;
+  opacity: 1;
 }
 
 /* =Scroll bar
@@ -172,9 +170,9 @@ body::-webkit-scrollbar {
 .outer .white, .outer .white a { color: #fff;}
 
 .outer {
-  overflow: hidden;
+  overflow-x: hidden;
   background-color: rgb(15, 15, 15);
-  padding-top: 7.5px;
+  padding-top: 15px;
 }
 
 .outer .component-wrapper {
@@ -767,7 +765,7 @@ body::-webkit-scrollbar {
   /*sticky-kit may override width if important is not added*/
 }
 
-.outer .zoomable-chart-container{
+.outer .zoomable-chart-container {
   overflow: hidden;
   top: 31px;
   left: 45px;
@@ -861,7 +859,7 @@ body::-webkit-scrollbar {
 }
 #sentiment-tooltip .wrapper .arrow-number {
   text-align: right;
-  float: right;  
+  float: right;
 }
 
 
@@ -1132,9 +1130,23 @@ body::-webkit-scrollbar {
   transition: all 400ms ease-out;
 }
 
+.outer.ie8 #content {
+	padding-right: 325px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .outer #content.full {
   width: calc(100% - 55px) !important;
   /*sticky-kit may override width if important is not added*/
+}
+
+.outer.ie8 #content.full{
+	padding-left: 55px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .outer #right-panel.collapsed { display: none; }
@@ -1144,9 +1156,11 @@ body::-webkit-scrollbar {
   display: none;
 }
 .outer #right-panel {
-  float: right;
+  position: fixed;
+  right: 0;
   width: 300px;
   margin-left: 15px;
+  z-index: 500;
 
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
@@ -1265,8 +1279,9 @@ body::-webkit-scrollbar {
 /* =Experts
 ---------------------------------------------------------------*/
 .outer #experts-view {
-  padding: 0px 0px 20px 0px;
-  overflow: auto;
+  padding: 0px 0px 0px 0px;
+  margin: 0px;
+  overflow: hidden;
 }
 
 .outer .experts-header {
@@ -1401,10 +1416,9 @@ body::-webkit-scrollbar {
 
 /* =Stockpicker
 ---------------------------------------------------------------*/
-.outer #stockpicker-view{
-  padding: 0;
-  overflow: visible;
-  display: block;
+.outer #stockpicker-view {
+  padding: 0px 0px 0px 0px;
+  margin: 0px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
@@ -1887,9 +1901,9 @@ body::-webkit-scrollbar {
 }
 
 .outer #news-view {
-  padding: 0px 0px 20px 0px;
+  padding: 0px 0px 0px 0px;
   margin: 0px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .outer .calendar,
@@ -1963,12 +1977,10 @@ body::-webkit-scrollbar {
 
 .outer #all-press .news-block:last-child {
   border-bottom: none;
-  padding-bottom: 0px;
 }
 
 .outer #press-by-time .time-block:last-child .news-block:last-child {
   border-bottom: none;
-  padding-bottom: 0px;
 }
 
 .outer .time-and-source {
