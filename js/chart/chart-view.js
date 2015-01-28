@@ -148,6 +148,7 @@ var ChartView = {
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
+    $('.outer #content').css('min-height', $(window).height() + 'px');
 
     ChartModel.getInitialData()
     .done(function (indexError, sentimentError) {
