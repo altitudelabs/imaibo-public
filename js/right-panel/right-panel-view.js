@@ -58,13 +58,15 @@ var RightPanel = {
 
     }, 500);
   },
-  init: function() {
-    // height of right panel should be smaller so that everything is visible
+  initHeights: function() {
+    // set the heights so that baron works properly
     $('.outer #right-panel').css('height', $(window).height() - 30 + 'px');
-    $('#news-view').css('height', $(window).height() - 30 - 36 + 'px');
-    $('#experts-view').css('height', $(window).height() - 30 - 36 + 'px');
-    $('#stockpicker-view').css('height', $(window).height() - 30 - 36 + 'px');
-    $('.outer').css('height', $(window).height() + 'px');
+    $('.outer #news-view').css('height', $(window).height() - 30 - 36 + 'px');
+    $('.outer #experts-view').css('height', $(window).height() - 30 - 36 + 'px');
+    $('.outer #stockpicker-view').css('height', $(window).height() - 30 - 36 + 'px');
+  },
+  init: function() {
+    this.initHeights();
     this.initLinks();
     this.render();
     this.initStockpickerModule();
