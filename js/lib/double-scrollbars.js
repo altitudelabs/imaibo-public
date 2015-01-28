@@ -17,8 +17,8 @@ var DoubleScrollbars = {
     // show scrollbar only while hovering the corr view
     var scrollbarSelector = root + ' ' + bar;
     $(root).hover(
-      function() { $(scrollbarSelector).fadeIn(); },
-      function() { $(scrollbarSelector).fadeOut(); }
+      function() { $(scrollbarSelector).fadeTo(800, 1); },
+      function() { $(scrollbarSelector).fadeTo(800, 0); }
     );
   }
 };
