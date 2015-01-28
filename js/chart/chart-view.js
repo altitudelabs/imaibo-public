@@ -251,8 +251,8 @@ var ChartView = {
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
+	  Toolbar.render(self.data.index);
       IndexChart.init();
-      Toolbar.render(self.data.index);
       RsiChart.init();
       MacdChart.init();
       ChartView.setScrollbarWidth();

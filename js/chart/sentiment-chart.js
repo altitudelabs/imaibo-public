@@ -858,8 +858,14 @@ var SentimentChart = {
       },
       update: function () {
         SentimentChart.components.forecastBubbleText
-        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
         .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 1; } ); // translate x value
+        if(IE8){
+          SentimentChart.components.forecastBubbleText
+            .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 20; } ) // translate y value to a pixel
+        }else{
+          SentimentChart.components.forecastBubbleText
+            .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
+        }
       },
       exit: function () {
         SentimentChart.components.forecastBubbleText
