@@ -32,6 +32,7 @@
   <script type="text/javascript" src="js/lib/baron.min.js"></script>
   <script type="text/javascript" src="js/lib/jquery.leanModal.min.js"></script>
   <script type="text/javascript" src="js/lib/jquery.stickykit.min.js"></script>
+  <script type="text/javascript" src="js/lib/double-scrollbars.js"></script>
 
   <!--[if lte IE 8]><script src="bower_components/aight/aight.min.js" charset="utf-8"></script><![endif]-->
   <!--[if lte IE 8]><script src="bower_components/raphael/raphael-min.js" charset="utf-8"></script><![endif]-->
@@ -43,16 +44,14 @@
   <!-- End Sentiment JS -->
 </head>
 <body>
-
-  <div class="outer">
-    <div id="alert-box"></div>
-  </div>
   
   <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
   <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
   <!--[if (gt IE 9)|!(IE)]>-->
   <div class="outer">
   <!--<![endif]-->
+
+    <div id="alert-box"></div>
 
     <!-- Right panel start -->
     <div id="right-panel">
@@ -70,6 +69,8 @@
 
       <!-- Stockpicker view start -->
       <div id="stockpicker-view" class="component">
+
+        <div class="scroller">
 
         <div class="panel-loader-wrapper">
           <div class="panel-loader"></div>
@@ -531,37 +532,52 @@
             <tbody id="stockpicker-table-body"></tbody>
           </table>
         </div>
+
+        </div>
+
+        <div class="scroller__bar"></div>
+
       </div>
       <!-- Stockpicker view end -->
 
       <!-- Experts view start -->
       <div id="experts-view" class="component">
 
-        <div class="panel-loader-wrapper">
-          <div class="panel-loader"></div>
+        <div class="scroller">
+
+          <div class="panel-loader-wrapper">
+            <div class="panel-loader"></div>
+          </div>
+
         </div>
+
+        <div class="scroller__bar"></div>
 
       </div>
       <!-- Experts view end -->
 
       <!-- News view start -->
       <div id="news-view" class="component">
-        <div class="panel-loader-wrapper">
-          <div class="panel-loader"></div>
+
+        <div class="scroller">
+
+          <div class="panel-loader-wrapper">
+            <div class="panel-loader"></div>
+          </div>
+
+          <ul id="news-tabs">
+            <li><a href="#press-by-time">时间划分</a></li>
+            <li><a href="#all-press">全部展开</a></li>
+          </ul>
+
+          <div id="news-content">
+            <div id="press-by-time" class="content"></div>
+            <div id="all-press" class="content"></div>
+          </div>
+
         </div>
 
-        <ul id="news-tabs">
-          <li><a href="#press-by-time">时间划分</a></li>
-          <li><a href="#all-press">全部展开</a></li>
-        </ul>
-
-        <div id="news-content">
-          
-          <div id="press-by-time" class="content"></div>
-
-          <div id="all-press" class="content"></div>
-
-        </div>
+        <div class="scroller__bar"></div>
 
       </div>
       <!-- News view end -->
@@ -699,7 +715,7 @@
 
           <div id="chart-label"></div>
           <div class='container zoomable-chart-container' id="chart-container">
-			<div id="chart" class="scroller"></div>
+			      <div id="chart" class="scroller"></div>
           </div>
 
         </div>
@@ -834,6 +850,7 @@
     
     <div id="lean_overlay"></div>
     <!-- End modal dialogs -->
+
   </div>
 
   <!-- Dashboard start -->
