@@ -179,7 +179,7 @@ var Toolbar = {
     $('#macd-checkbox').change(function(){
       if(this.checked){
         $('#macd').css('display', 'block');
-        window.scrollTo(0,document.body.scrollHeight);
+        // window.scrollTo(0,document.body.scrollHeight);
       } else {
         $('#macd').css('display', 'none');
       }

@@ -737,6 +737,12 @@ body {
   user-select: none;
 }
 
+.outer #chart,
+.outer #macd-chart,
+.outer #rsi-chart {
+  overflow: none;
+}
+
 .outer #chart:hover,
 .outer #macd:hover,
 .outer #rsi:hover {
