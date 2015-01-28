@@ -61,9 +61,9 @@ var RightPanel = {
   initHeights: function() {
     // set the heights so that baron works properly
     $('.outer #right-panel').css('height', $(window).height() - 30 + 'px');
-    $('.outer #news-view').css('height', $(window).height() - 30 - 36 + 'px');
-    $('.outer #experts-view').css('height', $(window).height() - 30 - 36 + 'px');
-    $('.outer #stockpicker-view').css('height', $(window).height() - 30 - 36 + 'px');
+    $('.outer #news-view').css('height', $(window).height() - 30 - 37 + 'px');
+    $('.outer #experts-view').css('height', $(window).height() - 30 - 37 + 'px');
+    $('.outer #stockpicker-view').css('height', $(window).height() - 30 - 37 + 'px');
   },
   init: function() {
     this.initHeights();
