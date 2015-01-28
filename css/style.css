@@ -84,6 +84,7 @@ body {
 
 .outer .scroller {
   overflow-y: scroll;
+  height: 100%;
 }
 
 .outer .scroller::-webkit-scrollbar {
@@ -96,14 +97,13 @@ body {
 
 .outer .baron .scroller__bar {
   display: block;
-  opacity: 0.5;
+  opacity: 0.8;
   position: absolute;
-  width: 10px;
+  width: 5px;
   background: #595959;
   z-index: 999;
   border-radius: 3px;
-  height: 7px;
-  bottom: 0px;
+  right: 0;
 }
 
 /* =Scroll bar
@@ -1880,7 +1880,7 @@ body {
 .outer #news-view {
   padding: 0px 0px 20px 0px;
   margin: 0px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .outer .calendar,
