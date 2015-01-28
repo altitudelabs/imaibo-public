@@ -59,11 +59,38 @@ var RightPanel = {
     }, 500);
   },
   initHeights: function() {
+    var self = this,
+        windowHeight = $(window).height(),
+        navHeight = 60,
+        padding = 120,
+        stockpickerSearchHeight = 42;
+
     // set the heights so that baron works properly
-    $('.outer #right-panel').css('height', $(window).height() - 30 + 'px');
-    $('.outer #news-view').css('height', $(window).height() - 30 - 37 + 'px');
-    $('.outer #experts-view').css('height', $(window).height() - 30 - 37 + 'px');
-    $('.outer #stockpicker-view').css('height', $(window).height() - 30 - 37 + 'px');
+    $('.outer #right-panel').css('height', windowHeight - padding + 'px');
+    $('.outer #news-view').css('height', windowHeight - padding + 'px');
+    $('.outer #experts-view').css('height', windowHeight - padding + 'px');
+    $('.outer #stockpicker-view').css('height', windowHeight - padding + 'px');
+    $('.outer #stockpicker-scroller-wrap').css('height', windowHeight - padding - stockpickerSearchHeight + 'px');
+    $('.outer').css('height', windowHeight - navHeight + 'px');
+    $('.outer .outer-scroller__bar').css('height', windowHeight + 'px');
+
+    // Handle resizing of columns when screen height changes
+    var resizeEnd;
+    if(!IE8){
+      $(window).on('resize', function() {
+        clearTimeout(resizeEnd);
+        resizeEnd = setTimeout(function() {
+          self.initHeights();
+        }, 500);
+      });
+
+      $('#right-panel').on('resize', function(){
+        clearTimeout(resizeEnd);
+        resizeEnd = setTimeout(function() {
+          self.initHeights();
+        }, 500);
+      });
+    }
   },
   init: function() {
     this.initHeights();
