@@ -57,7 +57,7 @@ var RsiChart = {
           .attr('fill-opacity', 0);
     }else{
       RsiChart.components.scrollBar
-          .style('fill-opacity', 0);    
+          .style('fill-opacity', 0);
     }
   },
   initCloseAction: function() {
@@ -284,7 +284,7 @@ var RsiChart = {
                                                .selectAll('text.yrule');
       },
       linkData: function () {
-        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([30, 70]);
+        RsiChart.components.y2Labels = RsiChart.components.y2Labels.data([30, 70, 100]);
       },
       enter: function () {
         RsiChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
@@ -431,7 +431,7 @@ var RsiChart = {
 
           var offset = 10;
           mouseX = xPos + ChartView.getLeftMargin();
-              
+
           var model = {
             top: yPos + 40,
             left: ChartView.getChartWidth() - xPos > 200 ? mouseX + offset : mouseX - 180 - offset,

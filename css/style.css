@@ -30,8 +30,7 @@
   box-sizing: border-box;
 }
 html {
-  overflow-x: hidden !important;
-  overflow-y: scroll !important;
+  overflow: hidden !important;
 }
 body {
   overflow: hidden !important;
@@ -105,7 +104,38 @@ body {
   border-radius: 3px;
   right: 0px;
   width: 7px;
-  opacity: 1;
+  opacity: 0.7;
+}
+
+.outer .outer-scroller {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.outer .outer-scroller::-webkit-scrollbar {
+  width: 0;
+}
+
+.outer .outer-scroller__track {
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 10px;
+    height: 100%;
+    opacity: 0.8;
+    background: white;
+}
+
+.outer .outer-scroller__bar {
+  display: block;
+  position: absolute;
+  background: rgb(180, 180, 180);
+  z-index: 999;
+  border-radius: 3px;
+  right: 2px;
+  width: 6px;
 }
 
 /* =Scroll bar
@@ -170,9 +200,8 @@ body {
 .outer .white, .outer .white a { color: #fff;}
 
 .outer {
-  overflow-x: hidden;
+  overflow: hidden;
   background-color: rgb(15, 15, 15);
-  padding-top: 15px;
 }
 
 .outer .component-wrapper {
@@ -556,7 +585,10 @@ body {
 /* =Charts
 -------------------------------------------------------------- */
 
-.outer #macd-chart { position: relative; }
+.outer #macd-chart {
+  position: relative;
+  overflow: hidden;
+}
 
 .outer #macd-dea-legend {
   color: #d7db74;
@@ -729,6 +761,7 @@ body {
 }
 
 .outer #chart {
+  overflow: hidden;
   padding-bottom: 7px;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -1127,8 +1160,9 @@ body {
 .outer #content {
   overflow: hidden;
   /*margin-right: 45px;*/
+  padding-top: 15px;
   margin-left: 10px;
-  width: calc(100% - 325px) !important;
+  width: calc(100% - 335px) !important;
   /*sticky-kit may override width if important is not added*/
   -webkit-transition: all 400ms ease-out;
   -moz-transition: all 400ms ease-out;
@@ -1144,7 +1178,7 @@ body {
 }
 
 .outer #content.full {
-  width: calc(100% - 55px) !important;
+  width: calc(100% - 65px) !important;
   /*sticky-kit may override width if important is not added*/
 }
 
@@ -1163,8 +1197,9 @@ body {
 }
 .outer #right-panel {
   position: fixed;
-  right: 0;
+  right: 10px;
   width: 300px;
+  padding-top: 15px;
   margin-left: 15px;
   z-index: 500;
 
@@ -1189,12 +1224,12 @@ body {
 
 .outer .vertical-collapse {
   background: url('../assets/chart/collapse-rightwards.png') no-repeat center;
-  right: 300px;
+  right: 310px;
 }
 
-.outer .vertical-uncollapse{
+.outer .vertical-uncollapse {
   background: url('../assets/chart/collapse-leftwards.png') no-repeat center;
-  right: 30px;
+  right: 40px;
   display: none;
 }
 
@@ -1243,7 +1278,7 @@ body {
 
 .outer #right-panel-collapsed {
   position: fixed;
-  right: 0;
+  right: 10px;
   width: 30px;
   top: 75px;
   -webkit-transition: all 400ms ease-out 400ms;
@@ -1423,9 +1458,15 @@ body {
 /* =Stockpicker
 ---------------------------------------------------------------*/
 .outer #stockpicker-view {
+  /*overflow: hidden;*/
   padding: 0px 0px 0px 0px;
   margin: 0px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+}
+
+.outer #stockpicker-scroller-wrap {
+  overflow: hidden;
+  position: relative;
 }
 
 .outer #stockpicker-wrapper {
@@ -2208,7 +2249,10 @@ body {
   width: 100%;
 }
 
-.outer #rsi-chart { position: relative; }
+.outer #rsi-chart {
+  position: relative;
+  overflow: hidden;
+}
 
 .outer #rsi6-legend {
   color: #fff;
