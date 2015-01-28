@@ -30,10 +30,11 @@
   box-sizing: border-box;
 }
 html {
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
 }
 body {
-  overflow: hidden !important;
+  overflow-x: hidden !important;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
@@ -169,7 +170,7 @@ body {
 .outer .white, .outer .white a { color: #fff;}
 
 .outer {
-  overflow: hidden;
+  overflow-x: hidden;
   background-color: rgb(15, 15, 15);
   padding-top: 15px;
 }
