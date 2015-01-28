@@ -250,8 +250,8 @@ var ChartView = {
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
+      Toolbar.render(self.data.index); //must render before IndexChart.init. Or else ma60 won't hide properly
       IndexChart.init();
-      Toolbar.render(self.data.index);
       RsiChart.init();
       MacdChart.init();
       ChartView.setScrollbarWidth();
