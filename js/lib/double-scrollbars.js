@@ -3,7 +3,7 @@ var DoubleScrollbars = {
     this.displayScrollbar('#news-view', '.scroller', '.scroller__bar', true);
     this.displayScrollbar('#experts-view', '.scroller', '.scroller__bar', true);
     this.displayScrollbar('#stockpicker-scroller-wrap', '.scroller', '.scroller__bar', true);
-    this.displayScrollbar('.outer', '.outer-scroller', '.outer-scroller__bar', false);
+    this.displayScrollbar('body', '.outer-scroller', '.outer-scroller__bar', false);
   },
   displayScrollbar: function(root, scroller, bar, setListener) {
     var params = {
