@@ -1694,6 +1694,14 @@ body {
     z-index: 3;
 }
 
+.outer #search-load {
+  height: 50px;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
+  background-color: #3c3c3c;
+  z-index: 20;
+  display: block;
+}
+
 .outer .search-block .stock-name a {
   color: #FFFFFF;
 }
@@ -1830,7 +1838,7 @@ body {
 }
 
 .outer .add-panel-sub-item:hover > div,
-.outer #right-panel-option-container .add-panel-item:hover div.first-item {
+.outer #right-panel-option-container .add-panel-item:hover .add-panel-sub-item.active div {
   border-radius: 3px;
   background-color: #373737;
   color: #40a3dc;
@@ -1950,6 +1958,8 @@ body {
   width: 300px;
   height: 37px;
   padding: 10px 17px 10px 20px;
+  border-top: 1px solid #373737;
+  border-bottom: 1px solid #373737;
 }
 
 .outer #press-by-time .calendar-and-date {
@@ -2039,16 +2049,7 @@ body {
 }
 
 .outer .news-block {
-  border-bottom: 1px solid #373737;
   padding: 15px 20px 15px 20px;
-}
-
-.outer #all-press .news-block:last-child {
-  border-bottom: none;
-}
-
-.outer #press-by-time .time-block:last-child .news-block:last-child {
-  border-bottom: none;
 }
 
 .outer .time-and-source {

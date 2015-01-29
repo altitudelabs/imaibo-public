@@ -181,6 +181,8 @@ var RightPanelModel = {
     var self = this;
 
     $.getJSON(self.baseUrl() + self.api.base + self.api.searchResult + key + self.api.jsonp, function(searchResult) {
+        clearTimeout(stockpickerView.loaderTimer);
+
         if (searchResult.code !== 'undefined' && searchResult.code === 0) {
 
           if (searchResult.data.count != 0)

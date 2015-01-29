@@ -1,4 +1,5 @@
 var stockpickerView = {
+  loaderTimer: 0,
 	init: function(){
     this.renderStockpickerView(true);
   },
@@ -138,6 +139,8 @@ var stockpickerView = {
   initStockpickerSettingsPanel: function() {
     var self = this;
 
+    self.initSettingsPanelOptionListener();
+
     $.when(
       RightPanelModel.getIndexStocksAsync(),
       RightPanelModel.getCggsStocksAsync(),
@@ -154,8 +157,16 @@ var stockpickerView = {
   updateSearchResult: function(key) {
     var self = this;
 
+    // if no results within 0.5 seconds, show loader
+    // clearTimeout in callback function of getJson
+    self.loaderTimer = setTimeout(function() {
+      $( "#search-result" ).html('<span id="search-load"></span>');
+    }, 500);
+
     var successHandler = function(searchResult) {
+      $( "#search-load" ).remove();
       $( ".search-empty" ).remove();
+
       var template = '<span class="stock-name"></span><span class="ticker"></span><span class="not-selected search-add-stock-button"></span>';
 
       var searchBlocks = d3.select('#search-result')
@@ -237,9 +248,9 @@ var stockpickerView = {
     };
 
     var failHandler = function(code) {
-      if (code == 0) // 0 = not found, 1 = no keywords, others = other errors
+      if (code === 0) // 0 = not found, 1 = no keywords, others = other errors
         $('#search-result').html('<div class="search-empty">没有结果</div>');
-      else if (code == 1)
+      else if (code === 1)
         $('#search-result').html('<div class="search-empty">请输入关键词</div>');
       else
         $('#search-result').html('<div class="search-empty">暂时无法下载数据，请稍后再试</div>');
@@ -426,5 +437,18 @@ var stockpickerView = {
     var refreshRate = 5000;
 
     setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+  },
+  // the first li is active by default
+  // if other lis are on hover, this li is active and others are not active
+  initSettingsPanelOptionListener: function() {
+    $('.add-panel-sub-item').hover(function() {
+      $('.add-panel-sub-item').removeClass('active');
+      $(this).addClass('active');
+    });
+
+    $('.add-panel-item > div').hover(function() {
+      $('.add-panel-sub-item').removeClass('active');
+      $('.add-panel-item .add-panel-sub-item:first-child').addClass('active');
+    });
   }
 }
