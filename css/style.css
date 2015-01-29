@@ -849,7 +849,8 @@ body {
 }
 
 .sentiment-tooltip .content {
-  line-height: 22px
+  line-height: 22px;
+  white-space: nowrap;
 }
 .sentiment-tooltip a {
   color: white;

@@ -949,7 +949,8 @@ var SentimentChart = {
               else
                 arrow = 'fall';
             }
-            title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
+            // title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
+            title = news.newsTitle;
             div +=    '<div>&nbsp;&#183;' +
                          '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;' +
                            '<div class="arrow-number ' + arrow + '"> ' + arrowNumber + '</div>' +
