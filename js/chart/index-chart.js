@@ -422,7 +422,10 @@ var IndexChart = {
         IndexChart.components.volumes = IndexChart.components.volumes.data(ChartView.getVisibleStockLine());
       },
       enter: function () {
-        IndexChart.components.volumes.enter().append('rect').attr('class', 'bars');
+        IndexChart.components.volumes.enter()
+                .append('rect')
+                .attr('class', 'bars')
+                .attr('fill', '#595959');
       },
       update: function () {
         var props = IndexChart.properties;
@@ -430,8 +433,10 @@ var IndexChart = {
         .attr('x', function(d,i)    { return IndexChart.data.x(i) - ChartView.getZoomFactor(); })
         .attr('y', function(d)      { return props.height - ChartView.getBottomMargin() + props.verticalOffset - IndexChart.data.v(d.volumn); })
         .attr('width', function(d)  { return 0.8 * ChartView.getGraphWidth()/ChartView.getVisibleStockLine().length; })
-        .attr('fill', '#595959')
         .attr('height', function(d) { return IndexChart.data.v(d.volumn); });
+      },
+      getX: function(d, i){
+        return IndexChart.data.x(i) - ChartView.getZoomFactor();
       }
     },
     candleSticks: {
