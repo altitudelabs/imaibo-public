@@ -5,9 +5,6 @@ var PRODUCTION = false;
 var IE8 = !!$('.lt-ie9').length;
 var IE9 = !!$('.ie9').length;
 var LteIE9 = IE8 || IE9;
-Array.prototype.toString = function(d){
-  return this.join(',');
-};
 
 // var _MID_ = 1;
 
