@@ -716,7 +716,14 @@ var SentimentChart = {
         .style('opacity', 1)
         .attr('id', function (d, i) {
           return 'sd-' + i;
-        })
+        });
+        
+      },
+      update: function () {
+        SentimentChart.components.scatterDots
+        .attr('r', 4)
+        .attr('cy', function (d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
+        .attr('cx', function (d,i) { return SentimentChart.data.x(d.timestamp); } )
         .attr('stroke', function (d, i) {
           if (!d.isRealTime) {
             return '#25bcf1';
@@ -731,13 +738,7 @@ var SentimentChart = {
           if (d.isRealTime) {
             return '#25bcf1';
           }
-        });
-      },
-      update: function () {
-        SentimentChart.components.scatterDots
-        .attr('r', 4)
-        .attr('cy', function (d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
-        .attr('cx', function (d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
+        });; // translate x value
       },
       exit: function () {
         SentimentChart.components.scatterDots
@@ -851,10 +852,8 @@ var SentimentChart = {
         .enter().append('text')  // create a new circle for each value
         .attr('class', 'sentiment')
         .attr('fill', 'white')
-        .attr('text-anchor', 'middle')
-        .text(function(d, i){
-          if (!d.isRealTime) { return '预测'; }
-        });
+        .attr('text-anchor', 'middle');
+        
       },
       update: function () {
         SentimentChart.components.forecastBubbleText
@@ -866,6 +865,11 @@ var SentimentChart = {
           SentimentChart.components.forecastBubbleText
             .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
         }
+
+        SentimentChart.components.forecastBubbleText
+        .text(function(d, i){
+          if (!d.isRealTime) { return '预测'; }
+        });
       },
       exit: function () {
         SentimentChart.components.forecastBubbleText
