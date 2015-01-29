@@ -316,8 +316,8 @@ var SentimentChart = {
       'use strict';
       var xPos, yPos;
       if(IE8) {
-        xPos = event.clientX;
-        yPos = event.clientY;
+        xPos = event.offsetX;
+        yPos = event.offsetY;
       }
       else {
         xPos = d3.mouse(context)[0];
