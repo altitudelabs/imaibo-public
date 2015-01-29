@@ -1,9 +1,4 @@
 var RightPanelModel = {
-  productionUrl: 'http://www.imaibo.net',
-  stagingUrl: 'http://t3-www.imaibo.net',
-  baseUrl: function() {
-    return PRODUCTION ? this.productionUrl : this.stagingUrl;
-  },
   model: {
     // ideally all models should store the array
     experts: {},
@@ -12,11 +7,35 @@ var RightPanelModel = {
     pressByTime: {},
     addPanelStocks: [],
     addPanelStockGroupName: [],
+  },
+  error: {
     expertError: true,
     expertHeadlineError: true,
     getAllPressError: true,
     getPressByTimeError: true,
     getAddPanelStocksError: false
+  },
+  api: {
+    production:           'http://www.imaibo.net',
+    staging:              'http://t3-www.imaibo.net',
+    base:                 '/index.php?app=moodindex',
+    expertData:           '&mod=ExpertMood&act=weiboList',
+    expertHeadline:       '&mod=ExpertMood&act=moodindexParsing',
+    likeComment:          '&mod=ExpertMood&act=weiboDig&weiboId=',
+    allPress:             '&mod=PressMood&act=getPressAll',
+    pressByTime:          '&mod=PressMood&act=getPressByTime',
+    stockpickerStockData: '&mod=FocusStock&act=focusedStockList&init=1',
+    searchResult:         '&mod=FocusStock&act=searchStock&key=',
+    addStock:             '&mod=FocusStock&act=addFocusStock&stockId=',
+    deleteStock:          '&mod=FocusStock&act=delFocusStock&stockId=',
+    addPanelIndesStock:   '&mod=StockMarket&act=indexStocks',
+    addPanelCggsStocks:   '&mod=StockMarket&act=cggsStocks',
+    addPanelHotStocks:    '&mod=StockMarket&act=hotStocks',
+    addPanelMarketStocks: '&mod=StockMarket&act=marketStocks',
+    jsonp:                '&callback=?'
+  },
+  baseUrl: function() {
+    return PRODUCTION ? this.api.production : this.api.staging;
   },
   /* Expert module */
   getExpertDataAsync: function() {
@@ -25,29 +44,10 @@ var RightPanelModel = {
       self.getExpertData(d.resolve, d.reject);
     }).promise();
   },
-  getExpertHeadlineAsync: function() {
-    var self = this;
-    return $.Deferred(function(d) {
-      self.getExpertHeadline(d.resolve, d.reject);
-    }).promise();
-  },
-  getExpertHeadline: function(handler) {
-    var self = this;
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=moodindexParsing&callback=?', function(res) {
-      if (res.code !== 'undefined' && res.code === 0){
-        self.model.expertHeadlineError = false;
-        self.model.experts.headline = res.data;
-        handler(res.data);
-      } 
-      else {
-        handler(res.data);
-      }
-    });
-  },
   getExpertData: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboList&callback=?', function(expertData) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.expertData + self.api.jsonp, function(expertData) {
         _.extend(self.model.experts, expertData.data);
 
         self.model.experts.list.map(function(res){
@@ -57,15 +57,23 @@ var RightPanelModel = {
         handler(self.model.experts);
      });
   },
-  // Experts tab: Handles user like action
-  likeComment: function(weiboId, successHandler, errorHandler) {
+  getExpertHeadlineAsync: function() {
     var self = this;
-
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=ExpertMood&act=weiboDig&weiboId=' + weiboId + '&callback=?', function(res) {
-      if (res.code === 0)
-        successHandler(res.data.code);
-      else
-        errorHandler(res.data.code);
+    return $.Deferred(function(d) {
+      self.getExpertHeadline(d.resolve, d.reject);
+    }).promise();
+  },
+  getExpertHeadline: function(handler) {
+    var self = this;
+    $.getJSON(self.baseUrl() + self.api.base + self.api.expertHeadline + self.api.jsonp, function(res) {
+      if (res.code !== 'undefined' && res.code === 0){
+        self.error.expertHeadlineError = false;
+        self.model.experts.headline = res.data;
+        handler(res.data);
+      } 
+      else {
+        handler(res.data);
+      }
     });
   },
   likeCommentAsync: function(weiboId) {
@@ -73,6 +81,16 @@ var RightPanelModel = {
     return $.Deferred(function(d) {
       self.likeComment(weiboId, d.resolve, d.reject);
     }).promise();
+  },
+  likeComment: function(weiboId, successHandler, errorHandler) {
+    var self = this;
+
+    $.getJSON(self.baseUrl() + self.api.base + self.api.likeComment + weiboId + self.api.jsonp, function(res) {
+      if (res.code === 0)
+        successHandler(res.data.code);
+      else
+        errorHandler(res.data.code);
+    });
   },
   log: function(code, message) {
     if(PRODUCTION) return;
@@ -97,7 +115,7 @@ var RightPanelModel = {
       this.log(1, api + ' (Experts)' + 'data.list array is empty');
     }
     else {
-      this.model.expertError = false;
+      this.error.expertError = false;
     }
   },
   /* News module */
@@ -111,9 +129,9 @@ var RightPanelModel = {
   getAllPress: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=PressMood&act=getPressAll&callback=?', function(res) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.allPress + self.api.jsonp, function(res) {
       if (res.code !== 'undefined' && res.code === 0) { // if the page is not blank and the code is 0
-        self.model.getAllPressError = false;
+        self.error.getAllPressError = false;
         self.model.allPress = res.data.list; // allPress = array of data
       } 
       
@@ -130,9 +148,9 @@ var RightPanelModel = {
   getPressByTime: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=PressMood&act=getPressByTime&callback=?', function(res) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.pressByTime + self.api.jsonp, function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
-        self.model.getPressByTimeError = false;
+        self.error.getPressByTimeError = false;
         self.model.pressByTime = res.data.list; // pressByTime = array of data
       }
 
@@ -143,7 +161,7 @@ var RightPanelModel = {
   getStockData: function(successHandler, errorHandler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=focusedStockList&init=1&callback=?', function(stockData) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.stockpickerStockData + self.api.jsonp, function(stockData) {
         self.model.stock = stockData.data; // stockData.data.list is an array
 
         if(stockData.code !== 'undefined' && stockData.code === 0) {
@@ -162,7 +180,7 @@ var RightPanelModel = {
 
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=searchStock&key=' + key + '&callback=?', function(searchResult) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.searchResult + key + self.api.jsonp, function(searchResult) {
         if (searchResult.code !== 'undefined' && searchResult.code === 0) {
 
           if (searchResult.data.count != 0)
@@ -177,7 +195,7 @@ var RightPanelModel = {
   },
   addStock: function(stockId, successHandler, errorHandler){
     var self = this;
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=addFocusStock&stockId=' + stockId + '&callback=?', function(res){
+    $.getJSON(self.baseUrl() + self.api.base + self.api.addStock + stockId + self.api.jsonp, function(res) {
       successHandler(res);
     }).fail(function(){
       errorHandler({ isError: true, msg: 'AJAX request failed' });
@@ -185,7 +203,7 @@ var RightPanelModel = {
   },
   deleteStock: function(stockId, successHandler, errorHandler){
     var self = this;
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=FocusStock&act=delFocusStock&stockId=' + stockId + '&callback=?', function(res){
+    $.getJSON(self.baseUrl() + self.api.base + self.api.deleteStock + stockId + self.api.jsonp, function(res) {
       successHandler(res);
     }).fail(function(){
       errorHandler({ isError: true, msg: 'AJAX request failed' });
@@ -202,14 +220,14 @@ var RightPanelModel = {
   getIndexStocks: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=indexStocks&callback=?', function(res) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.addPanelIndesStock + self.api.jsonp, function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || false;
         self.model.addPanelStocks[0] = res.data;
         handler(res.data);
       } 
       else {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || true; // if one is true, all is true
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
       }
     });
@@ -224,9 +242,9 @@ var RightPanelModel = {
   getCggsStocks: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=cggsStocks&callback=?', function(res) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.addPanelCggsStocks + self.api.jsonp, function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || false;
 
         self.model.addPanelStocks[1] = res.data.mostHodingStock.stockList;
         self.model.addPanelStocks[2] = res.data.mostHodingStockBuy.stockList;
@@ -241,7 +259,7 @@ var RightPanelModel = {
         handler(res.data);
       } 
       else {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || true; // if one is true, all is true
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
       }
     });
@@ -256,9 +274,9 @@ var RightPanelModel = {
   getHotStocks: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=hotStocks&callback=?', function(res) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.addPanelHotStocks + self.api.jsonp, function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || false;
 
         self.model.addPanelStocks[5] = res.data.hotSearchStock.stockList;
         self.model.addPanelStocks[6] = res.data.optionalHotStock.stockList;
@@ -273,7 +291,7 @@ var RightPanelModel = {
         handler(res.data);
       } 
       else {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || true; // if one is true, all is true
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
       }
     });
@@ -288,9 +306,9 @@ var RightPanelModel = {
   getMarketStocks: function(handler) {
     var self = this;
 
-    $.getJSON(self.baseUrl() + '/index.php?app=moodindex&mod=StockMarket&act=marketStocks&callback=?', function(res) {
+    $.getJSON(self.baseUrl() + self.api.base + self.api.addPanelMarketStocks + self.api.jsonp, function(res) {
       if (res.code !== 'undefined' && res.code === 0) {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || false;
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || false;
 
         self.model.addPanelStocks[9] = res.data.hotStockRise.stockList;
         self.model.addPanelStocks[10] = res.data.hotStockFall.stockList;
@@ -305,7 +323,7 @@ var RightPanelModel = {
         handler(res.data);
       } 
       else {
-        self.model.getAddPanelStocksError = self.model.getAddPanelStocksError || true; // if one is true, all is true
+        self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
       }
     });
