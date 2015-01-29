@@ -141,6 +141,13 @@ var SentimentChart = {
       self.componentsBuilder[key].update();
     }
 
+    // EXIT LOOP ===================================================================
+    for (var key in self.componentsBuilder) {
+      if (self.componentsBuilder[key].exit !== undefined) {
+        self.componentsBuilder[key].exit();
+      }
+    }
+
     // Etc ===================================================================
 
   },
