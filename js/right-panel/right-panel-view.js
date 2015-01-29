@@ -66,31 +66,31 @@ var RightPanel = {
         stockpickerSearchHeight = 42;
 
     // set the heights so that baron works properly
-    $('.outer #right-panel').css('height', windowHeight - padding + 'px');
-    $('.outer #news-view').css('height', windowHeight - padding + 'px');
-    $('.outer #experts-view').css('height', windowHeight - padding + 'px');
-    $('.outer #stockpicker-view').css('height', windowHeight - padding + 'px');
-    $('.outer #stockpicker-scroller-wrap').css('height', windowHeight - padding - stockpickerSearchHeight + 'px');
-    $('.outer').css('height', windowHeight - navHeight + 'px');
-    $('.outer .outer-scroller__bar').css('height', windowHeight + 'px');
+    // $('.outer #right-panel').css('height', windowHeight - padding + 'px');
+    // $('.outer #news-view').css('height', windowHeight - padding + 'px');
+    // $('.outer #experts-view').css('height', windowHeight - padding + 'px');
+    // $('.outer #stockpicker-view').css('height', windowHeight - padding + 'px');
+    // $('.outer #stockpicker-scroller-wrap').css('height', windowHeight - padding - stockpickerSearchHeight + 'px');
+    // $('body').css('height', windowHeight + 'px');
+    // $('body .outer-scroller__bar').css('height', windowHeight + 'px');
 
     // Handle resizing of columns when screen height changes
-    var resizeEnd;
-    if(!IE8){
-      $(window).on('resize', function() {
-        clearTimeout(resizeEnd);
-        resizeEnd = setTimeout(function() {
-          self.initHeights();
-        }, 500);
-      });
+    // var resizeEnd;
+    // if(!IE8){
+    //   $(window).on('resize', function() {
+    //     clearTimeout(resizeEnd);
+    //     resizeEnd = setTimeout(function() {
+    //       self.initHeights();
+    //     }, 500);
+    //   });
 
-      $('#right-panel').on('resize', function(){
-        clearTimeout(resizeEnd);
-        resizeEnd = setTimeout(function() {
-          self.initHeights();
-        }, 500);
-      });
-    }
+    //   $('#right-panel').on('resize', function(){
+    //     clearTimeout(resizeEnd);
+    //     resizeEnd = setTimeout(function() {
+    //       self.initHeights();
+    //     }, 500);
+    //   });
+    // }
   },
   init: function() {
     this.initHeights();

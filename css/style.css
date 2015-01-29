@@ -31,9 +31,11 @@
 }
 html {
   overflow: hidden !important;
+  height: 100%;
 }
 body {
   overflow: hidden !important;
+  height: 100%;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
@@ -107,17 +109,17 @@ body {
   opacity: 0.7;
 }
 
-.outer .outer-scroller {
+.outer-scroller {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 100%;
 }
 
-.outer .outer-scroller::-webkit-scrollbar {
+.outer-scroller::-webkit-scrollbar {
   width: 0;
 }
 
-.outer .outer-scroller__track {
+.outer-scroller__track {
     display: block;
     position: absolute;
     right: 0px;
@@ -128,7 +130,8 @@ body {
     background: white;
 }
 
-.outer .outer-scroller__bar {
+.outer-scroller__bar {
+  height: 100%;
   display: block;
   position: absolute;
   background: rgb(180, 180, 180);
@@ -1197,10 +1200,13 @@ body {
   display: none;
 }
 .outer #right-panel {
+  top: 0;
+  height: 100%;
   position: fixed;
   right: 10px;
   width: 300px;
-  padding-top: 15px;
+  padding-top: 75px;
+  padding-bottom: 45px;
   margin-left: 15px;
   z-index: 500;
 
@@ -1460,12 +1466,20 @@ body {
 ---------------------------------------------------------------*/
 .outer #stockpicker-view {
   /*overflow: hidden;*/
+  /*height: 100%;*/
+  padding-bottom: 40px;
   padding: 0px 0px 0px 0px;
   margin: 0px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
+.outer #stockpicker-view.component {
+  padding-bottom: 40px;
+}
+
+
 
 .outer #stockpicker-scroller-wrap {
+  height: 100%;
   overflow: hidden;
   position: relative;
 }
