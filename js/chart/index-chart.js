@@ -151,22 +151,26 @@ var IndexChart = {
     function getLine(type) {
       var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length*0.8/2;
 
+      function getX(d, i){
+          if (i === 0) {
+           return self.data.x(i);
+         } else if (i === ChartView.getVisibleStockLine().length-1){
+           if (ChartView.data.lastDataIndex === ChartView.getStockLine().length) {
+             return self.data.x(i) + offset;
+           } else {
+             return self.data.x(i) + offset*2;
+           }
+         } else {
+           return self.data.x(i) + offset;
+         }
+      }
+      function getY(d){
+        return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]);
+      }
+
       return d3.svg.line()
-             .x(function(d, i) {
-               if (i === 0) {
-                 return self.data.x(i);
-               } else if (i === ChartView.getVisibleStockLine().length-1){
-                 if (ChartView.data.lastDataIndex === ChartView.getStockLine().length) {
-                   return self.data.x(i) + offset;
-                 } else {
-                   return self.data.x(i) + offset*2;
-                 }
-               } else {
-                 return self.data.x(i) + offset;
-               }
-             })
-             .y(function(d)    { 
-                return type === 'sentiment'? self.data.y1(d.moodindex):self.data.y2(d[type]); })
+             .x(getX) //don't use anonoymous function
+             .y(getY) //don't use anonoymous function
              .interpolate('linear');
     }
 
@@ -194,7 +198,7 @@ var IndexChart = {
 
     var chartWidth  = ChartView.getContainerWidth() - ChartView.getLeftMargin() - ChartView.getRightMargin();
 
-    $('#chart-container').css('width', chartWidth.toString() + 'px');
+    $('#chart-container').css('width', chartWidth + 'px');
 
     //DATA SECTION ======================================================
     self.componentsBuilder.y1Labels.linkData();
@@ -252,12 +256,8 @@ var IndexChart = {
                                                          .attr('class', 'chart')
                                                          .attr('id', 'graph')
                                                          .attr('width', ChartView.getChartWidth())
-                                                         .on('mouseenter', function(){
-                                                            ChartView.showAllScrollbars();
-                                                         })
-                                                         .on('mouseleave', function(){
-                                                            ChartView.hideAllScrollbars();
-                                                         });
+                                                         .on('mouseenter', ChartView.showAllScrollbars)
+                                                         .on('mouseleave', ChartView.hideAllScrollbars);
       },
       update: function () {
         var props = IndexChart.properties;
@@ -357,23 +357,22 @@ var IndexChart = {
         IndexChart.components.y1Labels = IndexChart.components.chartLabel.append('g').attr('class','y1labels').selectAll('text.yrule');
       },
       linkData: function () {
-        var data = ChartView.getVisibleStockLine().map(function(x) { return +x.moodindex; });
+        function getMoodIndex(x){ return +x.moodindex; } //acceptable, only call linkdata once in the program's lifetime
+        var data = ChartView.getVisibleStockLine().map(getMoodIndex); //don't use anonymous function
         IndexChart.components.y1Labels = IndexChart.components.y1Labels.data(IndexChart.helpers.getYLabelsData(data));
       },
       enter: function () {
-        IndexChart.components.y1Labels.enter().append('text').attr('class', 'yrule');
-    
+        IndexChart.components.y1Labels.enter()
+            .append('text')
+            .attr('class', 'yrule')
+            .attr('text-anchor', 'middle')
+            .style('fill','rgb(129, 129, 129)')
+            .attr('x', ChartView.getLeftMargin() - 15);
       },
       update: function () {
-        var props = IndexChart.properties;
         IndexChart.components.y1Labels
-        .attr('x', ChartView.getLeftMargin() - 15)
         .attr('y', IndexChart.data.y1)
-        .attr('text-anchor', 'middle')
-        .style('fill','rgb(129, 129, 129)')
-        .text(function (x) {
-          return Math.floor(x);
-        });
+        .text(Math.floor); //don't use anonymous function
       }
     },
     y2Labels: {
@@ -381,26 +380,38 @@ var IndexChart = {
         IndexChart.components.y2Labels = IndexChart.components.chartLabel.append('g').attr('class','y2labels').selectAll('text.yrule');
       },
       linkData: function () {
-        var data = ChartView.getVisibleStockLine().map(function(x) { return +x.price; });
-        var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x.lowpx; }));
-        var max = d3.max(ChartView.getVisibleStockLine().map(function(x) { return +x.highpx; }));
+        // find min and max in 1 pass rather than the 
+        // declaritive approach in 2 passes.
+        var length = ChartView.getVisibleStockLine().length;
+        var min = +ChartView.getVisibleStockLine()[0].lowpx;
+        var max = +ChartView.getVisibleStockLine()[0].highpx;
+        for(var i = 1; i < length; ++i){
+          var highpx = +ChartView.getVisibleStockLine()[i].highpx;
+          var lowpx  = +ChartView.getVisibleStockLine()[i].lowpx
+          if(highpx > max) max = highpx;
+          if(lowpx  < min) min = lowpx;
+        }
+
+        // function getPrice(x) { return +x.price;  } //acceptable. only called once in the program's life time.
+        // function getLowPx(x) { return +x.lowpx;  } //acceptable. only called once in the program's life time.
+        // function getHighPx(x){ return +x.highpx; } //acceptable. only called once in the program's life time.
+        // var min = d3.min(ChartView.getVisibleStockLine().map(getLowPx));
+        // var max = d3.max(ChartView.getVisibleStockLine().map(getHighPx));
 
         IndexChart.components.y2Labels = IndexChart.components.y2Labels.data(IndexChart.helpers.getYLabelsData([min, max]));
       },
       enter: function () {
-        IndexChart.components.y2Labels.enter().append('text').attr('class', 'yrule');
+        IndexChart.components.y2Labels.enter()
+          .append('text')
+          .attr('class', 'yrule')
+          .attr('text-anchor', 'middle')
+          .style('fill','rgb(129, 129, 129)')
+          .attr('y', IndexChart.data.y2);
       },
       update: function () {
-        var props = IndexChart.properties;
         IndexChart.components.y2Labels
-        .attr('class', 'yrule')
         .attr('x', ChartView.getContainerWidth()-ChartView.getRightMargin() + 18)
-        .attr('y', IndexChart.data.y2)
-        .attr('text-anchor', 'middle')
-        .style('fill','rgb(129, 129, 129)')
-        .text(function (x) {
-          return Math.floor(x);
-        });
+        .text(Math.floor);
       }
     },
     volumes: {

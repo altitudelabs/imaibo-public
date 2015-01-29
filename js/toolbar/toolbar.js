@@ -1,7 +1,6 @@
 var Toolbar = {
   el: '#toolbar',
   init: function(){
-    //this.initDropdown();
     if(!IE8){
       this.initZoom();
       this.initFreq();
@@ -124,18 +123,10 @@ var Toolbar = {
     var zoomOut = $('#zoomout');
     zoomIn.click(function(){
       ChartView.zoom(1.2);
-      // IndexChart.redraw(1.2);
-      // RsiChart.redraw(1.2);
-      // MacdChart.redraw(1.2);
     });
 
     zoomOut.click(function(){
       ChartView.zoom(1/1.2);
-      // ChartView.updateIndexByDrag();
-
-      // IndexChart.redraw(1/1.2);
-      // RsiChart.redraw(1/1.2);
-      // MacdChart.redraw(1/1.2);
     });
   },
   initRsi: function(){

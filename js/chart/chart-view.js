@@ -117,7 +117,6 @@ var ChartView = {
   },
   init: function(){
     // set up toolbar
-    // this.horizontalScroll();
     var self = this;
     Toolbar.init();
     self.initInfoButtons();
@@ -128,16 +127,12 @@ var ChartView = {
     if(!IE8){ //app.js
       $(window).on('resize', function() {
         clearTimeout(resizeEnd);
-        resizeEnd = setTimeout(function() {
-          self.rebuild();
-        }, 500);
+        resizeEnd = setTimeout(self.rebuild, 500);
       });
 
       $('#chart-view').on('resize', function(){
         clearTimeout(resizeEnd);
-        resizeEnd = setTimeout(function() {
-          self.rebuild();
-        }, 500);
+        resizeEnd = setTimeout(self.rebuild, 500);
       });
     }
   },
@@ -157,7 +152,7 @@ var ChartView = {
     });
 
     if(!IE8) {
-      setInterval(function () {
+      function updateData() {
         var indexOption = {};
         var sentimentOption = {};
 
@@ -173,7 +168,10 @@ var ChartView = {
           self.updateChartViewData(indexError, sentimentError);
           try { self.updateChartElements(); } catch (error) {  }
         });
-      }, self.properties.refreshFrequency);
+      }
+      //don't use anonymous function here. Don't need to create a function
+      //everytime it loops.
+      setInterval(updateData, self.properties.refreshFrequency);
     }
   },
   getPastIndexData: function () {
@@ -324,22 +322,26 @@ var ChartView = {
     self.setScrollbarPos();
     self.redraw();
   },
-  zoomBehavior: function() {
-    return d3.behavior.zoom()
-                    .on("zoom", function(){
-                      var deltaY = d3.event.sourceEvent.deltaY;
+  zoomFunc: function(){
+    var deltaY = d3.event.sourceEvent.deltaY;
 
-                      if (!deltaY) // d3.event.sourceEvent.deltaY not defined in ie
-                        deltaY = -d3.event.sourceEvent.wheelDelta;
+    if (!deltaY) // d3.event.sourceEvent.deltaY not defined in ie
+      deltaY = -d3.event.sourceEvent.wheelDelta;
 
-                      if(deltaY > 0){
-                        ChartView.moveToLeft();
-                      }else if(deltaY < 0){
-                        ChartView.moveToRight();
-                      }
-                    });
+    if(deltaY > 0){
+      ChartView.moveToLeft();
+    }else if(deltaY < 0){
+      ChartView.moveToRight();
+    }
   },
-  scrollbarDragBehavior: function(){
+  zoomBehavior: function() {
+    var self = this;
+    //don't use anonymous function here
+    //else, will create new function on every zoom event
+    return d3.behavior.zoom()
+            .on("zoom", self.zoomFunc);
+  },
+  scrollbarDragBehavior: function(){//optimize later
     var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
           .origin(function(d) { return d; })
@@ -368,19 +370,19 @@ var ChartView = {
       ChartView.data.lastDataIndex = index + ChartView.data.dataSetLength;
       ChartView.redraw();
     }
-
+  },
+  chartDragFunc: function(){
+    if(d3.event.dx < 0){
+      ChartView.moveToRight();
+    }else{
+      ChartView.moveToLeft();
+    }
   },
   chartDragBehavior: function(){
     var self = this;
     return d3.behavior.drag()
     .origin(function(d) { return d; })
-    .on("drag", function(d){
-      if(d3.event.dx < 0){
-        ChartView.moveToRight();
-      }else{
-        ChartView.moveToLeft();
-      }
-    });
+    .on("drag", self.chartDragFunc);
   },
   moveToRight: function () {
     var self = this;
