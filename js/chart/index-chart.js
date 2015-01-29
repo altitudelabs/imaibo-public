@@ -499,11 +499,13 @@ var IndexChart = {
         var props = IndexChart.properties;
         var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length*0.8/2;
         IndexChart.components.lineStems
-        .attr('x1', this.getX)
-        .attr('x2', this.getX)
-        .attr('y1', this.getY1)
-        .attr('y2', this.getY2)
-        .attr('stroke', this.getColor);
+        .attr({
+          'x1': this.getX,
+          'x2': this.getX,
+          'y1': this.getY1,
+          'y2': this.getY2,
+          'stroke': this.getColor
+        });
       },
       getX: function(d, i){
         var offset = (ChartView.getGraphWidth())/ChartView.getVisibleStockLine().length*0.8/2;
