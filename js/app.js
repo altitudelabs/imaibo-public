@@ -11,6 +11,9 @@ var LteIE9 = IE8 || IE9;
 $(function(){
   'use strict';
 
+  // override console logs on IE 8
+  if(PRODUCTION && IE8 && !window.console){console={}; console.log = function(){};}
+
   // Start double scrolling capability
   DoubleScrollbars.start();
 
