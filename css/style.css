@@ -1176,7 +1176,7 @@ body {
 }
 
 .outer.ie8 #content {
-	padding-right: 300px;
+	padding-right: 250px;
   width: 100%;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -1188,7 +1188,7 @@ body {
 }
 
 .outer.ie8 #content.full{
-	/*padding-left: 45px;*/
+	padding-left: 45px;
   width: 100%;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
