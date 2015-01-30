@@ -34,7 +34,7 @@ var ChartView = {
     return d3.scale.ordinal()
     .domain(ChartView.getVisibleStockLine().map(function(x) {
       return x[returnProp]; }))
-    .rangeBands([0, props.chartWidth]); //inversed the x axis because api came in descending order
+    .rangeBands([props.margin.left, props.chartWidth + props.margin.left]); //inversed the x axis because api came in descending order
   },
   getXLabels: function(){
     var timeObjArray = {};
@@ -552,7 +552,7 @@ var ChartView = {
     return ChartView.properties.scrollbarPos;
   },
   setScrollbarPos: function(){
-    var x =  (ChartView.getLastDataIndex() - ChartView.getVisibleStockLine().length)/ChartView.getStockLine().length * ChartView.getChartWidth();
+    var x =  (ChartView.getLastDataIndex() - ChartView.getVisibleStockLine().length)/ChartView.getStockLine().length * ChartView.getChartWidth() + ChartView.getLeftMargin();
     ChartView.properties.scrollbarPos = x;
   }
 };

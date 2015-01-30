@@ -65,7 +65,6 @@ var IndexChart = {
   updateWithError: function(){
     this.setProperties();
     this.componentsBuilder.chart.update();
-    this.componentsBuilder.chartLabel.update();
     this.updateContainer();
   },
   hideScrollbar: function(){
@@ -87,9 +86,8 @@ var IndexChart = {
     $('#chart-label').empty();
   },
   appendChart: function(){
-    var self = this;
-    self.componentsBuilder.chart.append();
-    self.componentsBuilder.chartLabel.append();
+    this.componentsBuilder.chart.append();
+    console.log(this.componentsBuilder.chart.append);
   },
   appendContainer: function(){
     var self = this;
@@ -194,7 +192,7 @@ var IndexChart = {
 
     //////////////////////PRIVATE HELPER FUNCTIONS ABOVE//////////////////////
     self.componentsBuilder.chart.update();
-    self.componentsBuilder.chartLabel.update();
+    self.componentsBuilder.chart.update();
 
     var chartWidth  = ChartView.getContainerWidth() - ChartView.getLeftMargin() - ChartView.getRightMargin();
 
@@ -253,41 +251,44 @@ var IndexChart = {
     chart: {
       append: function () {
         IndexChart.components.chart = d3.select('#chart').append('svg:svg')
-                                                         .attr('class', 'chart')
-                                                         .attr('id', 'graph')
-                                                         .attr('width', ChartView.getChartWidth())
-                                                         .on('mouseenter', ChartView.showAllScrollbars)
-                                                         .on('mouseleave', ChartView.hideAllScrollbars);
+                                                         .on({
+                                                            'mouseenter': ChartView.showAllScrollbars,
+                                                            'mouseleave': ChartView.hideAllScrollbars
+                                                         })
+                                                         .attr({
+                                                            'class': 'chart',
+                                                            'id': 'graph',
+                                                            'width': ChartView.getChartWidth()
+                                                         });
       },
       update: function () {
         var props = IndexChart.properties;
         var width = ChartView.getChartWidth() * ChartView.getZoomFactor();
         IndexChart.components.chart
-        .attr('height', props.height + 20)
-        .attr('width', width)
-        .select('svg').attr('width', width);
+        .attr({
+          'height': IndexChart.properties.height + 15,
+          'width': ChartView.getContainerWidth()
+        });
       }
     },
     chartLabel: {
       append: function () {
-        IndexChart.components.chartLabel = d3.select('#chart-label').append('svg:svg')
-                                                         .attr('class', 'chart')
-                                                         .attr('id', 'graph-label')
-                                                         .attr('width', ChartView.getContainerWidth())
-                                                         .attr('height', IndexChart.properties.height + 15);
+        // IndexChart.components.chart = d3.select('#chart-label').append('svg:svg')
+        //                                                  .attr('class', 'chart')
+        //                                                  .attr('id', 'graph-label')
+        //                                                  .attr('width', ChartView.getContainerWidth())
+        //                                                  .attr('height', IndexChart.properties.height + 15);
       },
       update: function () {
-        var props = IndexChart.properties;
-        IndexChart.components.chartLabel
-        .attr('class', 'chart')
-        .attr('width', ChartView.getContainerWidth())
-        .attr('height', props.height+ 15)
-        .select('svg').attr('width', ChartView.getContainerWidth());
+        // var props = IndexChart.properties;
+        // IndexChart.components.chart
+        // .attr('width', ChartView.getContainerWidth())
+        // .attr('height', props.height+ 15);
       }
     },
     topBorder: {
       append: function () {
-        IndexChart.components.topBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.topBorder = IndexChart.components.chart.append('svg:line')
 											.attr('class', 'border-top');
       },
       update: function () {
@@ -303,7 +304,7 @@ var IndexChart = {
     },
     rightBorder: {
       append: function () {
-        IndexChart.components.rightBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.rightBorder = IndexChart.components.chart.append('svg:line')
         .attr('class', 'border-right');
 
       },
@@ -322,7 +323,7 @@ var IndexChart = {
     },
     bottomBorder: {
       append: function () {
-        IndexChart.components.bottomBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.bottomBorder = IndexChart.components.chart.append('svg:line')
         .attr('class', 'border-bottom');
       },
       update: function () {
@@ -338,7 +339,7 @@ var IndexChart = {
     },
     leftBorder: {
       append: function () {
-        IndexChart.components.leftBorder = IndexChart.components.chartLabel.append('svg:line')
+        IndexChart.components.leftBorder = IndexChart.components.chart.append('svg:line')
         .attr('class', 'border-left');
       },
       update: function () {
@@ -354,7 +355,7 @@ var IndexChart = {
     },
     y1Labels: {
       append: function () {
-        IndexChart.components.y1Labels = IndexChart.components.chartLabel.append('g').attr('class','y1labels').selectAll('text.yrule');
+        IndexChart.components.y1Labels = IndexChart.components.chart.append('g').attr('class','y1labels').selectAll('text.yrule');
       },
       linkData: function () {
         function getMoodIndex(x){ return +x.moodindex; } //acceptable, only call linkdata once in the program's lifetime
@@ -377,7 +378,7 @@ var IndexChart = {
     },
     y2Labels: {
       append: function () {
-        IndexChart.components.y2Labels = IndexChart.components.chartLabel.append('g').attr('class','y2labels').selectAll('text.yrule');
+        IndexChart.components.y2Labels = IndexChart.components.chart.append('g').attr('class','y2labels').selectAll('text.yrule');
       },
       linkData: function () {
         // find min and max in 1 pass rather than the 
@@ -438,7 +439,7 @@ var IndexChart = {
         return IndexChart.data.v(d.volumn);
       },
       getX: function(d, i){
-        return IndexChart.data.x(i) - ChartView.getZoomFactor();
+        return IndexChart.data.x(i);
       },
       getY: function(d){
         return IndexChart.properties.height - ChartView.getBottomMargin() + IndexChart.properties.verticalOffset - IndexChart.data.v(d.volumn);
@@ -585,22 +586,22 @@ var IndexChart = {
     },
     horizontalBlock: {
       append: function () {
-        IndexChart.components.horizontalBlock = IndexChart.components.chartLabel.append('rect').attr('id', 'horizontal-block');
+        IndexChart.components.horizontalBlock = IndexChart.components.chart.append('rect').attr('id', 'horizontal-block');
       }
     },
     horizontalText: {
       append: function () {
-        IndexChart.components.horizontalText = IndexChart.components.chartLabel.append('text').attr('class', 'horizontal-text');
+        IndexChart.components.horizontalText = IndexChart.components.chart.append('text').attr('class', 'horizontal-text');
       }
     },
     scrollbarRail: {
       append: function () {
-        IndexChart.components.scrollbarRail = IndexChart.components.chartLabel
+        IndexChart.components.scrollbarRail = IndexChart.components.chart
                                             .append('rect')
                                             .attr('class', 'scrollbar-rail')
-                                            .attr('width', ChartView.properties.width)
+                                            .attr('width', ChartView.getChartWidth())
                                             .attr('height', 15)
-                                            .attr('x', 0)
+                                            .attr('x', ChartView.getLeftMargin())
                                             .attr('y', IndexChart.properties.height)
                                             .on('mouseenter', function(){
                                               ChartView.showAllScrollbars();
@@ -657,9 +658,9 @@ var IndexChart = {
         IndexChart.components.mouseOverlay = IndexChart.components.chart.append('rect')
                                              .attr('class', 'mouseover-overlay')
                                              .attr('fill-opacity', 0)
-                                             .attr('x', 0)
+                                             .attr('x', ChartView.getLeftMargin())
                                              .attr('id', 'abc')
-                                             .attr('width', ChartView.getGraphWidth())
+                                             .attr('width', ChartView.getChartWidth())
                                              .attr('y', ChartView.getTopMargin() + props.yOffset)
                                              .attr('height', props.height-4);
         if(!IE8){
@@ -762,8 +763,8 @@ var IndexChart = {
         .style('fill', 'white');
 
         IndexChart.components.horizontalLine
-        .attr('x1', 0)
-        .attr('x2', ChartView.getGraphWidth())
+        .attr('x1', ChartView.getLeftMargin())
+        .attr('x2', ChartView.getChartWidth() + ChartView.getLeftMargin())
         .attr('y1', yPos) //make it line up with the label
         .attr('y2', yPos)
         .attr('stroke', '#f65c4e')
