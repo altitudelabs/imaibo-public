@@ -404,7 +404,6 @@ var MacdChart = {
         .attr('fill-opacity', 0)
         .attr('x', 0)
         .attr('y', 0)
-        .attr('width', MacdChart.properties.graphWidth)
         .attr('height', MacdChart.properties.chartHeight - 5);
 
         if(!IE8){
@@ -416,6 +415,7 @@ var MacdChart = {
       },
       update: function () {
         MacdChart.components.mouseOverlay
+        .attr('width', MacdChart.properties.graphWidth)
         .on('mouseover', function(e){
           ChartView.mouseOverMouseOverlay();
           return Tooltip.show.macd();
