@@ -424,8 +424,10 @@ var IndexChart = {
       enter: function () {
         IndexChart.components.volumes.enter()
                 .append('rect')
-                .attr('class', 'bars')
-                .attr('fill', '#595959');
+                .attr({
+                  'class': 'bars',
+                  'fill' : '#595959'
+                });
       },
       update: function () {
         IndexChart.components.volumes
@@ -461,11 +463,13 @@ var IndexChart = {
         var props = IndexChart.properties;
 
         IndexChart.components.candleSticks
-        .attr('x', this.getX) // don't use anonymous function
-        .attr('y', this.getY) // don't use anonymous function
-        .attr('height', this.getHeight) // don't use anonymous function
-        .attr('width', this.getWidth)   // don't use anonymous function
-        .attr('fill', this.getColor);  // don't use anonymous function
+        .attr({
+          'x': this.getX,
+          'y': this.getY,
+          'height': this.getHeight,
+          'width' : this.getWidth,
+          'fill'  : this.getColor //don't use anonymous function
+        });
       },
       getX: function(d, i){
          return IndexChart.data.x(i); 
