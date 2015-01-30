@@ -905,10 +905,10 @@ var SentimentChart = {
           // shouldRenderBottom means the tooltip should render towards the bottom side of the hovered dot
           var shouldRenderLeft = true;
           var shouldRenderBottom = true;
-          if (SentimentChart.helpers.getMousePosition(dot)[0] < SentimentChart.properties.chartWidth/2) {
+          if (d3.select(this).attr('cx') < SentimentChart.properties.chartWidth/2) {
             shouldRenderLeft = false;
           }
-          if (SentimentChart.helpers.getMousePosition(dot)[1] > SentimentChart.properties.chartHeight/2) {
+          if (d3.select(this).attr('cy') > SentimentChart.properties.chartHeight/2) {
             shouldRenderBottom = false;
           }
 
