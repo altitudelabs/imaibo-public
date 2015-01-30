@@ -192,7 +192,6 @@ var IndexChart = {
 
     //////////////////////PRIVATE HELPER FUNCTIONS ABOVE//////////////////////
     self.componentsBuilder.chart.update();
-    self.componentsBuilder.chart.update();
 
     var chartWidth  = ChartView.getContainerWidth() - ChartView.getLeftMargin() - ChartView.getRightMargin();
 
