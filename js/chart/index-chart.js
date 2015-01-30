@@ -431,10 +431,12 @@ var IndexChart = {
       },
       update: function () {
         IndexChart.components.volumes
-        .attr('x', this.getX) // don't use anonymous function
-        .attr('y', this.getY) // don't use anonymous function
-        .attr('width', this.getWidth)       // don't use anonymous function
-        .attr('height', this.getBarHeight); // don't use anonymous function
+        .attr({
+          'x': this.getX,
+          'y': this.getY,
+          'width': this.getWidth,
+          'height': this.getBarHeight
+        });
       },
       getBarHeight: function(d){
         return IndexChart.data.v(d.volumn);
@@ -533,7 +535,14 @@ var IndexChart = {
         IndexChart.components.xLabels = IndexChart.components.xLabels.data(IndexChart.data.xLabelData);
       },
       enter: function () {
-        IndexChart.components.xLabels.enter().append('text').attr('class', 'labels');
+        var obj = {
+              'class': 'labels',
+              'y': props.height - ChartView.getBottomMargin() + 20,
+              'text-anchor': 'middle'
+            };
+
+        IndexChart.components.xLabels.enter().append('text')
+        .attr(obj); //create obj once, as opposed to creating it everytime
       },
       update: function () {
         var props = IndexChart.properties;
@@ -541,8 +550,6 @@ var IndexChart = {
         .attr('x', function(d,i){ 
           return IndexChart.data.x(d.rdate);
         })
-        .attr('y', props.height - ChartView.getBottomMargin() + 20)
-        .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
           // if(i === 0 || today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1){
