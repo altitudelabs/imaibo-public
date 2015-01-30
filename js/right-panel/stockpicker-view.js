@@ -147,8 +147,9 @@ var stockpickerView = {
       RightPanelModel.getHotStocksAsync(),
       RightPanelModel.getMarketStocksAsync())
      .done(function(indexStocks, cggsStocks, hotStocks, marketStocks) {
-      var error = RightPanelModel.error.getAddPanelStocksError;
+      $('#add-panel-loader').remove();
 
+      var error = RightPanelModel.error.getAddPanelStocksError;
       if(!error) {
         self.updateStockpickerSettingsPanel(RightPanelModel.model.addPanelStocks, RightPanelModel.model.addPanelStockGroupName);
       }
@@ -164,6 +165,7 @@ var stockpickerView = {
     }, 500);
 
     var successHandler = function(searchResult) {
+      clearTimeout(stockpickerView.loaderTimer);
       $( "#search-load" ).remove();
       $( ".search-empty" ).remove();
 
@@ -248,6 +250,9 @@ var stockpickerView = {
     };
 
     var failHandler = function(code) {
+      clearTimeout(stockpickerView.loaderTimer);
+      $( "#search-load" ).remove();
+
       if (code === 0) // 0 = not found, 1 = no keywords, others = other errors
         $('#search-result').html('<div class="search-empty">没有结果</div>');
       else if (code === 1)
@@ -438,17 +443,15 @@ var stockpickerView = {
 
     setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
   },
-  // the first li is active by default
-  // if other lis are on hover, this li is active and others are not active
+  // when the item in the add panel (e.g 指数) is hovered, the first li and the corresponding stock table is shown 
   initSettingsPanelOptionListener: function() {
-    $('.add-panel-sub-item').hover(function() {
-      $('.add-panel-sub-item').removeClass('active');
-      $(this).addClass('active');
-    });
-
-    $('.add-panel-item > div').hover(function() {
-      $('.add-panel-sub-item').removeClass('active');
-      $('.add-panel-item .add-panel-sub-item:first-child').addClass('active');
-    });
+    $('.add-panel-item > div').hover(
+      function() {
+        $('.add-panel-item .add-panel-sub-item:first-child').addClass('active');
+      },
+      function() {
+        $('.add-panel-item .add-panel-sub-item:first-child').removeClass('active');
+      }
+    );
   }
 }

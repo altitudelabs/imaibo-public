@@ -1767,11 +1767,8 @@ body {
   top: 0;
 }
 
-.outer #right-panel-option-container li:hover > ul {
-  display: block;
-}
-
-.outer #right-panel-option-container .add-panel-item:hover .add-stock-table.first-item {
+.outer #right-panel-option-container li:hover > ul,
+.outer #right-panel-option-container .add-panel-item:hover .add-panel-sub-item.active .add-stock-table {
   display: block;
 }
 
@@ -1797,6 +1794,16 @@ body {
   background-color: #373737;
   font-size: 14px;
   box-shadow: 0px 0px 10px #222;
+}
+
+.outer #add-panel-loader {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
+  background-color: #373737;
+  border: #5a5a5a 1px solid;
 }
 
 .outer .add-panel-item {
