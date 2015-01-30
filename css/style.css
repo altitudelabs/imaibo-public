@@ -31,9 +31,11 @@
 }
 html {
   overflow: hidden !important;
+  height: 100%;
 }
 body {
   overflow: hidden !important;
+  height: 100%;
 }
 
 .outer .mb-nav:before, .outer .mb-nav:after {
@@ -107,17 +109,17 @@ body {
   opacity: 0.7;
 }
 
-.outer .outer-scroller {
+.outer-scroller {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 100%;
 }
 
-.outer .outer-scroller::-webkit-scrollbar {
+.outer-scroller::-webkit-scrollbar {
   width: 0;
 }
 
-.outer .outer-scroller__track {
+.outer-scroller__track {
     display: block;
     position: absolute;
     right: 0px;
@@ -128,7 +130,8 @@ body {
     background: white;
 }
 
-.outer .outer-scroller__bar {
+.outer-scroller__bar {
+  height: 100%;
   display: block;
   position: absolute;
   background: rgb(180, 180, 180);
@@ -200,6 +203,7 @@ body {
 .outer .white, .outer .white a { color: #fff;}
 
 .outer {
+  padding-top: 60px;
   overflow: hidden;
   background-color: rgb(15, 15, 15);
 }
@@ -828,7 +832,7 @@ body {
 ------------------------------------------------------------ */
 #sentiment-tooltip {
   position: absolute;
-  width: 300px;
+  width: 350px;
   font-size: 11px;
   padding: 15px;
 }
@@ -845,7 +849,8 @@ body {
 }
 
 .sentiment-tooltip .content {
-  line-height: 22px
+  line-height: 22px;
+  white-space: nowrap;
 }
 .sentiment-tooltip a {
   color: white;
@@ -865,7 +870,7 @@ body {
 #sentiment-tooltip .wrapper {
   background-color: #454545;
   padding: 2px;
-  width: 268px;
+  width: 318px;
   height: 100%;
 }
 
@@ -926,7 +931,7 @@ body {
   background-color: #2a2a2a;
   color: rgb(107, 107, 107);
   padding: 5px 3px 5px 3px;
-  width: 268px;
+  width: 318px;
 }
 #sentiment-tooltip .tooltip-date div {
   float: right;
@@ -937,7 +942,7 @@ body {
 
 #sentiment-tooltip .news-bubble {
   position: absolute;
-  width: 200px;
+  width: 250px;
   height: 60px;
   pointer-events: none;
 }
@@ -1196,10 +1201,13 @@ body {
   display: none;
 }
 .outer #right-panel {
+  top: 0;
+  height: 100%;
   position: fixed;
   right: 10px;
   width: 300px;
-  padding-top: 15px;
+  padding-top: 60px;
+  padding-bottom: 37px;
   margin-left: 15px;
   z-index: 500;
 
@@ -1459,12 +1467,20 @@ body {
 ---------------------------------------------------------------*/
 .outer #stockpicker-view {
   /*overflow: hidden;*/
+  /*height: 100%;*/
+  padding-bottom: 40px;
   padding: 0px 0px 0px 0px;
   margin: 0px;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
+.outer #stockpicker-view.component {
+  padding-bottom: 40px;
+}
+
+
 
 .outer #stockpicker-scroller-wrap {
+  height: 100%;
   overflow: hidden;
   position: relative;
 }
@@ -1678,6 +1694,14 @@ body {
     z-index: 3;
 }
 
+.outer #search-load {
+  height: 50px;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
+  background-color: #3c3c3c;
+  z-index: 20;
+  display: block;
+}
+
 .outer .search-block .stock-name a {
   color: #FFFFFF;
 }
@@ -1743,7 +1767,8 @@ body {
   top: 0;
 }
 
-.outer #right-panel-option-container li:hover > ul {
+.outer #right-panel-option-container li:hover > ul,
+.outer #right-panel-option-container .add-panel-item:hover .add-panel-sub-item.active .add-stock-table {
   display: block;
 }
 
@@ -1769,6 +1794,16 @@ body {
   background-color: #373737;
   font-size: 14px;
   box-shadow: 0px 0px 10px #222;
+}
+
+.outer #add-panel-loader {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
+  background-color: #373737;
+  border: #5a5a5a 1px solid;
 }
 
 .outer .add-panel-item {
@@ -1809,7 +1844,8 @@ body {
   padding: 10px;
 }
 
-.outer .add-panel-sub-item:hover > div {
+.outer .add-panel-sub-item:hover > div,
+.outer #right-panel-option-container .add-panel-item:hover .add-panel-sub-item.active div {
   border-radius: 3px;
   background-color: #373737;
   color: #40a3dc;
@@ -1909,6 +1945,13 @@ body {
   background-position: 0 -1916px;
 }
 
+.outer .add-delete-stock-loader {
+  height: 50px;
+  width: 50px;
+  z-index: 999;
+  background: url('../assets/chart/ajax-loader-sm.gif') no-repeat center;
+}
+
 /* =News
 ---------------------------------------------------------------*/
 
@@ -1929,6 +1972,8 @@ body {
   width: 300px;
   height: 37px;
   padding: 10px 17px 10px 20px;
+  border-top: 1px solid #373737;
+  border-bottom: 1px solid #373737;
 }
 
 .outer #press-by-time .calendar-and-date {
@@ -2018,16 +2063,7 @@ body {
 }
 
 .outer .news-block {
-  border-bottom: 1px solid #373737;
   padding: 15px 20px 15px 20px;
-}
-
-.outer #all-press .news-block:last-child {
-  border-bottom: none;
-}
-
-.outer #press-by-time .time-block:last-child .news-block:last-child {
-  border-bottom: none;
 }
 
 .outer .time-and-source {
@@ -2175,7 +2211,7 @@ body {
   position: absolute;
   left: 54px;
   top: 45px;
-  z-index: 10;
+  z-index: 5;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
