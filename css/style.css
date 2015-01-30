@@ -1176,10 +1176,10 @@ body {
 }
 
 .outer.ie8 #content {
-	padding-right: 325px;
-    width: 100%;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+	padding-right: 300px;
+  width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .outer #content.full {
@@ -1188,10 +1188,10 @@ body {
 }
 
 .outer.ie8 #content.full{
-	padding-left: 55px;
-    width: 100%;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+	/*padding-left: 45px;*/
+  width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .outer #right-panel.collapsed { display: none; }
