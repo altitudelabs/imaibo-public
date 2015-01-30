@@ -391,7 +391,6 @@ var RsiChart = {
         .attr('fill-opacity', 0)
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
-        .attr('width', RsiChart.properties.graphWidth)
         .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10);
 
         if(!IE8){
@@ -403,6 +402,7 @@ var RsiChart = {
       },
       update: function () {
         RsiChart.components.mouseOverlay
+        .attr('width', RsiChart.properties.graphWidth)
         .on('mouseover', function(e){
           ChartView.mouseOverMouseOverlay();
           return Tooltip.show.rsi(); })

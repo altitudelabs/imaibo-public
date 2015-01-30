@@ -94,17 +94,28 @@ var stockpickerView = {
           login_show();
         }
         else {
+          // display the loader if request not processed within 0.5s
+          var timer = setTimeout(function() {
+            $('#alert-box').html('<div class="add-delete-stock-loader"></div>')
+                           .stop(true, true)
+                           .fadeIn();
+          }, 500);
           var selectorName = '.add-stock-button span.Id' + d.stockId;
           var spanObjects = d3.selectAll(selectorName); // select all elements with that stockId so as to change all their buttons
           var thisSpanObject = d3.select(this);
 
           var errorHandler = function(errorObject) {
+            clearTimeout(timer);
+
             $('#alert-box').html(errorObject.msg)
-                           .fadeIn("slow")
+                           .stop(true, true)
+                           .fadeIn('slow')
                            .fadeOut(3000);
           };
 
           var AddSuccessHandler = function() {
+            clearTimeout(timer);
+
             spanObjects.classed("not-selected", false);
             spanObjects.classed("selected", true);
 
@@ -112,11 +123,13 @@ var stockpickerView = {
 
             $('#alert-box').html("已添加自选股")
                            .stop(true, true)
-                           .fadeIn("slow")
+                           .fadeIn('slow')
                            .fadeOut(3000);
           };
 
           var DeleteSuccessHandler = function() {
+            clearTimeout(timer);
+
             spanObjects.classed("not-selected", true);
             spanObjects.classed("selected", false);
 
@@ -124,7 +137,7 @@ var stockpickerView = {
 
             $('#alert-box').html("已移除自选股")
                            .stop(true, true)
-                           .fadeIn("slow")
+                           .fadeIn('slow')
                            .fadeOut(3000);
           };
 
