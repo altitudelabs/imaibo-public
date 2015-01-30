@@ -968,7 +968,7 @@ var SentimentChart = {
           // var tooltipHeight;
           SentimentChart.components.tooltip
           .html(div)
-          .style('left', shouldRenderLeft ? dotPosition[0] - padding - 270 + 'px' : dotPosition[0] - padding + 'px')
+          .style('left', shouldRenderLeft ? dotPosition[0] - padding - 320 + 'px' : dotPosition[0] - padding + 'px')
           .style('top', shouldRenderBottom ? dotPosition[1] - padding + 'px' : dotPosition[1] - tooltipHeight + padding + 'px')
           .on('mouseout', function () {
             var mousePosition = SentimentChart.helpers.getMousePosition(dot);
