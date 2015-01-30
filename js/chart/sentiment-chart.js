@@ -952,7 +952,7 @@ var SentimentChart = {
             // title = news.newsTitle.length > 11 ? news.newsTitle.slice(j, 11) + '...' : news.newsTitle.slice(j, 13);
             title = news.newsTitle;
             div +=    '<div>&nbsp;&#183;' +
-                         '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>&nbsp;&nbsp;&nbsp;' +
+                         '<a href="' + news.url + '" class="content" target="_blank"> ' + title + '</a>' +
                            '<div class="arrow-number ' + arrow + '"> ' + arrowNumber + '</div>' +
                            '<div class="arrow-text">心情分数:</div>' +
                        '</div>';
