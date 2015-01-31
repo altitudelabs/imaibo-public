@@ -59,18 +59,18 @@ body {
 }
 
 .outer input[type="checkbox"] + label span {
-    display: inline-block;
-    vertical-align: middle;
-    width: 16px;
-    height: 16px;
-    background-position: 0px -25px;
-    margin-top: -5px;
-    margin-right: 5px;
-    margin-left: -5px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-position: 0px -25px;
+  margin-top: -5px;
+  margin-right: 5px;
+  margin-left: -5px;
 }
 
 .outer input[type="checkbox"]:checked + label span {
-    background-position: 0px 0px;
+  background-position: 0px 0px;
 }
 
 .outer.lt-ie9 input[type="checkbox"] {
@@ -78,10 +78,10 @@ body {
 }
 
 .outer.lt-ie9 input[type="checkbox"] + label span {
-    width: 0;
-    height: 0;
-    background: none;
-    margin: 0 0 0 0;
+  width: 0;
+  height: 0;
+  background: none;
+  margin: 0 0 0 0;
 }
 
 .outer .scroller {
@@ -120,14 +120,14 @@ body {
 }
 
 .outer-scroller__track {
-    display: block;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    width: 10px;
-    height: 100%;
-    opacity: 0.8;
-    background: white;
+  display: block;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 10px;
+  height: 100%;
+  opacity: 0.8;
+  background: white;
 }
 
 .outer-scroller__bar {
@@ -203,7 +203,7 @@ body {
 .outer .white, .outer .white a { color: #fff;}
 
 .outer {
-  /*padding-top: 60px;*/
+  padding-bottom: 60px;
   overflow: hidden;
   background-color: rgb(15, 15, 15);
 }
@@ -899,7 +899,7 @@ body {
 #sentiment-tooltip .wrapper .arrow-number,
 #sentiment-tooltip .wrapper .content,
 #sentiment-tooltip .wrapper .extra {
-    display: inline-block;
+  display: inline-block;
 }
 #sentiment-tooltip .wrapper .arrow-number {
   text-align: right;
@@ -1681,17 +1681,17 @@ body {
 }
 
 .outer #search-result:before {
-    content: ' ';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-bottom: 12px solid #3c3c3c;
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 12px solid #3c3c3c;
 
-    top: -8px;
-    left: 43%;
-    z-index: 3;
+  top: -8px;
+  left: 43%;
+  z-index: 3;
 }
 
 .outer #search-load {
@@ -2356,17 +2356,17 @@ body {
 }
 
 .outer input[type="radio"] + label span {
-    display: inline-block;
-    vertical-align: middle;
-    width: 14px;
-    height: 14px;
-    margin-top: -7px;
-    margin-right: 5px;
-    margin-left: -5px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  margin-right: 5px;
+  margin-left: -5px;
 }
 
 .outer input[type="radio"]:checked + label {
-    color: rgb(48, 140, 180);
+  color: rgb(48, 140, 180);
 }
 
 .outer #minute-radio + label span {
@@ -2374,7 +2374,7 @@ body {
 }
 
 .outer #minute-radio:checked + label span {
-    background-position: 0px -129px;
+  background-position: 0px -129px;
 }
 
 .outer #day-radio + label span {
@@ -2382,7 +2382,7 @@ body {
 }
 
 .outer #day-radio:checked + label span {
-    background-position: 0px -83px;
+  background-position: 0px -83px;
 }
 
 .outer #week-radio + label span {
@@ -2390,7 +2390,7 @@ body {
 }
 
 .outer #week-radio:checked + label span {
-    background-position: 0px -175px;
+  background-position: 0px -175px;
 }
 
 /* =Modal
