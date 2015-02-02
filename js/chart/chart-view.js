@@ -5,7 +5,7 @@ var ChartView = {
     error: {},
   },
   properties: {
-    refreshFrequency: 60000,
+    refreshFrequency: 6000,
     scrollSpeed: 2,
     scrollbarPos: 0,
     mode: 'daily'
@@ -160,13 +160,14 @@ var ChartView = {
       setInterval(function () {
         var indexOption = {};
         var sentimentOption = {};
-
         if (self.properties.mode === 'daily') {
           indexOption.daily = true;
         } else {
           indexOption.weekly = true;
           indexOption.weeklyUpdate = true;
         }
+
+        sentimentOption.sentimentUpdate = true;
 
         ChartModel.updateAllData(indexOption, sentimentOption)
         .done(function (indexError, sentimentError) {

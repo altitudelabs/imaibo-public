@@ -212,7 +212,7 @@ var IndexChart = {
     self.componentsBuilder.lineStems.enter();
     self.componentsBuilder.xLabels.enter();
 
-    // //EXIT LOOP =================================================================
+    //EXIT LOOP =================================================================
     self.components.y1Labels.exit().remove();
     self.components.y2Labels.exit().remove();
     self.components.volumes.exit().remove();
@@ -220,7 +220,7 @@ var IndexChart = {
     self.components.lineStems.exit().remove();
     self.components.xLabels.exit().remove();
 
-    // //UPDATE LOOP ===============================================================
+    //UPDATE LOOP ===============================================================
     self.componentsBuilder.y1Labels.update();
     self.componentsBuilder.y2Labels.update();
     self.componentsBuilder.volumes.update();
@@ -234,6 +234,9 @@ var IndexChart = {
     self.componentsBuilder.rightBorder.update();
     self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.update();
+
+    //EXIT LOOP ===============================================================
+    self.componentsBuilder.xLabels.exit();
 
     // PLOT LINES ===================================================================
     plotLines('sentiment', '#25bcf1');
@@ -493,16 +496,19 @@ var IndexChart = {
         .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
-          // if(i === 0 || today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1){
-            // return '';
-          // } else {
+         
           if (ChartView.getChartWidth() - IndexChart.data.x(d.rdate) > 20 && IndexChart.data.x(d.rdate) > 20) {
             return Helper.toDate(d.rdate, 'yyyy/mm');
           } else {
             return '';
           }
-          // }
+         
         });
+      },
+      exit: function () {
+        IndexChart.components.xLabels
+        .exit()
+        .remove();
       }
     },
     sentimentLine: {

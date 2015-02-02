@@ -325,7 +325,7 @@ var stockpickerView = {
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        if(!IE8) self.refreshStockpickerView();
+        // if(!IE8) self.refreshStockpickerView();
       }
       else {
         self.updateStockpickerView(model);

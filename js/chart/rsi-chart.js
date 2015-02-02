@@ -318,10 +318,11 @@ var RsiChart = {
         .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
-          if(i === 0 || today.getDate() < 10 && i === RsiChart.data.xLabelData.length-1)
-            return '';
-          else
+          if (ChartView.getChartWidth() - RsiChart.data.x(d.rdate) > 20 && RsiChart.data.x(d.rdate) > 20) {
             return Helper.toDate(d.rdate, 'yyyy/mm');
+          } else {
+            return '';
+          }
         });
       }
     },

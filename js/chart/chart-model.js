@@ -9,15 +9,18 @@ var ChartModel = {
     dataReceived: 0
   },
   api: {
-    production:     'http://www.imaibo.net',
-    staging:        'http://t3-www.imaibo.net',
+    // production:     'http://www.imaibo.net',
+    // staging:        'http://t3-www.imaibo.net',
     base:           '/index.php?app=moodindex&mod=IndexShow',
     indexData:      '&act=main',
     dailyIndexData: '&daily=1',
+    dailyUpdate:    '&latest=1',
     weeklyIndexData:'&act=getStkWeeklyLineAjax',
     weeklyUpdate:   '&act=getStkWeeklySnap',
     sentimentData:  '&act=moodindexLine',
-    latest:         '&latest=1',
+    sentimentUpdate:'&act=refreshMoodindexLine',
+    // sentimentUpdate:''
+    // http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate=20150202
     minute:         '&minute=1',
     date:           '&reqDate=',
     dailyLineSdate: '&dailyLineSdate=',
@@ -27,7 +30,8 @@ var ChartModel = {
   currEarliestTime: 0,
   endOfSentiment: false,
   baseUrl: function(){
-    return PRODUCTION ? this.api.production : this.api.staging;
+    return PRODUCTION ? 'http://' + location.hostname : 'http://t3-www.imaibo.net';
+    // return PRODUCTION ? this.api.production : this.api.staging;
   },
   getIndexDataAsync: function(options, cb){
     var self = this;
@@ -41,25 +45,29 @@ var ChartModel = {
       self.getSentimentData(options, d.resolve, cb);
     }).promise();
   },
-  updateSentimentDataAsync: function(date){
-    var self = this;
-    return $.Deferred(function(d){
-      self.updateSentimentData(date, d.resolve, d.reject);
-    }).promise();
-  },
+  // updateSentimentDataAsync: function(date){
+  //   var self = this;
+  //   return $.Deferred(function(d){
+  //     self.updateSentimentData(date, d.resolve, d.reject);
+  //   }).promise();
+  // },
   apiBuilder: function(requestChart, options) {
     var api = this.baseUrl() + this.api.base;
     // var today = new Date().yyyymmdd();
     if(requestChart === 'index') {
       api += (options.weekly&&!options.weeklyUpdate ? this.api.weeklyIndexData : '');
       api += (options.weekly&&options.weeklyUpdate ? this.api.weeklyUpdate : '');
-      api += (options.daily ? this.api.dailyIndexData + this.api.indexData : '');
+      api += (options.daily ? this.api.indexData : '');
+      api += (options.daily&&!options.dailyUpdate ? this.api.dailyIndexData : '');
+      api += (options.daily&&options.dailyUpdate ? this.api.dailyUpdate : '');
+      api += (options.daily&&options.initial ? this.api.dailyUpdate : '');
       api += ((options.daily&&options.date) ? this.api.dailyLineSdate + options.date : '');
-      api += ((options.daily&&options.date) ? this.api.indexData+this.api.latest : '');
+      api += ((options.daily&&options.date) ? this.api.indexData + this.api.dailyUpdate : '');
       api += ((options.weekly&&options.date) ? this.api.weeklyLineSdate + options.date : '');
-      api += (options.info ? '&info=1&trading=1' : '');
+      api += '&info=1&trading=1';
     }else{
-      api += this.api.sentimentData;
+      api += (options.sentimentUpdate ? this.api.sentimentUpdate : this.api.sentimentData);
+      // api += (options.sentimentUpdate ? this.api.sentimentUpdate : '');
     }
     api += this.api.jsonp;
     return api;
@@ -88,9 +96,9 @@ var ChartModel = {
   },
   getSentimentData: function(options, handler, cb){
     var self = this;
-    
     var sentimentApi = self.apiBuilder('sentiment' , options);
     $.getJSON(sentimentApi, function(res) {
+
       self.errorCheckSentiment(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
         cb(res.data, handler);
@@ -104,6 +112,7 @@ var ChartModel = {
     var self = this;
     var indexOptions = {
       daily: true,
+      initial: true,
       info: true
     };
     var sentimentOptions = {};
@@ -111,6 +120,9 @@ var ChartModel = {
       var newData = data.daily ? data.daily.stockLine : [];
       for (var key in data) {
         if (key === 'daily') {
+          if (data.latestPrice) {
+            newData.unshift(data.latestPrice);
+          }
           self.model.index.stockLine = newData.reverse();
         } else {
           self.model[key] = data[key];
@@ -121,11 +133,11 @@ var ChartModel = {
       });
       handler(self.model.indexError);
     };
-    // var sentimentCallback = function (data, handler) {
-    //   self.model.sentiment = data;
-    //   handler(self.model.sentimentError);
-    // };
-    return $.when(ChartModel.getIndexDataAsync(indexOptions, indexCallback), ChartModel.getSentimentDataAsync(sentimentOptions, self.processUpdateSentimentData));
+    var sentimentCallback = function (data, handler) {
+      self.model.sentiment = data;
+      handler(self.model.sentimentError);
+    };
+    return $.when(ChartModel.getIndexDataAsync(indexOptions, indexCallback), ChartModel.getSentimentDataAsync(sentimentOptions, sentimentCallback));
   },
   updateAllData: function (indexOption, sentimentOption) {
     var self = this;
@@ -162,7 +174,6 @@ var ChartModel = {
       if (data.latestPrice.rdate > self.model.index.stockLine[self.model.index.stockLine.length-1].rdate) {
         self.model.index.stockLine.push(data.latestPrice);
       } else {
-        // console.log('there is no data');
       }
     }
     ChartView.updating = false;
@@ -184,12 +195,38 @@ var ChartModel = {
     };
     return $.when(ChartModel.getIndexDataAsync(option, callback));
   },
-  updateSentimentData: function(option){
-    var self = this;
-    return $.when(ChartModel.getSentimentDataAsync(option, self.processUpdateSentimentData));
-  },
+  // updateSentimentData: function(option){
+  //   var self = this;
+  //   return $.when(ChartModel.getSentimentDataAsync(option, self.processUpdateSentimentData));
+  // },
   processUpdateSentimentData: function (data, handler) {
-    ChartModel.model.sentiment = data;
+    //indexList
+    var oldIndexList = ChartModel.model.sentiment.indexList;
+    var newIndexListTimeStamp = data.indexList[0].timestamp;
+    var updateIndexListIndex;
+    for (var i = 0; i < oldIndexList.length; i++) {
+      if (oldIndexList[i].timestamp - newIndexListTimeStamp === 0) {
+        updateIndexListIndex = i;
+      }
+    }
+    oldIndexList.splice(updateIndexListIndex);
+    oldIndexList = oldIndexList.concat(data.indexList);
+    ChartModel.model.sentiment.indexList = oldIndexList;
+
+    //moodindexList
+    var oldMoodIndexList = ChartModel.model.sentiment.moodindexList;
+    var newMoodIndexListTimeStamp = data.moodindexList[0].timestamp;
+    var updateMoodIndexListIndex;
+    for (var i = 0; i < oldMoodIndexList.length; i++) {
+      if (oldMoodIndexList[i].timestamp - newMoodIndexListTimeStamp === 0) {
+        updateMoodIndexListIndex = i;
+      }
+    }
+    oldMoodIndexList.splice(updateMoodIndexListIndex);
+    oldMoodIndexList = oldIndexList.concat(data.moodindexList);
+    ChartModel.model.sentiment.moodindexList = oldMoodIndexList;
+
+
     handler(ChartModel.model.sentimentError);
   },
   /* Checks if variable is object */
@@ -205,27 +242,29 @@ var ChartModel = {
     return true;
   },
   errorCheckSentiment: function(res, options){
+    if (PRODUCTION) { return; }
     if(res.data === undefined){
-        this.log(0, 'Sentiment API has no \'data\'');
-      } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
-        this.log(0, 'Sentiment API "data" variable is not an object or is empty');
-      } else if (res.data.indexList === undefined || res.data.indexList.length === 0 || $.isEmptyObject(res.data.indexList)){
-        this.log(0, 'Sentiment API data.indexList does not exist');
-      } else if (res.data.indexList[0].price === undefined){
-        this.log(0, 'Sentiment API data.indexList does not have variable "price"');
-      } else if (res.data.indexList[0].volumn === undefined){
-        this.log(0, 'Sentiment API data.indexList does not have variable "volumn"');
-      } else if (res.data.indexList[0].timestamp === undefined){
-        this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
-      } else if (res.data.indexList[0].rdate === undefined){
-        this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
-      } else if (res.data.moodindexList === undefined || res.data.moodindexList.length === 0){
-        this.log(0, 'Sentiment API data.moodindexList does not exist');
-      } else {
-        this.model.sentimentError = false;
-      }
+      this.log(0, 'Sentiment API has no \'data\'');
+    } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
+      this.log(0, 'Sentiment API "data" variable is not an object or is empty');
+    } else if (res.data.indexList === undefined || res.data.indexList.length === 0 || $.isEmptyObject(res.data.indexList)){
+      this.log(0, 'Sentiment API data.indexList does not exist');
+    } else if (res.data.indexList[0].price === undefined){
+      this.log(0, 'Sentiment API data.indexList does not have variable "price"');
+    } else if (res.data.indexList[0].volumn === undefined){
+      this.log(0, 'Sentiment API data.indexList does not have variable "volumn"');
+    } else if (res.data.indexList[0].timestamp === undefined){
+      this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
+    } else if (res.data.indexList[0].rdate === undefined){
+      this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
+    } else if (res.data.moodindexList === undefined || res.data.moodindexList.length === 0){
+      this.log(0, 'Sentiment API data.moodindexList does not exist');
+    } else {
+      this.model.sentimentError = false;
+    }
   },
   errorCheckIndex: function(res, options){
+    if (PRODUCTION) { return ;}
     this.model.indexError = true;
     var type;
     if (!!options.daily) {
@@ -247,14 +286,13 @@ var ChartModel = {
       this.log(0, 'Index API data.info.tradingSign does not exist');
     } else if(!!type && (res.data[type] === undefined || res.data[type] === null || res.data[type].length === 0)){
       this.log(0, 'Index API data ' + [type] + ' does not exist');
-    } else if(type==='daily' && (res.data[type].stockLine === undefined || res.data[type].stockLine.length === 0)){
+    } else if(type==='daily' && !options.dailyUpdate && (res.data[type].stockLine === undefined || res.data[type].stockLine.length === 0)){
       this.log(0, 'stockLine Data does not exist');
     } else {
       this.model.indexError = false;
     }
   },
   log: function(code, message) {
-    if(PRODUCTION) return;
     var now = new Date();
     console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
