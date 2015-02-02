@@ -13,7 +13,6 @@
 <script type="text/javascript" src="__THEME__/common_v2/moodindex/js/lib/jquery.leanModal.min.js?v={:C('html_cache')}"></script>
 <!-- End new JS -->
 
-<!--[if lte IE 8]><script src="__PUBLIC__/bower_components/aight/aight.min.js?v={:C('html_cache')}" charset="utf-8"></script><![endif]-->
 <!--[if lte IE 8]><script src="__PUBLIC__/bower_components/raphael/raphael-min.js?v={:C('html_cache')}" charset="utf-8"></script><![endif]-->
 <!--[if lte IE 8]><script src="__PUBLIC__/bower_components/r2d3/r2d3.min.js?v={:C('html_cache')}" charset="utf-8"></script><![endif]-->
 
@@ -27,8 +26,9 @@
     <!--[if lte IE 8 ]><div class="outer ie8 lt-ie9"><![endif]-->
     <!--[if IE 9 ]><div class="outer ie9"><![endif]-->
     <!--[if (gt IE 9)|!(IE)]>-->
+
     <div class="outer">
-      <!--<![endif]-->
+    <!--<![endif]-->
 
       <div id="alert-box"></div>
 
@@ -816,7 +816,7 @@
           <div>&nbsp;</div>
           <div>经过自然语言神经智能分析，这些新闻、讨论会得出一个分数，反映新闻的趋势、权重，分数范围是[-1.0，1.0]。</div>
           <div>&nbsp;</div>
-          <div>每天心情指数会从0开始累计每条新闻和讨论的分数，一天生成8个特定时间的动态分值，分别是（7:00，9:00，10:00，11:00，14:00，15:00，17:00，23:59），来预测股市短期的趋势。</div>
+          <div>每天心情指数会从0开始累计每条新闻和讨论的分数，一天生成8个特定时间的动态分值，分别是（7:00，9:00，10:00，11:30，14:00，15:00，17:00，23:59），来预测股市短期的趋势。</div>
         </div>
         <a class="modal-close mb close-modal" href="#"></a>
       </div>
@@ -830,7 +830,6 @@
   <div class="outer-scroller__track">
     <div class="outer-scroller__bar"></div>
   </div>
-
 
   <!-- Dashboard start -->
   <script id="dashboard-template" type="text/x-handlebars-template">
@@ -846,15 +845,7 @@
         {{else}}
           <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
           <div class="value-sublabel">
-          {{#ifCond stockIndexInfo.pxchg '>' 0}}
-            {{formatNumber stockIndexInfo.pxchg 2 1}}
-          {{else}}
-            {{#ifCond stockIndexInfo.pxchg '<' 0}}
-              {{formatNumber stockIndexInfo.pxchg 2 0}}
-            {{else}}
-              {{formatNumber stockIndexInfo.pxchg 2}}
-            {{/ifCond}}
-          {{/ifCond}}
+          {{stockIndexInfo.sign}}{{formatNumber stockIndexInfo.pxchg 2}}
           ({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
         {{/ifEq}}
       </div>
@@ -1059,7 +1050,13 @@
         </div>
       </div>
       <div class="like-and-discussion">
-        <a class="experts-like-action mb-icon mb like" name="{{weiboId}}" href="#">赞({{dig}})</a>
+        <a class="experts-like-action mb-icon mb like" name="{{weiboId}}" href="#">
+          {{#ifEq isDig 0}}
+            赞({{dig}})
+          {{else}}
+            已赞({{dig}})
+          {{/ifEq}}
+        </a>
         <a class="experts-comments-action mb-icon mb comments" href="{{url}}" target="_blank">评论({{cmt}})</a>
       </div>
     </div>

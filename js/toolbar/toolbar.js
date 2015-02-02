@@ -113,11 +113,11 @@ var Toolbar = {
   },
   initDropdown: function(){
     var dropdownMenu = $('.dropdown-menu');
-    $('.link-dropdown').on('mouseenter', function(){
-      dropdownMenu.css('display', 'block');
-    }).on('mouseleave', function(){
-      dropdownMenu.css('display', 'none');
-    });
+    // $('.link-dropdown').on('mouseenter', function(){
+    //   dropdownMenu.css('display', 'block');
+    // }).on('mouseleave', function(){
+    //   dropdownMenu.css('display', 'none');
+    // });
   },
   initZoom: function(){
     var zoomIn = $('#zoomin');
