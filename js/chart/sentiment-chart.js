@@ -645,13 +645,13 @@ var SentimentChart = {
         SentimentChart.components.securityLines['openDotted'] = SentimentChart.components.securityLines['openDotted'].datum(openDottedData);
         //lunch
         if (SentimentChart.data.isPastData || (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30) || notSameDay)) {
-          var lunchDottedPrice = amLinearData[120].price;
+          var lunchDottedPrice = amLinearData[amLinearData.length-1].price;
           var lunchDottedData = [{
-                                  timestamp: amLinearData[120].timestamp+60,
+                                  timestamp: amLinearData[amLinearData.length-1].timestamp+60,
                                   price: lunchDottedPrice
                                 },
                                 {
-                                  timestamp: Math.min(currentTimeStamp, amLinearData[120].timestamp+5400),
+                                  timestamp: Math.min(currentTimeStamp, amLinearData[amLinearData.length-1].timestamp+5400),
                                   price: lunchDottedPrice
                                 }];
           SentimentChart.components.securityLines['lunchDotted'] = SentimentChart.components.securityLines['lunchDotted'].datum(lunchDottedData);
