@@ -496,15 +496,13 @@ var IndexChart = {
         .attr('text-anchor', 'middle')
         .text(function(d,i) {
           var today = new Date();
-          // if(i === 0 || today.getDate() < 10 && i === IndexChart.data.xLabelData.length-1){
-            // return '';
-          // } else {
+         
           if (ChartView.getChartWidth() - IndexChart.data.x(d.rdate) > 20 && IndexChart.data.x(d.rdate) > 20) {
             return Helper.toDate(d.rdate, 'yyyy/mm');
           } else {
             return '';
           }
-          // }
+         
         });
       },
       exit: function () {
