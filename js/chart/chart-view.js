@@ -167,6 +167,8 @@ var ChartView = {
           indexOption.weeklyUpdate = true;
         }
 
+        sentimentOption.sentimentUpdate = true;
+
         ChartModel.updateAllData(indexOption, sentimentOption)
         .done(function (indexError, sentimentError) {
           self.updateChartViewData(indexError, sentimentError);

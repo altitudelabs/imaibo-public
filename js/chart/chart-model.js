@@ -18,7 +18,7 @@ var ChartModel = {
     weeklyIndexData:'&act=getStkWeeklyLineAjax',
     weeklyUpdate:   '&act=getStkWeeklySnap',
     sentimentData:  '&act=moodindexLine',
-    sentimentUpdate:'&latest=1',
+    sentimentUpdate:'&act=refreshMoodindexLine',
     // sentimentUpdate:''
     // http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate=20150202
     minute:         '&minute=1',
@@ -66,8 +66,8 @@ var ChartModel = {
       api += ((options.weekly&&options.date) ? this.api.weeklyLineSdate + options.date : '');
       api += '&info=1&trading=1';
     }else{
-      api += this.api.sentimentData;
-      api += (options.sentimentUpdate ? this.api.sentimentUpdate : '');
+      api += (options.sentimentUpdate ? this.api.sentimentUpdate : this.api.sentimentData);
+      // api += (options.sentimentUpdate ? this.api.sentimentUpdate : '');
     }
     api += this.api.jsonp;
     return api;
@@ -97,8 +97,8 @@ var ChartModel = {
   getSentimentData: function(options, handler, cb){
     var self = this;
     var sentimentApi = self.apiBuilder('sentiment' , options);
-
     $.getJSON(sentimentApi, function(res) {
+
       self.errorCheckSentiment(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
         cb(res.data, handler);
