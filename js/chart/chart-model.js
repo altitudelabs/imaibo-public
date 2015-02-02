@@ -85,9 +85,7 @@ var ChartModel = {
   getIndexData: function(options, handler, cb){
     var self = this;
     var indexApi = self.apiBuilder('index' , options);
-      console.log(indexApi);
     $.getJSON(indexApi, function(res) {
-      console.log(res);
       self.errorCheckIndex(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError){
         cb(res.data, handler);
