@@ -8,13 +8,13 @@ var LteIE9 = IE8 || IE9;
 
 if (IE8) {
   //overriding console.log to an empty function on IE8 so it doesnt cause any issue
+  var console = {};
   console.log = function (){};
 }
 
 var doc = document.documentElement;
 doc.setAttribute('data-useragent', navigator.userAgent);
-doc.setAttribute('data-platform', navigator.platform );
-
+doc.setAttribute('data-platform', navigator.platform);
 
 $(function(){
   'use strict';
