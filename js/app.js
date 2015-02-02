@@ -6,11 +6,13 @@ var IE8 = !!$('.lt-ie9').length;
 var IE9 = !!$('.ie9').length;
 var LteIE9 = IE8 || IE9;
 
-// var _MID_ = 1;
+if (IE8) {
+  //overriding console.log to an empty function on IE8 so it doesnt cause any issue
+  console.log = function (){};
+}
 
 $(function(){
   'use strict';
-
   // Start double scrolling capability
   DoubleScrollbars.start();
 
