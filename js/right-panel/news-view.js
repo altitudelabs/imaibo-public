@@ -144,10 +144,11 @@ var newsView = {
     });
   },
   init: function() {
+    this.initNewsTabs();
+    this.updateView();
+  },
+  updateView: function(){
     var self = this;
-
-    self.initNewsTabs();
-
     $.when(RightPanelModel.getAllPressAsync(), RightPanelModel.getPressByTimeAsync())
      .done(function(allPress, pressByTime) {
       if(!RightPanelModel.error.getAllPressError)

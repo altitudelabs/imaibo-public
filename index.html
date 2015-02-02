@@ -855,7 +855,6 @@
     <div class="outer-scroller__bar"></div>
   </div>
 
-
   <!-- Dashboard start -->
   <script id="dashboard-template" type="text/x-handlebars-template">
     {{#ifEq stockIndexInfo.sign '+'}}
@@ -870,15 +869,7 @@
         {{else}}
           <div class="value-label">{{formatNumber stockIndexInfo.lastpx 2}}</div>
           <div class="value-sublabel">
-          {{#ifCond stockIndexInfo.pxchg '>' 0}}
-            {{formatNumber stockIndexInfo.pxchg 2 1}}
-          {{else}}
-            {{#ifCond stockIndexInfo.pxchg '<' 0}}
-              {{formatNumber stockIndexInfo.pxchg 2 0}}
-            {{else}}
-              {{formatNumber stockIndexInfo.pxchg 2}}
-            {{/ifCond}}
-          {{/ifCond}}
+          {{stockIndexInfo.sign}}{{formatNumber stockIndexInfo.pxchg 2}}
           ({{stockIndexInfo.sign}}{{stockIndexInfo.pxchgratio}})</div>
         {{/ifEq}}
       </div>
@@ -1083,7 +1074,13 @@
         </div>
       </div>
       <div class="like-and-discussion">
-        <a class="experts-like-action mb-icon mb like" name="{{weiboId}}" href="#">赞({{dig}})</a>
+        <a class="experts-like-action mb-icon mb like" name="{{weiboId}}" href="#">
+          {{#ifEq isDig 0}}
+            赞({{dig}})
+          {{else}}
+            已赞({{dig}})
+          {{/ifEq}}
+        </a>
         <a class="experts-comments-action mb-icon mb comments" href="{{url}}" target="_blank">评论({{cmt}})</a>
       </div>
     </div>

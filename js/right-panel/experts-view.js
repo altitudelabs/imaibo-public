@@ -34,7 +34,7 @@ var expertsView = {
                 var content = $(e.target).html();
                 var likes = parseInt(content.match(/[^()]+(?=\))/g));
                 likes++;
-                $(e.target).html('赞(' + likes + ')');
+                $(e.target).html('已赞(' + likes + ')');
               }
             }, function(res) {
               // handle error

@@ -51,7 +51,7 @@ var MacdChart = {
           .attr('fill-opacity', 0);
     }else{
       MacdChart.components.scrollBar
-          .style('fill-opacity', 0);    
+          .style('fill-opacity', 0);
     }
   },
   initCloseAction: function(){
@@ -341,23 +341,28 @@ var MacdChart = {
     },
     scrollbarRail: {
       append: function () {
-        MacdChart.components.scrollbarRail = MacdChart.components.chartLabel
+        MacdChart.components.scrollbarRail = MacdChart.components.chart
                                             .append('rect')
                                             .attr('class', 'scrollbar-rail')
-                                            .attr('width', ChartView.properties.width)
-                                            .attr('height', 10)
+                                            .attr('width', ChartView.properties.width-ChartView.getLeftMargin()-ChartView.getRightMargin())
+                                            .attr('height', 30)
                                             .attr('x', 0)
-                                            .attr('y', MacdChart.properties.height - 30)
+                                            .attr('y', MacdChart.properties.height-55)
                                             .on('mouseenter', function(){
                                               ChartView.showAllScrollbars();
+                                              ChartView.properties.mouseOverScrollbar = true;
                                             })
                                             .on('mouseleave', function(){
-                                              ChartView.hideAllScrollbars();
+                                              var mChart = ChartView.properties.mouseOverChart;
+                                              if(!mChart){
+                                                ChartView.hideAllScrollbars();
+                                                ChartView.properties.mouseOverScrollbar = false;
+                                              }
                                             })
                                             .attr('fill-opacity', 0);
       },
       update: function(){
-        MacdChart.components.scrollbarRail.attr('width', ChartView.properties.width);
+        MacdChart.components.scrollbarRail.attr('width', ChartView.properties.width-ChartView.getLeftMargin()-ChartView.getRightMargin());
       }
     },
     scrollBar: {
@@ -370,20 +375,22 @@ var MacdChart = {
                                             .attr('rx', 4)
                                             .attr('ry', 4)
                                             .on('mouseenter', function(e) {
-                                               if(ChartView.isZoomed()){
-                                                  ChartView.showAllScrollbars();
-                                                  ChartView.properties.mouseOverScrollbar = true;
-                                               }
+                                              if(ChartView.isZoomed()){
+                                                ChartView.showAllScrollbars();
+                                                ChartView.properties.mouseOverScrollbar = true;
+                                              }
                                             })
                                             .on('mouseleave', function(e) {
-                                               var mChart = ChartView.properties.mouseOverChart;
-                                               if(!mChart){
-                                                  ChartView.hideAllScrollbars();
-                                                  ChartView.properties.mouseOverScrollbar = false;
-                                               }
+                                              var mChart = ChartView.properties.mouseOverChart;
+                                              if(!mChart){
+                                                ChartView.hideAllScrollbars();
+                                                ChartView.properties.mouseOverScrollbar = false;
+                                              }
                                             })
                                             .style('fill', 'rgb(107, 107, 107)')
-                                            .style('fill-opacity', 50)
+                                            .style('stroke-width', '20')
+                                            .style('stroke', 'rgb(107, 107, 107)')
+                                            .style('stroke-opacity', '0')
                                             .call(ChartView.scrollbarDragBehavior());
         ChartView.properties.mouseOverScrollbar = false;
         ChartView.properties.mouseOverChart     = false;
@@ -404,13 +411,13 @@ var MacdChart = {
         .attr('fill-opacity', 0)
         .attr('x', 0)
         .attr('y', 0)
-        .attr('height', MacdChart.properties.chartHeight - 5);
+        .attr('height', MacdChart.properties.chartHeight - 25);
 
         if(!IE8){
           MacdChart.components.mouseOverlay
             .call(ChartView.zoomBehavior())
             .datum([])   //because d3 drag requires data/datum to be valid
-            .call(ChartView.chartDragBehavior()); 
+            .call(ChartView.chartDragBehavior());
         }
       },
       update: function () {
@@ -440,13 +447,13 @@ var MacdChart = {
             // mouseX = d3.event.pageX;
             // mouseY = d3.event.pageY + 10;
           }
-		  
+
           var j = ChartView.xInverse(xPos, MacdChart.data.x);
           var d = MacdChart.data.stockLine[j];
 
           var offset = 10;
           mouseX = xPos + ChartView.getLeftMargin();
-              
+
 
           var model = {
             top: yPos + 40,
