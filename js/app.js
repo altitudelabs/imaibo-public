@@ -11,6 +11,11 @@ if (IE8) {
   console.log = function (){};
 }
 
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+doc.setAttribute('data-platform', navigator.platform );
+
+
 $(function(){
   'use strict';
   // Start double scrolling capability
