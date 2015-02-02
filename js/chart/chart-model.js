@@ -9,8 +9,8 @@ var ChartModel = {
     dataReceived: 0
   },
   api: {
-    production:     'http://www.imaibo.net',
-    staging:        'http://t3-www.imaibo.net',
+    // production:     'http://www.imaibo.net',
+    // staging:        'http://t3-www.imaibo.net',
     base:           '/index.php?app=moodindex&mod=IndexShow',
     indexData:      '&act=main',
     dailyIndexData: '&daily=1',
@@ -30,7 +30,8 @@ var ChartModel = {
   currEarliestTime: 0,
   endOfSentiment: false,
   baseUrl: function(){
-    return PRODUCTION ? this.api.production : this.api.staging;
+    return PRODUCTION ? 'http://' + location.hostname : 'http://t3-www.imaibo.net';
+    // return PRODUCTION ? this.api.production : this.api.staging;
   },
   getIndexDataAsync: function(options, cb){
     var self = this;
@@ -59,8 +60,9 @@ var ChartModel = {
       api += (options.daily ? this.api.indexData : '');
       api += (options.daily&&!options.dailyUpdate ? this.api.dailyIndexData : '');
       api += (options.daily&&options.dailyUpdate ? this.api.dailyUpdate : '');
+      api += (options.daily&&options.initial ? this.api.dailyUpdate : '');
       api += ((options.daily&&options.date) ? this.api.dailyLineSdate + options.date : '');
-      api += ((options.daily&&options.date) ? this.api.indexData+this.api.latest : '');
+      api += ((options.daily&&options.date) ? this.api.indexData + this.api.dailyUpdate : '');
       api += ((options.weekly&&options.date) ? this.api.weeklyLineSdate + options.date : '');
       api += '&info=1&trading=1';
     }else{
@@ -83,7 +85,9 @@ var ChartModel = {
   getIndexData: function(options, handler, cb){
     var self = this;
     var indexApi = self.apiBuilder('index' , options);
+      console.log(indexApi);
     $.getJSON(indexApi, function(res) {
+      console.log(res);
       self.errorCheckIndex(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.indexError){
         cb(res.data, handler);
@@ -110,6 +114,7 @@ var ChartModel = {
     var self = this;
     var indexOptions = {
       daily: true,
+      initial: true,
       info: true
     };
     var sentimentOptions = {};
@@ -117,6 +122,9 @@ var ChartModel = {
       var newData = data.daily ? data.daily.stockLine : [];
       for (var key in data) {
         if (key === 'daily') {
+          if (data.latestPrice) {
+            newData.unshift(data.latestPrice);
+          }
           self.model.index.stockLine = newData.reverse();
         } else {
           self.model[key] = data[key];

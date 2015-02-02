@@ -64,13 +64,14 @@ var SentimentChart = {
     self.data.timezoneDiff *= 3600;
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
     self.data.indexList = self.helpers.processIndexData(ChartView.data.sentiment.indexList);
-    self.data.closePrice = ChartView.data.sentiment.preclosepx;
+    self.data.closePrice = parseInt(ChartView.data.sentiment.preclosepx);
     var minY1 = self.helpers.minIndex('mood', self.data.moodindexList);
     var maxY1 = self.helpers.maxIndex('mood', self.data.moodindexList);
     var minY2 = self.helpers.minIndex('price', self.data.indexList);
     var maxY2 = self.helpers.maxIndex('price', self.data.indexList);
     var y1Range = self.helpers.getRangeWithBuffer(minY1, maxY1);
     var y2Range = self.helpers.getRangeWithBuffer(minY2, maxY2);
+    if (y2Range[1] - y2Range[0] === 0) { y2Range = [self.data.closePrice-100, self.data.closePrice+100]; }
     self.data.y1 = self.helpers.y(y1Range[0], y1Range[1]);
     self.data.y2 = self.helpers.y(y2Range[0], y2Range[1]);
     
@@ -616,7 +617,10 @@ var SentimentChart = {
       },
       linkData: function () {
         var data = SentimentChart.data.indexList;
-        if (!data) { return; }
+        if (data === undefined) { return; }
+
+        var initialPrice = data[0] ? data[0].price : SentimentChart.data.closePrice;
+
         //linear
         var lunchStartIndex = data.length - 1;
         for (var i = 0; i < data.length; i++) {
@@ -631,17 +635,15 @@ var SentimentChart = {
         var pmLinearData = data.slice(lunchStartIndex + 1, data.length);
 
         SentimentChart.components.securityLines['pmLinear'] = SentimentChart.components.securityLines['pmLinear'].datum(pmLinearData);
+
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000);
-        var dataDate = new Date(data[0].timestamp*1000);
-
-        var notSameDay = !(dataDate.getDate() === currentDate.getDate() && dataDate.getMonth() === currentDate.getMonth());
 
         if (!SentimentChart.data.isPastData && currentTimeStamp < SentimentChart.data.startTime) { return; }
 
         //start - market open
-        var openDottedPrice = (!!data[0] && data[0].price !== undefined) ? data[0].price : SentimentChart.data.closePrice;
+        var openDottedPrice = (!!data[0] && initialPrice !== undefined) ? initialPrice : SentimentChart.data.closePrice;
         var openDottedData = [{ timestamp: SentimentChart.data.startTime,
                                 price: openDottedPrice
                               },
@@ -650,7 +652,8 @@ var SentimentChart = {
                               }];
         SentimentChart.components.securityLines['openDotted'] = SentimentChart.components.securityLines['openDotted'].datum(openDottedData);
         //lunch
-        if (SentimentChart.data.isPastData || (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30) || notSameDay)) {
+        if (!pmLinearData[0]) { return; }
+        if (SentimentChart.data.isPastData || (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30))) {
           var lunchDottedPrice = amLinearData[amLinearData.length-1].price;
           var lunchDottedData = [{
                                   timestamp: amLinearData[amLinearData.length-1].timestamp+60,
@@ -663,7 +666,7 @@ var SentimentChart = {
           SentimentChart.components.securityLines['lunchDotted'] = SentimentChart.components.securityLines['lunchDotted'].datum(lunchDottedData);
         }
         //market close
-        if (!SentimentChart.data.isPastData && currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30 || notSameDay)) {
+        if (!SentimentChart.data.isPastData && currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30)) {
           var closeDottedPrice = pmLinearData[pmLinearData.length - 1].price;
           var closeDottedData = [{
                                   timestamp: pmLinearData[pmLinearData.length - 1].timestamp+60,
@@ -675,6 +678,7 @@ var SentimentChart = {
                                 }];
           SentimentChart.components.securityLines['closeDotted'] = SentimentChart.components.securityLines['closeDotted'].datum(closeDottedData);
         }
+        
       },
       update: function () {
         var id;

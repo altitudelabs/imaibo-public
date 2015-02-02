@@ -1516,7 +1516,9 @@ body {
 
 .outer .panel-loader-wrapper {
   background-color: rgb(38, 38, 38);
-  height: 1500px;
+  position: absolute;
+  top: 0px;
+  height: 100%;
   border: rgb(51, 51, 51) 1px solid;
 }
 
@@ -2097,6 +2099,7 @@ body {
 /* =News Tabs
 ---------------------------------------------------------------*/
 .outer #news-tabs {
+  display: none;
   width: 100%;
   height: 65px;
   padding: 20px 20px 20px 20px;

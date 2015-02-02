@@ -164,13 +164,13 @@ var newsView = {
         $('#press-by-time').html('<div class="empty-data-right-panel">网络太不给力了，请<a href="javascript:window.location.reload();">重新加载</a>看看...</div>');
 
       $('#news-view .panel-loader-wrapper').remove();
+      $('#news-tabs').show();
     });
   },
   initNewsTabs: function() {
     var showTab = 1; // show the first tab by default
     var $defaultLi = $('ul#news-tabs li').eq(showTab).addClass('active');
     $($defaultLi.find('a').attr('href')).siblings().hide();
-
     $('ul#news-tabs li').click(function() {
       var $this = $(this), clickTab = $this.find('a').attr('href');
 
