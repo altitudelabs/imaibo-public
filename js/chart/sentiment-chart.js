@@ -47,22 +47,21 @@ var SentimentChart = {
   updateData: function () {
     'use strict';
     if(ChartView.data.sentimentError) { return; }
+
     var self = this;
-    
 
     var serverTime = ChartView.data.sentiment.timestamp;
     var serverDate = new Date(serverTime*1000);
 
     //difference between UTC 0:00 to local time, in hours
     self.data.timezoneDiff = (new Date(serverDate.setHours(0,0,0,0)).getTimezoneOffset()/60 + 8);
-    
+
     //since HK is 8 hours ahead of UTC, subtract a whole day(24hours) if the difference is greater than 8
     if (self.data.timezoneDiff > 7) {
       self.data.timezoneDiff -= 24;
     }
     //transform to timestamp
     self.data.timezoneDiff *= 3600;
-    
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
     self.data.indexList = self.helpers.processIndexData(ChartView.data.sentiment.indexList);
     self.data.closePrice = ChartView.data.sentiment.preclosepx;
@@ -619,10 +618,17 @@ var SentimentChart = {
         var data = SentimentChart.data.indexList;
         if (!data) { return; }
         //linear
-        var amLinearData = data.slice(0, 121);
+        var lunchStartIndex = data.length - 1;
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].clock === "11:30:00") {
+            lunchStartIndex = i;
+          }
+        }
+
+        var amLinearData = data.slice(0, lunchStartIndex + 1);
 
         SentimentChart.components.securityLines['amLinear'] = SentimentChart.components.securityLines['amLinear'].datum(amLinearData);
-        var pmLinearData = data.slice(121, data.length);
+        var pmLinearData = data.slice(lunchStartIndex + 1, data.length);
 
         SentimentChart.components.securityLines['pmLinear'] = SentimentChart.components.securityLines['pmLinear'].datum(pmLinearData);
         //dotted
