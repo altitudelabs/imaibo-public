@@ -2365,8 +2365,12 @@ body {
   margin-left: -5px;
 }
 
+.outer input[type="radio"] + label {
+  color: rgb(107, 107, 107);
+}
+
 .outer input[type="radio"]:checked + label {
-  color: rgb(48, 140, 180);
+  color: #fff;
 }
 
 .outer #minute-radio + label span {

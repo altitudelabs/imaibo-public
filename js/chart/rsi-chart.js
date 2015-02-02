@@ -327,23 +327,28 @@ var RsiChart = {
     },
     scrollbarRail: {
       append: function () {
-        RsiChart.components.scrollbarRail = RsiChart.components.chartLabel
+        RsiChart.components.scrollbarRail = RsiChart.components.chart
                                             .append('rect')
                                             .attr('class', 'scrollbar-rail')
-                                            .attr('width', ChartView.properties.width)
-                                            .attr('height', 10)
+                                            .attr('width', ChartView.properties.width-ChartView.getLeftMargin()-ChartView.getRightMargin())
+                                            .attr('height', 30)
                                             .attr('x', 0)
-                                            .attr('y', RsiChart.properties.height - 30)
+                                            .attr('y', RsiChart.properties.height-55)
                                             .on('mouseenter', function(){
                                               ChartView.showAllScrollbars();
+                                              ChartView.properties.mouseOverScrollbar = true;
                                             })
                                             .on('mouseleave', function(){
-                                              ChartView.hideAllScrollbars();
+                                              var mChart = ChartView.properties.mouseOverChart;
+                                              if(!mChart){
+                                                ChartView.hideAllScrollbars();
+                                                ChartView.properties.mouseOverScrollbar = false;
+                                              }
                                             })
                                             .attr('fill-opacity', 0);
       },
       update: function(){
-        RsiChart.components.scrollbarRail.attr('width', ChartView.properties.width);
+        RsiChart.components.scrollbarRail.attr('width', ChartView.properties.width-ChartView.getLeftMargin()-ChartView.getRightMargin());
       }
     },
     scrollBar: {
@@ -356,7 +361,9 @@ var RsiChart = {
                                             .attr('rx', 4)
                                             .attr('ry', 4)
                                             .style('fill', 'rgb(107, 107, 107)')
-                                            .style('fill-opacity', 50)
+                                            .style('stroke-width', '20')
+                                            .style('stroke', 'rgb(107, 107, 107)')
+                                            .style('stroke-opacity', '0')
                                             .on('mouseenter', function(e) {
                                                 if(ChartView.isZoomed()){
                                                   ChartView.showAllScrollbars();
@@ -391,7 +398,7 @@ var RsiChart = {
         .attr('fill-opacity', 0)
         .attr('x', 0)
         .attr('y', ChartView.properties.margin.top)
-        .attr('height', RsiChart.properties.height-ChartView.properties.margin.top-ChartView.properties.margin.bottom+ 10);
+        .attr('height', RsiChart.properties.height-55);
 
         if(!IE8){
           RsiChart.components.mouseOverlay

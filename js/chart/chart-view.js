@@ -374,7 +374,7 @@ var ChartView = {
     var self = this;
     return d3.behavior.drag()
     .origin(function(d) { return d; })
-    .on("drag", function(d){
+    .on('drag', function(d){
       if(d3.event.dx < 0){
         ChartView.moveToRight();
       }else{
