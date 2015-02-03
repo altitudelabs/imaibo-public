@@ -98,7 +98,6 @@ var ChartModel = {
     var self = this;
     var sentimentApi = self.apiBuilder('sentiment' , options);
     $.getJSON(sentimentApi, function(res) {
-
       self.errorCheckSentiment(res, options);
       if(res.code !== 'undefined' && res.code === 0 && !self.model.sentimentError) {
         cb(res.data, handler);
@@ -202,15 +201,18 @@ var ChartModel = {
   processUpdateSentimentData: function (data, handler) {
     //indexList
     var oldIndexList = ChartModel.model.sentiment.indexList;
-    var newIndexListTimeStamp = data.indexList[0].timestamp;
     var updateIndexListIndex;
+    var newIndexListTimeStamp = data.indexList[0] ? data.indexList[0].timestamp : 0;
     for (var i = 0; i < oldIndexList.length; i++) {
+
       if (oldIndexList[i].timestamp - newIndexListTimeStamp === 0) {
         updateIndexListIndex = i;
       }
     }
-    oldIndexList.splice(updateIndexListIndex);
-    oldIndexList = oldIndexList.concat(data.indexList);
+    if (updateIndexListIndex !== oldIndexList.length - 1) {
+      oldIndexList.splice(updateIndexListIndex);
+      oldIndexList = oldIndexList.concat(data.indexList);
+    }
     ChartModel.model.sentiment.indexList = oldIndexList;
 
     //moodindexList
