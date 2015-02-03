@@ -453,8 +453,9 @@ var stockpickerView = {
     // refreshStockpickerView is called twice which may cause some problems
     var self = this;
     var refreshRate = 5000;
-
-    setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+    if (!IE8) {
+      setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
+    }
   },
   // when the item in the add panel (e.g 指数) is hovered, the first li and the corresponding stock table is shown 
   initSettingsPanelOptionListener: function() {
