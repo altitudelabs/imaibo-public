@@ -293,7 +293,7 @@ body {
 .outer .dropdown-menu {
   display: none;
   position: absolute;
-  top: 15px;
+  top: 17px;
   background-color: #353535;
   width: 120px;
   border-radius: 3px;
@@ -305,7 +305,7 @@ body {
 }
 
 html[data-useragent*='MSIE 10.0'] .dropdown-menu {
-  top: 2px;
+  top: 5px;
 }
 
 .outer #ma-dropdown-menu {
