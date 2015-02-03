@@ -305,7 +305,7 @@ body {
 }
 
 html[data-useragent*='MSIE 10.0'] .dropdown-menu {
-  top: 5px;
+  top: 2px;
 }
 
 .outer #ma-dropdown-menu {

@@ -263,7 +263,6 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    // SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
     // Remove loaders

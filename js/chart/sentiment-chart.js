@@ -57,9 +57,9 @@ var SentimentChart = {
     self.data.timezoneDiff = (new Date(serverDate.setHours(0,0,0,0)).getTimezoneOffset()/60 + 8);
 
     //since HK is 8 hours ahead of UTC, subtract a whole day(24hours) if the difference is greater than 8
-    // if (self.data.timezoneDiff > 7) {
-    //   self.data.timezoneDiff -= 24;
-    // }
+    if (self.data.timezoneDiff > 7) {
+      self.data.timezoneDiff -= 24;
+    }
     //transform to timestamp
     self.data.timezoneDiff *= 3600;
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
@@ -81,9 +81,8 @@ var SentimentChart = {
     if (serverDate.getDate() - dataDate.getDate() > 0) {
       self.data.isPastData = true;
     }
-    var diff = self.data.timezoneDiff > 25200 ? self.data.timezoneDiff - 86400 : self.data.timezoneDiff;
-    self.data.startTime = dataDate.setHours(8,30,0,0)/1000 - diff;
-    self.data.endTime = dataDate.setHours(17,30,0,0)/1000 - diff;
+    self.data.startTime = dataDate.setHours(8,30,0,0)/1000 - self.data.timezoneDiff;
+    self.data.endTime = dataDate.setHours(17,30,0,0)/1000 - self.data.timezoneDiff;
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
     self.data.x  = self.helpers.x(self.properties.chartWidth, self.data.ordinalTimeStamps);
   },
@@ -625,8 +624,8 @@ var SentimentChart = {
         //linear
         var lunchStartIndex = data.length - 1;
         for (var i = 0; i < data.length; i++) {
-          if (data[i].clock === "13:00:00") {
-            lunchStartIndex = i-1;
+          if (data[i].clock === "11:30:00") {
+            lunchStartIndex = i;
           }
         }
 
@@ -639,8 +638,8 @@ var SentimentChart = {
 
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
-        var currentDate = new Date(currentTimeStamp*1000 + SentimentChart.data.timezoneDiff*1000);
-        
+        var currentDate = new Date(currentTimeStamp*1000);
+
         if (!SentimentChart.data.isPastData && currentTimeStamp < SentimentChart.data.startTime) { return; }
 
         //start - market open
@@ -654,10 +653,6 @@ var SentimentChart = {
         SentimentChart.components.securityLines['openDotted'] = SentimentChart.components.securityLines['openDotted'].datum(openDottedData);
         //lunch
         if (!pmLinearData[0]) { return; }
-        
-        var dataDate = new Date((pmLinearData[0].timestamp)*1000 + SentimentChart.data.timezoneDiff*1000)
-        if (dataDate.getDate() !== currentDate.getDate()) { SentimentChart.data.isPastData = true; }
-        
         if (SentimentChart.data.isPastData || (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30))) {
           var lunchDottedPrice = amLinearData[amLinearData.length-1].price;
           var lunchDottedData = [{
@@ -671,7 +666,7 @@ var SentimentChart = {
           SentimentChart.components.securityLines['lunchDotted'] = SentimentChart.components.securityLines['lunchDotted'].datum(lunchDottedData);
         }
         //market close
-        if (SentimentChart.data.isPastData || currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30)) {
+        if (!SentimentChart.data.isPastData && currentDate.getHours() > 15 || (currentDate.getHours() === 15 && currentDate.getMinutes() > 30)) {
           var closeDottedPrice = pmLinearData[pmLinearData.length - 1].price;
           var closeDottedData = [{
                                   timestamp: pmLinearData[pmLinearData.length - 1].timestamp+60,
