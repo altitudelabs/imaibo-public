@@ -654,7 +654,6 @@ var IndexChart = {
             IndexChart.components.horizontalLine.style('stroke-opacity', 0);
             IndexChart.components.horizontalBlock.style('fill-opacity', 0);
           }
-
           return Tooltip.hide.index();
         })
         .on('mousemove', function() {
@@ -680,7 +679,7 @@ var IndexChart = {
       				}
 
               if (IE9) {
-                yPos += 57;
+                // yPos += 57;
               }
           }
 
