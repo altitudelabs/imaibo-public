@@ -201,9 +201,10 @@ var ChartModel = {
   processUpdateSentimentData: function (data, handler) {
     //indexList
     var oldIndexList = ChartModel.model.sentiment.indexList;
-    var newIndexListTimeStamp = data.indexList[0].timestamp;
     var updateIndexListIndex;
+    var newIndexListTimeStamp = data.indexList[0] ? data.indexList[0].timestamp : 0;
     for (var i = 0; i < oldIndexList.length; i++) {
+
       if (oldIndexList[i].timestamp - newIndexListTimeStamp === 0) {
         updateIndexListIndex = i;
       }
