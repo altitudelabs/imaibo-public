@@ -292,6 +292,17 @@ var SentimentChart = {
       }
       return arr;
     },
+    makeHorizontalGridLines: function () {
+      var min = 0;
+      var max = SentimentChart.properties.chartHeight;
+      var diff = (max-min)/7;
+
+      var array = [];
+      for (var i = min; i < 7; i++) {
+        array.push(i*diff);
+      }
+      return array;
+    },
     // Returns current timestamp in client format
     getCurrentTimestamp: function(){
       var t = new Date(ChartView.data.sentiment.timestamp*1000);
@@ -356,7 +367,7 @@ var SentimentChart = {
         SentimentChart.components.horizontalGridLines = SentimentChart.components.chartLabel.append('g').selectAll('text.yrule');
       },
       linkData: function () {
-        SentimentChart.components.horizontalGridLines = SentimentChart.components.horizontalGridLines.data(SentimentChart.data.y1.ticks(5));
+        SentimentChart.components.horizontalGridLines = SentimentChart.components.horizontalGridLines.data(SentimentChart.helpers.makeHorizontalGridLines());
       },
       enter: function () {
         var props = SentimentChart.properties;
@@ -367,8 +378,8 @@ var SentimentChart = {
             'class':'horizontalGrid',
             'x1' : props.margin.left,
             'x2' : props.chartWidth + props.margin.left,
-            'y1' : function(d){ return SentimentChart.data.y1(d)- 10;},
-            'y2' : function(d){ return SentimentChart.data.y1(d)- 10;},
+            'y1' : function(d){ return d - 5;},
+            'y2' : function(d){ return d - 5;},
             'fill' : 'none',
             'shape-rendering' : 'crispEdges',
             'stroke' : 'rgb(50, 50, 50)',
@@ -401,7 +412,7 @@ var SentimentChart = {
         SentimentChart.components.verticalGridLines
         .enter().append('line')
         .attr({
-          'class':'horizontalGrid',
+          'class':'verticalGridLines',
           'x1' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
           'x2' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
           'y1' : props.chartHeight - props.margin.bottom,
