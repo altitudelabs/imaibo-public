@@ -1114,10 +1114,11 @@ var SentimentChart = {
           var timestamp = SentimentChart.data.ordinalTimeStamps[j];
           var indexData = SentimentChart.helpers.getLastest('indexList', timestamp);
           var moodindexData = SentimentChart.helpers.getLastest('moodindexList', timestamp);
-
-          if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
-            SentimentChart.components.tooltip.style('display', 'none');
-            SentimentChart.componentsBuilder.scatterDots.update();
+          if (!IE8) {
+            if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
+              SentimentChart.components.tooltip.style('display', 'none');
+              SentimentChart.componentsBuilder.scatterDots.update();
+            }
           }
 
           SentimentChart.helpers.updateLegends(indexData, moodindexData);
