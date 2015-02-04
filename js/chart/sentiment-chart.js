@@ -1052,7 +1052,6 @@ var SentimentChart = {
             $(idString).show();
             $(idString).siblings().removeClass("news-collapsed");
           });
-
         })
         .on('mouseout', function (d, i) {
         });
@@ -1087,10 +1086,31 @@ var SentimentChart = {
         .attr('width', props.chartWidth - 2)
         .attr('height', props.chartHeight - 44)
         .on('mousemove', function () {
+          var xPos, yPos, mouseX, mouseY;
 
-          var mousePosition = SentimentChart.helpers.getMousePosition(this);
+          if(IE8) {
+            xPos = event.offsetX;
+            yPos = event.offsetY; //because of the old browser info box on top
+            // mouseX = xPos + 10;
+            // mouseY = yPos + 60;
+          }
+          else {
+            xPos = d3.mouse(this)[0];
+            yPos = d3.mouse(this)[1];
+            // mouseX = d3.event.pageX;
+            // mouseY = d3.event.pageY + 10;
 
-          var j = ChartView.xInverse((IE8?mousePosition[0]-55:mousePosition[0]), SentimentChart.data.x);
+              if(yPos > 230){
+                Tooltip.hide.index();
+                yPos = 230;
+              }
+
+              if (IE9) {
+                // yPos += 57;
+              }
+          }
+
+          var j = ChartView.xInverse(xPos, SentimentChart.data.x);
           var timestamp = SentimentChart.data.ordinalTimeStamps[j];
           var indexData = SentimentChart.helpers.getLastest('indexList', timestamp);
           var moodindexData = SentimentChart.helpers.getLastest('moodindexList', timestamp);
