@@ -151,7 +151,6 @@ var stockpickerView = {
   },
   initStockpickerSettingsPanel: function() {
     var self = this;
-
     self.initSettingsPanelOptionListener();
 
     $.when(
@@ -325,7 +324,7 @@ var stockpickerView = {
 
         self.initStockpickerSettingsPanel();
         self.initStockpickerSearchAutocomplete();
-        // if(!IE8) self.refreshStockpickerView();
+        self.refreshStockpickerView();
       }
       else {
         self.updateStockpickerView(model);

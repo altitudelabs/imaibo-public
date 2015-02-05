@@ -409,12 +409,11 @@ html[data-useragent*='MSIE 10.0'] .dropdown-menu {
   width: 50%;
   display: inline-block;
   margin-top: 15px;
-/*  padding-left: 30%;
-  padding-right: 30%;*/
-  /*position: absolute;*/
-/*  left: 40%;
-  right: 40%;*/
-  /*top: 30%;*/
+}
+
+.outer .upgrade-browser .text a {
+  color: #fff;
+  text-decoration: underline;
 }
 
 /* =Dashboard
@@ -1486,6 +1485,10 @@ html[data-useragent*='MSIE 10.0'] .dropdown-menu {
   top: 0px;
   height: 100%;
   border: rgb(51, 51, 51) 1px solid;
+}
+
+#stockpicker-view .panel-loader-wrapper {
+  top: 85px;
 }
 
 .outer .panel-loader {

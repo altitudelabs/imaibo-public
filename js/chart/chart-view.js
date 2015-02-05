@@ -162,6 +162,7 @@ var ChartView = {
         var sentimentOption = {};
         if (self.properties.mode === 'daily') {
           indexOption.daily = true;
+          indexOption.dailyUpdate = true;
         } else {
           indexOption.weekly = true;
           indexOption.weeklyUpdate = true;

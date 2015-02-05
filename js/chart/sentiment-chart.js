@@ -75,7 +75,7 @@ var SentimentChart = {
     self.data.y1 = self.helpers.y(y1Range[0], y1Range[1]);
     self.data.y2 = self.helpers.y(y2Range[0], y2Range[1]);
     
-    var dataTime = self.data.moodindexList[0].timestamp;
+    var dataTime = self.data.moodindexList[0] ? self.data.moodindexList[0].timestamp : serverTime;
     var dataDate = new Date(dataTime*1000);
 
     if (serverDate.getDate() - dataDate.getDate() > 0) {
@@ -292,6 +292,17 @@ var SentimentChart = {
       }
       return arr;
     },
+    makeHorizontalGridLines: function () {
+      var min = 0;
+      var max = SentimentChart.properties.chartHeight;
+      var diff = (max-min)/7;
+
+      var array = [];
+      for (var i = min; i < 7; i++) {
+        array.push(i*diff);
+      }
+      return array;
+    },
     // Returns current timestamp in client format
     getCurrentTimestamp: function(){
       var t = new Date(ChartView.data.sentiment.timestamp*1000);
@@ -356,7 +367,7 @@ var SentimentChart = {
         SentimentChart.components.horizontalGridLines = SentimentChart.components.chartLabel.append('g').selectAll('text.yrule');
       },
       linkData: function () {
-        SentimentChart.components.horizontalGridLines = SentimentChart.components.horizontalGridLines.data(SentimentChart.data.y1.ticks(5));
+        SentimentChart.components.horizontalGridLines = SentimentChart.components.horizontalGridLines.data(SentimentChart.helpers.makeHorizontalGridLines());
       },
       enter: function () {
         var props = SentimentChart.properties;
@@ -367,8 +378,8 @@ var SentimentChart = {
             'class':'horizontalGrid',
             'x1' : props.margin.left,
             'x2' : props.chartWidth + props.margin.left,
-            'y1' : function(d){ return SentimentChart.data.y1(d)- 10;},
-            'y2' : function(d){ return SentimentChart.data.y1(d)- 10;},
+            'y1' : function(d){ return d - 5;},
+            'y2' : function(d){ return d - 5;},
             'fill' : 'none',
             'shape-rendering' : 'crispEdges',
             'stroke' : 'rgb(50, 50, 50)',
@@ -401,7 +412,7 @@ var SentimentChart = {
         SentimentChart.components.verticalGridLines
         .enter().append('line')
         .attr({
-          'class':'horizontalGrid',
+          'class':'verticalGridLines',
           'x1' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
           'x2' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
           'y1' : props.chartHeight - props.margin.bottom,
@@ -1041,7 +1052,6 @@ var SentimentChart = {
             $(idString).show();
             $(idString).siblings().removeClass("news-collapsed");
           });
-
         })
         .on('mouseout', function (d, i) {
         });
@@ -1076,17 +1086,39 @@ var SentimentChart = {
         .attr('width', props.chartWidth - 2)
         .attr('height', props.chartHeight - 44)
         .on('mousemove', function () {
+          var xPos, yPos, mouseX, mouseY;
 
-          var mousePosition = SentimentChart.helpers.getMousePosition(this);
+          if(IE8) {
+            xPos = event.offsetX;
+            yPos = event.offsetY; //because of the old browser info box on top
+            // mouseX = xPos + 10;
+            // mouseY = yPos + 60;
+          }
+          else {
+            xPos = d3.mouse(this)[0];
+            yPos = d3.mouse(this)[1];
+            // mouseX = d3.event.pageX;
+            // mouseY = d3.event.pageY + 10;
 
-          var j = ChartView.xInverse((IE8?mousePosition[0]-55:mousePosition[0]), SentimentChart.data.x);
+              if(yPos > 230){
+                Tooltip.hide.index();
+                yPos = 230;
+              }
+
+              if (IE9) {
+                // yPos += 57;
+              }
+          }
+
+          var j = ChartView.xInverse(xPos, SentimentChart.data.x);
           var timestamp = SentimentChart.data.ordinalTimeStamps[j];
           var indexData = SentimentChart.helpers.getLastest('indexList', timestamp);
           var moodindexData = SentimentChart.helpers.getLastest('moodindexList', timestamp);
-
-          if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
-            SentimentChart.components.tooltip.style('display', 'none');
-            SentimentChart.componentsBuilder.scatterDots.update();
+          if (!IE8) {
+            if (d3.select('#sentiment-tooltip').style('display') !== 'none') {
+              SentimentChart.components.tooltip.style('display', 'none');
+              SentimentChart.componentsBuilder.scatterDots.update();
+            }
           }
 
           SentimentChart.helpers.updateLegends(indexData, moodindexData);
