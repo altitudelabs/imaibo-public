@@ -133,6 +133,9 @@ var ChartModel = {
       handler(self.model.indexError);
     };
     var sentimentCallback = function (data, handler) {
+      // data.indexList = [];
+      // data.moodindexList = [];
+      // console.log(data);
       self.model.sentiment = data;
       handler(self.model.sentimentError);
     };
@@ -249,7 +252,7 @@ var ChartModel = {
       this.log(0, 'Sentiment API has no \'data\'');
     } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
       this.log(0, 'Sentiment API "data" variable is not an object or is empty');
-    } else if (res.data.indexList === undefined || res.data.indexList.length === 0 || $.isEmptyObject(res.data.indexList)){
+    } else if (res.data.indexList === undefined){
       this.log(0, 'Sentiment API data.indexList does not exist');
     } else if (res.data.indexList[0].price === undefined){
       this.log(0, 'Sentiment API data.indexList does not have variable "price"');
@@ -259,7 +262,7 @@ var ChartModel = {
       this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
     } else if (res.data.indexList[0].rdate === undefined){
       this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
-    } else if (res.data.moodindexList === undefined || res.data.moodindexList.length === 0){
+    } else if (res.data.moodindexList === undefined){
       this.log(0, 'Sentiment API data.moodindexList does not exist');
     } else {
       this.model.sentimentError = false;

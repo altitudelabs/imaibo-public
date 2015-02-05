@@ -75,7 +75,7 @@ var SentimentChart = {
     self.data.y1 = self.helpers.y(y1Range[0], y1Range[1]);
     self.data.y2 = self.helpers.y(y2Range[0], y2Range[1]);
     
-    var dataTime = self.data.moodindexList[0].timestamp;
+    var dataTime = self.data.moodindexList[0] ? self.data.moodindexList[0].timestamp : serverTime;
     var dataDate = new Date(dataTime*1000);
 
     if (serverDate.getDate() - dataDate.getDate() > 0) {
