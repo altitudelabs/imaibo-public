@@ -16,8 +16,8 @@ var RightPanelModel = {
     getAddPanelStocksError: false
   },
   api: {
-    production:           'http://www.imaibo.net',
-    staging:              'http://t3-www.imaibo.net',
+    // production:           'http://www.imaibo.net',
+    // staging:              'http://t3-www.imaibo.net',
     base:                 '/index.php?app=moodindex',
     expertData:           '&mod=ExpertMood&act=weiboList',
     expertHeadline:       '&mod=ExpertMood&act=moodindexParsing',
@@ -35,7 +35,7 @@ var RightPanelModel = {
     jsonp:                '&callback=?'
   },
   baseUrl: function() {
-    return PRODUCTION ? this.api.production : this.api.staging;
+    return PRODUCTION ? 'http://' + location.hostname : 'http://t3-www.imaibo.net';
   },
   /* Expert module */
   getExpertDataAsync: function() {
@@ -93,8 +93,8 @@ var RightPanelModel = {
     });
   },
   log: function(code, message) {
-    if(PRODUCTION) return;
     var now = new Date();
+    console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
   expertErrorCheck: function(model) {
     var api = '&act=weiboList';
