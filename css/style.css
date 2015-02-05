@@ -1487,6 +1487,10 @@ html[data-useragent*='MSIE 10.0'] .dropdown-menu {
   border: rgb(51, 51, 51) 1px solid;
 }
 
+#stockpicker-view .panel-loader-wrapper {
+  top: 85px;
+}
+
 .outer .panel-loader {
   height: 500px;
   width: 300px;
