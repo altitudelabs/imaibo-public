@@ -247,21 +247,20 @@ var ChartModel = {
     return true;
   },
   errorCheckSentiment: function(res, options){
-    if (PRODUCTION) { return; }
     if(res.data === undefined){
       this.log(0, 'Sentiment API has no \'data\'');
     } else if (!this.isObject(res.data) || this.isEmptyObject(res.data)){
       this.log(0, 'Sentiment API "data" variable is not an object or is empty');
     } else if (res.data.indexList === undefined){
       this.log(0, 'Sentiment API data.indexList does not exist');
-    } else if (res.data.indexList[0].price === undefined){
-      this.log(0, 'Sentiment API data.indexList does not have variable "price"');
-    } else if (res.data.indexList[0].volumn === undefined){
-      this.log(0, 'Sentiment API data.indexList does not have variable "volumn"');
-    } else if (res.data.indexList[0].timestamp === undefined){
-      this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
-    } else if (res.data.indexList[0].rdate === undefined){
-      this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
+    // } else if (res.data.indexList[0].price === undefined){
+    //   this.log(0, 'Sentiment API data.indexList does not have variable "price"');
+    // } else if (res.data.indexList[0].volumn === undefined){
+    //   this.log(0, 'Sentiment API data.indexList does not have variable "volumn"');
+    // } else if (res.data.indexList[0].timestamp === undefined){
+    //   this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
+    // } else if (res.data.indexList[0].rdate === undefined){
+    //   this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
     } else if (res.data.moodindexList === undefined){
       this.log(0, 'Sentiment API data.moodindexList does not exist');
     } else {
@@ -269,7 +268,6 @@ var ChartModel = {
     }
   },
   errorCheckIndex: function(res, options){
-    if (PRODUCTION) { return ;}
     this.model.indexError = true;
     var type;
     if (!!options.daily) {
