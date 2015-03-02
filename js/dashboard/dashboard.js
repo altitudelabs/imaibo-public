@@ -1,3 +1,6 @@
+/**
+ * Dashboard renders the dashboard view
+ */
 var Dashboard = {
   firstLoad: true,
   prevData: {
@@ -5,7 +8,13 @@ var Dashboard = {
     before: -200,
     signal: 0
   },
-  render: function(model){
+
+  /**
+   * render() renders dashboard given a data model
+   *
+   * @param model: dashboard data model
+   */
+  render: function(model) {
     var self = this;
 
     if (self.firstLoad){
@@ -29,9 +38,21 @@ var Dashboard = {
       clock: model.tradingSign.clock
     });
   },
-  renderWithError: function(){
+
+  /**
+   * renderWithError() renders dashboard with an error message
+   */
+  renderWithError: function() {
     $('#snapshot').append('<div class="empty-data" id="dashboard-no-data">暂时无法下载数据，请稍后再试</div>');
   },
+
+  /**
+   * updateDashboard() updates dashboard with new data
+   *
+   * @targetId: target element id
+   * @templateId: handlebars template id
+   * @resource: data model
+   */
   updateDashboard: function(targetId, templateId, resource){
     var targetSelector = $(targetId);
     var templateSelector = $(templateId);
@@ -42,12 +63,16 @@ var Dashboard = {
     targetSelector.find('#dashboard-mood').replaceWith($(html)[2]);
     targetSelector.find('#prediction-wrapper').replaceWith($(html)[4]);
   },
+
+  /**
+   * renderIndicatorTooltip() renders the tooltip when hovering 短期预测
+   */
   renderIndicatorTooltip: function(data) {
-    $('#prediction-wrapper').hover(function(){
+    $('#prediction-wrapper').hover(function() {
       if(!$('#dashboard-signal').hasClass('no-data')){
         $('#indicator-tooltip').css('display', 'block');
       }
-    }, function(){
+    }, function() {
       $('#indicator-tooltip').css('display', 'none');
     });
 
@@ -77,6 +102,13 @@ var Dashboard = {
       Helper.populateView('#indicator-tooltip', '#indicator-template', d);
     }
   },
+
+  /**
+   * renderThermoLiquid() renders height of thermometer
+   *
+   * @param model: data model for dashboard
+   * @param animate: boolean; animate transition if true
+   */
   renderThermoLiquid: function(model, animate){
     var liquid = $('.thermo > .thermo-wrapper > .background');
     var dottedLine = $('.thermo > .thermo-wrapper > .previous-sentiment-dotted-line');
@@ -97,11 +129,19 @@ var Dashboard = {
       dottedLine.css('height', h1 + '%');
     }
   },
+
+  /**
+   * glow() is a helper method that makes an element glow for a few seconds
+   */
   glow: function(targetId, orgColor, altColor){
-      $(targetId).animate({color: altColor}, 2000, function() {
-         $(targetId).animate({color: orgColor}, 2000);
-      });
+    $(targetId).animate({color: altColor}, 2000, function() {
+       $(targetId).animate({color: orgColor}, 2000);
+    });
   },
+
+  /**
+   * updateData() updates existing model with new data
+   */
   updateData: function(model){
     var rise = '#d74e37', riseLight = '#fff';
     var fall = '#3bbb57', fallLight = '#fff';
@@ -152,12 +192,12 @@ var Dashboard = {
       $('#changes').text(model.moodindexInfo.change);
       if(IE8){
         $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"});
-        setTimeout(function(){
+        setTimeout(function() {
           $('#changes').css({'-ms-filter': "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"});
         }, 1000);
       } else {
         $('#changes').animate({opacity: 1}, 500);
-        setTimeout(function(){
+        setTimeout(function() {
           $('#changes').animate({opacity: 0}, 1500);
         }, 2000);
       }

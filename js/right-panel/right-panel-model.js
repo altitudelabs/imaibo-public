@@ -1,6 +1,8 @@
+/**
+ * RightPanelModel contains models for right panel
+ */
 var RightPanelModel = {
   model: {
-    // ideally all models should store the array
     experts: {},
     stock: {},
     allPress: {},
@@ -16,8 +18,6 @@ var RightPanelModel = {
     getAddPanelStocksError: false
   },
   api: {
-    // production:           'http://www.imaibo.net',
-    // staging:              'http://t3-www.imaibo.net',
     base:                 '/index.php?app=moodindex',
     expertData:           '&mod=ExpertMood&act=weiboList',
     expertHeadline:       '&mod=ExpertMood&act=moodindexParsing',
@@ -37,7 +37,10 @@ var RightPanelModel = {
   baseUrl: function() {
     return PRODUCTION ? 'http://' + location.hostname : 'http://t3-www.imaibo.net';
   },
-  /* Expert module */
+
+  /*
+   * Expert module API
+   */
   getExpertDataAsync: function() {
     var self = this;
     return $.Deferred(function(d) {
@@ -70,7 +73,7 @@ var RightPanelModel = {
         self.error.expertHeadlineError = false;
         self.model.experts.headline = res.data;
         handler(res.data);
-      } 
+      }
       else {
         handler(res.data);
       }
@@ -118,7 +121,10 @@ var RightPanelModel = {
       this.error.expertError = false;
     }
   },
-  /* News module */
+
+  /*
+   * News module API
+   */
   getAllPressAsync: function() {
     var self = this;
 
@@ -133,8 +139,8 @@ var RightPanelModel = {
       if (res.code !== 'undefined' && res.code === 0) { // if the page is not blank and the code is 0
         self.error.getAllPressError = false;
         self.model.allPress = res.data.list; // allPress = array of data
-      } 
-      
+      }
+
       handler(res.data.list);
     });
   },
@@ -157,7 +163,10 @@ var RightPanelModel = {
       handler(res.data.list);
     });
   },
-  /* Stockpicker module */
+
+  /*
+   * Stockpicker module API
+   */
   getStockData: function(successHandler, errorHandler) {
     var self = this;
 
@@ -186,8 +195,8 @@ var RightPanelModel = {
           if (searchResult.data.count != 0)
             successHandler(searchResult.data.data);// searchResult.data.data => array of results
           else
-            failHandler(0); 
-          
+            failHandler(0);
+
         }
         else {
           failHandler(2);
@@ -210,7 +219,10 @@ var RightPanelModel = {
       errorHandler({ isError: true, msg: 'AJAX request failed' });
     });
   },
-  /* Stockpicker Add Panel Data Retrieval */
+
+  /*
+   * Stockpicker Add Panel Data Retrieval API
+   */
   getIndexStocksAsync: function() {
     var self = this;
 
@@ -226,7 +238,7 @@ var RightPanelModel = {
         self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || false;
         self.model.addPanelStocks[0] = res.data;
         handler(res.data);
-      } 
+      }
       else {
         self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
@@ -258,7 +270,7 @@ var RightPanelModel = {
         self.model.addPanelStockGroupName[3] = res.data.iteholdStock.stockSortName;
 
         handler(res.data);
-      } 
+      }
       else {
         self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
@@ -290,7 +302,7 @@ var RightPanelModel = {
         self.model.addPanelStockGroupName[7] = res.data.hotStockWeek.stockSortName;
 
         handler(res.data);
-      } 
+      }
       else {
         self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
@@ -322,14 +334,17 @@ var RightPanelModel = {
         self.model.addPanelStockGroupName[11] = res.data.stockDealTrend.stockSortName;
 
         handler(res.data);
-      } 
+      }
       else {
         self.error.getAddPanelStocksError = self.error.getAddPanelStocksError || true; // if one is true, all is true
         handler(res.data);
       }
     });
   },
-  /* Others */
+
+  /**
+   * Other helper methods
+   */
   get: function(){
     var num_JSON_loaded = 0;
     var self = this;

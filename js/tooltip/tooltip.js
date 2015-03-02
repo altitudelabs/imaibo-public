@@ -1,3 +1,6 @@
+/**
+ * Tooltip initiates the hover tooltips for index, MACD and RSI charts
+ */
 var Tooltip = {
   el: {
     index: '#index-tooltip',

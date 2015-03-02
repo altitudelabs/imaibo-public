@@ -10,11 +10,9 @@
     "r2d3": "~0.2.0",
     "d3": "3.0.8",
     "jquery": "1.7.1",
-    "bootstrap": "~3.3.1",
     "modernizr": "~2.8.3",
     "lodash": "~2.4.1",
     "handlebars": "~2.0.0",
-    "aight": "~1.2.5",
     "raphael": "~2.1.2"
   }
 }
