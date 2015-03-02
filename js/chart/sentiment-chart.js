@@ -3,6 +3,10 @@
  */
 var SentimentChart = {
   properties: {},
+  /**
+   * components stores the references to all the chart components
+   * this is only modified by SentimentChart.componentsBuilder
+   */
   components: {},
   data: {},
 
@@ -69,9 +73,10 @@ var SentimentChart = {
    */
   updateData: function() {
     'use strict';
+    var self = this;
+
     if(ChartView.data.sentimentError) { return; }
 
-    var self = this;
 
     var serverTime = ChartView.data.sentiment.timestamp;
     var serverDate = new Date(serverTime*1000);
@@ -108,7 +113,7 @@ var SentimentChart = {
   },
 
   /**
-   * updateDataWithError()
+   * updateDataWithError() updates data when the data array is empty
    */
   updateDataWithError: function() {
     'use strict';
@@ -123,7 +128,7 @@ var SentimentChart = {
   },
 
   /**
-   * drawContainer()
+   * drawContainer() draws the container layer
    */
   drawContainer: function() {
     var self = this;
@@ -135,7 +140,7 @@ var SentimentChart = {
   },
 
   /**
-   * draw() is the main method that renders graph
+   * draw() is the main method that draw the graph layer
    */
   draw: function(){
     'use strict';
@@ -183,7 +188,7 @@ var SentimentChart = {
   },
 
   /**
-   * drawWithError()
+   * drawWithError() draws the necessary components to render chart with Error message
    */
   drawWithError: function() {
     var self = this;
@@ -209,7 +214,7 @@ var SentimentChart = {
   },
 
   /**
-   * appendBorders()
+   * appendBorders() handles the d3 append logic for all the borders
    */
   appendBorders: function() {
     var self = this;
@@ -220,7 +225,7 @@ var SentimentChart = {
   },
 
   /**
-   * appendCharts()
+   * appendCharts() handles the d3 append logic for the chart layer
    */
   appendCharts: function(){
     var self = this;
@@ -229,7 +234,7 @@ var SentimentChart = {
   },
 
   /**
-   * appendGrids()
+   * appendGrids() handles the d3 append logic for the gridlines
    */
   appendGrids: function(){
     var self = this;
@@ -238,13 +243,13 @@ var SentimentChart = {
   },
 
   /**
-   * appendComponents()
+   * appendComponents() appends all d3 elements for sentiment chart
    */
   appendComponents: function() {
     'use strict';
     var self = SentimentChart;
 
-    // order here is important
+    // order here is important because it determines the z-axis order of the components
     self.appendCharts();
     self.appendGrids();
     self.appendBorders();
@@ -295,6 +300,7 @@ var SentimentChart = {
     },
     // Processing mood data filters out non-trading days
     processMoodData: function(data){
+      if (data === undefined || data.length === 0) { return data; }
       var preOpenData;
       var hour;
       var processedData = data.filter(function(x, i) {
@@ -319,6 +325,8 @@ var SentimentChart = {
     },
     // Processing index data filters out non-trading days
     processIndexData: function(data){
+      if (data === undefined || data.length === 0) { return data; }
+
       return data.filter(function(x) {
         if (!!x.timestamp) {
           return true;
@@ -393,8 +401,8 @@ var SentimentChart = {
   },
 
   /**
-   * componentsBuilder stores all chart components
-   * Each component has an append (enter) and update method
+   * componentsBuilder stores all build logic for the chart components
+   * Each component has an append (enter) update and (exit) method
    */
   componentsBuilder: {
     chart: {

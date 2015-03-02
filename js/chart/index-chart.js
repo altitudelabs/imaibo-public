@@ -85,7 +85,7 @@ var IndexChart = {
   },
 
   /**
-   * updateWithError()
+   * updateWithError() updates the chart with error message (size for the most part)
    */
   updateWithError: function() {
     this.setProperties();

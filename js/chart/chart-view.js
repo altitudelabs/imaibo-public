@@ -277,6 +277,8 @@ var ChartView = {
   updateChartViewData: function(indexError, sentimentError, initial) {
     var self = this;
     self.data = ChartModel.model;
+    // self.data.sentiment.indexList = [];
+    // self.data.sentiment.moodindexList = [];
     self.data.error = {
       index: indexError,
       sentiment: sentimentError
@@ -315,6 +317,8 @@ var ChartView = {
     }
     // Draw sentiment
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
+    // SentimentChart.init();
+
 
     // Remove loaders
     $('.loader').remove();
@@ -503,7 +507,7 @@ var ChartView = {
   },
 
   /**
-   * redraw()
+   * redraw() updates the graph layer of all the charts in ChartView, with properties unchanged
    */
   redraw: function () {
     ChartView.updateVisibleStockLine();
@@ -516,7 +520,7 @@ var ChartView = {
   },
 
   /**
-   * rebuild()
+   * rebuild() updates the graph layer of all the charts with new properties (ex. windowWidth)
    */
   rebuild: function() {
     ChartView.setProperties();
