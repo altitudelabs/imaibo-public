@@ -1,4 +1,11 @@
+/**
+ * ExpertsView renders the experts tab in right panel
+ */
 var expertsView = {
+
+  /**
+   * init() inits expert view
+   */
 	init: function() {
     var self = this;
 
