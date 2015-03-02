@@ -1,7 +1,14 @@
+/**
+ * SentimentChart renders sentiment chart
+ */
 var SentimentChart = {
   properties: {},
   components: {},
   data: {},
+
+  /**
+   * setProperties() sets width, margin, zoom factor and other dimensions of chart
+   */
   setProperties: function(options) {
     'use strict';
     var properties = {
@@ -15,7 +22,11 @@ var SentimentChart = {
     properties.chartHeight = properties.height - properties.margin.top - properties.margin.bottom;
     this.properties = $.extend(true, {}, properties);
   },
-  init: function () {
+
+  /**
+   * init() initializes chart
+   */
+  init: function() {
     'use strict';
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
@@ -25,7 +36,11 @@ var SentimentChart = {
     this.updateData();
     this.draw();
   },
-  initWithError: function () {
+
+  /**
+   * initWithError() inits chart with error message
+   */
+  initWithError: function() {
     $('#sentiment-chart').empty();
     $('#sentiment-chart-label').empty();
     this.appendCharts();
@@ -39,12 +54,20 @@ var SentimentChart = {
     $('#sentiment .legend').remove();
     $('#sentiment-chart-legend').remove();
   },
-  update: function () {
+
+  /**
+   * update() handles chart updates after initial load
+   */
+  update: function() {
     this.setProperties();
     this.updateData();
     this.draw();
   },
-  updateData: function () {
+
+  /**
+   * updateData()
+   */
+  updateData: function() {
     'use strict';
     if(ChartView.data.sentimentError) { return; }
 
@@ -53,14 +76,10 @@ var SentimentChart = {
     var serverTime = ChartView.data.sentiment.timestamp;
     var serverDate = new Date(serverTime*1000);
 
-    //difference between UTC 0:00 to local time, in hours
+    // difference between UTC 0:00 to local time, in hours
     self.data.timezoneDiff = (new Date(serverDate.setHours(0,0,0,0)).getTimezoneOffset()/60 + 8);
 
-    //since HK is 8 hours ahead of UTC, subtract a whole day(24hours) if the difference is greater than 8
-    // if (self.data.timezoneDiff > 7) {
-    //   self.data.timezoneDiff -= 24;
-    // }
-    //transform to timestamp
+    // transform to timestamp
     self.data.timezoneDiff *= 3600;
     self.data.moodindexList = self.helpers.processMoodData(ChartView.data.sentiment.moodindexList);
     self.data.indexList = self.helpers.processIndexData(ChartView.data.sentiment.indexList);
@@ -74,7 +93,7 @@ var SentimentChart = {
     if (y2Range[1] - y2Range[0] === 0) { y2Range = [self.data.closePrice-100, self.data.closePrice+100]; }
     self.data.y1 = self.helpers.y(y1Range[0], y1Range[1]);
     self.data.y2 = self.helpers.y(y2Range[0], y2Range[1]);
-    
+
     var dataTime = self.data.moodindexList[0] ? self.data.moodindexList[0].timestamp : serverTime;
     var dataDate = new Date(dataTime*1000);
 
@@ -87,7 +106,11 @@ var SentimentChart = {
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
     self.data.x  = self.helpers.x(self.properties.chartWidth, self.data.ordinalTimeStamps);
   },
-  updateDataWithError: function () {
+
+  /**
+   * updateDataWithError()
+   */
+  updateDataWithError: function() {
     'use strict';
     var self = this;
     self.data.closePrice = ChartView.data.sentiment.preclosepx;
@@ -98,7 +121,11 @@ var SentimentChart = {
     self.data.ordinalTimeStamps = self.helpers.getOrdinalTimestamps();
     self.data.x  = self.helpers.x(self.properties.chartWidth, self.data.ordinalTimeStamps);
   },
-  drawContainer: function () {
+
+  /**
+   * drawContainer()
+   */
+  drawContainer: function() {
     var self = this;
     self.componentsBuilder.chartLabel.update();
     self.componentsBuilder.topBorder.update();
@@ -106,10 +133,15 @@ var SentimentChart = {
     self.componentsBuilder.bottomBorder.update();
     self.componentsBuilder.leftBorder.update();
   },
+
+  /**
+   * draw() is the main method that renders graph
+   */
   draw: function(){
     'use strict';
     var self = this;
-    // LINK DATA ===================================================================
+
+    // Link data
     self.componentsBuilder.y1Labels.linkData();
     self.componentsBuilder.y2Labels.linkData();
     self.componentsBuilder.xLabels.linkData();
@@ -124,7 +156,7 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsBubble.linkData();
     self.componentsBuilder.scatterDotsBubbleText.linkData();
 
-    // ENTER LOOP ===================================================================
+    // Enter loop
     self.componentsBuilder.y1Labels.enter();
     self.componentsBuilder.y2Labels.enter();
     self.componentsBuilder.xLabels.enter();
@@ -137,42 +169,48 @@ var SentimentChart = {
     self.componentsBuilder.scatterDotsBubble.enter();
     self.componentsBuilder.scatterDotsBubbleText.enter();
 
-    // UPDATE LOOP ===================================================================
+    // Update loop
     for (var key in self.componentsBuilder) {
       self.componentsBuilder[key].update();
     }
 
-    // EXIT LOOP ===================================================================
+    // Exit loop
     for (var key in self.componentsBuilder) {
       if (self.componentsBuilder[key].exit !== undefined) {
         self.componentsBuilder[key].exit();
       }
     }
-
-    // Etc ===================================================================
-
   },
-  drawWithError: function () {
+
+  /**
+   * drawWithError()
+   */
+  drawWithError: function() {
     var self = this;
     self.componentsBuilder.chart.update();
-    // LINK DATA ===================================================================
+
+    // Link data
     self.componentsBuilder.y1Labels.linkData();
     self.componentsBuilder.xLabels.linkData();
     self.componentsBuilder.verticalGridLines.linkData();
     self.componentsBuilder.horizontalGridLines.linkData();
 
-    // ENTER LOOP ===================================================================
+    // Enter loop
     self.componentsBuilder.y1Labels.enter();
     self.componentsBuilder.xLabels.enter();
     self.componentsBuilder.verticalGridLines.enter();
     self.componentsBuilder.horizontalGridLines.enter();
 
-    // UPDATE LOOP ===================================================================
+    // Update loop
     self.componentsBuilder.y1Labels.update();
     self.componentsBuilder.xLabels.update();
     self.componentsBuilder.verticalGridLines.update();
     self.componentsBuilder.horizontalGridLines.update();
   },
+
+  /**
+   * appendBorders()
+   */
   appendBorders: function() {
     var self = this;
     self.componentsBuilder.topBorder.append();
@@ -180,22 +218,33 @@ var SentimentChart = {
     self.componentsBuilder.bottomBorder.append();
     self.componentsBuilder.leftBorder.append();
   },
+
+  /**
+   * appendCharts()
+   */
   appendCharts: function(){
     var self = this;
     self.componentsBuilder.chart.append();
     self.componentsBuilder.chartLabel.append();
   },
+
+  /**
+   * appendGrids()
+   */
   appendGrids: function(){
     var self = this;
     self.componentsBuilder.verticalGridLines.append();
     self.componentsBuilder.horizontalGridLines.append();
   },
-  appendComponents: function () {
+
+  /**
+   * appendComponents()
+   */
+  appendComponents: function() {
     'use strict';
     var self = SentimentChart;
-    // $('#sentiment-chart').empty();
-    // $('#sentiment-chart-label').empty();
-    //ordering here is important! do not use for-loop
+
+    // order here is important
     self.appendCharts();
     self.appendGrids();
     self.appendBorders();
@@ -213,28 +262,32 @@ var SentimentChart = {
     self.componentsBuilder.sentimentOverlay.append();
     self.componentsBuilder.tooltip.append();
   },
+
+  /**
+   * Contains helper methods for sentiment chart
+   */
   helpers: {
-    x: function (width, data) {
+    x: function(width, data) {
       'use strict';
       var props = SentimentChart.properties;
       return d3.scale.ordinal()
       .domain(data.map(function(x) { return x; }))
       .rangeBands([0, width]);
     },
-    y: function (min, max) {
+    y: function(min, max) {
       'use strict';
       var props = SentimentChart.properties;
       return d3.scale.linear()
       .domain([min, max])
       .range([props.height - props.margin.top - props.margin.bottom - props.margin.bottom, props.margin.top+20]);
     },
-    minIndex: function (prop, data) {
+    minIndex: function(prop, data) {
       if(data && data.length !== 0){
         return d3.min(data.map(function(x) { return +x[prop]; }));
       }
       return 0;
     },
-    maxIndex: function (prop, data) {
+    maxIndex: function(prop, data) {
       if(data && data.length !== 0) {
         return d3.max(data.map(function(x) { return +x[prop]; }));
       }
@@ -244,7 +297,7 @@ var SentimentChart = {
     processMoodData: function(data){
       var preOpenData;
       var hour;
-      var processedData = data.filter(function (x, i) {
+      var processedData = data.filter(function(x, i) {
         hour = new Date(x.timestamp*1000).getHours() + SentimentChart.data.timezoneDiff/3600;
         if (!!x.isTradingDay && !!x.timestamp) {
           if (hour === 7 || hour === -17) {
@@ -256,7 +309,7 @@ var SentimentChart = {
           return false;
         }
       })
-      .sort(function (a, b){
+      .sort(function(a, b){
         return a.timestamp - b.timestamp;
       });
       if (preOpenData) {
@@ -266,13 +319,13 @@ var SentimentChart = {
     },
     // Processing index data filters out non-trading days
     processIndexData: function(data){
-      return data.filter(function (x) {
+      return data.filter(function(x) {
         if (!!x.timestamp) {
           return true;
         }
       });
     },
-    getRangeWithBuffer: function (min, max) {
+    getRangeWithBuffer: function(min, max) {
       return [min - ((max - min)*0.5), max + ((max - min)*0.5)];
     },
     // Returns array of ordinal timestamps for x-axis
@@ -292,7 +345,7 @@ var SentimentChart = {
       }
       return arr;
     },
-    makeHorizontalGridLines: function () {
+    makeHorizontalGridLines: function() {
       var min = 0;
       var max = SentimentChart.properties.chartHeight;
       var diff = (max-min)/7;
@@ -309,7 +362,7 @@ var SentimentChart = {
       t = t.setHours(t.getHours(),t.getMinutes(),0,0)/1000;
       return t;
     },
-    getLastest: function (type, timestamp) {
+    getLastest: function(type, timestamp) {
       'use strict';
       var closest;
       for (var i = 0; i < SentimentChart.data[type].length; i++) {
@@ -319,12 +372,12 @@ var SentimentChart = {
       }
       return closest;
     },
-    updateLegends: function (indexData, moodindexData) {
+    updateLegends: function(indexData, moodindexData) {
       $('#sentiment-chart-legend .security').text(indexData ? indexData.price : '--');
       $('#sentiment-chart-legend .mood').text(moodindexData ? moodindexData.mood : SentimentChart.data.earlyMood ? SentimentChart.data.earlyMood.mood : '--');
       $('#sentiment-chart-legend .moodchange').text(moodindexData ? moodindexData.moodChg : SentimentChart.data.earlyMood ? SentimentChart.data.earlyMood.moodChg : '--');
     },
-    getMousePosition: function (context) {
+    getMousePosition: function(context) {
       'use strict';
       var xPos, yPos;
       if(IE8) {
@@ -338,12 +391,17 @@ var SentimentChart = {
       return [xPos, yPos];
     }
   },
+
+  /**
+   * componentsBuilder stores all chart components
+   * Each component has an append (enter) and update method
+   */
   componentsBuilder: {
     chart: {
-      append: function () {
+      append: function() {
         SentimentChart.components.chart = d3.select('#sentiment-chart').append('svg:svg');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.chart
         .attr('class', 'chart')
@@ -352,10 +410,10 @@ var SentimentChart = {
       }
     },
     chartLabel: {
-      append: function () {
+      append: function() {
         SentimentChart.components.chartLabel = d3.select('#sentiment-chart-label').append('svg:svg');
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.chartLabel
         .attr('class', 'chart')
         .attr('width', SentimentChart.properties.containerWidth)
@@ -363,13 +421,13 @@ var SentimentChart = {
       }
     },
     horizontalGridLines: {
-      append: function () {
+      append: function() {
         SentimentChart.components.horizontalGridLines = SentimentChart.components.chartLabel.append('g').selectAll('text.yrule');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.horizontalGridLines = SentimentChart.components.horizontalGridLines.data(SentimentChart.helpers.makeHorizontalGridLines());
       },
-      enter: function () {
+      enter: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.horizontalGridLines
         .enter().append('line')
@@ -387,26 +445,26 @@ var SentimentChart = {
 
         });
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.horizontalGridLines
         .attr('x2', props.chartWidth + props.margin.left);
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.horizontalGridLines
         .exit()
         .remove();
       }
     },
     verticalGridLines: {
-      append: function () {
+      append: function() {
         SentimentChart.components.verticalGridLines = SentimentChart.components.chartLabel.append('g').selectAll('text.yrule');
       },
-      linkData: function () {
+      linkData: function() {
         var hourly = SentimentChart.helpers.makeVerticalLines();
         SentimentChart.components.verticalGridLines = SentimentChart.components.verticalGridLines.data(hourly);
       },
-      enter: function () {
+      enter: function() {
         var props = SentimentChart.properties;
 
         SentimentChart.components.verticalGridLines
@@ -423,7 +481,7 @@ var SentimentChart = {
           'stroke-width' : '1px'
         });
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.verticalGridLines
         .attr({
@@ -431,17 +489,17 @@ var SentimentChart = {
           'x2' : function(d){ return SentimentChart.data.x(d) + props.margin.left; },
         });
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.verticalGridLines
         .exit()
         .remove();
       }
     },
     topBorder: {
-      append: function () {
+      append: function() {
         SentimentChart.components.topBorder = SentimentChart.components.chartLabel.append('svg:line');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.topBorder
         .attr('class', 'xborder-top-thick')
@@ -454,10 +512,10 @@ var SentimentChart = {
       }
     },
     rightBorder: {
-      append: function () {
+      append: function() {
         SentimentChart.components.rightBorder = SentimentChart.components.chartLabel.append('svg:line');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.rightBorder
         .attr('class', 'yborder-right')
@@ -471,10 +529,10 @@ var SentimentChart = {
       }
     },
     bottomBorder: {
-      append: function () {
+      append: function() {
         SentimentChart.components.bottomBorder = SentimentChart.components.chartLabel.append('svg:line');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.bottomBorder
         .attr('class', 'xaxis')
@@ -487,10 +545,10 @@ var SentimentChart = {
       }
     },
     leftBorder: {
-      append: function () {
+      append: function() {
         SentimentChart.components.leftBorder = SentimentChart.components.chartLabel.append('svg:line');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.leftBorder
         .attr('class', 'yborder-left')
@@ -503,19 +561,19 @@ var SentimentChart = {
       }
     },
     y1Labels: {
-      append: function () {
+      append: function() {
         SentimentChart.components.y1Labels = SentimentChart.components.chartLabel.append('g').selectAll('text.yrule');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.y1Labels = SentimentChart.components.y1Labels.data(SentimentChart.data.y1.ticks(5));
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.y1Labels
         .attr('class','y1labels')
         .enter().append('svg:text')
         .attr('class', 'yrule');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.y1Labels
         .attr('x', props.margin.left - 15)
@@ -524,27 +582,27 @@ var SentimentChart = {
         .style('fill','rgb(129, 129, 129)')
         .text(String);
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.y1Labels
         .exit()
         .remove();
       }
     },
     y2Labels: {
-      append: function () {
+      append: function() {
         SentimentChart.components.y2Labels = SentimentChart.components.chartLabel.append('g').selectAll('text.yrule');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.y2Labels = SentimentChart.components.y2Labels.data(SentimentChart.data.y2.ticks(5));
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.y2Labels
         .attr('class','y2labels')
         .enter()
         .append('svg:text')
         .attr('class', 'yrule');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.y2Labels
         .attr('x', props.chartWidth + props.margin.left + 18)
@@ -553,17 +611,17 @@ var SentimentChart = {
         .style('fill','rgb(129, 129, 129)')
         .text(String);
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.y2Labels
         .exit()
         .remove();
       }
     },
     xLabels: {
-      append: function () {
+      append: function() {
         SentimentChart.components.xLabels = SentimentChart.components.chart.selectAll('text.xrule');
       },
-      linkData: function () {
+      linkData: function() {
         var begin = SentimentChart.data.startTime + 1800;
         var xLabelTimeStampsArray = [];
         for (var i = 0; i < 5; i++) {
@@ -571,7 +629,7 @@ var SentimentChart = {
         }
         SentimentChart.components.xLabels = SentimentChart.components.xLabels.data(xLabelTimeStampsArray);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.xLabels
         .attr('class','xlabels')
         .enter()
@@ -579,13 +637,13 @@ var SentimentChart = {
         .attr('class', 'xrule')
         .attr('text-anchor', 'middle');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         var hour;
         SentimentChart.components.xLabels
-        .attr('x', function (d, i) { return SentimentChart.data.x(d); })
+        .attr('x', function(d, i) { return SentimentChart.data.x(d); })
         .attr('y', props.chartHeight - 22)
-        .text(function (d, i) {
+        .text(function(d, i) {
           hour = new Date(d * 1000).getHours() + SentimentChart.data.timezoneDiff/3600;
           if (hour < 0) {
             hour += 24;
@@ -593,20 +651,20 @@ var SentimentChart = {
           return hour + ':00';
         });
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.xLabels
         .exit()
         .remove();
       }
     },
     sentimentLine: {
-      append: function () {
+      append: function() {
         SentimentChart.components.sentimentLine = SentimentChart.components.chart.append('path');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.sentimentLine = SentimentChart.components.sentimentLine.datum(SentimentChart.data.moodindexList);
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.sentimentLine
         .attr({
           'class':'sentiment',
@@ -621,13 +679,13 @@ var SentimentChart = {
     },
     securityLines: {
       types: ['openDotted', 'lunchDotted', 'closeDotted', 'amLinear', 'pmLinear'],
-      append: function () {
+      append: function() {
         SentimentChart.components.securityLines = {};
         for (var i = 0; i < this.types.length; i++) {
           SentimentChart.components.securityLines[this.types[i]] = SentimentChart.components.chart.append('path');
         }
       },
-      linkData: function () {
+      linkData: function() {
         var data = SentimentChart.data.indexList;
         if (data === undefined) { return; }
 
@@ -651,7 +709,7 @@ var SentimentChart = {
         //dotted
         var currentTimeStamp = SentimentChart.helpers.getCurrentTimestamp();
         var currentDate = new Date(currentTimeStamp*1000 + SentimentChart.data.timezoneDiff*1000);
-        
+
         if (!SentimentChart.data.isPastData && currentTimeStamp < SentimentChart.data.startTime) { return; }
 
         //start - market open
@@ -665,10 +723,10 @@ var SentimentChart = {
         SentimentChart.components.securityLines['openDotted'] = SentimentChart.components.securityLines['openDotted'].datum(openDottedData);
         //lunch
         if (!pmLinearData[0]) { return; }
-        
+
         var dataDate = new Date((pmLinearData[0].timestamp)*1000 + SentimentChart.data.timezoneDiff*1000)
         if (dataDate.getDate() !== currentDate.getDate()) { SentimentChart.data.isPastData = true; }
-        
+
         if (SentimentChart.data.isPastData || (currentDate.getHours() > 11 || (currentDate.getHours() === 11 && currentDate.getMinutes() > 30))) {
           var lunchDottedPrice = amLinearData[amLinearData.length-1].price;
           var lunchDottedData = [{
@@ -694,9 +752,9 @@ var SentimentChart = {
                                 }];
           SentimentChart.components.securityLines['closeDotted'] = SentimentChart.components.securityLines['closeDotted'].datum(closeDottedData);
         }
-        
+
       },
-      update: function () {
+      update: function() {
         var id;
 
         for (var i = 0; i < this.types.length; i++) {
@@ -726,99 +784,99 @@ var SentimentChart = {
       }
     },
     tooltip: {
-      append: function () {
+      append: function() {
         SentimentChart.components.tooltip = d3.select('#sentiment-chart').append('div')
         .attr('id', 'sentiment-tooltip')
         .attr('class', 'tooltip')
         .style('display', 'none');
       },
-      update: function () {
+      update: function() {
         // SentimentChart.components.tooltip
       }
     },
     scatterDots: {
-      append: function () {
+      append: function() {
         SentimentChart.components.scatterDots = SentimentChart.components.chart.selectAll('scatter-dots');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.scatterDots = SentimentChart.components.scatterDots.data(SentimentChart.data.moodindexList);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.scatterDots
         .enter().append('svg:circle')  // create a new circle for each value
         .style('opacity', 1)
-        .attr('id', function (d, i) {
+        .attr('id', function(d, i) {
           return 'sd-' + i;
         });
-        
+
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.scatterDots
         .attr('r', 4)
-        .attr('cy', function (d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
-        .attr('cx', function (d,i) { return SentimentChart.data.x(d.timestamp); } )
-        .attr('stroke', function (d, i) {
+        .attr('cy', function(d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
+        .attr('cx', function(d,i) { return SentimentChart.data.x(d.timestamp); } )
+        .attr('stroke', function(d, i) {
           if (!d.isRealTime) {
             return '#25bcf1';
           }
         })
-        .attr('stroke-width', function (d, i) {
+        .attr('stroke-width', function(d, i) {
           if (!d.isRealTime) {
             return '1';
           }
         })
-        .attr('fill', function (d, i) {
+        .attr('fill', function(d, i) {
           if (d.isRealTime) {
             return '#25bcf1';
           }
         });; // translate x value
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.scatterDots
         .exit()
         .remove();
       }
     },
     scatterDotsBubble: {
-      append: function () {
+      append: function() {
         SentimentChart.components.scatterDotsBubble = SentimentChart.components.chart.selectAll('scatter-dots');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.scatterDotsBubble = SentimentChart.components.scatterDotsBubble.data(SentimentChart.data.moodindexList);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.scatterDotsBubble
         .enter()
         .append('path')
-        .attr('fill', function (d,i) {
+        .attr('fill', function(d,i) {
           return '#31BBED';
         })
-        .attr('d', function (d,i) {
+        .attr('d', function(d,i) {
           if (d.newsCount) {
             return 'M29,17.375c0,6.1-3.877,11.125-6.5,11.125s-6.75-5.35-6.75-11.25c0-4.004,4.06-5.167,6.683-5.167  S29,13.371,29,17.375z';
           }
         });
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.scatterDotsBubble
-        .attr('transform', function (d, i) {
+        .attr('transform', function(d, i) {
           return 'translate(' + (SentimentChart.data.x(d.timestamp) - 23 ) + ',' + (SentimentChart.data.y1(d.mood)-37) + ')';
         });
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.scatterDotsBubble
         .exit()
         .remove();
       }
     },
     scatterDotsBubbleText: {
-      append: function () {
+      append: function() {
         SentimentChart.components.scatterDotsBubbleText = SentimentChart.components.chart.selectAll('scatter-dots');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.scatterDotsBubbleText = SentimentChart.components.scatterDotsBubbleText.data(SentimentChart.data.moodindexList);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.scatterDotsBubbleText
         .enter().append('text')  // create a new circle for each value
         .attr('class', 'sentiment')
@@ -827,76 +885,76 @@ var SentimentChart = {
           if (d.newsCount) { return d.newsCount; }
         });
       },
-      update: function () { 
+      update: function() {
         SentimentChart.components.scatterDotsBubbleText
         .attr('text-anchor', 'middle')
-        .attr('y', function (d) { return SentimentChart.data.y1(d.mood) - 13 - (IE8? 3:0); } ) // translate y value to a pixel
-        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
+        .attr('y', function(d) { return SentimentChart.data.y1(d.mood) - 13 - (IE8? 3:0); } ) // translate y value to a pixel
+        .attr('x', function(d,i) { return SentimentChart.data.x(d.timestamp); } ); // translate x value
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.scatterDotsBubbleText
         .exit()
         .remove();
-      } 
+      }
     },
     forecastBubble: {
-      append: function () {
+      append: function() {
         SentimentChart.components.forecastBubble = SentimentChart.components.chart.selectAll('scatter-dots');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.forecastBubble = SentimentChart.components.forecastBubble.data(SentimentChart.data.moodindexList);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.forecastBubble
         .enter()
         .append('path');
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.forecastBubble
-        .attr('fill', function (d,i) {
+        .attr('fill', function(d,i) {
           if(!d.isRealTime) {
             return '#D04D3D';
           }
         })
-        .attr('d', function (d,i) {
+        .attr('d', function(d,i) {
           if (!d.isRealTime) {
             return 'M62.416,43.5h-9.333l-3.709-3.083L45.666,43.5h-8.583c-1.657,0-3,1.343-3,3v10.833c0,1.657,1.343,3,3,3 h25.333c1.657,0,3-1.343,3-3V46.5C65.416,44.843,64.073,43.5,62.416,43.5z';
           }
         })
-        .attr('transform', function (d, i) {
+        .attr('transform', function(d, i) {
           return 'translate(' + (SentimentChart.data.x(d.timestamp) - 50 ) + ',' + (SentimentChart.data.y1(d.mood)-30) + ')';
         });
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.forecastBubble
         .exit()
         .remove();
       }
     },
     forecastBubbleText: {
-      append: function () {
+      append: function() {
         SentimentChart.components.forecastBubbleText = SentimentChart.components.chart.selectAll('scatter-dots');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.forecastBubbleText = SentimentChart.components.forecastBubbleText.data(SentimentChart.data.moodindexList);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.forecastBubbleText
         .enter().append('text')  // create a new circle for each value
         .attr('class', 'sentiment')
         .attr('fill', 'white')
         .attr('text-anchor', 'middle');
-        
+
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.forecastBubbleText
-        .attr('x', function (d,i) { return SentimentChart.data.x(d.timestamp) - 1; } ); // translate x value
+        .attr('x', function(d,i) { return SentimentChart.data.x(d.timestamp) - 1; } ); // translate x value
         if(IE8){
           SentimentChart.components.forecastBubbleText
-            .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 20; } ) // translate y value to a pixel
+            .attr('y', function(d) { return SentimentChart.data.y1(d.mood) + 20; } ) // translate y value to a pixel
         }else{
           SentimentChart.components.forecastBubbleText
-            .attr('y', function (d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
+            .attr('y', function(d) { return SentimentChart.data.y1(d.mood) + 26; } ) // translate y value to a pixel
         }
 
         SentimentChart.components.forecastBubbleText
@@ -904,7 +962,7 @@ var SentimentChart = {
           if (!d.isRealTime) { return '预测'; }
         });
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.forecastBubbleText
         .exit()
         .remove();
@@ -912,13 +970,13 @@ var SentimentChart = {
     },
 
     scatterDotsHover: {
-      append: function () {
+      append: function() {
         SentimentChart.components.scatterDotsHover = SentimentChart.components.chart.selectAll('scatter-dots');
       },
-      linkData: function () {
+      linkData: function() {
         SentimentChart.components.scatterDotsHover = SentimentChart.components.scatterDotsHover.data(SentimentChart.data.moodindexList);
       },
-      enter: function () {
+      enter: function() {
         SentimentChart.components.scatterDotsHover
         .enter().append('svg:circle')  // create a new circle for each value
         .attr('r', 8)
@@ -996,7 +1054,7 @@ var SentimentChart = {
           .html(div)
           .style('left', shouldRenderLeft ? dotPosition[0] - padding - 320 + 'px' : dotPosition[0] - padding + 'px')
           .style('top', shouldRenderBottom ? dotPosition[1] - padding + 'px' : dotPosition[1] - tooltipHeight + padding + 'px')
-          .on('mouseout', function () {
+          .on('mouseout', function() {
             var mousePosition = SentimentChart.helpers.getMousePosition(dot);
             var dotPosition = [parseInt(d3.select(dot).attr('cx')), parseInt(d3.select(dot).attr('cy'))];
 
@@ -1053,15 +1111,15 @@ var SentimentChart = {
             $(idString).siblings().removeClass("news-collapsed");
           });
         })
-        .on('mouseout', function (d, i) {
+        .on('mouseout', function(d, i) {
         });
       },
-      update: function () {
+      update: function() {
         SentimentChart.components.scatterDotsHover
-        .attr('cy', function (d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
-        .attr('cx', function (d,i) { return SentimentChart.data.x(d.timestamp); } );
+        .attr('cy', function(d) { return SentimentChart.data.y1(d.mood); } ) // translate y value to a pixel
+        .attr('cx', function(d,i) { return SentimentChart.data.x(d.timestamp); } );
       },
-      exit: function () {
+      exit: function() {
         SentimentChart.components.scatterDotsHover
         .exit()
         .remove();
@@ -1073,10 +1131,10 @@ var SentimentChart = {
 
     },
     sentimentOverlay: {
-      append: function () {
+      append: function() {
         SentimentChart.components.sentimentOverlay = SentimentChart.components.chart.append('svg:rect');
       },
-      update: function () {
+      update: function() {
         var props = SentimentChart.properties;
         SentimentChart.components.sentimentOverlay
         .style('position', 'absolute')
@@ -1085,29 +1143,20 @@ var SentimentChart = {
         .attr('opacity', 0)
         .attr('width', props.chartWidth - 2)
         .attr('height', props.chartHeight - 44)
-        .on('mousemove', function () {
+        .on('mousemove', function() {
           var xPos, yPos, mouseX, mouseY;
 
-          if(IE8) {
+          if (IE8) {
             xPos = event.offsetX;
-            yPos = event.offsetY; //because of the old browser info box on top
-            // mouseX = xPos + 10;
-            // mouseY = yPos + 60;
-          }
-          else {
+            yPos = event.offsetY; // because of the old browser info box on top
+          } else {
             xPos = d3.mouse(this)[0];
             yPos = d3.mouse(this)[1];
-            // mouseX = d3.event.pageX;
-            // mouseY = d3.event.pageY + 10;
 
-              if(yPos > 230){
-                Tooltip.hide.index();
-                yPos = 230;
-              }
-
-              if (IE9) {
-                // yPos += 57;
-              }
+            if (yPos > 230) {
+              Tooltip.hide.index();
+              yPos = 230;
+            }
           }
 
           var j = ChartView.xInverse(xPos, SentimentChart.data.x);

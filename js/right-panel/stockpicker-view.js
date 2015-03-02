@@ -1,12 +1,22 @@
+/**
+ * StockpickerView renders view for stockpicker tab
+ */
 var stockpickerView = {
   loaderTimer: 0,
+
+  /**
+   * init() inits stockpicker view
+   */
 	init: function(){
     this.renderStockpickerView(true);
   },
+
+  /**
+   * canFindStockFromList() returns true if stockId exists in list
+   */
   canFindStockFromList: function(stockId) {
     var lengthOfStocks = RightPanelModel.model.stock.list.length;
 
-    // faster algorithm to be impletmented later
     for (var i = 0; i < lengthOfStocks; i++) {
       if (RightPanelModel.model.stock.list[i].stockId == stockId)
         return true;
@@ -14,6 +24,10 @@ var stockpickerView = {
 
     return false;
   },
+
+  /**
+   * updateStockpickerSettingsPanel() updates content for stockpicker settings panel
+   */
   updateStockpickerSettingsPanel: function(addPanelStocks, addPanelStockGroupName) {
     var self = this;
     var numberOfTable = addPanelStocks.length;
@@ -149,6 +163,10 @@ var stockpickerView = {
       });
     }
   },
+
+  /**
+   * initStockpickerSettingsPanel() inits stockpicker settings panel, gets data from API and updates view
+   */
   initStockpickerSettingsPanel: function() {
     var self = this;
     self.initSettingsPanelOptionListener();
@@ -167,6 +185,10 @@ var stockpickerView = {
       }
     });
   },
+
+  /**
+   * updateSearchResult() gets autocomplete results from API and updates view
+   */
   updateSearchResult: function(key) {
     var self = this;
 
@@ -277,6 +299,10 @@ var stockpickerView = {
 
     $('#search-result').css('display', 'block');
   },
+
+  /**
+   * initStockpickerSearchAutocomplete()
+   */
   initStockpickerSearchAutocomplete: function() {
     var self =  this;
 
@@ -301,6 +327,10 @@ var stockpickerView = {
         $('#search-result').css('display', 'none');
     });
   },
+
+  /**
+   * renderStockpickerView()
+   */
   renderStockpickerView: function(initial) {
     var self = this;
     var stock = RightPanel.states.chooseStockView;
@@ -338,10 +368,18 @@ var stockpickerView = {
 
     RightPanelModel.getStockData(successHandler, errorHandler);
   },
+
+  /**
+   * hideStockpickerLoginPanel()
+   */
   hideStockpickerLoginPanel: function() {
     $('#stock-login').remove();
     $('#suggestion').remove();
   },
+
+  /**
+   * updateStockpickerView()
+   */
   updateStockpickerView: function(model) {
     var self = this;
 
@@ -387,6 +425,10 @@ var stockpickerView = {
     table.select('.zxg-price-change-abs').html(function(d){ return d.pxchg; });
     table.select('.zxg-price-change-rel').html(function(d){ return d.pxchgratio; });
   },
+
+  /**
+   * updateStockDataOnly()
+   */
   updateStockDataOnly: function() {
     var self = this;
 
@@ -445,18 +487,23 @@ var stockpickerView = {
 
     RightPanelModel.getStockData(successHandler, errorHandler);
   },
+
+  /**
+   * refreshStockpickerView() refresh stockpicker view at a set interval
+   */
   refreshStockpickerView: function() {
-    // renderStockpickerView cannot be used as the function to refresh
-    // if renderStockpickerView is used,
-    // when refreshStockpickerView is called during refresh and the user tried to add stock,
-    // refreshStockpickerView is called twice which may cause some problems
+
     var self = this;
     var refreshRate = 5000;
     if (!IE8) {
       setInterval(function(){ self.updateStockDataOnly(); }, refreshRate);
     }
   },
-  // when the item in the add panel (e.g 指数) is hovered, the first li and the corresponding stock table is shown 
+
+  /**
+   * initSettingsPanelOptionListener() inits the inner menu for settings panel
+   * When the item in the add panel (e.g 指数) is hovered, the first li and the corresponding stock table is shown
+   */
   initSettingsPanelOptionListener: function() {
     $('.add-panel-item > div').hover(
       function() {

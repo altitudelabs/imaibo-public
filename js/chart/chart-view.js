@@ -1,18 +1,28 @@
+/**
+ * ChartView contains views for dashboard, index chart, sentiment chart, MACD chart and RSI chart
+ */
 var ChartView = {
+
+  // Define models
   data: {
     daily: {},
     sentiment: {},
     error: {},
   },
+
+  // Define properties
   properties: {
-    refreshFrequency: 6000,
+    refreshFrequency: 60000,
     scrollSpeed: 2,
     scrollbarPos: 0,
     mode: 'daily'
   },
-  setProperties: function (options) {
+
+  /**
+   * setProperties() sets width, margin, zoom factor and other dimensions of chart
+   */
+  setProperties: function(options) {
     var self = this;
-    //review
     var properties = {
       width: $('#content').width(), // width of left panel
       margin: { top: 2, right: 45, bottom: 25, left: 45 }, // chart margins
@@ -27,16 +37,24 @@ var ChartView = {
     }
     this.properties = $.extend(true, this.properties, properties);
   },
-  x: function(returnProp){
+
+  /**
+   * x() returns D3 domain function for x-axis
+   */
+  x: function(returnProp) {
     var self = this;
     var props = self.properties;
 
     return d3.scale.ordinal()
     .domain(ChartView.getVisibleStockLine().map(function(x) {
       return x[returnProp]; }))
-    .rangeBands([0, props.chartWidth]); //inversed the x axis because api came in descending order
+    .rangeBands([0, props.chartWidth]); // inverse x-axis because api comes in descending order
   },
-  getXLabels: function(){
+
+  /**
+   * getXLabels() returns x-labels for chart
+   */
+  getXLabels: function() {
     var timeObjArray = {};
     this.data.xlabels = ChartView.getVisibleStockLine().filter(function (e, i) {
       var date = new Date(e.timestamp*1000);
@@ -58,6 +76,10 @@ var ChartView = {
 
     return this.data.xlabels;
   },
+
+  /**
+   * y1() returns D3 domain function for left y-axis
+   */
   y1: function(height, returnProp, volumeHeight){
     var self = this;
     var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x[returnProp]; }));
@@ -67,7 +89,10 @@ var ChartView = {
     max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
-  //return lowpx, highpx
+
+  /**
+   * y2() returns D3 domain function for right y-axis
+   */
   y2: function(height, returnPropMax, returnPropMin, volumeHeight){
     var self = this;
     var min = d3.min(ChartView.getVisibleStockLine().map(function(x) { return +x[returnPropMin]; }));
@@ -77,14 +102,20 @@ var ChartView = {
     max = max + ((max - min)*0.1);
     return this.buildY(min, max, height);
   },
+
+  /**
+   * buildY() is a helper function for creating y-axis domain
+   */
   buildY: function(min, max, height) {
     var props = this.properties;
     return d3.scale.linear()
     .domain([min, max])
     .range([height-props.margin.bottom, props.margin.top]);
   },
-  //return .volumn
-// range -> volumeHeight
+
+  /**
+   * v() returns D3 scaling function for volume columns
+   */
   v: function(returnProp) {
     var self = this;
     var props = self.properties;
@@ -93,31 +124,27 @@ var ChartView = {
     .domain([0, d3.max(ChartView.getVisibleStockLine().map(function(d){ return +d[returnProp];}))])
     .range([0, props.volumeHeight]);
   },
+
   /*
-   * xInverse
-   * =================
-   * - gets the data based on cursor position
-   * Arguments:
-   * - xPos: Position of cursor
-   * - x: x range, domain object of d3
+   * xInverse() returns index of data at mouse cursor position
+   *
+   * @param xPos x-position of cursor
+   * @param x x-range (d3 domain object)
    */
-  xInverse: function(xPos, x){
+  xInverse: function(xPos, x) {
     var leftEdges = x.range(), // starting position of each column bar
-    width = x.rangeBand(), //rangeBand = width of each column bar
-    j;
+        width = x.rangeBand(), // rangeBand is width of each column bar
+        j;
 
-    //while mouse's x position is greater than the right most edge of the column
-    //increment j
-
-    //if mouse is in the first column, return 0
-    //if mouse is in the last column,
-
+    // while mouse x position is greater than the right most edge of the column, increment j; otherwise, return j
     for (j = 0; xPos > (leftEdges[j] + width); j++) {}
     return j;
   },
-  init: function(){
-    // set up toolbar
-    // this.horizontalScroll();
+
+  /**
+   * init() initializes chart view
+   */
+  init: function() {
     var self = this;
     Toolbar.init();
     self.initInfoButtons();
@@ -125,7 +152,7 @@ var ChartView = {
     self.build();
 
     var resizeEnd;
-    if(!IE8){ //app.js
+    if(!IE8){
       $(window).on('resize', function() {
         clearTimeout(resizeEnd);
         resizeEnd = setTimeout(function() {
@@ -141,10 +168,18 @@ var ChartView = {
       });
     }
   },
+
+  /**
+   * initInfoButtons() initialises info buttons for index and sentiment chart
+   */
   initInfoButtons: function(){
     $('#index-info-button').leanModal({ closeButton: '.modal-close', modalId: '#index-info-modal' });
     $('#sentiment-info-button').leanModal({ closeButton: '.modal-close', modalId: '#sentiment-info-modal' });
   },
+
+  /**
+   * build() gets data from ChartModel and populates chart views when data is returned
+   */
   build: function(){
     var self = this;
     $('.loader').css('width', this.properties.width);
@@ -178,6 +213,10 @@ var ChartView = {
       }, self.properties.refreshFrequency);
     }
   },
+
+  /**
+   * getPastIndexData()
+   */
   getPastIndexData: function () {
     var self = this;
     if (self.updating) { return; }
@@ -189,7 +228,7 @@ var ChartView = {
     var options = {};
     var newDate = Helper.yyyymmddToDate(earliestDate.toString());
 
-    if ( self.properties.mode === 'daily' ) {
+    if (self.properties.mode === 'daily') {
       options.daily = true;
       newDate.setDate(newDate.getDate()-1);
       options.date = parseInt(newDate.yyyymmdd());
@@ -208,7 +247,11 @@ var ChartView = {
       self.updating = false;
     });
   },
-  changeMode: function (mode) {
+
+  /**
+   * changeMode() switches chart between weekly and daily mode
+   */
+  changeMode: function(mode) {
     var self = this;
     var options;
     ChartView.properties.mode = mode;
@@ -227,7 +270,11 @@ var ChartView = {
       self.redraw();
     });
   },
-  updateChartViewData: function (indexError, sentimentError, initial) {
+
+  /**
+   * updateChartViewData()
+   */
+  updateChartViewData: function(indexError, sentimentError, initial) {
     var self = this;
     self.data = ChartModel.model;
     self.data.error = {
@@ -243,7 +290,10 @@ var ChartView = {
     self.data.visibleStockLine = self.data.index.stockLine.slice(self.data.lastDataIndex - self.data.dataSetLength, self.data.lastDataIndex);
     self.setScrollbarWidth();
   },
-  // /* Initial build of chart elements */
+
+  /*
+   * buildChartElements() inits chart elements
+   */
   buildChartElements: function() {
 	$('#price').css('visibility', 'visible');
 	$('#macd').css('visibility', 'visible');
@@ -253,7 +303,7 @@ var ChartView = {
     var self = this;
     // Draw index
     if (!self.data.error.index.isError) {
-      Toolbar.render(self.data.index); //must render before IndexChart.init. Or else ma60 won't hide properly
+      Toolbar.render(self.data.index); // must render before IndexChart.init. Or else ma60 won't hide properly
       IndexChart.init();
       RsiChart.init();
       MacdChart.init();
@@ -264,14 +314,16 @@ var ChartView = {
       IndexChart.initWithError();
     }
     // Draw sentiment
-    // SentimentChart.init();
     try { SentimentChart.init(); } catch (error) { SentimentChart.initWithError(); }
 
     // Remove loaders
     $('.loader').remove();
     $('.dashboard-loader').remove();
   },
-  /* Updates chart elements */
+
+  /**
+   * updateChartViewData() updates chart elements
+   */
   updateChartElements: function() {
     var self = this;
 
@@ -297,27 +349,35 @@ var ChartView = {
     ChartView.setScrollbarWidth();
     ChartView.setScrollbarPos();
   },
-  zoom: function (zoomFactor) {
+
+  /**
+   * zoom() manages zooming function for chart view
+   */
+  zoom: function(zoomFactor) {
     var self = this;
-    // ChartView.calcZoom(zoomFactor);
     var newLength = Math.floor(self.data.dataSetLength / zoomFactor);
-    if (newLength < 20) { return; }
-    // if (newLength > 250) { return; }
+
+    if (newLength < 20) {
+      return;
+    }
+
     if (newLength > ChartView.getStockLine().length) {
       newLength = ChartView.getStockLine().length;
     }
+
     if (ChartView.getLastDataIndex() - newLength < 0) {
       var index = ChartView.getLastDataIndex() - (ChartView.getLastDataIndex() - newLength);
       ChartView.setLastDataIndex(index);
     }
+
     ChartView.setDataSetLength(newLength);
     ChartView.updateVisibleStockLine();
 
-    if(ChartView.isZoomed()){
+    if (ChartView.isZoomed()) {
        IndexChart.components.scrollBar.style('fill-opacity', 50);
        RsiChart  .components.scrollBar.style('fill-opacity', 50);
        MacdChart .components.scrollBar.style('fill-opacity', 50);
-    }else{
+    } else {
        IndexChart.components.scrollBar.style('fill-opacity', 0);
        RsiChart  .components.scrollBar.style('fill-opacity', 0);
        MacdChart .components.scrollBar.style('fill-opacity', 0);
@@ -329,19 +389,23 @@ var ChartView = {
   },
   zoomBehavior: function() {
     return d3.behavior.zoom()
-                    .on("zoom", function(){
-                      var deltaY = d3.event.sourceEvent.deltaY;
+      .on('zoom', function(){
+        var deltaY = d3.event.sourceEvent.deltaY;
 
-                      if (!deltaY) // d3.event.sourceEvent.deltaY not defined in ie
-                        deltaY = -d3.event.sourceEvent.wheelDelta;
+        if (!deltaY) // d3.event.sourceEvent.deltaY not defined in ie
+          deltaY = -d3.event.sourceEvent.wheelDelta;
 
-                      if(deltaY > 0){
-                        ChartView.moveToLeft();
-                      }else if(deltaY < 0){
-                        ChartView.moveToRight();
-                      }
-                    });
+        if (deltaY > 0) {
+          ChartView.moveToLeft();
+        } else if (deltaY < 0) {
+          ChartView.moveToRight();
+        }
+      });
   },
+
+  /**
+   * scrollbarDragBehavior() manages drag behavior for charts
+   */
   scrollbarDragBehavior: function(){
     var self = this;
     this.properties.scrollbarDragBehavior = this.properties.scrollbarDragBehavior || d3.behavior.drag()
@@ -362,6 +426,10 @@ var ChartView = {
           });
           return this.properties.scrollbarDragBehavior;
   },
+
+  /**
+   * moveScrollBar() moves scrollbar for charts
+   */
   moveScrollBar: function (xPos, scrollbar) {
     ChartView.properties.scrollbarPos = xPos;
 
@@ -373,7 +441,11 @@ var ChartView = {
     }
 
   },
-  chartDragBehavior: function(){
+
+  /**
+   * chartDragBehavior manages drag behavior for charts
+   */
+  chartDragBehavior: function() {
     var self = this;
     return d3.behavior.drag()
     .origin(function(d) { return d; })
@@ -385,7 +457,11 @@ var ChartView = {
       }
     });
   },
-  moveToRight: function () {
+
+  /**
+   * moveToRight()
+   */
+  moveToRight: function() {
     var self = this;
     var speed = ChartView.getVisibleStockLine().length * 0.05;
         speed = Math.ceil(speed);
@@ -400,8 +476,11 @@ var ChartView = {
     self.data.dataSetLength = ChartView.getVisibleStockLine().length;
     self.setScrollbarPos();
     self.redraw();
-    // self.properties.scrollbarPos += speed;
   },
+
+  /**
+   * moveToLeft()
+   */
   moveToLeft: function () {
     var self  = this;
     var speed = ChartView.getVisibleStockLine().length * 0.05;
@@ -422,6 +501,10 @@ var ChartView = {
       self.getPastIndexData();
     }
   },
+
+  /**
+   * redraw()
+   */
   redraw: function () {
     ChartView.updateVisibleStockLine();
     $('.zoomable-chart-container').css('width', '100%');
@@ -431,6 +514,10 @@ var ChartView = {
     RsiChart.update();
     MacdChart.update();
   },
+
+  /**
+   * rebuild()
+   */
   rebuild: function() {
     ChartView.setProperties();
      try {
@@ -447,23 +534,39 @@ var ChartView = {
 
     $('.zoomable-chart-container').css('width', '100%');
   },
+
+  /**
+   * showAllScrollbars() shows scrollbars for RSI, index and MACD chart
+   */
   showAllScrollbars: function(){
     if(!ChartView.isZoomed()) return;
       RsiChart.components.scrollBar.style('fill-opacity', 100);
       IndexChart.components.scrollBar.style('fill-opacity', 100);
       MacdChart.components.scrollBar.style('fill-opacity', 100);
   },
+
+  /**
+   * hideAllScrollbars() hides all scrollbars for RSI, index and MACD chart
+   */
   hideAllScrollbars: function(){
       RsiChart.components.scrollBar.style('fill-opacity', 0);
       IndexChart.components.scrollBar.style('fill-opacity', 0);
       MacdChart.components.scrollBar.style('fill-opacity', 0);
   },
+
+  /**
+   * mouseOverMouseOverlay()
+   */
   mouseOverMouseOverlay: function(){
     ChartView.properties.mouseOverChart = true;
     if(ChartView.isZoomed()) {
       ChartView.showAllScrollbars();
     }
   },
+
+  /**
+   * mouseOutMouseOverlay()
+   */
   mouseOutMouseOverlay: function(){
     var mOver = ChartView.properties.mouseOverScrollbar;
     ChartView.properties.mouseOverChart = false;
@@ -472,7 +575,10 @@ var ChartView = {
       $('html').css('overflow', 'visible');
     }
   },
-  // ============= PUBLIC GETTERS/SETTERS ======================
+
+  /**
+   * Public getters and setters
+   */
   getLastIndexOnViewPort: function() {
     return this.properties.lastIndexOnViewPort;
   },

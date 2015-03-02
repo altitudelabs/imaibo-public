@@ -1,3 +1,6 @@
+/**
+ * RightPanel coordinates views for right panel (ie. experts view, news view and stockpicker view)
+ */
 var RightPanel = {
   el: $('#right-panel'),
   collapsed: {
@@ -8,6 +11,8 @@ var RightPanel = {
   uncollapsed: {
     icon: $('.vertical-uncollapse'),
   },
+
+  // Defines states (or subviews) that are contained in view
   states: {
     chooseStockView: {
       el: $('#stockpicker-view'),
@@ -30,6 +35,10 @@ var RightPanel = {
     }
   },
   noStocks: false,
+
+  /*
+   * collapseView() collapses right panel
+   */
   collapseView: function() {
 
     // Collapse right panel
@@ -42,6 +51,10 @@ var RightPanel = {
       ChartView.rebuild();
     }, 400);
   },
+
+  /*
+   * expandView() expands right panel
+   */
   expandView: function() {
     var self = this;
     // cannot set width directly as there may be problems with sticky kit
@@ -57,6 +70,10 @@ var RightPanel = {
 
     }, 500);
   },
+
+  /*
+   * init() inits right panel
+   */
   init: function() {
     this.initLinks();
     this.render();
@@ -64,9 +81,17 @@ var RightPanel = {
     expertsView.init();
     newsView.init();
   },
+
+  /*
+   * render() renders the default view
+   */
   render: function(){
     this.goTo('chooseStockView');
   },
+
+  /*
+   * initLinks() renders the appropriate view when a tab is clicked
+   */
   initLinks: function(){
     var self = this;
 
@@ -99,6 +124,12 @@ var RightPanel = {
       $('#stock-add-panel').css('display', 'none');
     });
   },
+
+  /*
+   * goTo() transitions to a given state
+   *
+   * @param toState: state to transition to
+   */
   goTo: function(toState){
     var self = this;
     _.each(this.states, function(state, stateName){

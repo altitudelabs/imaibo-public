@@ -43,7 +43,9 @@ if (!Object.keys) {
   }());
 }
 
-// Other helpers
+/*
+ * Helper that converts date object to yyyymmdd format
+ */
 Date.prototype.yyyymmdd = function() {
   var yyyy = this.getFullYear().toString();
   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
@@ -51,6 +53,9 @@ Date.prototype.yyyymmdd = function() {
   return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
 };
 
+/*
+ * Helper that formats a string according to a regular expression
+ */
 String.prototype.format = function() {
   var formatted = this;
   for (var i = 0; i < arguments.length; i++) {
@@ -60,6 +65,11 @@ String.prototype.format = function() {
   return formatted;
 };
 
+/*
+ * Helper that returns a date string in yyyy-mm-dd format
+ *
+ * @param date is a Javascript date object
+ */
 function getDateString(date){
   var year = date.getFullYear();
   var month = date.getMonth() + 1;
@@ -73,9 +83,19 @@ function getDateString(date){
   return '{0}-{1}-{2}'.format(year, month, day);
 }
 
-function min(a, b){ return a < b ? a : b ; }
+/*
+ * Helper that returns smaller of two elements
+ */
+function min(a, b){ return a < b ? a : b; }
+
+/*
+ * Helper that returns larger of two elements
+ */
 function max(a, b){ return a > b ? a : b; }
 
+/*
+ * Handlebars helpers
+ */
 Handlebars.registerHelper('ifEq', function(a, b, opts){
   return (a === b ? opts.fn(this): opts.inverse(this));
 });
@@ -85,26 +105,26 @@ Handlebars.registerHelper('isGreater', function(a, b, opts){
 });
 
 Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
-    switch (operator) {
-        case '==':
-            return (v1 == v2) ? options.fn(this) : options.inverse(this);
-        case '===':
-            return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '<':
-            return (v1 < v2) ? options.fn(this) : options.inverse(this);
-        case '<=':
-            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-        case '>':
-            return (v1 > v2) ? options.fn(this) : options.inverse(this);
-        case '>=':
-            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-        case '&&':
-            return (v1 && v2) ? options.fn(this) : options.inverse(this);
-        case '||':
-            return (v1 || v2) ? options.fn(this) : options.inverse(this);
-        default:
-            return options.inverse(this);
-    }
+  switch (operator) {
+    case '==':
+      return (v1 == v2) ? options.fn(this) : options.inverse(this);
+    case '===':
+      return (v1 === v2) ? options.fn(this) : options.inverse(this);
+    case '<':
+      return (v1 < v2) ? options.fn(this) : options.inverse(this);
+    case '<=':
+      return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+    case '>':
+      return (v1 > v2) ? options.fn(this) : options.inverse(this);
+    case '>=':
+      return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+    case '&&':
+      return (v1 && v2) ? options.fn(this) : options.inverse(this);
+    case '||':
+      return (v1 || v2) ? options.fn(this) : options.inverse(this);
+    default:
+      return options.inverse(this);
+  }
 });
 
 Handlebars.registerHelper('toAbs', function(num){
@@ -160,6 +180,13 @@ Handlebars.registerHelper('formatNumber', function(num, dp, addSign){
 });
 
 var Helper = {
+
+  /**
+   * toDate() converts Javascript date to a certain date format
+   *
+   * @param date: Javascript date object
+   * @param format: either 'yyyy/mm' or 'yyyy-mm-dd' (default)
+   */
   toDate: function(date, format){
     var d = date.toString();
     var year = d.slice(0, 4);
@@ -172,6 +199,10 @@ var Helper = {
       return year + '-' + month + '-' + day;
     }
   },
+
+  /**
+   * yyyymmddToDate() converts yyyymmdd string to Javascript Date object
+   */
   yyyymmddToDate: function (str) {
     if (!/^(\d){8}$/.test(str)) { return 'invalid date'; }
     var y = str.substr(0,4),
@@ -179,13 +210,13 @@ var Helper = {
         d = str.substr(6,2);
     return new Date(y,m,d);
   },
-  /*
-   * Populate HandlebarJS template.
-   * ==============================
-   * arguments:
-   *  - target_id: id/class of your div. i.e. '#expertsView'
-   *  - template_id: id template. i.e. '#experts-template'
-   *  - resource: the data you are passing in. e.g. {name: 'Ray'}
+
+  /**
+   * populateView() populates a handlebars view
+   *
+   * @param target_id: id/class of your div. i.e. '#expertsView'
+   * @param template_id: id template. i.e. '#experts-template'
+   * @param resource: the data you are passing in. e.g. {name: 'Ray'}
    */
   populateView: function (targetId, templateId, resource){
     var targetSelector = $(targetId);
@@ -198,34 +229,38 @@ var Helper = {
       targetSelector.html(template(resource));
     }
   },
-  IEtableEnterLoop: function(tableID, data, template){
-   var $table = $(tableID),
-       $rows = $(tableID + ' tr'),
-       rowsToAdd = data.length - $rows.length;
 
-   for (var i = 0; i < rowsToAdd; i++){
-     $table.append('<tr>' + template + '</tr>');
-   }
+  /**
+   * IEtableEnterLoop() helper for enterLoop() for IE8
+   */
+  IEtableEnterLoop: function(tableID, data, template){
+    var $table = $(tableID),
+        $rows = $(tableID + ' tr'),
+        rowsToAdd = data.length - $rows.length;
+
+    for (var i = 0; i < rowsToAdd; i++){
+      $table.append('<tr>' + template + '</tr>');
+    }
   },
-  /*
-   *enterLoop():
+
+  /**
+   * enterLoop()
    * - Acts as a helper function if you decide to use D3 for <tr> append
    * - This helper negates the error thrown by r2d3 for appending 'tr' element on the enter loop
    * - Note: the ordering is important. IEtableEnterLoop() must prepend the d3 selection-data loop
    *          Or else d3 selection object would not select anything.
-   * ===============================
-   * arguments:
-   * - tableID:  (string) y     Our table id with # selector. i.e. '#stockpicker-table-body'
-   * - data:     (array)        The data you are passing in. usually an array.
-   * - template: (string, html) The html you want d3 to render for you on the enter() loop
-   * - isIE8:    (boolean)      Defines if it is running in IE8
+   *
+   * @param tableID: our table id with # selector. i.e. '#stockpicker-table-body'
+   * @param data: the data you are passing in. usually an array.
+   * @param template: the html you want d3 to render for you on the enter() loop
+   * @param isIE8: boolean that defines if it is running in IE8
    */
   enterLoop: function(tableID, data, template, isIE8){
-	if(isIE8) Helper.IEtableEnterLoop(tableID, data, template); //ordering is important
-    var table = d3.select(tableID)
-                  .selectAll('tr')
-                  .data(data);
-	if(!isIE8) table.enter().append('tr').html(template);	          // ordering is important
-	return table;
+  	if(isIE8) Helper.IEtableEnterLoop(tableID, data, template); //ordering is important
+      var table = d3.select(tableID)
+                    .selectAll('tr')
+                    .data(data);
+  	if(!isIE8) table.enter().append('tr').html(template);	          // ordering is important
+  	return table;
   },
 }

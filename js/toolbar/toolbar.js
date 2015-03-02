@@ -1,3 +1,6 @@
+/**
+ * Toolbar creates the toolbar for index chart
+ */
 var Toolbar = {
   el: '#toolbar',
   init: function(){

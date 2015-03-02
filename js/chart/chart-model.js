@@ -1,4 +1,9 @@
+/**
+ * ChartModel retrieves dashboard, index chart and sentiment chart models from API
+ */
 var ChartModel = {
+
+  // Model data
   model: {
     info:         {},
     index:        {},
@@ -8,9 +13,9 @@ var ChartModel = {
     sentimentError: true,
     dataReceived: 0
   },
+
+  // API definitions
   api: {
-    // production:     'http://www.imaibo.net',
-    // staging:        'http://t3-www.imaibo.net',
     base:           '/index.php?app=moodindex&mod=IndexShow',
     indexData:      '&act=main',
     dailyIndexData: '&daily=1',
@@ -19,8 +24,6 @@ var ChartModel = {
     weeklyUpdate:   '&act=getStkWeeklySnap',
     sentimentData:  '&act=moodindexLine',
     sentimentUpdate:'&act=refreshMoodindexLine',
-    // sentimentUpdate:''
-    // http://t3-www.imaibo.net/index.php?app=moodindex&mod=IndexShow&act=moodindexLine&reqDate=20150202
     minute:         '&minute=1',
     date:           '&reqDate=',
     dailyLineSdate: '&dailyLineSdate=',
@@ -29,31 +32,39 @@ var ChartModel = {
   },
   currEarliestTime: 0,
   endOfSentiment: false,
+
+  /**
+   * Helper method that returns website base URL
+   */
   baseUrl: function(){
     return PRODUCTION ? 'http://' + location.hostname : 'http://t3-www.imaibo.net';
-    // return PRODUCTION ? this.api.production : this.api.staging;
   },
+
+  /**
+   * Promisifies index chart API call
+   */
   getIndexDataAsync: function(options, cb){
     var self = this;
     return $.Deferred(function(d){
       self.getIndexData(options, d.resolve, cb);
     }).promise();
   },
+
+  /**
+   * Promisifies sentiment chart API call
+   */
   getSentimentDataAsync: function(options, cb){
     var self = this;
     return $.Deferred(function(d){
       self.getSentimentData(options, d.resolve, cb);
     }).promise();
   },
-  // updateSentimentDataAsync: function(date){
-  //   var self = this;
-  //   return $.Deferred(function(d){
-  //     self.updateSentimentData(date, d.resolve, d.reject);
-  //   }).promise();
-  // },
+
+  /*
+   * Helper method for generating API url
+   */
   apiBuilder: function(requestChart, options) {
     var api = this.baseUrl() + this.api.base;
-    // var today = new Date().yyyymmdd();
     if(requestChart === 'index') {
       api += (options.weekly&&!options.weeklyUpdate ? this.api.weeklyIndexData : '');
       api += (options.weekly&&options.weeklyUpdate ? this.api.weeklyUpdate : '');
@@ -65,23 +76,16 @@ var ChartModel = {
       api += ((options.daily&&options.date) ? this.api.indexData + this.api.dailyUpdate : '');
       api += ((options.weekly&&options.date) ? this.api.weeklyLineSdate + options.date : '');
       api += '&info=1&trading=1';
-    }else{
+    } else {
       api += (options.sentimentUpdate ? this.api.sentimentUpdate : this.api.sentimentData);
-      // api += (options.sentimentUpdate ? this.api.sentimentUpdate : '');
     }
     api += this.api.jsonp;
     return api;
   },
-  
-  /*
-   * func getIndexData()
-   * ===================
-   * Arguments:
-   * - date: date in yyyymmdd format
-   * - initial: boolean, indicates if we are only fetching new data
-   * - handler: callback function
-   * - updateByDragging: boolean, indicates if we are updating by dragging index chart
-  */
+
+  /**
+   * Retrieves index chart data by making call to API
+   */
   getIndexData: function(options, handler, cb){
     var self = this;
     var indexApi = self.apiBuilder('index' , options);
@@ -94,6 +98,10 @@ var ChartModel = {
       handler({ isError: self.model.indexError });
     });
   },
+
+  /**
+   * Retrieves sentiment chart data by making call to API
+   */
   getSentimentData: function(options, handler, cb){
     var self = this;
     var sentimentApi = self.apiBuilder('sentiment' , options);
@@ -107,6 +115,10 @@ var ChartModel = {
       handler({ isError: self.model.sentimentError });
     });
   },
+
+  /**
+   * Gets sentiment and index chart data on initial load
+   */
   getInitialData: function () {
     var self = this;
     var indexOptions = {
@@ -114,7 +126,9 @@ var ChartModel = {
       initial: true,
       info: true
     };
+
     var sentimentOptions = {};
+
     var indexCallback = function (data, handler) {
       var newData = data.daily ? data.daily.stockLine : [];
       for (var key in data) {
@@ -127,33 +141,44 @@ var ChartModel = {
           self.model[key] = data[key];
         }
       }
-      self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
+      self.model.index.stockLine = self.model.index.stockLine.filter(function (d) {
         return (d.rdate > 20130413);
       });
       handler(self.model.indexError);
     };
+
     var sentimentCallback = function (data, handler) {
-      // data.indexList = [];
-      // data.moodindexList = [];
-      // console.log(data);
       self.model.sentiment = data;
       handler(self.model.sentimentError);
     };
+
     return $.when(ChartModel.getIndexDataAsync(indexOptions, indexCallback), ChartModel.getSentimentDataAsync(sentimentOptions, sentimentCallback));
   },
+
+  /**
+   * Update sentiment and index chart data
+   */
   updateAllData: function (indexOption, sentimentOption) {
     var self = this;
     return $.when(ChartModel.getIndexDataAsync(indexOption, self.processUpdateIndexData), ChartModel.getSentimentDataAsync(sentimentOption, self.processUpdateSentimentData));
   },
+
+  /**
+   * Update index chart data using update API
+   */
   updateIndexData: function (option) {
     var self = this;
     return $.when(ChartModel.getIndexDataAsync(option, self.processUpdateIndexData));
   },
+
+  /**
+   * Process index chart data on update
+   */
   processUpdateIndexData: function (data, handler) {
     var self = ChartModel;
     var newData;
     var rdates = [];
-    if (data.daily) { 
+    if (data.daily) {
       newData = data.daily.stockLine.reverse();
     } else if (data.weeklyKLine) {
       newData = data.weeklyKLine.reverse();
@@ -181,28 +206,32 @@ var ChartModel = {
     ChartView.updating = false;
     handler(self.model.indexError);
   },
+
+  /**
+   * Completely refresh index chart data (eg. when changing from daily to weekly)
+   */
   refreshIndexData: function (option) {
     var self = this;
     var callback = function (data, handler) {
-      if (data.daily) { 
+      if (data.daily) {
         self.model.index.stockLine = data.daily.stockLine.reverse();
       } else if (data.weeklyKLine) {
         self.model.index.stockLine = data.weeklyKLine.reverse();
       }
-      self.model.index.stockLine = self.model.index.stockLine.filter(function (d) { 
+      self.model.index.stockLine = self.model.index.stockLine.filter(function (d) {
         return (d.rdate > 20130413);
       });
-      
+
       handler(self.model.indexError);
     };
     return $.when(ChartModel.getIndexDataAsync(option, callback));
   },
-  // updateSentimentData: function(option){
-  //   var self = this;
-  //   return $.when(ChartModel.getSentimentDataAsync(option, self.processUpdateSentimentData));
-  // },
+
+  /**
+   * Process updated sentiment data
+   */
   processUpdateSentimentData: function (data, handler) {
-    //indexList
+    // indexList
     var oldIndexList = ChartModel.model.sentiment.indexList;
     var updateIndexListIndex;
     var newIndexListTimeStamp = data.indexList[0] ? data.indexList[0].timestamp : 0;
@@ -218,7 +247,7 @@ var ChartModel = {
     }
     ChartModel.model.sentiment.indexList = oldIndexList;
 
-    //moodindexList
+    // moodindexList
     var oldMoodIndexList = ChartModel.model.sentiment.moodindexList;
     var newMoodIndexListTimeStamp = data.moodindexList[0].timestamp;
     var updateMoodIndexListIndex;
@@ -231,21 +260,30 @@ var ChartModel = {
     oldMoodIndexList = oldIndexList.concat(data.moodindexList);
     ChartModel.model.sentiment.moodindexList = oldMoodIndexList;
 
-
     handler(ChartModel.model.sentimentError);
   },
-  /* Checks if variable is object */
+
+  /**
+   * isObject() returns true if val is an object
+   */
   isObject: function(val){
     if (val === null) { return false; }
     return typeof val === 'object';
   },
-  /* Checks if variable is empty object */
+
+  /**
+   * isEmptyObject() returns true if obj is an empty object
+   */
   isEmptyObject: function(obj) {
     for (var prop in obj) {
       if(obj.hasOwnProperty(prop)) return false;
     }
     return true;
   },
+
+  /**
+   * errorCheckSentiment() checks for errors in sentiment data and sets model.sentimentError to the appropriate value
+   */
   errorCheckSentiment: function(res, options){
     if(res.data === undefined){
       this.log(0, 'Sentiment API has no \'data\'');
@@ -253,20 +291,16 @@ var ChartModel = {
       this.log(0, 'Sentiment API "data" variable is not an object or is empty');
     } else if (res.data.indexList === undefined){
       this.log(0, 'Sentiment API data.indexList does not exist');
-    // } else if (res.data.indexList[0].price === undefined){
-    //   this.log(0, 'Sentiment API data.indexList does not have variable "price"');
-    // } else if (res.data.indexList[0].volumn === undefined){
-    //   this.log(0, 'Sentiment API data.indexList does not have variable "volumn"');
-    // } else if (res.data.indexList[0].timestamp === undefined){
-    //   this.log(0, 'Sentiment API data.indexList does not have variable "timestamp"');
-    // } else if (res.data.indexList[0].rdate === undefined){
-    //   this.log(0, 'Sentiment API data.indexList does not have variable "rdate"');
     } else if (res.data.moodindexList === undefined){
       this.log(0, 'Sentiment API data.moodindexList does not exist');
     } else {
       this.model.sentimentError = false;
     }
   },
+
+  /**
+   * errorCheckIndex() checks for errors in index data and sets model.indexError to the appropriate value
+   */
   errorCheckIndex: function(res, options){
     this.model.indexError = true;
     var type;
@@ -295,11 +329,18 @@ var ChartModel = {
       this.model.indexError = false;
     }
   },
+
+  /**
+   * log() is a helper method that logs a message
+   */
   log: function(code, message) {
     var now = new Date();
     console.log('%c [' +  now.toTimeString() +'] ' + message, 'color: red; font-size: 1.5em;');
   },
-  /* Helper method for randomizing API values for testing */
+
+  /**
+   * randomize() is a helper method for randomizing API values for testing purposes only
+   */
   randomize: function(){
     // Randomize stock price
     var stockIndexSign = Math.random() > 0.5;
